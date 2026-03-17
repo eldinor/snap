@@ -21,6 +21,7 @@ const GRID_EXTENT = 32;
 
 interface AssetTemplate {
   root: TransformNode;
+  size: Vector3;
 }
 
 interface EditorObject {
@@ -37,6 +38,8 @@ export interface EditorUi {
   snapToggle: HTMLButtonElement;
   selectionModeButton: HTMLButtonElement;
   placementModeButton: HTMLButtonElement;
+  deleteSelectedButton: HTMLButtonElement;
+  clearSceneButton: HTMLButtonElement;
   gridSizeSelect: HTMLSelectElement;
   rotationSelect: HTMLSelectElement;
   statusMode: HTMLElement;
@@ -62,6 +65,7 @@ export class ModularEditorApp {
   private selectedObjectId: string | null = null;
   private placementPreview: TransformNode | null = null;
   private previewAssetId: string | null = null;
+  private previewTemplateSize = new Vector3(1, 1, 1);
   private mode: "select" | "place" = "select";
   private snapEnabled = true;
   private gridSize = 1;
@@ -76,14 +80,7 @@ export class ModularEditorApp {
     this.scene = new Scene(this.engine);
     this.scene.clearColor = new Color4(0.09, 0.1, 0.12, 1);
 
-    this.camera = new ArcRotateCamera(
-      "camera",
-      -Math.PI / 3,
-      Math.PI / 2.9,
-      22,
-      new Vector3(0, 2, 0),
-      this.scene,
-    );
+    this.camera = new ArcRotateCamera("camera", Math.PI / 3, Math.PI / 2.9, 22, new Vector3(0, 2, 0), this.scene);
     this.camera.lowerRadiusLimit = 6;
     this.camera.upperRadiusLimit = 48;
     this.camera.wheelDeltaPercentage = 0.02;
@@ -185,6 +182,14 @@ export class ModularEditorApp {
       await this.ensurePreviewForAsset(this.activeAssetId);
       this.updateToolbarState();
       this.updateStatus();
+    });
+
+    this.ui.deleteSelectedButton.addEventListener("click", () => {
+      this.deleteSelectedObject();
+    });
+
+    this.ui.clearSceneButton.addEventListener("click", () => {
+      this.clearScene();
     });
 
     this.ui.gridSizeSelect.addEventListener("change", () => {
@@ -323,7 +328,7 @@ export class ModularEditorApp {
         <div class="properties-empty">
           <strong>No object selected.</strong>
           <span>Active asset: ${activeAsset ? activeAsset.name : "None"}</span>
-          <span>Copy GLTF files to <code>public/assets/gltf/</code>.</span>
+          <span>Use Delete Selected for one item or Clear Scene for all.</span>
         </div>
       `;
       return;
@@ -349,6 +354,8 @@ export class ModularEditorApp {
     this.ui.snapToggle.classList.toggle("is-active", this.snapEnabled);
     this.ui.selectionModeButton.classList.toggle("is-active", this.mode === "select");
     this.ui.placementModeButton.classList.toggle("is-active", this.mode === "place");
+    this.ui.deleteSelectedButton.disabled = !this.selectedObjectId;
+    this.ui.clearSceneButton.disabled = this.objects.size === 0;
     this.ui.gridSizeSelect.value = String(this.gridSize);
     this.ui.rotationSelect.value = String(this.rotationStepDegrees);
   }
@@ -373,11 +380,13 @@ export class ModularEditorApp {
       return;
     }
 
+    const template = await this.getAssetTemplate(asset);
     const preview = await this.instantiateAsset(asset, true);
     if (!preview) {
       return;
     }
 
+    this.previewTemplateSize = template.size.clone();
     this.placementPreview = preview;
     this.previewAssetId = assetId;
     this.updatePreviewTransform();
@@ -402,7 +411,11 @@ export class ModularEditorApp {
     root.rotation.y = this.placementPreview?.rotation.y ?? 0;
 
     const id = `object-${++this.objectSequence}`;
-    root.metadata = { objectId: id, assetId: asset.id };
+    root.metadata = {
+      objectId: id,
+      assetId: asset.id,
+      templateSize: this.previewTemplateSize.asArray(),
+    };
     this.tagHierarchy(root, id);
     this.objects.set(id, { id, assetId: asset.id, root });
     this.selectObjectByRoot(root);
@@ -427,7 +440,7 @@ export class ModularEditorApp {
     root.rotationQuaternion = null;
     root.rotation.set(0, 0, 0);
     root.scaling.setAll(1);
-    root.metadata = { assetId: asset.id };
+    root.metadata = { assetId: asset.id, templateSize: template.size.asArray() };
 
     root.getChildTransformNodes().forEach((node) => {
       node.setEnabled(true);
@@ -440,7 +453,7 @@ export class ModularEditorApp {
       mesh.visibility = 1;
       if (preview) {
         mesh.material = this.clonePreviewMaterial(mesh.material, asset.placeholder.color);
-        mesh.visibility = 0.45;
+        mesh.visibility = 0.72;
       }
     });
 
@@ -465,14 +478,14 @@ export class ModularEditorApp {
         }
       });
 
-      this.normalizeTemplateRoot(root);
+      const size = this.normalizeTemplateRoot(root);
       root.setEnabled(false);
-      return { root };
+      return { root, size };
     } catch {
       const root = this.createPlaceholderTemplate(asset);
-      this.normalizeTemplateRoot(root);
+      const size = this.normalizeTemplateRoot(root);
       root.setEnabled(false);
-      return { root };
+      return { root, size };
     }
   }
 
@@ -507,13 +520,18 @@ export class ModularEditorApp {
     const centerZ = (bounds.min.z + bounds.max.z) / 2;
     const minY = bounds.min.y;
 
-    root.getChildren((node) => node.parent === root).forEach((child) => {
-      if (child instanceof TransformNode) {
-        child.position.x -= centerX;
-        child.position.y -= minY;
-        child.position.z -= centerZ;
-      }
-    });
+    root
+      .getChildren((node) => node.parent === root)
+      .forEach((child) => {
+        if (child instanceof TransformNode) {
+          child.position.x -= centerX;
+          child.position.y -= minY;
+          child.position.z -= centerZ;
+        }
+      });
+
+    const normalizedBounds = root.getHierarchyBoundingVectors();
+    return normalizedBounds.max.subtract(normalizedBounds.min);
   }
 
   private clonePreviewMaterial(material: unknown, fallbackHex: string) {
@@ -554,18 +572,32 @@ export class ModularEditorApp {
       return;
     }
 
-    const point = this.snapEnabled ? this.snapVector(this.lastPointerPoint) : this.lastPointerPoint.clone();
+    const point = this.snapEnabled
+      ? this.snapVectorForSize(this.lastPointerPoint, this.previewTemplateSize)
+      : this.lastPointerPoint.clone();
     this.placementPreview.position.set(point.x, 0, point.z);
     this.placementPreview.rotationQuaternion = null;
     this.placementPreview.rotation.set(0, this.toRadians(this.previewRotationDegrees), 0);
   }
 
-  private snapVector(point: Vector3) {
+  private snapVectorForSize(point: Vector3, size: Vector3) {
+    const xOffset = this.computeSnapOffset(size.x);
+    const zOffset = this.computeSnapOffset(size.z);
+
     return new Vector3(
-      this.snapScalar(point.x, this.gridSize),
+      this.snapScalar(point.x - xOffset, this.gridSize) + xOffset,
       0,
-      this.snapScalar(point.z, this.gridSize),
+      this.snapScalar(point.z - zOffset, this.gridSize) + zOffset,
     );
+  }
+
+  private computeSnapOffset(size: number) {
+    if (!this.snapEnabled || this.gridSize <= 0) {
+      return 0;
+    }
+
+    const cells = Math.max(1, Math.round(size / this.gridSize));
+    return cells % 2 === 0 ? 0 : this.gridSize / 2;
   }
 
   private snapSelectedObject() {
@@ -579,8 +611,12 @@ export class ModularEditorApp {
     }
 
     if (this.snapEnabled) {
-      object.root.position.x = this.snapScalar(object.root.position.x, this.gridSize);
-      object.root.position.z = this.snapScalar(object.root.position.z, this.gridSize);
+      const templateSize = Array.isArray(object.root.metadata?.templateSize)
+        ? Vector3.FromArray(object.root.metadata.templateSize as number[])
+        : new Vector3(1, 1, 1);
+      const snapped = this.snapVectorForSize(object.root.position, templateSize);
+      object.root.position.x = snapped.x;
+      object.root.position.z = snapped.z;
       object.root.rotation.y = this.snapAngle(object.root.rotation.y);
     }
 
@@ -631,11 +667,26 @@ export class ModularEditorApp {
       return;
     }
 
-    object.root.dispose(false, true);
+    object.root.dispose(false, false);
     this.objects.delete(object.id);
     this.selectedObjectId = null;
     this.gizmoManager.attachToNode(null);
     this.renderProperties();
+    this.updateToolbarState();
+    this.updateStatus();
+  }
+
+  private clearScene() {
+    this.disposePreview();
+    this.objects.forEach((object) => {
+      object.root.dispose(false, false);
+    });
+    this.objects.clear();
+    this.selectedObjectId = null;
+    this.gizmoManager.attachToNode(null);
+    this.mode = "select";
+    this.renderProperties();
+    this.updateToolbarState();
     this.updateStatus();
   }
 
@@ -654,6 +705,7 @@ export class ModularEditorApp {
     this.selectedObjectId = null;
     this.gizmoManager.attachToNode(null);
     this.renderProperties();
+    this.updateToolbarState();
   }
 
   private selectObjectByRoot(root: TransformNode) {
@@ -677,7 +729,7 @@ export class ModularEditorApp {
   }
 
   private disposePreview() {
-    this.placementPreview?.dispose(false, true);
+    this.placementPreview?.dispose(false, false);
     this.placementPreview = null;
     this.previewAssetId = null;
   }
@@ -726,6 +778,8 @@ export function createEditorUi(canvas: HTMLCanvasElement): EditorUi {
   const snapToggle = document.querySelector<HTMLButtonElement>("[data-role='snap-toggle']");
   const selectionModeButton = document.querySelector<HTMLButtonElement>("[data-role='selection-mode']");
   const placementModeButton = document.querySelector<HTMLButtonElement>("[data-role='placement-mode']");
+  const deleteSelectedButton = document.querySelector<HTMLButtonElement>("[data-role='delete-selected']");
+  const clearSceneButton = document.querySelector<HTMLButtonElement>("[data-role='clear-scene']");
   const gridSizeSelect = document.querySelector<HTMLSelectElement>("[data-role='grid-size']");
   const rotationSelect = document.querySelector<HTMLSelectElement>("[data-role='rotation-step']");
   const statusMode = document.querySelector<HTMLElement>("[data-role='status-mode']");
@@ -741,6 +795,8 @@ export function createEditorUi(canvas: HTMLCanvasElement): EditorUi {
     !snapToggle ||
     !selectionModeButton ||
     !placementModeButton ||
+    !deleteSelectedButton ||
+    !clearSceneButton ||
     !gridSizeSelect ||
     !rotationSelect ||
     !statusMode ||
@@ -760,6 +816,8 @@ export function createEditorUi(canvas: HTMLCanvasElement): EditorUi {
     snapToggle,
     selectionModeButton,
     placementModeButton,
+    deleteSelectedButton,
+    clearSceneButton,
     gridSizeSelect,
     rotationSelect,
     statusMode,
@@ -806,6 +864,8 @@ export function buildEditorMarkup() {
         <div class="toolbar-group">
           <button type="button" class="tool-button is-active" data-role="selection-mode">Select</button>
           <button type="button" class="tool-button" data-role="placement-mode">Place</button>
+          <button type="button" class="tool-button tool-button-danger" data-role="delete-selected" disabled>Delete Selected</button>
+          <button type="button" class="tool-button tool-button-danger" data-role="clear-scene" disabled>Clear Scene</button>
         </div>
       </header>
       <div class="workspace">

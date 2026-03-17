@@ -93,11 +93,27 @@ select:focus-visible,
   transition: background-color 120ms ease, border-color 120ms ease;
 }
 
+.tool-button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
 .tool-button.is-active,
 .chip.is-active {
   border-color: #64b5f6;
   background: #163047;
   color: #cfe7ff;
+}
+
+.tool-button-danger {
+  border-color: #5b3232;
+  background: #241616;
+  color: #f1c5c5;
+}
+
+.tool-button-danger:hover:not(:disabled) {
+  border-color: #8b4a4a;
+  background: #341b1b;
 }
 
 .tool-field {
