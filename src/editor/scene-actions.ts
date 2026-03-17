@@ -1,4 +1,5 @@
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
+import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 
 export interface SceneEditorObject {
@@ -20,6 +21,7 @@ export function clearSelection(
   if (object) {
     object.root.getChildMeshes().forEach((mesh) => {
       mesh.showBoundingBox = false;
+      mesh.renderOutline = false;
     });
   }
 
@@ -38,6 +40,9 @@ export function selectObject(
 
   root.getChildMeshes().forEach((mesh) => {
     mesh.showBoundingBox = true;
+    mesh.outlineColor = new Color3(0.55, 0.82, 1);
+    mesh.outlineWidth = 0.03;
+    mesh.renderOutline = true;
   });
   gizmoManager.attachToNode(root);
   return objectId;

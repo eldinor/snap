@@ -36,6 +36,19 @@ export interface SelectionViewState {
   snapText: string | null;
 }
 
+export interface SceneItemViewState {
+  id: string;
+  assetId: string;
+  assetName: string;
+  label: string;
+  selected: boolean;
+  hidden: boolean;
+  locked: boolean;
+  type: "object" | "group";
+  parentId: string | null;
+  depth: number;
+}
+
 export interface EditorViewState {
   activeAssetId: string | null;
   previewAssetId: string | null;
@@ -43,6 +56,7 @@ export interface EditorViewState {
   noticeMessage: string | null;
   lastManualSaveAt: string | null;
   lastRecoveredAutosaveAt: string | null;
+  sceneItems: SceneItemViewState[];
   toolbar: ToolbarViewState;
   status: StatusViewState;
   selection: SelectionViewState;
@@ -54,6 +68,7 @@ export function createInitialEditorViewState(): EditorViewState {
     previewAssetId: null,
     objectCount: 0,
     noticeMessage: null,
+    sceneItems: [],
     toolbar: {
       snapEnabled: true,
       mode: "select",

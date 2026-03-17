@@ -146,3 +146,107 @@ export function SaveLoadIcon(props: IconProps) {
     </IconBase>
   );
 }
+
+export function FocusIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M7 4.5H4.5V7" />
+      <path d="M13 4.5h2.5V7" />
+      <path d="M7 15.5H4.5V13" />
+      <path d="M13 15.5h2.5V13" />
+      <circle cx="10" cy="10" r="2.2" />
+    </IconBase>
+  );
+}
+
+export function DuplicateIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="4.5" y="6" width="8" height="8" rx="1.5" />
+      <path d="M8 4.5h6a1.5 1.5 0 0 1 1.5 1.5v6" />
+    </IconBase>
+  );
+}
+
+export function RenameIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="m5 14.8 1.2-3.8L12.8 4.4a1.6 1.6 0 0 1 2.3 0l.5.5a1.6 1.6 0 0 1 0 2.3L9 13.8 5 14.8Z" />
+      <path d="M11.8 5.4 14.6 8.2" />
+    </IconBase>
+  );
+}
+
+export function HideIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M2.8 10s2.6-4.2 7.2-4.2 7.2 4.2 7.2 4.2-2.6 4.2-7.2 4.2S2.8 10 2.8 10Z" />
+      <circle cx="10" cy="10" r="2.1" />
+    </IconBase>
+  );
+}
+
+export function ShowIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M2.8 10s2.6-4.2 7.2-4.2 7.2 4.2 7.2 4.2-2.6 4.2-7.2 4.2S2.8 10 2.8 10Z" />
+      <circle cx="10" cy="10" r="2.1" />
+      <path d="M4.2 15.8 15.8 4.2" />
+    </IconBase>
+  );
+}
+
+export function LockIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="5" y="9" width="10" height="7" rx="1.5" />
+      <path d="M7 9V7a3 3 0 1 1 6 0v2" />
+    </IconBase>
+  );
+}
+
+export function UnlockIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="5" y="9" width="10" height="7" rx="1.5" />
+      <path d="M7 9V7a3 3 0 0 1 5.2-2" />
+    </IconBase>
+  );
+}
+
+export function GroupIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="3.8" y="5.2" width="4.4" height="4.4" rx="0.8" />
+      <rect x="11.8" y="5.2" width="4.4" height="4.4" rx="0.8" />
+      <rect x="7.8" y="11.2" width="4.4" height="4.4" rx="0.8" />
+      <path d="M8.2 7.4h3.6" />
+      <path d="M10 9.6v1.6" />
+    </IconBase>
+  );
+}
+
+export function UngroupIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="4" y="5" width="4.2" height="4.2" rx="0.8" />
+      <rect x="11.8" y="10.8" width="4.2" height="4.2" rx="0.8" />
+      <path d="M8.6 7.1h2.5" />
+      <path d="m10 7.1 1.6 1.6" />
+      <path d="M10 7.1v4.1" />
+    </IconBase>
+  );
+}
+
+export function DragHandleIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="7" cy="6.5" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="13" cy="6.5" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="7" cy="10" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="13" cy="10" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="7" cy="13.5" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="13" cy="13.5" r="0.9" fill="currentColor" stroke="none" />
+    </IconBase>
+  );
+}

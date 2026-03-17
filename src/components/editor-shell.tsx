@@ -1,24 +1,40 @@
-import type { RefObject } from "react";
+import { useEffect, useState, type KeyboardEvent, type RefObject } from "react";
 import { ASSETS, ASSET_CATEGORIES, type AssetCategory, type AssetDefinition } from "../assets";
 import type { EditorViewState } from "../editor/view-state";
 import {
   ClearIcon,
+  DuplicateIcon,
+  DragHandleIcon,
   ExportIcon,
+  FocusIcon,
+  GroupIcon,
+  HideIcon,
   ImportIcon,
+  LockIcon,
   PlaceIcon,
   RedoIcon,
+  RenameIcon,
   SaveIcon,
   SaveLoadIcon,
   SelectIcon,
   SettingsIcon,
+  ShowIcon,
   SnapIcon,
   TrashIcon,
   UndoIcon,
+  UngroupIcon,
+  UnlockIcon,
 } from "./icons";
 
 function getAssetThumbnailUrl(asset: AssetDefinition) {
   return `/generated/asset-previews/${asset.fileName.replace(/\.[^.]+$/u, ".png")}`;
 }
+
+export type SceneSortMode = "manual" | "name" | "asset";
+
+const RIGHT_SIDEBAR_WIDTH_STORAGE_KEY = "snap:right-sidebar-width";
+const RIGHT_SIDEBAR_MIN_WIDTH = 240;
+const RIGHT_SIDEBAR_MAX_WIDTH = 520;
 
 interface EditorToolbarProps {
   viewState: EditorViewState;
@@ -397,6 +413,243 @@ function SelectionPanel({ viewState }: SelectionPanelProps) {
   );
 }
 
+interface SceneListProps {
+  viewState: EditorViewState;
+  sceneSortMode: SceneSortMode;
+  onSceneItemMove: (draggedId: string, targetId: string) => void;
+  onSceneItemSelect: (objectId: string) => void;
+  onSceneItemFrame: (objectId: string) => void;
+  onSceneItemDelete: (objectId: string) => void;
+  onSceneItemDuplicate: (objectId: string) => void;
+  onSceneItemRename: (objectId: string, nextName: string) => void;
+  onSceneItemToggleHidden: (objectId: string) => void;
+  onSceneItemToggleLocked: (objectId: string) => void;
+  onSceneItemUngroup: (objectId: string) => void;
+}
+
+function SceneList(props: SceneListProps) {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+
+  if (props.viewState.sceneItems.length === 0) {
+    return <div className="properties-empty">No placed objects yet.</div>;
+  }
+
+  const sortedItems = [...props.viewState.sceneItems];
+  if (props.sceneSortMode === "name") {
+    sortedItems.sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }));
+  } else if (props.sceneSortMode === "asset") {
+    sortedItems.sort((a, b) => {
+      const assetCompare = a.assetName.localeCompare(b.assetName, undefined, { sensitivity: "base" });
+      return assetCompare !== 0 ? assetCompare : a.label.localeCompare(b.label, undefined, { sensitivity: "base" });
+    });
+  }
+
+  const commitRename = (objectId: string) => {
+    const nextName = editingName.trim();
+    if (nextName) {
+      props.onSceneItemRename(objectId, nextName);
+    }
+    setEditingId(null);
+    setEditingName("");
+  };
+
+  const cancelRename = () => {
+    setEditingId(null);
+    setEditingName("");
+  };
+
+  const handleRenameKeyDown = (event: KeyboardEvent<HTMLInputElement>, objectId: string) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      commitRename(objectId);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      cancelRename();
+    }
+  };
+
+  return (
+    <div className="scene-list">
+      {sortedItems.map((item) => (
+        <div
+          key={item.id}
+          className={`scene-row${item.selected ? " is-active" : ""}${item.hidden ? " is-hidden" : ""}${dragOverId === item.id ? " is-drag-over" : ""}`}
+          onDragOver={(event) => {
+            if (props.sceneSortMode !== "manual" || !draggedId || draggedId === item.id) {
+              return;
+            }
+            event.preventDefault();
+            setDragOverId(item.id);
+          }}
+          onDragLeave={() => {
+            if (dragOverId === item.id) {
+              setDragOverId(null);
+            }
+          }}
+          onDrop={(event) => {
+            if (props.sceneSortMode !== "manual" || !draggedId || draggedId === item.id) {
+              return;
+            }
+            event.preventDefault();
+            props.onSceneItemMove(draggedId, item.id);
+            setDraggedId(null);
+            setDragOverId(null);
+          }}
+          onDragEnd={() => {
+            setDraggedId(null);
+            setDragOverId(null);
+          }}
+          style={{ marginLeft: `${item.depth * 14}px` }}
+        >
+          <button
+            type="button"
+            className={`scene-row-handle${props.sceneSortMode === "manual" ? " is-enabled" : ""}`}
+            aria-label={props.sceneSortMode === "manual" ? `Drag ${item.label}` : "Manual sort only"}
+            title={props.sceneSortMode === "manual" ? "Drag to reorder" : "Switch to Manual sort to drag"}
+            draggable={props.sceneSortMode === "manual" && editingId !== item.id}
+            onDragStart={(event) => {
+              if (props.sceneSortMode !== "manual" || editingId === item.id) {
+                event.preventDefault();
+                return;
+              }
+              event.stopPropagation();
+              event.dataTransfer.effectAllowed = "move";
+              setDraggedId(item.id);
+            }}
+            onDragEnd={() => {
+              setDraggedId(null);
+              setDragOverId(null);
+            }}
+            onPointerDown={(event) => {
+              event.stopPropagation();
+            }}
+          >
+            <DragHandleIcon className="tool-icon" />
+          </button>
+          <button
+            type="button"
+            className="scene-row-main"
+            onClick={() => {
+              props.onSceneItemSelect(item.id);
+            }}
+          >
+            {editingId === item.id ? (
+              <input
+                className="scene-row-input"
+                type="text"
+                value={editingName}
+                autoFocus
+                onChange={(event) => {
+                  setEditingName(event.target.value);
+                }}
+                onBlur={() => {
+                  commitRename(item.id);
+                }}
+                onKeyDown={(event) => {
+                  handleRenameKeyDown(event, item.id);
+                }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              />
+            ) : (
+              <span className="scene-row-title">{item.label}</span>
+            )}
+            <span className="scene-row-meta">
+              {item.type === "group" ? "Group" : item.id}
+              {item.locked ? " | Locked" : ""}
+              {item.hidden ? " | Hidden" : ""}
+            </span>
+          </button>
+          <div className="scene-row-actions">
+            {item.type === "object" ? <button
+              type="button"
+              className="scene-row-action"
+              aria-label={`Duplicate ${item.assetName}`}
+              title="Duplicate"
+              onClick={() => {
+                props.onSceneItemDuplicate(item.id);
+              }}
+            >
+              <DuplicateIcon className="tool-icon" />
+            </button> : null}
+            {item.type === "object" && item.parentId ? <button
+              type="button"
+              className="scene-row-action"
+              aria-label={`Ungroup ${item.assetName}`}
+              title="Remove from group"
+              onClick={() => {
+                props.onSceneItemUngroup(item.id);
+              }}
+            >
+              <UngroupIcon className="tool-icon" />
+            </button> : null}
+            <button
+              type="button"
+              className="scene-row-action"
+              aria-label={`Rename ${item.label}`}
+              title="Rename"
+              onClick={() => {
+                setEditingId(item.id);
+                setEditingName(item.label);
+              }}
+            >
+              <RenameIcon className="tool-icon" />
+            </button>
+            {item.type === "object" ? <button
+              type="button"
+              className={`scene-row-action${item.hidden ? " is-toggled" : ""}`}
+              aria-label={`${item.hidden ? "Show" : "Hide"} ${item.assetName}`}
+              title={item.hidden ? "Show" : "Hide"}
+              onClick={() => {
+                props.onSceneItemToggleHidden(item.id);
+              }}
+            >
+              {item.hidden ? <ShowIcon className="tool-icon" /> : <HideIcon className="tool-icon" />}
+            </button> : null}
+            {item.type === "object" ? <button
+              type="button"
+              className={`scene-row-action${item.locked ? " is-toggled" : ""}`}
+              aria-label={`${item.locked ? "Unlock" : "Lock"} ${item.assetName}`}
+              title={item.locked ? "Unlock" : "Lock"}
+              onClick={() => {
+                props.onSceneItemToggleLocked(item.id);
+              }}
+            >
+              {item.locked ? <LockIcon className="tool-icon" /> : <UnlockIcon className="tool-icon" />}
+            </button> : null}
+            <button
+              type="button"
+              className="scene-row-action"
+              aria-label={`Frame ${item.label}`}
+              title="Frame"
+              onClick={() => {
+                props.onSceneItemFrame(item.id);
+              }}
+            >
+              <FocusIcon className="tool-icon" />
+            </button>
+            <button
+              type="button"
+              className="scene-row-action scene-row-action-danger"
+              aria-label={`Delete ${item.assetName}`}
+              title="Delete"
+              onClick={() => {
+                props.onSceneItemDelete(item.id);
+              }}
+            >
+              <TrashIcon className="tool-icon" />
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 interface AssetSidebarProps {
   searchQuery: string;
   activeCategory: AssetCategory | "All";
@@ -409,7 +662,7 @@ interface AssetSidebarProps {
 
 function AssetSidebar(props: AssetSidebarProps) {
   return (
-    <aside className="sidebar">
+    <aside className="sidebar sidebar-left">
       <div className="sidebar-section">
         <label className="panel-label" htmlFor="asset-search">
           Assets
@@ -455,6 +708,74 @@ function AssetSidebar(props: AssetSidebarProps) {
         activeAssetId={props.viewState.activeAssetId}
         onAssetClick={props.onAssetClick}
       />
+    </aside>
+  );
+}
+
+interface RightSidebarProps {
+  viewState: EditorViewState;
+  width: number;
+  sceneSortMode: SceneSortMode;
+  onSceneSortModeChange: (mode: SceneSortMode) => void;
+  onResizeStart: (clientX: number) => void;
+  onCreateGroup: () => void;
+  onSceneItemMove: (draggedId: string, targetId: string) => void;
+  onSceneItemSelect: (objectId: string) => void;
+  onSceneItemFrame: (objectId: string) => void;
+  onSceneItemDelete: (objectId: string) => void;
+  onSceneItemDuplicate: (objectId: string) => void;
+  onSceneItemRename: (objectId: string) => void;
+  onSceneItemToggleHidden: (objectId: string) => void;
+  onSceneItemToggleLocked: (objectId: string) => void;
+  onSceneItemUngroup: (objectId: string) => void;
+}
+
+function RightSidebar(props: RightSidebarProps) {
+  return (
+    <aside className="sidebar sidebar-right" style={{ width: `${props.width}px` }}>
+      <button
+        type="button"
+        className="sidebar-resize-handle"
+        aria-label="Resize right sidebar"
+        onPointerDown={(event) => {
+          event.preventDefault();
+          props.onResizeStart(event.clientX);
+        }}
+      />
+      <div className="sidebar-section sidebar-scene">
+        <div className="sidebar-header-row">
+          <div className="panel-label">{`Scene${props.viewState.objectCount ? ` (${props.viewState.objectCount})` : ""}`}</div>
+          <div className="scene-header-actions">
+            <button type="button" className="scene-header-button" onClick={props.onCreateGroup} title="Create group">
+              <GroupIcon className="tool-icon" />
+            </button>
+            <select
+              className="scene-sort-select"
+              value={props.sceneSortMode}
+              onChange={(event) => {
+                props.onSceneSortModeChange(event.target.value as SceneSortMode);
+              }}
+            >
+              <option value="manual">Manual</option>
+              <option value="name">Name</option>
+              <option value="asset">Asset</option>
+            </select>
+          </div>
+        </div>
+        <SceneList
+          viewState={props.viewState}
+          sceneSortMode={props.sceneSortMode}
+          onSceneItemMove={props.onSceneItemMove}
+          onSceneItemSelect={props.onSceneItemSelect}
+          onSceneItemFrame={props.onSceneItemFrame}
+          onSceneItemDelete={props.onSceneItemDelete}
+          onSceneItemDuplicate={props.onSceneItemDuplicate}
+          onSceneItemRename={props.onSceneItemRename}
+          onSceneItemToggleHidden={props.onSceneItemToggleHidden}
+          onSceneItemToggleLocked={props.onSceneItemToggleLocked}
+          onSceneItemUngroup={props.onSceneItemUngroup}
+        />
+      </div>
       <div className="sidebar-section sidebar-properties">
         <div className="panel-label">{`Selection${props.viewState.objectCount ? ` (${props.viewState.objectCount})` : ""}`}</div>
         <div className="properties-panel">
@@ -505,10 +826,20 @@ interface EditorShellProps {
   filteredAssets: AssetDefinition[];
   exportMenuOpen: boolean;
   settingsMenuOpen: boolean;
+  sceneSortMode: SceneSortMode;
   viewState: EditorViewState;
   onSearchQueryChange: (value: string) => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
   onAssetClick: (assetId: string) => void;
+  onSceneItemSelect: (objectId: string) => void;
+  onSceneItemMove: (draggedId: string, targetId: string) => void;
+  onSceneItemFrame: (objectId: string) => void;
+  onSceneItemDelete: (objectId: string) => void;
+  onSceneItemDuplicate: (objectId: string) => void;
+  onSceneItemRename: (objectId: string) => void;
+  onSceneItemToggleHidden: (objectId: string) => void;
+  onSceneItemToggleLocked: (objectId: string) => void;
+  onSceneItemUngroup: (objectId: string) => void;
   onToggleSnap: () => void;
   onSelectMode: () => void;
   onPlaceMode: () => void;
@@ -532,9 +863,46 @@ interface EditorShellProps {
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
   onRestoreDefaults: () => void;
+  onSceneSortModeChange: (mode: SceneSortMode) => void;
+  onCreateGroup: () => void;
 }
 
 export function EditorShell(props: EditorShellProps) {
+  const [rightSidebarWidth, setRightSidebarWidth] = useState(() => {
+    try {
+      const raw = window.localStorage.getItem(RIGHT_SIDEBAR_WIDTH_STORAGE_KEY);
+      const parsed = raw ? Number(raw) : 300;
+      return Number.isFinite(parsed)
+        ? Math.min(RIGHT_SIDEBAR_MAX_WIDTH, Math.max(RIGHT_SIDEBAR_MIN_WIDTH, parsed))
+        : 300;
+    } catch {
+      return 300;
+    }
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(RIGHT_SIDEBAR_WIDTH_STORAGE_KEY, String(rightSidebarWidth));
+  }, [rightSidebarWidth]);
+
+  const startRightSidebarResize = (startClientX: number) => {
+    const initialWidth = rightSidebarWidth;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const delta = startClientX - event.clientX;
+      setRightSidebarWidth(
+        Math.min(RIGHT_SIDEBAR_MAX_WIDTH, Math.max(RIGHT_SIDEBAR_MIN_WIDTH, initialWidth + delta)),
+      );
+    };
+
+    const handlePointerUp = () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+  };
+
   return (
     <section className="shell">
       <EditorToolbar
@@ -566,7 +934,10 @@ export function EditorShell(props: EditorShellProps) {
         onGroundColorChange={props.onGroundColorChange}
         onRestoreDefaults={props.onRestoreDefaults}
       />
-      <div className="workspace">
+      <div
+        className="workspace"
+        style={{ gridTemplateColumns: `300px minmax(0, 1fr) ${rightSidebarWidth}px` }}
+      >
         <AssetSidebar
           searchQuery={props.searchQuery}
           activeCategory={props.activeCategory}
@@ -577,6 +948,23 @@ export function EditorShell(props: EditorShellProps) {
           onAssetClick={props.onAssetClick}
         />
         <ViewportPanel canvasRef={props.canvasRef} />
+        <RightSidebar
+          viewState={props.viewState}
+          width={rightSidebarWidth}
+          sceneSortMode={props.sceneSortMode}
+          onSceneSortModeChange={props.onSceneSortModeChange}
+          onResizeStart={startRightSidebarResize}
+          onCreateGroup={props.onCreateGroup}
+          onSceneItemMove={props.onSceneItemMove}
+          onSceneItemSelect={props.onSceneItemSelect}
+          onSceneItemFrame={props.onSceneItemFrame}
+          onSceneItemDelete={props.onSceneItemDelete}
+          onSceneItemDuplicate={props.onSceneItemDuplicate}
+          onSceneItemRename={props.onSceneItemRename}
+          onSceneItemToggleHidden={props.onSceneItemToggleHidden}
+          onSceneItemToggleLocked={props.onSceneItemToggleLocked}
+          onSceneItemUngroup={props.onSceneItemUngroup}
+        />
       </div>
       <StatusBar viewState={props.viewState} />
     </section>

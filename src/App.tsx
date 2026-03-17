@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { AssetCategory } from "./assets";
-import { EditorShell, filterAssets } from "./components/editor-shell";
+import { EditorShell, filterAssets, type SceneSortMode } from "./components/editor-shell";
 import { ModularEditorApp } from "./editor";
 import { createInitialEditorViewState } from "./editor/view-state";
 
@@ -12,6 +12,7 @@ export function App() {
   const [activeCategory, setActiveCategory] = useState<AssetCategory | "All">("All");
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
+  const [sceneSortMode, setSceneSortMode] = useState<SceneSortMode>("manual");
   const [viewState, setViewState] = useState(createInitialEditorViewState);
 
   useEffect(() => {
@@ -62,11 +63,39 @@ export function App() {
       filteredAssets={filteredAssets}
       exportMenuOpen={exportMenuOpen}
       settingsMenuOpen={settingsMenuOpen}
+      sceneSortMode={sceneSortMode}
       viewState={viewState}
       onSearchQueryChange={setSearchQuery}
       onActiveCategoryChange={setActiveCategory}
       onAssetClick={(assetId) => {
         void appRef.current?.activateAsset(assetId);
+      }}
+      onSceneItemSelect={(objectId) => {
+        appRef.current?.selectSceneItem(objectId);
+      }}
+      onSceneItemMove={(draggedId, targetId) => {
+        appRef.current?.moveSceneItem(draggedId, targetId);
+      }}
+      onSceneItemFrame={(objectId) => {
+        appRef.current?.frameSceneItem(objectId);
+      }}
+      onSceneItemDelete={(objectId) => {
+        appRef.current?.deleteSceneItem(objectId);
+      }}
+      onSceneItemDuplicate={(objectId) => {
+        appRef.current?.duplicateSceneItem(objectId);
+      }}
+      onSceneItemRename={(objectId, nextName) => {
+        appRef.current?.renameSceneItem(objectId, nextName);
+      }}
+      onSceneItemToggleHidden={(objectId) => {
+        appRef.current?.toggleSceneItemHidden(objectId);
+      }}
+      onSceneItemToggleLocked={(objectId) => {
+        appRef.current?.toggleSceneItemLocked(objectId);
+      }}
+      onSceneItemUngroup={(objectId) => {
+        appRef.current?.ungroupSceneItem(objectId);
       }}
       onToggleSnap={() => {
         appRef.current?.toggleSnap();
@@ -142,6 +171,10 @@ export function App() {
       }}
       onRestoreDefaults={() => {
         appRef.current?.restoreDefaultUserSettings();
+      }}
+      onSceneSortModeChange={setSceneSortMode}
+      onCreateGroup={() => {
+        appRef.current?.createGroupFromSelected();
       }}
     />
   );

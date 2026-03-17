@@ -30,6 +30,7 @@ import { SnapshotHistory } from "./editor/snapshot-history";
 import {
   serializeAssetScene,
   type AssetSceneSerializableObject,
+  type SerializedSceneGroup,
   type SerializedAssetSceneMetadata,
   type SerializedAssetScene,
 } from "./editor/scene-serialization";
@@ -47,6 +48,7 @@ import { DEFAULT_USER_SETTINGS, loadUserSettings, saveUserSettings, type UserSet
 import {
   createInitialEditorViewState,
   type EditorViewState,
+  type SceneItemViewState,
   type SelectionViewState,
   type StatusViewState,
   type ToolbarViewState,
@@ -55,6 +57,19 @@ import {
 interface EditorObject {
   id: string;
   assetId: string;
+  root: TransformNode;
+  name: string;
+  hidden: boolean;
+  locked: boolean;
+  type: "object";
+  parentId: string | null;
+}
+
+interface EditorGroup {
+  id: string;
+  name: string;
+  type: "group";
+  childIds: string[];
   root: TransformNode;
 }
 
@@ -76,10 +91,12 @@ export class ModularEditorApp {
   private readonly defaultEnvironmentTexture: Scene["environmentTexture"];
   private readonly assetTemplates = new Map<string, Promise<AssetTemplate>>();
   private readonly objects = new Map<string, EditorObject>();
+  private readonly groups = new Map<string, EditorGroup>();
   private readonly settings: UserSettings;
   private readonly history = new SnapshotHistory();
   private readonly sceneCore: SceneCoreController;
   private readonly sessionController: SceneSessionController;
+  private readonly resizeObserver: ResizeObserver;
 
   private gridMesh: Nullable<LinesMesh> = null;
   private activeAssetId: string | null = null;
@@ -93,6 +110,9 @@ export class ModularEditorApp {
   private rotationStepDegrees = 90;
   private previewRotationDegrees = 0;
   private objectSequence = 0;
+  private groupSequence = 0;
+  private sceneRootOrder: string[] = [];
+  private selectedGroupId: string | null = null;
   private lastPointerPoint = Vector3.Zero();
   private statusNotice: string | null = null;
   private viewState: EditorViewState = createInitialEditorViewState();
@@ -206,6 +226,14 @@ export class ModularEditorApp {
     window.addEventListener("resize", () => {
       this.engine.resize();
     });
+
+    this.resizeObserver = new ResizeObserver(() => {
+      this.engine.resize();
+    });
+    this.resizeObserver.observe(options.canvas);
+    if (options.canvas.parentElement) {
+      this.resizeObserver.observe(options.canvas.parentElement);
+    }
   }
 
   private async initializePersistence() {
@@ -319,15 +347,20 @@ export class ModularEditorApp {
 
   private buildSelectionViewState(): SelectionViewState {
     const selected = this.selectedObjectId ? this.objects.get(this.selectedObjectId) : null;
+    const selectedGroup = this.selectedGroupId ? this.groups.get(this.selectedGroupId) : null;
     const selectedAsset = selected ? ASSETS.find((asset) => asset.id === selected.assetId) : null;
     const activeAsset = this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId) : null;
     const previewAsset = this.previewAssetId ? ASSETS.find((asset) => asset.id === this.previewAssetId) : null;
-    const position = selected?.root.position;
-    const rotationDegrees = selected ? Math.round(this.toDegrees(selected.root.rotation.y)) : null;
+    const position = selected ? selected.root.position : selectedGroup?.root.position ?? null;
+    const rotationDegrees = selected
+      ? Math.round(this.toDegrees(selected.root.rotation.y))
+      : selectedGroup
+        ? Math.round(this.toDegrees(selectedGroup.root.rotation.y))
+        : null;
 
     return {
-      selectedObjectId: this.selectedObjectId,
-      selectedAssetName: selectedAsset?.name ?? null,
+      selectedObjectId: this.selectedObjectId ?? this.selectedGroupId,
+      selectedAssetName: selectedAsset?.name ?? selectedGroup?.name ?? null,
       activeAssetName: activeAsset?.name ?? null,
       previewAssetName: previewAsset?.name ?? null,
       positionText: position ? `${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}` : null,
@@ -336,13 +369,131 @@ export class ModularEditorApp {
     };
   }
 
+  private buildSceneItemsViewState(): SceneItemViewState[] {
+    this.normalizeSceneRootOrder();
+    const items: SceneItemViewState[] = [];
+    const seenRootIds = new Set<string>();
+
+    const pushObject = (object: EditorObject, depth: number) => {
+      const asset = ASSETS.find((entry) => entry.id === object.assetId);
+      items.push({
+        id: object.id,
+        assetId: object.assetId,
+        assetName: asset?.name ?? object.assetId,
+        label: object.name || `${asset?.name ?? object.assetId}`,
+        selected: this.selectedObjectId === object.id,
+        hidden: object.hidden,
+        locked: object.locked,
+        type: object.type,
+        parentId: object.parentId,
+        depth,
+      });
+    };
+
+    this.sceneRootOrder.forEach((rootId) => {
+      const group = this.groups.get(rootId);
+      if (group) {
+        seenRootIds.add(rootId);
+        items.push({
+          id: group.id,
+          assetId: "",
+          assetName: "Group",
+          label: group.name,
+          selected: false,
+          hidden: false,
+          locked: false,
+          type: "group",
+          parentId: null,
+          depth: 0,
+        });
+        group.childIds.forEach((childId) => {
+          const child = this.objects.get(childId);
+          if (child) {
+            pushObject(child, 1);
+          }
+        });
+        return;
+      }
+
+      const object = this.objects.get(rootId);
+      if (object && !object.parentId) {
+        seenRootIds.add(rootId);
+        pushObject(object, 0);
+      }
+    });
+
+    this.groups.forEach((group) => {
+      if (seenRootIds.has(group.id)) {
+        return;
+      }
+      items.push({
+        id: group.id,
+        assetId: "",
+        assetName: "Group",
+        label: group.name,
+        selected: this.selectedGroupId === group.id,
+        hidden: false,
+        locked: false,
+        type: "group",
+        parentId: null,
+        depth: 0,
+      });
+      group.childIds.forEach((childId) => {
+        const child = this.objects.get(childId);
+        if (child) {
+          pushObject(child, 1);
+        }
+      });
+    });
+
+    this.objects.forEach((object) => {
+      if (!object.parentId && !seenRootIds.has(object.id)) {
+        pushObject(object, 0);
+      }
+    });
+
+    return items;
+  }
+
+  private normalizeSceneRootOrder() {
+    const seen = new Set<string>();
+    const validRootIds = new Set<string>([
+      ...this.groups.keys(),
+      ...Array.from(this.objects.values())
+        .filter((object) => !object.parentId)
+        .map((object) => object.id),
+    ]);
+
+    this.sceneRootOrder = this.sceneRootOrder.filter((id) => {
+      if (!validRootIds.has(id) || seen.has(id)) {
+        return false;
+      }
+      seen.add(id);
+      return true;
+    });
+
+    this.groups.forEach((group) => {
+      if (!seen.has(group.id)) {
+        this.sceneRootOrder.push(group.id);
+        seen.add(group.id);
+      }
+    });
+
+    this.objects.forEach((object) => {
+      if (!object.parentId && !seen.has(object.id)) {
+        this.sceneRootOrder.push(object.id);
+        seen.add(object.id);
+      }
+    });
+  }
+
   private buildToolbarViewState(): ToolbarViewState {
     return {
       snapEnabled: this.snapEnabled,
       mode: this.mode,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
-      hasSelection: !!this.selectedObjectId,
+      hasSelection: !!this.selectedObjectId || !!this.selectedGroupId,
       hasObjects: this.objects.size > 0,
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
@@ -379,6 +530,7 @@ export class ModularEditorApp {
       noticeMessage: this.statusNotice,
       lastManualSaveAt: this.lastManualSaveAt,
       lastRecoveredAutosaveAt: this.lastRecoveredAutosaveAt,
+      sceneItems: this.buildSceneItemsViewState(),
       toolbar: this.buildToolbarViewState(),
       status: this.buildStatusViewState(),
       selection: this.buildSelectionViewState(),
@@ -416,6 +568,12 @@ export class ModularEditorApp {
       gridVisible: this.settings.gridVisible,
       gridColor: this.settings.gridColor,
       groundColor: this.settings.groundColor,
+      sceneGroups: Array.from(this.groups.values(), (group): SerializedSceneGroup => ({
+        id: group.id,
+        name: group.name,
+        childIds: [...group.childIds],
+      })),
+      sceneRootOrder: [...this.sceneRootOrder],
     };
   }
 
@@ -424,6 +582,10 @@ export class ModularEditorApp {
       assetId: object.assetId,
       position: [object.root.position.x, object.root.position.y, object.root.position.z],
       rotationYDegrees: this.toDegrees(object.root.rotation.y),
+      name: object.name,
+      hidden: object.hidden,
+      locked: object.locked,
+      parentId: object.parentId,
     }));
 
     return serializeAssetScene(serializableObjects, this.buildSceneMetadata());
@@ -437,6 +599,8 @@ export class ModularEditorApp {
     this.disposePreview();
     this.clearSelection();
     clearSceneObjects(this.objects, this.gizmoManager);
+    this.disposeAllGroups();
+    this.sceneRootOrder = [];
     this.applySceneMetadata(serialized.metadata);
 
     for (const entry of serialized.objects) {
@@ -455,14 +619,48 @@ export class ModularEditorApp {
       root.rotation.y = this.toRadians(entry.rotationYDegrees);
 
       const id = `object-${++this.objectSequence}`;
+      const defaultName = `${asset.name} ${String(this.objectSequence).padStart(2, "0")}`;
       root.metadata = {
         objectId: id,
         assetId: asset.id,
         templateSize: template.size.asArray(),
       };
       this.tagHierarchy(root, id);
-      this.objects.set(id, { id, assetId: asset.id, root });
+      this.objects.set(id, {
+        id,
+        assetId: asset.id,
+        root,
+        name: entry.name?.trim() || defaultName,
+        hidden: !!entry.hidden,
+        locked: !!entry.locked,
+        type: "object",
+        parentId: entry.parentId ?? null,
+      });
+      this.applyObjectVisibility(id);
+      if (!entry.parentId && !this.sceneRootOrder.includes(id)) {
+        this.sceneRootOrder.push(id);
+      }
     }
+
+    this.groups.forEach((group) => {
+      group.childIds.forEach((childId) => {
+        const child = this.objects.get(childId);
+        if (!child) {
+          return;
+        }
+        child.root.setParent(group.root);
+        child.parentId = group.id;
+      });
+      this.recenterGroupRoot(group.id);
+    });
+
+    this.groups.forEach((group) => {
+      if (!this.sceneRootOrder.includes(group.id)) {
+        this.sceneRootOrder.push(group.id);
+      }
+    });
+
+    this.normalizeSceneRootOrder();
 
     this.mode = "select";
     this.emitViewState();
@@ -500,6 +698,24 @@ export class ModularEditorApp {
     if (typeof metadata.groundColor === "string") {
       this.settings.groundColor = metadata.groundColor;
     }
+    if (Array.isArray(metadata.sceneGroups)) {
+      metadata.sceneGroups.forEach((group) => {
+        this.groups.set(group.id, {
+          id: group.id,
+          name: group.name,
+          type: "group",
+          childIds: [...group.childIds],
+          root: this.createGroupRoot(group.id),
+        });
+      });
+      this.groupSequence = Math.max(
+        0,
+        ...metadata.sceneGroups.map((group) => Number(group.id.replace("group-", "")) || 0),
+      );
+    }
+    if (Array.isArray(metadata.sceneRootOrder)) {
+      this.sceneRootOrder = [...metadata.sceneRootOrder];
+    }
 
     this.applySnapSettings();
     this.renderGrid();
@@ -510,7 +726,7 @@ export class ModularEditorApp {
   }
 
   private beginHistoryGesture() {
-    this.sessionController.beginHistoryGesture(!!this.selectedObjectId);
+    this.sessionController.beginHistoryGesture(!!this.selectedObjectId || !!this.selectedGroupId);
   }
 
   private completeHistoryGesture() {
@@ -524,6 +740,109 @@ export class ModularEditorApp {
   private setStatusNotice(message: string | null) {
     this.statusNotice = message;
     this.emitViewState();
+  }
+
+  private createGroupRoot(groupId: string) {
+    const root = new TransformNode(`group-root-${groupId}`, this.scene);
+    root.metadata = { ...(root.metadata ?? {}), groupId };
+    return root;
+  }
+
+  private disposeAllGroups() {
+    this.groups.forEach((group) => {
+      group.root.dispose();
+    });
+    this.groups.clear();
+    this.selectedGroupId = null;
+  }
+
+  private setGroupHighlight(group: EditorGroup, highlighted: boolean) {
+    group.childIds.forEach((childId) => {
+      const child = this.objects.get(childId);
+      if (!child) {
+        return;
+      }
+      child.root.getChildMeshes().forEach((mesh) => {
+        mesh.showBoundingBox = highlighted;
+        mesh.outlineColor = new Color3(0.55, 0.82, 1);
+        mesh.outlineWidth = 0.03;
+        mesh.renderOutline = highlighted;
+      });
+    });
+  }
+
+  private recenterGroupRoot(groupId: string) {
+    const group = this.groups.get(groupId);
+    if (!group) {
+      return;
+    }
+
+    const children = group.childIds
+      .map((childId) => this.objects.get(childId))
+      .filter((child): child is EditorObject => !!child);
+
+    if (children.length === 0) {
+      return;
+    }
+
+    let min: Vector3 | null = null;
+    let max: Vector3 | null = null;
+
+    children.forEach((child) => {
+      const bounds = child.root.getHierarchyBoundingVectors();
+      min = min ? Vector3.Minimize(min, bounds.min) : bounds.min.clone();
+      max = max ? Vector3.Maximize(max, bounds.max) : bounds.max.clone();
+    });
+
+    if (!min || !max) {
+      return;
+    }
+
+    const center = min.add(max).scale(0.5);
+    children.forEach((child) => {
+      child.root.setParent(null);
+    });
+    group.root.position.copyFrom(center);
+    children.forEach((child) => {
+      child.root.setParent(group.root);
+    });
+  }
+
+  private applyObjectVisibility(objectId: string) {
+    const object = this.objects.get(objectId);
+    if (!object) {
+      return;
+    }
+
+    object.root.setEnabled(!object.hidden);
+    object.root.getChildMeshes().forEach((mesh) => {
+      mesh.isPickable = !object.hidden;
+    });
+  }
+
+  private refreshSelectionAttachment() {
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group) {
+        this.gizmoManager.attachToNode(null);
+        return;
+      }
+      this.gizmoManager.attachToNode(group.root);
+      return;
+    }
+
+    if (!this.selectedObjectId) {
+      this.gizmoManager.attachToNode(null);
+      return;
+    }
+
+    const object = this.objects.get(this.selectedObjectId);
+    if (!object || object.hidden || object.locked) {
+      this.gizmoManager.attachToNode(null);
+      return;
+    }
+
+    this.gizmoManager.attachToNode(object.root);
   }
 
   private async ensurePreviewForAsset(assetId: string) {
@@ -565,13 +884,24 @@ export class ModularEditorApp {
     root.rotation.y = this.placementPreview?.rotation.y ?? 0;
 
     const id = `object-${++this.objectSequence}`;
+    const defaultName = `${asset.name} ${String(this.objectSequence).padStart(2, "0")}`;
     root.metadata = {
       objectId: id,
       assetId: asset.id,
       templateSize: this.previewTemplateSize.asArray(),
     };
     this.tagHierarchy(root, id);
-    this.objects.set(id, { id, assetId: asset.id, root });
+    this.objects.set(id, {
+      id,
+      assetId: asset.id,
+      root,
+      name: defaultName,
+      hidden: false,
+      locked: false,
+      type: "object",
+      parentId: null,
+    });
+    this.sceneRootOrder.push(id);
     this.selectObjectByRoot(root);
     this.pushHistoryCheckpoint();
 
@@ -614,6 +944,24 @@ export class ModularEditorApp {
   }
 
   private snapSelectedObject() {
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group) {
+        return;
+      }
+
+      if (this.snapEnabled) {
+        const snapped = snapVectorForSize(group.root.position, new Vector3(1, 1, 1), this.snapEnabled, this.gridSize);
+        group.root.position.x = snapped.x;
+        group.root.position.z = snapped.z;
+        group.root.rotation.y = this.snapAngle(group.root.rotation.y);
+      }
+
+      group.root.position.y = 0;
+      this.emitViewState();
+      return;
+    }
+
     if (!this.selectedObjectId) {
       return;
     }
@@ -648,12 +996,24 @@ export class ModularEditorApp {
       return;
     }
 
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group) {
+        return;
+      }
+
+      group.root.rotation.y = this.snapAngle(group.root.rotation.y + this.toRadians(this.rotationStepDegrees));
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
     if (!this.selectedObjectId) {
       return;
     }
 
     const object = this.objects.get(this.selectedObjectId);
-    if (!object) {
+    if (!object || object.locked || object.hidden) {
       return;
     }
 
@@ -663,6 +1023,10 @@ export class ModularEditorApp {
   }
 
   private async duplicateSelectedObject() {
+    if (this.selectedGroupId) {
+      return;
+    }
+
     if (!this.selectedObjectId) {
       return;
     }
@@ -704,13 +1068,43 @@ export class ModularEditorApp {
       templateSize: templateSize.asArray(),
     };
     this.tagHierarchy(root, id);
-    this.objects.set(id, { id, assetId: asset.id, root });
+    this.objects.set(id, {
+      id,
+      assetId: asset.id,
+      root,
+      name: `${source.name} Copy`,
+      hidden: false,
+      locked: source.locked,
+      type: "object",
+      parentId: source.parentId,
+    });
+    if (source.parentId) {
+      const group = this.groups.get(source.parentId);
+      if (group) {
+        const sourceIndex = group.childIds.indexOf(source.id);
+        group.childIds.splice(sourceIndex >= 0 ? sourceIndex + 1 : group.childIds.length, 0, id);
+      }
+    } else {
+      const sourceIndex = this.sceneRootOrder.indexOf(source.id);
+      this.sceneRootOrder.splice(sourceIndex >= 0 ? sourceIndex + 1 : this.sceneRootOrder.length, 0, id);
+    }
     this.selectObjectByRoot(root);
     this.pushHistoryCheckpoint();
     this.setStatusNotice(`Duplicated ${asset.name}.`);
   }
 
   private frameSelectedObject() {
+    if (this.selectedGroupId) {
+      const selectedGroup = this.groups.get(this.selectedGroupId);
+      if (!selectedGroup) {
+        return;
+      }
+
+      this.sceneCore.frameSelection(this.camera, selectedGroup.root);
+      this.setStatusNotice(`Framed ${selectedGroup.name}.`);
+      return;
+    }
+
     if (!this.selectedObjectId) {
       return;
     }
@@ -725,35 +1119,54 @@ export class ModularEditorApp {
   }
 
   private deleteSelectedObject() {
-    const deleted = deleteSceneObject(this.objects, this.selectedObjectId, this.gizmoManager);
-    if (!deleted) {
+    if (this.selectedObjectId) {
+      const deleted = deleteSceneObject(this.objects, this.selectedObjectId, this.gizmoManager);
+      if (!deleted) {
+        return;
+      }
+
+      this.selectedObjectId = null;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
       return;
     }
 
-    this.selectedObjectId = null;
-    this.pushHistoryCheckpoint();
-    this.emitViewState();
+    if (this.selectedGroupId) {
+      this.deleteSceneItem(this.selectedGroupId);
+    }
   }
 
   private clearScene() {
     const cleared = clearSceneObjects(this.objects, this.gizmoManager);
-    if (!cleared) {
+    const hadGroups = this.groups.size > 0;
+    if (!cleared && !hadGroups) {
       return;
     }
 
     this.disposePreview();
     this.selectedObjectId = null;
+    this.selectedGroupId = null;
+    this.disposeAllGroups();
+    this.sceneRootOrder = [];
     this.mode = "select";
     this.pushHistoryCheckpoint();
     this.emitViewState();
   }
 
   private clearSelection() {
-    if (!this.selectedObjectId) {
-      return;
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (group) {
+        this.setGroupHighlight(group, false);
+      }
     }
 
-    this.selectedObjectId = clearSceneSelection(this.objects, this.selectedObjectId, this.gizmoManager);
+    if (this.selectedObjectId) {
+      this.selectedObjectId = clearSceneSelection(this.objects, this.selectedObjectId, this.gizmoManager);
+    } else {
+      this.gizmoManager.attachToNode(null);
+    }
+    this.selectedGroupId = null;
     this.emitViewState();
   }
 
@@ -765,9 +1178,16 @@ export class ModularEditorApp {
       return;
     }
 
+    const object = this.objects.get(objectId);
+    if (!object || object.hidden) {
+      return;
+    }
+
     this.selectedObjectId = objectId;
+    this.selectedGroupId = null;
     this.mode = "select";
     this.disposePreview();
+    this.refreshSelectionAttachment();
     this.emitViewState();
   }
 
@@ -885,6 +1305,339 @@ export class ModularEditorApp {
 
   deleteSelected() {
     this.deleteSelectedObject();
+  }
+
+  renameSceneItem(objectId: string, nextName: string) {
+    const trimmed = nextName.trim();
+    if (!trimmed) {
+      return;
+    }
+
+    const group = this.groups.get(objectId);
+    if (group) {
+      if (group.name === trimmed) {
+        return;
+      }
+      group.name = trimmed;
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Renamed to ${trimmed}.`);
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object || object.name === trimmed) {
+      return;
+    }
+
+    object.name = trimmed;
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Renamed to ${trimmed}.`);
+  }
+
+  selectSceneItem(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      this.clearSelection();
+      this.selectedGroupId = group.id;
+      this.mode = "select";
+      this.disposePreview();
+      this.setGroupHighlight(group, true);
+      this.refreshSelectionAttachment();
+      this.emitViewState();
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object || object.hidden) {
+      return;
+    }
+
+    this.selectObjectByRoot(object.root);
+  }
+
+  deleteSceneItem(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      if (this.selectedGroupId === group.id) {
+        this.clearSelection();
+      }
+      const rootIndex = this.sceneRootOrder.indexOf(group.id);
+      this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== group.id);
+      group.childIds.forEach((childId, index) => {
+        const child = this.objects.get(childId);
+        if (child) {
+          child.root.setParent(null);
+          child.parentId = null;
+          this.sceneRootOrder.splice(rootIndex >= 0 ? rootIndex + index : this.sceneRootOrder.length, 0, child.id);
+        }
+      });
+      group.root.dispose();
+      this.groups.delete(group.id);
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Deleted group ${group.name}.`);
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object) {
+      return;
+    }
+
+    this.selectedGroupId = null;
+    if (this.selectedObjectId !== objectId) {
+      this.selectedObjectId = objectId;
+    }
+    if (object.parentId) {
+      const parentGroup = this.groups.get(object.parentId);
+      if (parentGroup) {
+        parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
+        this.recenterGroupRoot(parentGroup.id);
+      }
+    } else {
+      this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
+    }
+    this.deleteSelectedObject();
+  }
+
+  duplicateSceneItem(objectId: string) {
+    this.selectedObjectId = objectId;
+    void this.duplicateSelectedObject();
+  }
+
+  private removeObjectFromParentContainer(object: EditorObject) {
+    if (object.parentId) {
+      const parentGroup = this.groups.get(object.parentId);
+      if (parentGroup) {
+        parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
+      }
+      object.root.setParent(null);
+      object.parentId = null;
+      return;
+    }
+
+    this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
+  }
+
+  private insertObjectIntoRoot(object: EditorObject, insertIndex?: number) {
+    object.parentId = null;
+    const nextRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
+    const safeIndex =
+      insertIndex === undefined
+        ? nextRootOrder.length
+        : Math.min(nextRootOrder.length, Math.max(0, insertIndex));
+    nextRootOrder.splice(safeIndex, 0, object.id);
+    this.sceneRootOrder = nextRootOrder;
+  }
+
+  private insertObjectIntoGroup(object: EditorObject, groupId: string, insertIndex?: number) {
+    const group = this.groups.get(groupId);
+    if (!group) {
+      return false;
+    }
+
+    object.root.setParent(group.root);
+    object.parentId = groupId;
+    const nextChildIds = group.childIds.filter((id) => id !== object.id);
+    const safeIndex =
+      insertIndex === undefined
+        ? nextChildIds.length
+        : Math.min(nextChildIds.length, Math.max(0, insertIndex));
+    nextChildIds.splice(safeIndex, 0, object.id);
+    group.childIds = nextChildIds;
+    this.recenterGroupRoot(groupId);
+    return true;
+  }
+
+  createGroupFromSelected() {
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const object = this.objects.get(this.selectedObjectId);
+    if (!object) {
+      return;
+    }
+
+    const previousParentId = object.parentId;
+    if (previousParentId) {
+      const previousGroup = this.groups.get(previousParentId);
+      if (previousGroup) {
+        previousGroup.childIds = previousGroup.childIds.filter((id) => id !== object.id);
+      }
+    } else {
+      this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
+    }
+
+    const groupId = `group-${++this.groupSequence}`;
+    const groupName = `Group ${String(this.groupSequence).padStart(2, "0")}`;
+    const groupRoot = this.createGroupRoot(groupId);
+    groupRoot.position.copyFrom(object.root.getAbsolutePosition());
+    this.groups.set(groupId, {
+      id: groupId,
+      name: groupName,
+      type: "group",
+      childIds: [object.id],
+      root: groupRoot,
+    });
+    object.root.setParent(groupRoot);
+    object.parentId = groupId;
+    this.sceneRootOrder.push(groupId);
+    this.selectedObjectId = null;
+    this.selectedGroupId = groupId;
+    this.setGroupHighlight(this.groups.get(groupId)!, true);
+    this.refreshSelectionAttachment();
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Created ${groupName}.`);
+  }
+
+  moveSceneItem(draggedId: string, targetId: string) {
+    if (draggedId === targetId) {
+      return;
+    }
+
+    const draggedGroup = this.groups.get(draggedId);
+    const targetGroup = this.groups.get(targetId);
+    const draggedObject = this.objects.get(draggedId);
+    const targetObject = this.objects.get(targetId);
+
+    if (draggedObject && targetGroup) {
+      this.removeObjectFromParentContainer(draggedObject);
+      if (!this.insertObjectIntoGroup(draggedObject, targetGroup.id)) {
+        return;
+      }
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Moved ${draggedObject.name} into ${targetGroup.name}.`);
+      return;
+    }
+
+    if ((draggedGroup || (draggedObject && !draggedObject.parentId)) && (targetGroup || (targetObject && !targetObject.parentId))) {
+      const nextRootOrder = this.sceneRootOrder.filter((id) => id !== draggedId);
+      const targetIndex = nextRootOrder.indexOf(targetId);
+      if (targetIndex === -1) {
+        return;
+      }
+      nextRootOrder.splice(targetIndex, 0, draggedId);
+      this.sceneRootOrder = nextRootOrder;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
+    if (draggedObject && targetObject) {
+      this.removeObjectFromParentContainer(draggedObject);
+
+      if (targetObject.parentId) {
+        const targetGroupForObject = this.groups.get(targetObject.parentId);
+        if (!targetGroupForObject) {
+          return;
+        }
+        const targetIndex = targetGroupForObject.childIds.indexOf(targetObject.id);
+        if (!this.insertObjectIntoGroup(draggedObject, targetGroupForObject.id, targetIndex)) {
+          return;
+        }
+        this.pushHistoryCheckpoint();
+        this.setStatusNotice(`Moved ${draggedObject.name} into ${targetGroupForObject.name}.`);
+        return;
+      }
+
+      const targetIndex = this.sceneRootOrder.filter((id) => id !== draggedObject.id).indexOf(targetObject.id);
+      if (targetIndex === -1) {
+        return;
+      }
+      this.insertObjectIntoRoot(draggedObject, targetIndex);
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Moved ${draggedObject.name} to root.`);
+      return;
+    }
+
+    if (draggedObject && targetObject && draggedObject.parentId && draggedObject.parentId === targetObject.parentId) {
+      const parentGroup = this.groups.get(draggedObject.parentId);
+      if (!parentGroup) {
+        return;
+      }
+      const nextChildIds = parentGroup.childIds.filter((id) => id !== draggedId);
+      const targetIndex = nextChildIds.indexOf(targetId);
+      if (targetIndex === -1) {
+        return;
+      }
+      nextChildIds.splice(targetIndex, 0, draggedId);
+      parentGroup.childIds = nextChildIds;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+    }
+  }
+
+  ungroupSceneItem(objectId: string) {
+    const object = this.objects.get(objectId);
+    if (!object?.parentId) {
+      return;
+    }
+
+    const parentGroup = this.groups.get(object.parentId);
+    if (!parentGroup) {
+      object.root.setParent(null);
+      object.parentId = null;
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Ungrouped ${object.name}.`);
+      return;
+    }
+
+    parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
+    this.recenterGroupRoot(parentGroup.id);
+    const groupRootIndex = this.sceneRootOrder.indexOf(parentGroup.id);
+    this.insertObjectIntoRoot(object, groupRootIndex >= 0 ? groupRootIndex + 1 : this.sceneRootOrder.length);
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Ungrouped ${object.name}.`);
+  }
+
+  toggleSceneItemHidden(objectId: string) {
+    const object = this.objects.get(objectId);
+    if (!object) {
+      return;
+    }
+
+    object.hidden = !object.hidden;
+    this.applyObjectVisibility(objectId);
+    if (object.hidden && this.selectedObjectId === objectId) {
+      this.clearSelection();
+    } else if (!object.hidden && this.selectedObjectId === objectId) {
+      this.refreshSelectionAttachment();
+    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`${object.hidden ? "Hidden" : "Shown"} ${object.name}.`);
+  }
+
+  toggleSceneItemLocked(objectId: string) {
+    const object = this.objects.get(objectId);
+    if (!object) {
+      return;
+    }
+
+    object.locked = !object.locked;
+    if (this.selectedObjectId === objectId) {
+      this.refreshSelectionAttachment();
+    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`${object.locked ? "Locked" : "Unlocked"} ${object.name}.`);
+  }
+
+  frameSceneItem(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      this.sceneCore.frameSelection(this.camera, group.root);
+      this.selectSceneItem(group.id);
+      this.setStatusNotice(`Framed ${group.name}.`);
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object || object.hidden) {
+      return;
+    }
+
+    this.sceneCore.frameSelection(this.camera, object.root);
+    this.selectObjectByRoot(object.root);
+    this.setStatusNotice(`Framed ${ASSETS.find((asset) => asset.id === object.assetId)?.name ?? "selection"}.`);
   }
 
   clearSceneContents() {
@@ -1015,6 +1768,7 @@ export class ModularEditorApp {
   }
 
   destroy() {
+    this.resizeObserver.disconnect();
     this.disposePreview();
     this.scene.dispose();
     this.engine.dispose();

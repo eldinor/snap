@@ -160,16 +160,45 @@ select:focus-visible {
 
 .workspace {
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-columns: 300px minmax(0, 1fr) 300px;
   min-height: 0;
 }
 
 .sidebar {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  min-height: 0;
+  background: #13181d;
+}
+
+.sidebar-left {
+  grid-template-rows: auto auto minmax(0, 1fr);
   min-height: 0;
   border-right: 1px solid #242c33;
-  background: #13181d;
+}
+
+.sidebar-right {
+  position: relative;
+  grid-template-rows: minmax(0, 1fr) auto;
+  border-left: 1px solid #242c33;
+}
+
+.sidebar-resize-handle {
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 8px;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: col-resize;
+  z-index: 2;
+}
+
+.sidebar-resize-handle:hover,
+.sidebar-resize-handle:focus-visible {
+  background: rgba(100, 181, 246, 0.12);
+  outline: none;
 }
 
 .sidebar-section {
@@ -181,6 +210,12 @@ select:focus-visible {
   border-bottom: 0;
 }
 
+.sidebar-scene {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+}
+
 .panel-label {
   display: block;
   margin-bottom: 6px;
@@ -189,6 +224,39 @@ select:focus-visible {
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.sidebar-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.scene-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scene-header-button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+}
+
+.sidebar-header-row .panel-label {
+  margin-bottom: 0;
+}
+
+.scene-sort-select {
+  height: 26px;
+  min-width: 88px;
+  padding: 0 6px;
+  border: 1px solid #303841;
+  background: #101419;
+  color: #c7d2dc;
+  font-size: 12px;
 }
 
 .toolbar-menu {
@@ -437,6 +505,130 @@ select:focus-visible {
 
 .asset-thumb[hidden] {
   display: none;
+}
+
+.scene-list {
+  display: grid;
+  align-content: start;
+  grid-auto-rows: max-content;
+  gap: 6px;
+  min-height: 0;
+  overflow: auto;
+}
+
+.scene-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid #242c33;
+  border-radius: 6px;
+  background: #0f1418;
+  transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.scene-row.is-active {
+  border-color: #64b5f6;
+  background: #132535;
+  box-shadow: inset 0 0 0 1px rgba(100, 181, 246, 0.25);
+}
+
+.scene-row.is-hidden {
+  opacity: 0.6;
+}
+
+.scene-row.is-drag-over {
+  border-color: #8ac7ff;
+  box-shadow: inset 0 0 0 1px rgba(138, 199, 255, 0.35);
+}
+
+.scene-row-handle {
+  width: 28px;
+  height: 100%;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid #20272d;
+  border-radius: 6px 0 0 6px;
+  background: transparent;
+  color: #6f7c87;
+  cursor: default;
+}
+
+.scene-row-handle.is-enabled {
+  cursor: grab;
+}
+
+.scene-row-handle.is-enabled:active {
+  cursor: grabbing;
+}
+
+.scene-row-handle:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #9fb3c5;
+}
+
+.scene-row-main {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.scene-row-title {
+  overflow: hidden;
+  color: #eef2f6;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scene-row-input {
+  width: 100%;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid #64b5f6;
+  border-radius: 4px;
+  background: #0d141a;
+  color: #eef2f6;
+}
+
+.scene-row-meta {
+  color: #8e9aa5;
+  font-size: 10px;
+}
+
+.scene-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.scene-row-action {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #313a43;
+  border-radius: 4px;
+  background: #151b20;
+}
+
+.scene-row-action.is-toggled {
+  border-color: #64b5f6;
+  background: #163047;
+  color: #cfe7ff;
+}
+
+.scene-row-action-danger {
+  border-color: #5b3232;
+  color: #f1c5c5;
 }
 
 .asset-empty,

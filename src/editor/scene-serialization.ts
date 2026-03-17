@@ -2,6 +2,10 @@ export interface AssetSceneSerializableObject {
   assetId: string;
   position: [number, number, number];
   rotationYDegrees: number;
+  name?: string;
+  hidden?: boolean;
+  locked?: boolean;
+  parentId?: string | null;
 }
 
 export interface SerializedAssetSceneMetadata {
@@ -15,6 +19,14 @@ export interface SerializedAssetSceneMetadata {
   gridVisible?: boolean;
   gridColor?: string;
   groundColor?: string;
+  sceneGroups?: SerializedSceneGroup[];
+  sceneRootOrder?: string[];
+}
+
+export interface SerializedSceneGroup {
+  id: string;
+  name: string;
+  childIds: string[];
 }
 
 export interface SerializedAssetScene {
@@ -38,6 +50,10 @@ export function serializeAssetScene(
       assetId: object.assetId,
       position: [...object.position] as [number, number, number],
       rotationYDegrees: object.rotationYDegrees,
+      name: object.name,
+      hidden: object.hidden,
+      locked: object.locked,
+      parentId: object.parentId,
     })),
   };
 }
@@ -69,7 +85,20 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
       (metadata.lightIntensity !== undefined && typeof metadata.lightIntensity !== "number") ||
       (metadata.gridVisible !== undefined && typeof metadata.gridVisible !== "boolean") ||
       (metadata.gridColor !== undefined && !isValidColor(metadata.gridColor)) ||
-      (metadata.groundColor !== undefined && !isValidColor(metadata.groundColor));
+      (metadata.groundColor !== undefined && !isValidColor(metadata.groundColor)) ||
+      (metadata.sceneRootOrder !== undefined &&
+        (!Array.isArray(metadata.sceneRootOrder) || metadata.sceneRootOrder.some((id) => typeof id !== "string"))) ||
+      (metadata.sceneGroups !== undefined &&
+        (!Array.isArray(metadata.sceneGroups) ||
+          metadata.sceneGroups.some(
+            (group) =>
+              !group ||
+              typeof group !== "object" ||
+              typeof (group as Partial<SerializedSceneGroup>).id !== "string" ||
+              typeof (group as Partial<SerializedSceneGroup>).name !== "string" ||
+              !Array.isArray((group as Partial<SerializedSceneGroup>).childIds) ||
+              (group as Partial<SerializedSceneGroup>).childIds!.some((id) => typeof id !== "string"),
+          )));
 
     if (hasInvalidMetadata) {
       return null;
@@ -85,6 +114,10 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
     return (
       typeof entry.assetId === "string" &&
       typeof entry.rotationYDegrees === "number" &&
+      (entry.name === undefined || typeof entry.name === "string") &&
+      (entry.hidden === undefined || typeof entry.hidden === "boolean") &&
+      (entry.locked === undefined || typeof entry.locked === "boolean") &&
+      (entry.parentId === undefined || entry.parentId === null || typeof entry.parentId === "string") &&
       Array.isArray(entry.position) &&
       entry.position.length === 3 &&
       entry.position.every((component) => typeof component === "number")
