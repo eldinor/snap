@@ -49,9 +49,10 @@ export function loadAutosavedScene(): LoadedAutosavedScene | null {
 }
 
 export function saveAutosavedScene(scene: SerializedAssetScene) {
+  const savedAt = new Date().toISOString();
   const payload: AutosavedSceneEnvelope = {
     version: 1,
-    savedAt: new Date().toISOString(),
+    savedAt,
     scene,
   };
 
@@ -60,6 +61,8 @@ export function saveAutosavedScene(scene: SerializedAssetScene) {
   } catch {
     // Ignore persistence failures so the editor keeps working normally.
   }
+
+  return savedAt;
 }
 
 export function loadManualSavedScene(): LoadedSavedScene | null {
@@ -71,9 +74,10 @@ export function loadManualSavedScene(): LoadedSavedScene | null {
 }
 
 export function saveManualSavedScene(scene: SerializedAssetScene) {
+  const savedAt = new Date().toISOString();
   const payload: AutosavedSceneEnvelope = {
     version: 1,
-    savedAt: new Date().toISOString(),
+    savedAt,
     scene,
   };
 
@@ -82,4 +86,6 @@ export function saveManualSavedScene(scene: SerializedAssetScene) {
   } catch {
     // Ignore persistence failures so the editor keeps working normally.
   }
+
+  return savedAt;
 }

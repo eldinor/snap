@@ -44,6 +44,23 @@ interface EditorToolbarProps {
   onEnvironmentToggle: (enabled: boolean) => void;
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
+  onGridVisibleChange: (visible: boolean) => void;
+  onGridColorChange: (value: string) => void;
+  onGroundColorChange: (value: string) => void;
+  onRestoreDefaults: () => void;
+}
+
+function formatSavedAt(value: string | null) {
+  if (!value) {
+    return "Never";
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+
+  return parsed.toLocaleString();
 }
 
 function EditorToolbar(props: EditorToolbarProps) {
@@ -192,6 +209,14 @@ function EditorToolbar(props: EditorToolbarProps) {
                 <span>Load Last Saved</span>
               </button>
             </div>
+            <div className="toolbar-menu-meta">
+              <span>Last Saved</span>
+              <strong>{formatSavedAt(props.viewState.lastManualSaveAt)}</strong>
+            </div>
+            <div className="toolbar-menu-meta">
+              <span>Autosave Recovered</span>
+              <strong>{formatSavedAt(props.viewState.lastRecoveredAutosaveAt)}</strong>
+            </div>
           </div>
         </div>
         <div className="toolbar-popover">
@@ -255,6 +280,44 @@ function EditorToolbar(props: EditorToolbarProps) {
                 <span className="setting-value">{toolbar.lightIntensity.toFixed(2)}</span>
               </span>
             </label>
+            <label className="setting-row setting-row-spaced">
+              <span className="setting-copy">Grid Visible</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.gridVisible}
+                  onChange={(event) => {
+                    props.onGridVisibleChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
+              </span>
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Grid Color</span>
+              <input
+                className="setting-color"
+                type="color"
+                value={toolbar.gridColor}
+                onChange={(event) => {
+                  props.onGridColorChange(event.target.value);
+                }}
+              />
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Ground Color</span>
+              <input
+                className="setting-color"
+                type="color"
+                value={toolbar.groundColor}
+                onChange={(event) => {
+                  props.onGroundColorChange(event.target.value);
+                }}
+              />
+            </label>
+            <button type="button" className="toolbar-menu-button setting-action" onClick={props.onRestoreDefaults}>
+              <span>Restore Defaults</span>
+            </button>
           </div>
         </div>
       </div>
@@ -465,6 +528,10 @@ interface EditorShellProps {
   onEnvironmentToggle: (enabled: boolean) => void;
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
+  onGridVisibleChange: (visible: boolean) => void;
+  onGridColorChange: (value: string) => void;
+  onGroundColorChange: (value: string) => void;
+  onRestoreDefaults: () => void;
 }
 
 export function EditorShell(props: EditorShellProps) {
@@ -494,6 +561,10 @@ export function EditorShell(props: EditorShellProps) {
         onEnvironmentToggle={props.onEnvironmentToggle}
         onEnvironmentIntensityChange={props.onEnvironmentIntensityChange}
         onLightIntensityChange={props.onLightIntensityChange}
+        onGridVisibleChange={props.onGridVisibleChange}
+        onGridColorChange={props.onGridColorChange}
+        onGroundColorChange={props.onGroundColorChange}
+        onRestoreDefaults={props.onRestoreDefaults}
       />
       <div className="workspace">
         <AssetSidebar

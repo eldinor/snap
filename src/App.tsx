@@ -131,6 +131,18 @@ export function App() {
       onLightIntensityChange={(value) => {
         appRef.current?.setLightIntensity(value);
       }}
+      onGridVisibleChange={(visible) => {
+        appRef.current?.setGridVisible(visible);
+      }}
+      onGridColorChange={(value) => {
+        appRef.current?.setGridColor(value);
+      }}
+      onGroundColorChange={(value) => {
+        appRef.current?.setGroundColor(value);
+      }}
+      onRestoreDefaults={() => {
+        appRef.current?.restoreDefaultUserSettings();
+      }}
     />
   );
 }

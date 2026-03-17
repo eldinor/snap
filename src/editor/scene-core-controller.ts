@@ -8,6 +8,7 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
+import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { snapVectorForSize } from "./placement";
 
 const GRID_EXTENT = 32;
@@ -18,8 +19,12 @@ export class SceneCoreController {
     private readonly gizmoManager: GizmoManager,
   ) {}
 
-  renderGrid(gridMesh: Nullable<LinesMesh>, gridSize: number) {
+  renderGrid(gridMesh: Nullable<LinesMesh>, gridSize: number, visible: boolean, colorHex: string) {
     gridMesh?.dispose();
+    if (!visible) {
+      return null;
+    }
+
     const lines: Vector3[][] = [];
 
     for (let offset = -GRID_EXTENT; offset <= GRID_EXTENT; offset += gridSize) {
@@ -28,7 +33,7 @@ export class SceneCoreController {
     }
 
     const nextGrid = MeshBuilder.CreateLineSystem("editor-grid", { lines }, this.scene);
-    nextGrid.color = new Color3(0.23, 0.25, 0.28);
+    nextGrid.color = Color3.FromHexString(colorHex);
     nextGrid.alpha = 0.45;
     nextGrid.isPickable = false;
     return nextGrid;
@@ -95,5 +100,15 @@ export class SceneCoreController {
     root.getChildMeshes().forEach((mesh) => {
       mesh.metadata = { ...(mesh.metadata ?? {}), objectId };
     });
+  }
+
+  frameSelection(camera: ArcRotateCamera, root: TransformNode) {
+    const bounds = root.getHierarchyBoundingVectors();
+    const center = bounds.min.add(bounds.max).scale(0.5);
+    const extent = bounds.max.subtract(bounds.min);
+    const radius = Math.max(extent.length() * 0.9, camera.lowerRadiusLimit ?? 6);
+
+    camera.setTarget(center);
+    camera.radius = Math.min(radius, camera.upperRadiusLimit ?? radius);
   }
 }

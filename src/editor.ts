@@ -30,6 +30,7 @@ import { SnapshotHistory } from "./editor/snapshot-history";
 import {
   serializeAssetScene,
   type AssetSceneSerializableObject,
+  type SerializedAssetSceneMetadata,
   type SerializedAssetScene,
 } from "./editor/scene-serialization";
 import {
@@ -42,7 +43,7 @@ import {
   deleteSelectedObject as deleteSceneObject,
   selectObject as selectSceneObject,
 } from "./editor/scene-actions";
-import { loadUserSettings, saveUserSettings, type UserSettings } from "./editor/user-settings";
+import { DEFAULT_USER_SETTINGS, loadUserSettings, saveUserSettings, type UserSettings } from "./editor/user-settings";
 import {
   createInitialEditorViewState,
   type EditorViewState,
@@ -68,6 +69,7 @@ export class ModularEditorApp {
   private readonly camera: ArcRotateCamera;
   private readonly gizmoManager: GizmoManager;
   private readonly ground: Mesh;
+  private readonly groundMaterial: StandardMaterial;
   private readonly mainLight: HemisphericLight;
   private readonly onViewStateChange;
   private readonly defaultEnvironment: EnvironmentHelper | null;
@@ -95,6 +97,8 @@ export class ModularEditorApp {
   private statusNotice: string | null = null;
   private viewState: EditorViewState = createInitialEditorViewState();
   private lastAutosavedSnapshotText: string | null = null;
+  private lastManualSaveAt: string | null = null;
+  private lastRecoveredAutosaveAt: string | null = null;
   private persistenceReady = false;
 
   constructor(options: ModularEditorAppOptions) {
@@ -134,10 +138,10 @@ export class ModularEditorApp {
     this.mainLight.groundColor = new Color3(0.06, 0.07, 0.08);
 
     this.ground = MeshBuilder.CreateGround("ground", { width: 80, height: 80 }, this.scene);
-    const groundMaterial = new StandardMaterial("ground-material", this.scene);
-    groundMaterial.diffuseColor = new Color3(0.12, 0.13, 0.15);
-    groundMaterial.specularColor = Color3.Black();
-    this.ground.material = groundMaterial;
+    this.groundMaterial = new StandardMaterial("ground-material", this.scene);
+    this.groundMaterial.diffuseColor = Color3.FromHexString(this.settings.groundColor);
+    this.groundMaterial.specularColor = Color3.Black();
+    this.ground.material = this.groundMaterial;
     this.ground.isPickable = true;
 
     this.gizmoManager = new GizmoManager(this.scene);
@@ -205,9 +209,13 @@ export class ModularEditorApp {
   }
 
   private async initializePersistence() {
+    const manualSaved = loadManualSavedScene();
+    this.lastManualSaveAt = manualSaved?.savedAt ?? null;
+
     const autosaved = loadAutosavedScene();
     if (autosaved) {
       await this.restoreSerializedScene(autosaved.scene);
+      this.lastRecoveredAutosaveAt = autosaved.savedAt;
       this.statusNotice = `Recovered autosaved scene (${autosaved.scene.objects.length} objects).`;
     }
 
@@ -269,7 +277,19 @@ export class ModularEditorApp {
 
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
         event.preventDefault();
-        this.sessionController.exportToFile();
+        this.saveSceneToLocalStorage();
+        return;
+      }
+
+      if (event.shiftKey && event.key.toLowerCase() === "d") {
+        event.preventDefault();
+        await this.duplicateSelectedObject();
+        return;
+      }
+
+      if (event.shiftKey && event.key.toLowerCase() === "f") {
+        event.preventDefault();
+        this.frameSelectedObject();
         return;
       }
 
@@ -329,6 +349,9 @@ export class ModularEditorApp {
       environmentEnabled: this.settings.environmentEnabled,
       environmentIntensity: this.settings.environmentIntensity,
       lightIntensity: this.settings.lightIntensity,
+      gridVisible: this.settings.gridVisible,
+      gridColor: this.settings.gridColor,
+      groundColor: this.settings.groundColor,
     };
   }
 
@@ -354,6 +377,8 @@ export class ModularEditorApp {
       previewAssetId: this.previewAssetId,
       objectCount: this.objects.size,
       noticeMessage: this.statusNotice,
+      lastManualSaveAt: this.lastManualSaveAt,
+      lastRecoveredAutosaveAt: this.lastRecoveredAutosaveAt,
       toolbar: this.buildToolbarViewState(),
       status: this.buildStatusViewState(),
       selection: this.buildSelectionViewState(),
@@ -380,6 +405,20 @@ export class ModularEditorApp {
     saveAutosavedScene(JSON.parse(snapshotText) as SerializedAssetScene);
   }
 
+  private buildSceneMetadata(): SerializedAssetSceneMetadata {
+    return {
+      snapEnabled: this.snapEnabled,
+      gridSize: this.gridSize,
+      rotationStepDegrees: this.rotationStepDegrees,
+      environmentEnabled: this.settings.environmentEnabled,
+      environmentIntensity: this.settings.environmentIntensity,
+      lightIntensity: this.settings.lightIntensity,
+      gridVisible: this.settings.gridVisible,
+      gridColor: this.settings.gridColor,
+      groundColor: this.settings.groundColor,
+    };
+  }
+
   private getSerializedScene() {
     const serializableObjects: AssetSceneSerializableObject[] = Array.from(this.objects.values(), (object) => ({
       assetId: object.assetId,
@@ -387,7 +426,7 @@ export class ModularEditorApp {
       rotationYDegrees: this.toDegrees(object.root.rotation.y),
     }));
 
-    return serializeAssetScene(serializableObjects);
+    return serializeAssetScene(serializableObjects, this.buildSceneMetadata());
   }
 
   private getSerializedSceneText() {
@@ -398,6 +437,7 @@ export class ModularEditorApp {
     this.disposePreview();
     this.clearSelection();
     clearSceneObjects(this.objects, this.gizmoManager);
+    this.applySceneMetadata(serialized.metadata);
 
     for (const entry of serialized.objects) {
       const asset = ASSETS.find((candidate) => candidate.id === entry.assetId);
@@ -426,6 +466,47 @@ export class ModularEditorApp {
 
     this.mode = "select";
     this.emitViewState();
+  }
+
+  private applySceneMetadata(metadata?: SerializedAssetSceneMetadata) {
+    if (!metadata) {
+      return;
+    }
+
+    if (typeof metadata.snapEnabled === "boolean") {
+      this.snapEnabled = metadata.snapEnabled;
+    }
+    if (typeof metadata.gridSize === "number") {
+      this.gridSize = metadata.gridSize;
+    }
+    if (typeof metadata.rotationStepDegrees === "number") {
+      this.rotationStepDegrees = metadata.rotationStepDegrees;
+    }
+    if (typeof metadata.environmentEnabled === "boolean") {
+      this.settings.environmentEnabled = metadata.environmentEnabled;
+    }
+    if (typeof metadata.environmentIntensity === "number") {
+      this.settings.environmentIntensity = metadata.environmentIntensity;
+    }
+    if (typeof metadata.lightIntensity === "number") {
+      this.settings.lightIntensity = metadata.lightIntensity;
+    }
+    if (typeof metadata.gridVisible === "boolean") {
+      this.settings.gridVisible = metadata.gridVisible;
+    }
+    if (typeof metadata.gridColor === "string") {
+      this.settings.gridColor = metadata.gridColor;
+    }
+    if (typeof metadata.groundColor === "string") {
+      this.settings.groundColor = metadata.groundColor;
+    }
+
+    this.applySnapSettings();
+    this.renderGrid();
+    this.applyEnvironmentSetting();
+    this.applyLightIntensity();
+    this.applyGroundColor();
+    this.saveUserSettings();
   }
 
   private beginHistoryGesture() {
@@ -513,7 +594,12 @@ export class ModularEditorApp {
   }
 
   private renderGrid() {
-    this.gridMesh = this.sceneCore.renderGrid(this.gridMesh, this.gridSize);
+    this.gridMesh = this.sceneCore.renderGrid(
+      this.gridMesh,
+      this.gridSize,
+      this.settings.gridVisible,
+      this.settings.gridColor,
+    );
   }
 
   private updatePreviewTransform() {
@@ -574,6 +660,68 @@ export class ModularEditorApp {
     object.root.rotation.y = this.snapAngle(object.root.rotation.y + this.toRadians(this.rotationStepDegrees));
     this.pushHistoryCheckpoint();
     this.emitViewState();
+  }
+
+  private async duplicateSelectedObject() {
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const source = this.objects.get(this.selectedObjectId);
+    if (!source) {
+      return;
+    }
+
+    const asset = ASSETS.find((entry) => entry.id === source.assetId);
+    if (!asset) {
+      return;
+    }
+
+    const template = await this.getAssetTemplate(asset);
+    const root = await instantiateAsset(asset, false, template, this.scene);
+    if (!root) {
+      return;
+    }
+
+    const templateSize = Array.isArray(source.root.metadata?.templateSize)
+      ? Vector3.FromArray(source.root.metadata.templateSize as number[])
+      : template.size.clone();
+    root.position.copyFrom(source.root.position);
+    root.position.x += Math.max(this.gridSize, templateSize.x || this.gridSize);
+    root.rotation.y = source.root.rotation.y;
+
+    if (this.snapEnabled) {
+      const snapped = snapVectorForSize(root.position, templateSize, this.snapEnabled, this.gridSize);
+      root.position.x = snapped.x;
+      root.position.z = snapped.z;
+      root.rotation.y = this.snapAngle(root.rotation.y);
+    }
+
+    const id = `object-${++this.objectSequence}`;
+    root.metadata = {
+      objectId: id,
+      assetId: asset.id,
+      templateSize: templateSize.asArray(),
+    };
+    this.tagHierarchy(root, id);
+    this.objects.set(id, { id, assetId: asset.id, root });
+    this.selectObjectByRoot(root);
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Duplicated ${asset.name}.`);
+  }
+
+  private frameSelectedObject() {
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const selected = this.objects.get(this.selectedObjectId);
+    if (!selected) {
+      return;
+    }
+
+    this.sceneCore.frameSelection(this.camera, selected.root);
+    this.setStatusNotice(`Framed ${ASSETS.find((asset) => asset.id === selected.assetId)?.name ?? "selection"}.`);
   }
 
   private deleteSelectedObject() {
@@ -645,6 +793,10 @@ export class ModularEditorApp {
     this.mainLight.intensity = this.settings.lightIntensity;
   }
 
+  private applyGroundColor() {
+    this.groundMaterial.diffuseColor = Color3.FromHexString(this.settings.groundColor);
+  }
+
   private saveUserSettings() {
     saveUserSettings(this.settings);
   }
@@ -709,7 +861,7 @@ export class ModularEditorApp {
 
   saveSceneToLocalStorage() {
     const scene = this.getSerializedScene();
-    saveManualSavedScene(scene);
+    this.lastManualSaveAt = saveManualSavedScene(scene);
     this.setStatusNotice(`Scene saved to local storage (${scene.objects.length} objects).`);
   }
 
@@ -725,6 +877,7 @@ export class ModularEditorApp {
     }
 
     await this.restoreSerializedScene(saved.scene);
+    this.lastManualSaveAt = saved.savedAt;
     this.statusNotice = `Loaded last saved scene (${saved.scene.objects.length} objects).`;
     this.sessionController.resetHistory();
     this.emitViewState();
@@ -759,6 +912,55 @@ export class ModularEditorApp {
     this.applySnapSettings();
     this.updatePreviewTransform();
     this.emitViewState();
+  }
+
+  setGridVisible(visible: boolean) {
+    if (this.settings.gridVisible === visible) {
+      return;
+    }
+
+    this.settings.gridVisible = visible;
+    this.renderGrid();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setGridColor(colorHex: string) {
+    if (!/^#[0-9a-f]{6}$/iu.test(colorHex) || this.settings.gridColor === colorHex) {
+      return;
+    }
+
+    this.settings.gridColor = colorHex;
+    this.renderGrid();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setGroundColor(colorHex: string) {
+    if (!/^#[0-9a-f]{6}$/iu.test(colorHex) || this.settings.groundColor === colorHex) {
+      return;
+    }
+
+    this.settings.groundColor = colorHex;
+    this.applyGroundColor();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  restoreDefaultUserSettings() {
+    this.settings.environmentEnabled = DEFAULT_USER_SETTINGS.environmentEnabled;
+    this.settings.environmentIntensity = DEFAULT_USER_SETTINGS.environmentIntensity;
+    this.settings.lightIntensity = DEFAULT_USER_SETTINGS.lightIntensity;
+    this.settings.gridVisible = DEFAULT_USER_SETTINGS.gridVisible;
+    this.settings.gridColor = DEFAULT_USER_SETTINGS.gridColor;
+    this.settings.groundColor = DEFAULT_USER_SETTINGS.groundColor;
+
+    this.renderGrid();
+    this.applyEnvironmentSetting();
+    this.applyLightIntensity();
+    this.applyGroundColor();
+    this.saveUserSettings();
+    this.setStatusNotice("User settings restored to defaults.");
   }
 
   setEnvironmentEnabled(enabled: boolean) {

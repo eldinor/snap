@@ -12,6 +12,9 @@ export interface ToolbarViewState {
   environmentEnabled: boolean;
   environmentIntensity: number;
   lightIntensity: number;
+  gridVisible: boolean;
+  gridColor: string;
+  groundColor: string;
 }
 
 export interface StatusViewState {
@@ -38,6 +41,8 @@ export interface EditorViewState {
   previewAssetId: string | null;
   objectCount: number;
   noticeMessage: string | null;
+  lastManualSaveAt: string | null;
+  lastRecoveredAutosaveAt: string | null;
   toolbar: ToolbarViewState;
   status: StatusViewState;
   selection: SelectionViewState;
@@ -61,7 +66,12 @@ export function createInitialEditorViewState(): EditorViewState {
       environmentEnabled: false,
       environmentIntensity: 1.75,
       lightIntensity: 1.1,
+      gridVisible: true,
+      gridColor: "#3b4047",
+      groundColor: "#1f2326",
     },
+    lastManualSaveAt: null,
+    lastRecoveredAutosaveAt: null,
     status: {
       mode: "select",
       activeAssetName: null,
