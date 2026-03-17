@@ -84,7 +84,7 @@ select:focus-visible {
   gap: 8px;
 }
 
-.toolbar-settings {
+.toolbar-popover {
   position: relative;
 }
 
@@ -94,6 +94,18 @@ select:focus-visible {
   padding: 0 10px;
   cursor: pointer;
   transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.tool-button-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tool-icon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
 }
 
 .tool-button:disabled {
@@ -120,7 +132,13 @@ select:focus-visible {
 }
 
 .tool-button-icon {
-  min-width: 72px;
+  min-width: 82px;
+}
+
+.tool-button-icon-only {
+  width: 32px;
+  min-width: 32px;
+  padding: 0;
 }
 
 .tool-field {
@@ -173,7 +191,7 @@ select:focus-visible {
   text-transform: uppercase;
 }
 
-.settings-menu {
+.toolbar-menu {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
@@ -190,6 +208,27 @@ select:focus-visible {
 
 .settings-menu-label {
   margin-bottom: 10px;
+}
+
+.toolbar-menu-actions {
+  display: grid;
+  gap: 6px;
+}
+
+.toolbar-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  border-color: #313a43;
+  background: #11171c;
+  text-align: left;
+}
+
+.toolbar-menu-button:hover {
+  background: #162029;
 }
 
 .setting-row {
