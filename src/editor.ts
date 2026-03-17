@@ -18,6 +18,12 @@ import type { Nullable } from "@babylonjs/core/types";
 import { ASSETS, ASSET_CATEGORIES, type AssetCategory, type AssetDefinition } from "./assets";
 
 const GRID_EXTENT = 32;
+const ASSET_PREVIEW_BASE_PATH = "/generated/asset-previews";
+const USER_SETTINGS_STORAGE_KEY = "snap:user-settings";
+
+interface UserSettings {
+  environmentEnabled: boolean;
+}
 
 interface AssetTemplate {
   root: TransformNode;
@@ -30,6 +36,54 @@ interface EditorObject {
   root: TransformNode;
 }
 
+interface SerializedAssetObject {
+  assetId: string;
+  position: [number, number, number];
+  rotationYDegrees: number;
+}
+
+interface SerializedAssetScene {
+  version: 1;
+  objects: SerializedAssetObject[];
+}
+
+function isSerializedAssetScene(value: unknown): value is SerializedAssetScene {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const candidate = value as Partial<SerializedAssetScene>;
+  if (candidate.version !== 1 || !Array.isArray(candidate.objects)) {
+    return false;
+  }
+
+  return candidate.objects.every((object) => {
+    if (!object || typeof object !== "object") {
+      return false;
+    }
+
+    const entry = object as Partial<SerializedAssetObject>;
+    return (
+      typeof entry.assetId === "string" &&
+      typeof entry.rotationYDegrees === "number" &&
+      Array.isArray(entry.position) &&
+      entry.position.length === 3 &&
+      entry.position.every((component) => typeof component === "number")
+    );
+  });
+}
+
+export function serializeAssetScene(objects: Iterable<EditorObject>): SerializedAssetScene {
+  return {
+    version: 1,
+    objects: Array.from(objects, (object) => ({
+      assetId: object.assetId,
+      position: [object.root.position.x, object.root.position.y, object.root.position.z],
+      rotationYDegrees: (object.root.rotation.y * 180) / Math.PI,
+    })),
+  };
+}
+
 export interface EditorUi {
   canvas: HTMLCanvasElement;
   searchInput: HTMLInputElement;
@@ -38,10 +92,18 @@ export interface EditorUi {
   snapToggle: HTMLButtonElement;
   selectionModeButton: HTMLButtonElement;
   placementModeButton: HTMLButtonElement;
+  undoButton: HTMLButtonElement;
+  redoButton: HTMLButtonElement;
+  saveButton: HTMLButtonElement;
+  loadButton: HTMLButtonElement;
+  loadInput: HTMLInputElement;
   deleteSelectedButton: HTMLButtonElement;
   clearSceneButton: HTMLButtonElement;
   gridSizeSelect: HTMLSelectElement;
   rotationSelect: HTMLSelectElement;
+  settingsButton: HTMLButtonElement;
+  settingsMenu: HTMLDivElement;
+  environmentToggle: HTMLInputElement;
   statusMode: HTMLElement;
   statusAsset: HTMLElement;
   statusGrid: HTMLElement;
@@ -56,8 +118,10 @@ export class ModularEditorApp {
   private readonly gizmoManager: GizmoManager;
   private readonly ground: Mesh;
   private readonly ui: EditorUi;
+  private readonly defaultEnvironment;
   private readonly assetTemplates = new Map<string, Promise<AssetTemplate>>();
   private readonly objects = new Map<string, EditorObject>();
+  private readonly settings: UserSettings;
 
   private gridMesh: Nullable<LinesMesh> = null;
   private activeCategory: AssetCategory | "All" = "All";
@@ -73,12 +137,22 @@ export class ModularEditorApp {
   private previewRotationDegrees = 0;
   private objectSequence = 0;
   private lastPointerPoint = Vector3.Zero();
+  private settingsMenuOpen = false;
+  private undoStack: string[] = [];
+  private redoStack: string[] = [];
+  private dragHistorySnapshot: string | null = null;
+  private statusNotice: string | null = null;
 
   constructor(ui: EditorUi) {
     this.ui = ui;
     this.engine = new Engine(ui.canvas, true);
     this.scene = new Scene(this.engine);
     this.scene.clearColor = new Color4(0.09, 0.1, 0.12, 1);
+    this.defaultEnvironment = this.scene.createDefaultEnvironment({
+      createGround: false,
+      createSkybox: false,
+    });
+    this.settings = this.loadUserSettings();
 
     this.camera = new ArcRotateCamera("camera", Math.PI / 3, Math.PI / 2.9, 22, new Vector3(0, 2, 0), this.scene);
     this.camera.lowerRadiusLimit = 6;
@@ -98,6 +172,7 @@ export class ModularEditorApp {
     this.ground.isPickable = true;
 
     this.renderGrid();
+    this.applyEnvironmentSetting();
 
     this.gizmoManager = new GizmoManager(this.scene);
     this.gizmoManager.usePointerToAttachGizmos = false;
@@ -108,14 +183,26 @@ export class ModularEditorApp {
 
     if (this.gizmoManager.gizmos.positionGizmo) {
       this.gizmoManager.gizmos.positionGizmo.updateGizmoRotationToMatchAttachedMesh = false;
+      this.gizmoManager.gizmos.positionGizmo.xGizmo.dragBehavior.onDragStartObservable.add(() => {
+        this.beginHistoryGesture();
+      });
       this.gizmoManager.gizmos.positionGizmo.xGizmo.dragBehavior.onDragEndObservable.add(() => {
         this.snapSelectedObject();
+        this.completeHistoryGesture();
+      });
+      this.gizmoManager.gizmos.positionGizmo.yGizmo.dragBehavior.onDragStartObservable.add(() => {
+        this.beginHistoryGesture();
       });
       this.gizmoManager.gizmos.positionGizmo.yGizmo.dragBehavior.onDragEndObservable.add(() => {
         this.snapSelectedObject();
+        this.completeHistoryGesture();
+      });
+      this.gizmoManager.gizmos.positionGizmo.zGizmo.dragBehavior.onDragStartObservable.add(() => {
+        this.beginHistoryGesture();
       });
       this.gizmoManager.gizmos.positionGizmo.zGizmo.dragBehavior.onDragEndObservable.add(() => {
         this.snapSelectedObject();
+        this.completeHistoryGesture();
       });
     }
 
@@ -123,8 +210,12 @@ export class ModularEditorApp {
       this.gizmoManager.gizmos.rotationGizmo.updateGizmoRotationToMatchAttachedMesh = false;
       this.gizmoManager.gizmos.rotationGizmo.xGizmo.isEnabled = false;
       this.gizmoManager.gizmos.rotationGizmo.zGizmo.isEnabled = false;
+      this.gizmoManager.gizmos.rotationGizmo.yGizmo.dragBehavior.onDragStartObservable.add(() => {
+        this.beginHistoryGesture();
+      });
       this.gizmoManager.gizmos.rotationGizmo.yGizmo.dragBehavior.onDragEndObservable.add(() => {
         this.snapSelectedObject();
+        this.completeHistoryGesture();
       });
     }
 
@@ -136,6 +227,7 @@ export class ModularEditorApp {
     this.renderProperties();
     this.updateToolbarState();
     this.updateStatus();
+    this.resetHistory();
 
     this.engine.runRenderLoop(() => {
       this.scene.render();
@@ -192,6 +284,31 @@ export class ModularEditorApp {
       this.clearScene();
     });
 
+    this.ui.undoButton.addEventListener("click", () => {
+      void this.undoSceneChange();
+    });
+
+    this.ui.redoButton.addEventListener("click", () => {
+      void this.redoSceneChange();
+    });
+
+    this.ui.saveButton.addEventListener("click", () => {
+      this.saveSceneToFile();
+    });
+
+    this.ui.loadButton.addEventListener("click", () => {
+      this.ui.loadInput.click();
+    });
+
+    this.ui.loadInput.addEventListener("change", async () => {
+      const file = this.ui.loadInput.files?.[0];
+      if (!file) {
+        return;
+      }
+      await this.loadSceneFromFile(file);
+      this.ui.loadInput.value = "";
+    });
+
     this.ui.gridSizeSelect.addEventListener("change", () => {
       this.gridSize = Number(this.ui.gridSizeSelect.value);
       this.applySnapSettings();
@@ -207,6 +324,38 @@ export class ModularEditorApp {
       this.updatePreviewTransform();
       this.updateStatus();
       this.renderProperties();
+    });
+
+    this.ui.settingsButton.addEventListener("pointerdown", (event) => {
+      event.stopPropagation();
+    });
+
+    this.ui.settingsButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      this.settingsMenuOpen = !this.settingsMenuOpen;
+      this.updateToolbarState();
+    });
+
+    this.ui.settingsMenu.addEventListener("pointerdown", (event) => {
+      event.stopPropagation();
+    });
+
+    this.ui.settingsMenu.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+
+    this.ui.environmentToggle.addEventListener("change", () => {
+      this.settings.environmentEnabled = this.ui.environmentToggle.checked;
+      this.applyEnvironmentSetting();
+      this.saveUserSettings();
+    });
+
+    window.addEventListener("pointerdown", () => {
+      if (!this.settingsMenuOpen) {
+        return;
+      }
+      this.settingsMenuOpen = false;
+      this.updateToolbarState();
     });
   }
 
@@ -241,6 +390,28 @@ export class ModularEditorApp {
     window.addEventListener("keydown", async (event) => {
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === "INPUT" || target.tagName === "SELECT")) {
+        return;
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
+        event.preventDefault();
+        if (event.shiftKey) {
+          await this.redoSceneChange();
+        } else {
+          await this.undoSceneChange();
+        }
+        return;
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") {
+        event.preventDefault();
+        await this.redoSceneChange();
+        return;
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        this.saveSceneToFile();
         return;
       }
 
@@ -302,7 +473,12 @@ export class ModularEditorApp {
           <span class="asset-name">${asset.name}</span>
           <span class="asset-meta">${asset.category} · ${asset.fileName}</span>
         </span>
+        <img class="asset-thumb" alt="" loading="lazy" src="${this.getAssetThumbnailUrl(asset)}" />
       `;
+      const thumbnail = button.querySelector<HTMLImageElement>(".asset-thumb");
+      thumbnail?.addEventListener("error", () => {
+        thumbnail.hidden = true;
+      });
       button.classList.toggle("is-active", asset.id === this.activeAssetId);
       button.addEventListener("click", async () => {
         this.activeAssetId = asset.id;
@@ -316,6 +492,10 @@ export class ModularEditorApp {
       });
       this.ui.assetList.appendChild(button);
     });
+  }
+
+  private getAssetThumbnailUrl(asset: AssetDefinition) {
+    return `${ASSET_PREVIEW_BASE_PATH}/${asset.fileName.replace(/\.[^.]+$/u, ".png")}`;
   }
 
   private renderProperties() {
@@ -350,14 +530,156 @@ export class ModularEditorApp {
     `;
   }
 
+  private getSerializedScene() {
+    return serializeAssetScene(this.objects.values());
+  }
+
+  private getSerializedSceneText() {
+    return JSON.stringify(this.getSerializedScene(), null, 2);
+  }
+
+  private async restoreSerializedScene(serialized: SerializedAssetScene) {
+    this.disposePreview();
+    this.clearSelection();
+
+    this.objects.forEach((object) => {
+      object.root.dispose(false, false);
+    });
+    this.objects.clear();
+
+    for (const entry of serialized.objects) {
+      const asset = ASSETS.find((candidate) => candidate.id === entry.assetId);
+      if (!asset) {
+        continue;
+      }
+
+      const root = await this.instantiateAsset(asset, false);
+      if (!root) {
+        continue;
+      }
+
+      root.position.set(entry.position[0], entry.position[1], entry.position[2]);
+      root.rotation.y = this.toRadians(entry.rotationYDegrees);
+
+      const id = `object-${++this.objectSequence}`;
+      const template = await this.getAssetTemplate(asset);
+      root.metadata = {
+        objectId: id,
+        assetId: asset.id,
+        templateSize: template.size.asArray(),
+      };
+      this.tagHierarchy(root, id);
+      this.objects.set(id, { id, assetId: asset.id, root });
+    }
+
+    this.mode = "select";
+    this.updateToolbarState();
+    this.updateStatus();
+    this.renderProperties();
+  }
+
+  private beginHistoryGesture() {
+    if (!this.selectedObjectId || this.dragHistorySnapshot) {
+      return;
+    }
+    this.dragHistorySnapshot = this.getSerializedSceneText();
+  }
+
+  private completeHistoryGesture() {
+    if (!this.dragHistorySnapshot) {
+      return;
+    }
+    this.pushHistoryCheckpoint(this.dragHistorySnapshot);
+    this.dragHistorySnapshot = null;
+  }
+
+  private resetHistory() {
+    this.undoStack = [this.getSerializedSceneText()];
+    this.redoStack = [];
+    this.updateToolbarState();
+  }
+
+  private pushHistoryCheckpoint(previousSnapshot?: string) {
+    const currentSnapshot = this.getSerializedSceneText();
+    const baseline = previousSnapshot ?? this.undoStack[this.undoStack.length - 1];
+    if (baseline === currentSnapshot) {
+      this.updateToolbarState();
+      return;
+    }
+
+    this.undoStack.push(currentSnapshot);
+    this.redoStack = [];
+    this.updateToolbarState();
+  }
+
+  private async undoSceneChange() {
+    if (this.undoStack.length <= 1) {
+      return;
+    }
+
+    const currentSnapshot = this.undoStack.pop();
+    if (!currentSnapshot) {
+      return;
+    }
+    this.redoStack.push(currentSnapshot);
+
+    const previousSnapshot = this.undoStack[this.undoStack.length - 1];
+    await this.restoreSerializedScene(JSON.parse(previousSnapshot) as SerializedAssetScene);
+    this.updateToolbarState();
+  }
+
+  private async redoSceneChange() {
+    const nextSnapshot = this.redoStack.pop();
+    if (!nextSnapshot) {
+      return;
+    }
+
+    this.undoStack.push(nextSnapshot);
+    await this.restoreSerializedScene(JSON.parse(nextSnapshot) as SerializedAssetScene);
+    this.updateToolbarState();
+  }
+
+  private saveSceneToFile() {
+    const blob = new Blob([this.getSerializedSceneText()], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "asset-scene.v1.json";
+    anchor.click();
+    URL.revokeObjectURL(url);
+    this.setStatusNotice("Scene saved as asset-scene.v1.json");
+  }
+
+  private async loadSceneFromFile(file: File) {
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text) as unknown;
+      if (!isSerializedAssetScene(parsed)) {
+        this.setStatusNotice("Load failed: invalid scene file format or unsupported version.");
+        return;
+      }
+
+      await this.restoreSerializedScene(parsed);
+      this.resetHistory();
+      this.setStatusNotice(`Scene loaded: ${file.name}`);
+    } catch {
+      this.setStatusNotice(`Load failed: could not read ${file.name}.`);
+    }
+  }
+
   private updateToolbarState() {
     this.ui.snapToggle.classList.toggle("is-active", this.snapEnabled);
     this.ui.selectionModeButton.classList.toggle("is-active", this.mode === "select");
     this.ui.placementModeButton.classList.toggle("is-active", this.mode === "place");
+    this.ui.settingsButton.classList.toggle("is-active", this.settingsMenuOpen);
+    this.ui.undoButton.disabled = this.undoStack.length <= 1;
+    this.ui.redoButton.disabled = this.redoStack.length === 0;
     this.ui.deleteSelectedButton.disabled = !this.selectedObjectId;
     this.ui.clearSceneButton.disabled = this.objects.size === 0;
     this.ui.gridSizeSelect.value = String(this.gridSize);
     this.ui.rotationSelect.value = String(this.rotationStepDegrees);
+    this.ui.environmentToggle.checked = this.settings.environmentEnabled;
+    this.ui.settingsMenu.hidden = !this.settingsMenuOpen;
   }
 
   private updateStatus() {
@@ -371,6 +693,15 @@ export class ModularEditorApp {
       this.mode === "place"
         ? "R rotate · Click or Enter place · Esc cancel"
         : "Click object select · Delete remove · R rotate";
+  }
+
+  private setStatusNotice(message: string | null) {
+    this.statusNotice = message;
+    if (message) {
+      this.ui.statusHint.textContent = message;
+      return;
+    }
+    this.updateStatus();
   }
 
   private async ensurePreviewForAsset(assetId: string) {
@@ -419,6 +750,7 @@ export class ModularEditorApp {
     this.tagHierarchy(root, id);
     this.objects.set(id, { id, assetId: asset.id, root });
     this.selectObjectByRoot(root);
+    this.pushHistoryCheckpoint();
 
     if (this.activeAssetId === asset.id) {
       this.mode = "place";
@@ -655,6 +987,7 @@ export class ModularEditorApp {
 
     object.root.rotation.y = this.snapAngle(object.root.rotation.y + this.toRadians(this.rotationStepDegrees));
     this.renderProperties();
+    this.pushHistoryCheckpoint();
   }
 
   private deleteSelectedObject() {
@@ -674,9 +1007,14 @@ export class ModularEditorApp {
     this.renderProperties();
     this.updateToolbarState();
     this.updateStatus();
+    this.pushHistoryCheckpoint();
   }
 
   private clearScene() {
+    if (this.objects.size === 0) {
+      return;
+    }
+
     this.disposePreview();
     this.objects.forEach((object) => {
       object.root.dispose(false, false);
@@ -688,6 +1026,7 @@ export class ModularEditorApp {
     this.renderProperties();
     this.updateToolbarState();
     this.updateStatus();
+    this.pushHistoryCheckpoint();
   }
 
   private clearSelection() {
@@ -745,6 +1084,31 @@ export class ModularEditorApp {
     }
   }
 
+  private applyEnvironmentSetting() {
+    this.scene.environmentTexture = this.settings.environmentEnabled ? this.defaultEnvironment?.environmentTexture ?? null : null;
+    this.scene.environmentIntensity = this.settings.environmentEnabled ? 0.75 : 0;
+  }
+
+  private loadUserSettings(): UserSettings {
+    try {
+      const raw = window.localStorage.getItem(USER_SETTINGS_STORAGE_KEY);
+      if (!raw) {
+        return { environmentEnabled: false };
+      }
+
+      const parsed = JSON.parse(raw) as Partial<UserSettings>;
+      return {
+        environmentEnabled: parsed.environmentEnabled ?? false,
+      };
+    } catch {
+      return { environmentEnabled: false };
+    }
+  }
+
+  private saveUserSettings() {
+    window.localStorage.setItem(USER_SETTINGS_STORAGE_KEY, JSON.stringify(this.settings));
+  }
+
   private findObjectRoot(mesh: Nullable<AbstractMesh>) {
     let current: Nullable<AbstractMesh | TransformNode> = mesh;
     while (current) {
@@ -778,10 +1142,18 @@ export function createEditorUi(canvas: HTMLCanvasElement): EditorUi {
   const snapToggle = document.querySelector<HTMLButtonElement>("[data-role='snap-toggle']");
   const selectionModeButton = document.querySelector<HTMLButtonElement>("[data-role='selection-mode']");
   const placementModeButton = document.querySelector<HTMLButtonElement>("[data-role='placement-mode']");
+  const undoButton = document.querySelector<HTMLButtonElement>("[data-role='undo']");
+  const redoButton = document.querySelector<HTMLButtonElement>("[data-role='redo']");
+  const saveButton = document.querySelector<HTMLButtonElement>("[data-role='save']");
+  const loadButton = document.querySelector<HTMLButtonElement>("[data-role='load']");
+  const loadInput = document.querySelector<HTMLInputElement>("[data-role='load-input']");
   const deleteSelectedButton = document.querySelector<HTMLButtonElement>("[data-role='delete-selected']");
   const clearSceneButton = document.querySelector<HTMLButtonElement>("[data-role='clear-scene']");
   const gridSizeSelect = document.querySelector<HTMLSelectElement>("[data-role='grid-size']");
   const rotationSelect = document.querySelector<HTMLSelectElement>("[data-role='rotation-step']");
+  const settingsButton = document.querySelector<HTMLButtonElement>("[data-role='settings-button']");
+  const settingsMenu = document.querySelector<HTMLDivElement>("[data-role='settings-menu']");
+  const environmentToggle = document.querySelector<HTMLInputElement>("[data-role='environment-toggle']");
   const statusMode = document.querySelector<HTMLElement>("[data-role='status-mode']");
   const statusAsset = document.querySelector<HTMLElement>("[data-role='status-asset']");
   const statusGrid = document.querySelector<HTMLElement>("[data-role='status-grid']");
@@ -795,10 +1167,18 @@ export function createEditorUi(canvas: HTMLCanvasElement): EditorUi {
     !snapToggle ||
     !selectionModeButton ||
     !placementModeButton ||
+    !undoButton ||
+    !redoButton ||
+    !saveButton ||
+    !loadButton ||
+    !loadInput ||
     !deleteSelectedButton ||
     !clearSceneButton ||
     !gridSizeSelect ||
     !rotationSelect ||
+    !settingsButton ||
+    !settingsMenu ||
+    !environmentToggle ||
     !statusMode ||
     !statusAsset ||
     !statusGrid ||
@@ -816,10 +1196,18 @@ export function createEditorUi(canvas: HTMLCanvasElement): EditorUi {
     snapToggle,
     selectionModeButton,
     placementModeButton,
+    undoButton,
+    redoButton,
+    saveButton,
+    loadButton,
+    loadInput,
     deleteSelectedButton,
     clearSceneButton,
     gridSizeSelect,
     rotationSelect,
+    settingsButton,
+    settingsMenu,
+    environmentToggle,
     statusMode,
     statusAsset,
     statusGrid,
@@ -864,8 +1252,26 @@ export function buildEditorMarkup() {
         <div class="toolbar-group">
           <button type="button" class="tool-button is-active" data-role="selection-mode">Select</button>
           <button type="button" class="tool-button" data-role="placement-mode">Place</button>
+          <button type="button" class="tool-button" data-role="undo" disabled>Undo</button>
+          <button type="button" class="tool-button" data-role="redo" disabled>Redo</button>
+          <button type="button" class="tool-button" data-role="save">Export JSON</button>
+          <button type="button" class="tool-button" data-role="load">Import JSON</button>
+          <input type="file" data-role="load-input" accept="application/json,.json" hidden />
           <button type="button" class="tool-button tool-button-danger" data-role="delete-selected" disabled>Delete Selected</button>
           <button type="button" class="tool-button tool-button-danger" data-role="clear-scene" disabled>Clear Scene</button>
+          <div class="toolbar-settings">
+            <button type="button" class="tool-button tool-button-icon" data-role="settings-button" aria-label="User settings">Settings</button>
+            <div class="settings-menu" data-role="settings-menu" hidden>
+              <div class="panel-label settings-menu-label">User Settings</div>
+              <label class="setting-row">
+                <span class="setting-copy">Environment Lighting</span>
+                <span class="setting-switch">
+                  <input type="checkbox" data-role="environment-toggle" />
+                  <span class="setting-slider" aria-hidden="true"></span>
+                </span>
+              </label>
+            </div>
+          </div>
         </div>
       </header>
       <div class="workspace">

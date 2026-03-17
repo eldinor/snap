@@ -44,8 +44,7 @@ select:hover {
 
 button:focus-visible,
 input:focus-visible,
-select:focus-visible,
-#renderCanvas:focus-visible {
+select:focus-visible {
   outline: 1px solid #64b5f6;
   outline-offset: -1px;
 }
@@ -85,6 +84,10 @@ select:focus-visible,
   gap: 8px;
 }
 
+.toolbar-settings {
+  position: relative;
+}
+
 .tool-button,
 .chip {
   height: 28px;
@@ -114,6 +117,10 @@ select:focus-visible,
 .tool-button-danger:hover:not(:disabled) {
   border-color: #8b4a4a;
   background: #341b1b;
+}
+
+.tool-button-icon {
+  min-width: 72px;
 }
 
 .tool-field {
@@ -166,6 +173,93 @@ select:focus-visible,
   text-transform: uppercase;
 }
 
+.settings-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 200px;
+  padding: 10px;
+  border: 1px solid #2b333b;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    #151b20;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.34);
+}
+
+.settings-menu-label {
+  margin-bottom: 10px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #d8e0e7;
+  font-size: 12px;
+}
+
+.setting-copy {
+  min-width: 0;
+}
+
+.setting-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 38px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+.setting-switch input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.setting-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #39434d;
+  border-radius: 999px;
+  background: #12171b;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.setting-slider::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #d7dfe6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+.setting-switch input:checked + .setting-slider {
+  border-color: #64b5f6;
+  background: #163047;
+}
+
+.setting-switch input:checked + .setting-slider::after {
+  transform: translateX(16px);
+  background: #eef7ff;
+}
+
+.setting-switch input:focus-visible + .setting-slider {
+  outline: 1px solid #64b5f6;
+  outline-offset: 2px;
+}
+
 .chip-row {
   display: flex;
   flex-wrap: wrap;
@@ -185,7 +279,7 @@ select:focus-visible,
 
 .asset-row {
   display: grid;
-  grid-template-columns: 12px minmax(0, 1fr);
+  grid-template-columns: 12px minmax(0, 1fr) 52px;
   align-items: center;
   gap: 10px;
   width: 100%;
@@ -228,6 +322,23 @@ select:focus-visible,
   font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.asset-thumb {
+  width: 52px;
+  height: 40px;
+  justify-self: end;
+  border: 1px solid #2b333b;
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
+    #0f1418;
+  object-fit: contain;
+  object-position: center;
+}
+
+.asset-thumb[hidden] {
+  display: none;
 }
 
 .asset-empty,

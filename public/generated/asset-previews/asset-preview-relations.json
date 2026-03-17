@@ -1,0 +1,710 @@
+{
+  "generatedAt": "2026-03-17T12:04:26.921Z",
+  "basePath": "/assets/glTF/",
+  "files": [
+    {
+      "gltf": "Floor_Brick.gltf",
+      "png": "Floor_Brick.png"
+    },
+    {
+      "gltf": "Floor_RedBrick.gltf",
+      "png": "Floor_RedBrick.png"
+    },
+    {
+      "gltf": "Floor_UnevenBrick.gltf",
+      "png": "Floor_UnevenBrick.png"
+    },
+    {
+      "gltf": "Floor_WoodDark.gltf",
+      "png": "Floor_WoodDark.png"
+    },
+    {
+      "gltf": "Floor_WoodDark_Half1.gltf",
+      "png": "Floor_WoodDark_Half1.png"
+    },
+    {
+      "gltf": "Floor_WoodDark_Half2.gltf",
+      "png": "Floor_WoodDark_Half2.png"
+    },
+    {
+      "gltf": "Floor_WoodDark_Half3.gltf",
+      "png": "Floor_WoodDark_Half3.png"
+    },
+    {
+      "gltf": "Floor_WoodDark_OverhangCorner.gltf",
+      "png": "Floor_WoodDark_OverhangCorner.png"
+    },
+    {
+      "gltf": "Floor_WoodDark_OverhangCorner2.gltf",
+      "png": "Floor_WoodDark_OverhangCorner2.png"
+    },
+    {
+      "gltf": "Floor_WoodLight.gltf",
+      "png": "Floor_WoodLight.png"
+    },
+    {
+      "gltf": "Floor_WoodLight_OverhangCorner.gltf",
+      "png": "Floor_WoodLight_OverhangCorner.png"
+    },
+    {
+      "gltf": "Floor_WoodLight_OverhangCorner2.gltf",
+      "png": "Floor_WoodLight_OverhangCorner2.png"
+    },
+    {
+      "gltf": "HoleCover_90Angle.gltf",
+      "png": "HoleCover_90Angle.png"
+    },
+    {
+      "gltf": "HoleCover_90Half.gltf",
+      "png": "HoleCover_90Half.png"
+    },
+    {
+      "gltf": "HoleCover_90Stairs.gltf",
+      "png": "HoleCover_90Stairs.png"
+    },
+    {
+      "gltf": "HoleCover_Straight.gltf",
+      "png": "HoleCover_Straight.png"
+    },
+    {
+      "gltf": "HoleCover_StraightHalf.gltf",
+      "png": "HoleCover_StraightHalf.png"
+    },
+    {
+      "gltf": "Wall_Arch.gltf",
+      "png": "Wall_Arch.png"
+    },
+    {
+      "gltf": "Wall_BottomCover.gltf",
+      "png": "Wall_BottomCover.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Door_Flat.gltf",
+      "png": "Wall_Plaster_Door_Flat.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Door_Round.gltf",
+      "png": "Wall_Plaster_Door_Round.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Door_RoundInset.gltf",
+      "png": "Wall_Plaster_Door_RoundInset.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Straight.gltf",
+      "png": "Wall_Plaster_Straight.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Straight_Base.gltf",
+      "png": "Wall_Plaster_Straight_Base.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Straight_L.gltf",
+      "png": "Wall_Plaster_Straight_L.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Straight_R.gltf",
+      "png": "Wall_Plaster_Straight_R.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Window_Thin_Round.gltf",
+      "png": "Wall_Plaster_Window_Thin_Round.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Window_Wide_Flat.gltf",
+      "png": "Wall_Plaster_Window_Wide_Flat.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Window_Wide_Flat2.gltf",
+      "png": "Wall_Plaster_Window_Wide_Flat2.png"
+    },
+    {
+      "gltf": "Wall_Plaster_Window_Wide_Round.gltf",
+      "png": "Wall_Plaster_Window_Wide_Round.png"
+    },
+    {
+      "gltf": "Wall_Plaster_WoodGrid.gltf",
+      "png": "Wall_Plaster_WoodGrid.png"
+    },
+    {
+      "gltf": "Wall_UnevenBrick_Door_Flat.gltf",
+      "png": "Wall_UnevenBrick_Door_Flat.png"
+    },
+    {
+      "gltf": "Wall_UnevenBrick_Door_Round.gltf",
+      "png": "Wall_UnevenBrick_Door_Round.png"
+    },
+    {
+      "gltf": "Wall_UnevenBrick_Straight.gltf",
+      "png": "Wall_UnevenBrick_Straight.png"
+    },
+    {
+      "gltf": "Wall_UnevenBrick_Window_Thin_Round.gltf",
+      "png": "Wall_UnevenBrick_Window_Thin_Round.png"
+    },
+    {
+      "gltf": "Wall_UnevenBrick_Window_Wide_Flat.gltf",
+      "png": "Wall_UnevenBrick_Window_Wide_Flat.png"
+    },
+    {
+      "gltf": "Wall_UnevenBrick_Window_Wide_Round.gltf",
+      "png": "Wall_UnevenBrick_Window_Wide_Round.png"
+    },
+    {
+      "gltf": "Corner_Exterior_Brick.gltf",
+      "png": "Corner_Exterior_Brick.png"
+    },
+    {
+      "gltf": "Corner_Exterior_TopDown.gltf",
+      "png": "Corner_Exterior_TopDown.png"
+    },
+    {
+      "gltf": "Corner_Exterior_TopOnly.gltf",
+      "png": "Corner_Exterior_TopOnly.png"
+    },
+    {
+      "gltf": "Corner_ExteriorWide_Brick.gltf",
+      "png": "Corner_ExteriorWide_Brick.png"
+    },
+    {
+      "gltf": "Corner_ExteriorWide_Wood.gltf",
+      "png": "Corner_ExteriorWide_Wood.png"
+    },
+    {
+      "gltf": "Corner_Exterior_Wood.gltf",
+      "png": "Corner_Exterior_Wood.png"
+    },
+    {
+      "gltf": "Corner_Interior_Big.gltf",
+      "png": "Corner_Interior_Big.png"
+    },
+    {
+      "gltf": "Corner_Interior_Small.gltf",
+      "png": "Corner_Interior_Small.png"
+    },
+    {
+      "gltf": "Door_1_Flat.gltf",
+      "png": "Door_1_Flat.png"
+    },
+    {
+      "gltf": "Door_1_Round.gltf",
+      "png": "Door_1_Round.png"
+    },
+    {
+      "gltf": "Door_2_Flat.gltf",
+      "png": "Door_2_Flat.png"
+    },
+    {
+      "gltf": "Door_2_Round.gltf",
+      "png": "Door_2_Round.png"
+    },
+    {
+      "gltf": "Door_4_Flat.gltf",
+      "png": "Door_4_Flat.png"
+    },
+    {
+      "gltf": "Door_4_Round.gltf",
+      "png": "Door_4_Round.png"
+    },
+    {
+      "gltf": "Door_8_Flat.gltf",
+      "png": "Door_8_Flat.png"
+    },
+    {
+      "gltf": "Door_8_Round.gltf",
+      "png": "Door_8_Round.png"
+    },
+    {
+      "gltf": "DoorFrame_Flat_Brick.gltf",
+      "png": "DoorFrame_Flat_Brick.png"
+    },
+    {
+      "gltf": "DoorFrame_Flat_WoodDark.gltf",
+      "png": "DoorFrame_Flat_WoodDark.png"
+    },
+    {
+      "gltf": "DoorFrame_Round_Brick.gltf",
+      "png": "DoorFrame_Round_Brick.png"
+    },
+    {
+      "gltf": "DoorFrame_Round_WoodDark.gltf",
+      "png": "DoorFrame_Round_WoodDark.png"
+    },
+    {
+      "gltf": "Window_Roof_Thin.gltf",
+      "png": "Window_Roof_Thin.png"
+    },
+    {
+      "gltf": "Window_Roof_Wide.gltf",
+      "png": "Window_Roof_Wide.png"
+    },
+    {
+      "gltf": "WindowShutters_Thin_Flat_Closed.gltf",
+      "png": "WindowShutters_Thin_Flat_Closed.png"
+    },
+    {
+      "gltf": "WindowShutters_Thin_Flat_Open.gltf",
+      "png": "WindowShutters_Thin_Flat_Open.png"
+    },
+    {
+      "gltf": "WindowShutters_Thin_Round_Closed.gltf",
+      "png": "WindowShutters_Thin_Round_Closed.png"
+    },
+    {
+      "gltf": "WindowShutters_Thin_Round_Open.gltf",
+      "png": "WindowShutters_Thin_Round_Open.png"
+    },
+    {
+      "gltf": "WindowShutters_Wide_Flat_Closed.gltf",
+      "png": "WindowShutters_Wide_Flat_Closed.png"
+    },
+    {
+      "gltf": "WindowShutters_Wide_Flat_Open.gltf",
+      "png": "WindowShutters_Wide_Flat_Open.png"
+    },
+    {
+      "gltf": "WindowShutters_Wide_Round_Closed.gltf",
+      "png": "WindowShutters_Wide_Round_Closed.png"
+    },
+    {
+      "gltf": "WindowShutters_Wide_Round_Open.gltf",
+      "png": "WindowShutters_Wide_Round_Open.png"
+    },
+    {
+      "gltf": "Window_Thin_Flat1.gltf",
+      "png": "Window_Thin_Flat1.png"
+    },
+    {
+      "gltf": "Window_Thin_Round1.gltf",
+      "png": "Window_Thin_Round1.png"
+    },
+    {
+      "gltf": "Window_Wide_Flat1.gltf",
+      "png": "Window_Wide_Flat1.png"
+    },
+    {
+      "gltf": "Window_Wide_Round1.gltf",
+      "png": "Window_Wide_Round1.png"
+    },
+    {
+      "gltf": "Overhang_Plaster_Corner.gltf",
+      "png": "Overhang_Plaster_Corner.png"
+    },
+    {
+      "gltf": "Overhang_Plaster_Corner_Front.gltf",
+      "png": "Overhang_Plaster_Corner_Front.png"
+    },
+    {
+      "gltf": "Overhang_Plaster_Long.gltf",
+      "png": "Overhang_Plaster_Long.png"
+    },
+    {
+      "gltf": "Overhang_Plaster_Short.gltf",
+      "png": "Overhang_Plaster_Short.png"
+    },
+    {
+      "gltf": "Overhang_RoofIncline_Plaster.gltf",
+      "png": "Overhang_RoofIncline_Plaster.png"
+    },
+    {
+      "gltf": "Overhang_RoofIncline_UnevenBricks.gltf",
+      "png": "Overhang_RoofIncline_UnevenBricks.png"
+    },
+    {
+      "gltf": "Overhang_Roof_Plaster.gltf",
+      "png": "Overhang_Roof_Plaster.png"
+    },
+    {
+      "gltf": "Overhang_Roof_UnevenBricks.gltf",
+      "png": "Overhang_Roof_UnevenBricks.png"
+    },
+    {
+      "gltf": "Overhang_Side_Plaster_Long_L.gltf",
+      "png": "Overhang_Side_Plaster_Long_L.png"
+    },
+    {
+      "gltf": "Overhang_Side_Plaster_Long_R.gltf",
+      "png": "Overhang_Side_Plaster_Long_R.png"
+    },
+    {
+      "gltf": "Overhang_Side_Plaster_Short_L.gltf",
+      "png": "Overhang_Side_Plaster_Short_L.png"
+    },
+    {
+      "gltf": "Overhang_Side_Plaster_Short_R.gltf",
+      "png": "Overhang_Side_Plaster_Short_R.png"
+    },
+    {
+      "gltf": "Overhang_Side_UnevenBrick_Long_L.gltf",
+      "png": "Overhang_Side_UnevenBrick_Long_L.png"
+    },
+    {
+      "gltf": "Overhang_Side_UnevenBrick_Long_R.gltf",
+      "png": "Overhang_Side_UnevenBrick_Long_R.png"
+    },
+    {
+      "gltf": "Overhang_Side_UnevenBrick_Short_L.gltf",
+      "png": "Overhang_Side_UnevenBrick_Short_L.png"
+    },
+    {
+      "gltf": "Overhang_Side_UnevenBrick_Short_R.gltf",
+      "png": "Overhang_Side_UnevenBrick_Short_R.png"
+    },
+    {
+      "gltf": "Overhang_UnevenBrick_Corner.gltf",
+      "png": "Overhang_UnevenBrick_Corner.png"
+    },
+    {
+      "gltf": "Overhang_UnevenBrick_Corner_Front.gltf",
+      "png": "Overhang_UnevenBrick_Corner_Front.png"
+    },
+    {
+      "gltf": "Overhang_UnevenBrick_Long.gltf",
+      "png": "Overhang_UnevenBrick_Long.png"
+    },
+    {
+      "gltf": "Overhang_UnevenBrick_Short.gltf",
+      "png": "Overhang_UnevenBrick_Short.png"
+    },
+    {
+      "gltf": "Roof_2x4_RoundTile.gltf",
+      "png": "Roof_2x4_RoundTile.png"
+    },
+    {
+      "gltf": "Roof_Dormer_RoundTile.gltf",
+      "png": "Roof_Dormer_RoundTile.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick2.gltf",
+      "png": "Roof_Front_Brick2.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick4.gltf",
+      "png": "Roof_Front_Brick4.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick4_Half_L.gltf",
+      "png": "Roof_Front_Brick4_Half_L.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick4_Half_R.gltf",
+      "png": "Roof_Front_Brick4_Half_R.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick6.gltf",
+      "png": "Roof_Front_Brick6.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick6_Half_L.gltf",
+      "png": "Roof_Front_Brick6_Half_L.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick6_Half_R.gltf",
+      "png": "Roof_Front_Brick6_Half_R.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick8.gltf",
+      "png": "Roof_Front_Brick8.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick8_Half_L.gltf",
+      "png": "Roof_Front_Brick8_Half_L.png"
+    },
+    {
+      "gltf": "Roof_Front_Brick8_Half_R.gltf",
+      "png": "Roof_Front_Brick8_Half_R.png"
+    },
+    {
+      "gltf": "Roof_FrontSupports.gltf",
+      "png": "Roof_FrontSupports.png"
+    },
+    {
+      "gltf": "Roof_Log.gltf",
+      "png": "Roof_Log.png"
+    },
+    {
+      "gltf": "Roof_Modular_RoundTiles.gltf",
+      "png": "Roof_Modular_RoundTiles.png"
+    },
+    {
+      "gltf": "Roof_RoundTile_2x1.gltf",
+      "png": "Roof_RoundTile_2x1.png"
+    },
+    {
+      "gltf": "Roof_RoundTile_2x1_Long.gltf",
+      "png": "Roof_RoundTile_2x1_Long.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_4x4.gltf",
+      "png": "Roof_RoundTiles_4x4.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_4x6.gltf",
+      "png": "Roof_RoundTiles_4x6.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_4x8.gltf",
+      "png": "Roof_RoundTiles_4x8.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_6x10.gltf",
+      "png": "Roof_RoundTiles_6x10.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_6x12.gltf",
+      "png": "Roof_RoundTiles_6x12.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_6x14.gltf",
+      "png": "Roof_RoundTiles_6x14.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_6x4.gltf",
+      "png": "Roof_RoundTiles_6x4.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_6x6.gltf",
+      "png": "Roof_RoundTiles_6x6.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_6x8.gltf",
+      "png": "Roof_RoundTiles_6x8.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_8x10.gltf",
+      "png": "Roof_RoundTiles_8x10.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_8x12.gltf",
+      "png": "Roof_RoundTiles_8x12.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_8x14.gltf",
+      "png": "Roof_RoundTiles_8x14.png"
+    },
+    {
+      "gltf": "Roof_RoundTiles_8x8.gltf",
+      "png": "Roof_RoundTiles_8x8.png"
+    },
+    {
+      "gltf": "Roof_Support2.gltf",
+      "png": "Roof_Support2.png"
+    },
+    {
+      "gltf": "Roof_Tower_RoundTiles.gltf",
+      "png": "Roof_Tower_RoundTiles.png"
+    },
+    {
+      "gltf": "Roof_Wooden_2x1.gltf",
+      "png": "Roof_Wooden_2x1.png"
+    },
+    {
+      "gltf": "Roof_Wooden_2x1_Center.gltf",
+      "png": "Roof_Wooden_2x1_Center.png"
+    },
+    {
+      "gltf": "Roof_Wooden_2x1_Center_Mirror.gltf",
+      "png": "Roof_Wooden_2x1_Center_Mirror.png"
+    },
+    {
+      "gltf": "Roof_Wooden_2x1_Corner.gltf",
+      "png": "Roof_Wooden_2x1_Corner.png"
+    },
+    {
+      "gltf": "Roof_Wooden_2x1_L.gltf",
+      "png": "Roof_Wooden_2x1_L.png"
+    },
+    {
+      "gltf": "Roof_Wooden_2x1_Middle.gltf",
+      "png": "Roof_Wooden_2x1_Middle.png"
+    },
+    {
+      "gltf": "Roof_Wooden_2x1_R.gltf",
+      "png": "Roof_Wooden_2x1_R.png"
+    },
+    {
+      "gltf": "Stair_Interior_Rails.gltf",
+      "png": "Stair_Interior_Rails.png"
+    },
+    {
+      "gltf": "Stair_Interior_Simple.gltf",
+      "png": "Stair_Interior_Simple.png"
+    },
+    {
+      "gltf": "Stair_Interior_Solid.gltf",
+      "png": "Stair_Interior_Solid.png"
+    },
+    {
+      "gltf": "Stair_Interior_SolidExtended.gltf",
+      "png": "Stair_Interior_SolidExtended.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_NoFirstStep.gltf",
+      "png": "Stairs_Exterior_NoFirstStep.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_Platform.gltf",
+      "png": "Stairs_Exterior_Platform.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_Platform45.gltf",
+      "png": "Stairs_Exterior_Platform45.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_Platform45Clean.gltf",
+      "png": "Stairs_Exterior_Platform45Clean.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_PlatformU.gltf",
+      "png": "Stairs_Exterior_PlatformU.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_SidePlatform.gltf",
+      "png": "Stairs_Exterior_SidePlatform.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_Sides.gltf",
+      "png": "Stairs_Exterior_Sides.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_Sides45.gltf",
+      "png": "Stairs_Exterior_Sides45.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_SidesU.gltf",
+      "png": "Stairs_Exterior_SidesU.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_SingleSide.gltf",
+      "png": "Stairs_Exterior_SingleSide.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_SingleSideThick.gltf",
+      "png": "Stairs_Exterior_SingleSideThick.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_Straight.gltf",
+      "png": "Stairs_Exterior_Straight.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_Straight_Center.gltf",
+      "png": "Stairs_Exterior_Straight_Center.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_Straight_L.gltf",
+      "png": "Stairs_Exterior_Straight_L.png"
+    },
+    {
+      "gltf": "Stairs_Exterior_Straight_R.gltf",
+      "png": "Stairs_Exterior_Straight_R.png"
+    },
+    {
+      "gltf": "Prop_Brick1.gltf",
+      "png": "Prop_Brick1.png"
+    },
+    {
+      "gltf": "Prop_Brick2.gltf",
+      "png": "Prop_Brick2.png"
+    },
+    {
+      "gltf": "Prop_Brick3.gltf",
+      "png": "Prop_Brick3.png"
+    },
+    {
+      "gltf": "Prop_Brick4.gltf",
+      "png": "Prop_Brick4.png"
+    },
+    {
+      "gltf": "Prop_Chimney.gltf",
+      "png": "Prop_Chimney.png"
+    },
+    {
+      "gltf": "Prop_Chimney2.gltf",
+      "png": "Prop_Chimney2.png"
+    },
+    {
+      "gltf": "Prop_Crate.gltf",
+      "png": "Prop_Crate.png"
+    },
+    {
+      "gltf": "Prop_ExteriorBorder_Corner.gltf",
+      "png": "Prop_ExteriorBorder_Corner.png"
+    },
+    {
+      "gltf": "Prop_ExteriorBorder_Straight1.gltf",
+      "png": "Prop_ExteriorBorder_Straight1.png"
+    },
+    {
+      "gltf": "Prop_ExteriorBorder_Straight2.gltf",
+      "png": "Prop_ExteriorBorder_Straight2.png"
+    },
+    {
+      "gltf": "Prop_MetalFence_Ornament.gltf",
+      "png": "Prop_MetalFence_Ornament.png"
+    },
+    {
+      "gltf": "Prop_MetalFence_Simple.gltf",
+      "png": "Prop_MetalFence_Simple.png"
+    },
+    {
+      "gltf": "Prop_Support.gltf",
+      "png": "Prop_Support.png"
+    },
+    {
+      "gltf": "Prop_Vine1.gltf",
+      "png": "Prop_Vine1.png"
+    },
+    {
+      "gltf": "Prop_Vine2.gltf",
+      "png": "Prop_Vine2.png"
+    },
+    {
+      "gltf": "Prop_Vine4.gltf",
+      "png": "Prop_Vine4.png"
+    },
+    {
+      "gltf": "Prop_Vine5.gltf",
+      "png": "Prop_Vine5.png"
+    },
+    {
+      "gltf": "Prop_Vine6.gltf",
+      "png": "Prop_Vine6.png"
+    },
+    {
+      "gltf": "Prop_Vine9.gltf",
+      "png": "Prop_Vine9.png"
+    },
+    {
+      "gltf": "Prop_Wagon.gltf",
+      "png": "Prop_Wagon.png"
+    },
+    {
+      "gltf": "Prop_WoodenFence_Extension1.gltf",
+      "png": "Prop_WoodenFence_Extension1.png"
+    },
+    {
+      "gltf": "Prop_WoodenFence_Extension2.gltf",
+      "png": "Prop_WoodenFence_Extension2.png"
+    },
+    {
+      "gltf": "Prop_WoodenFence_Single.gltf",
+      "png": "Prop_WoodenFence_Single.png"
+    },
+    {
+      "gltf": "Balcony_Cross_Corner.gltf",
+      "png": "Balcony_Cross_Corner.png"
+    },
+    {
+      "gltf": "Balcony_Cross_Straight.gltf",
+      "png": "Balcony_Cross_Straight.png"
+    },
+    {
+      "gltf": "Balcony_Simple_Corner.gltf",
+      "png": "Balcony_Simple_Corner.png"
+    },
+    {
+      "gltf": "Balcony_Simple_Straight.gltf",
+      "png": "Balcony_Simple_Straight.png"
+    }
+  ]
+}
