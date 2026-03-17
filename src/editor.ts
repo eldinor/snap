@@ -4,7 +4,6 @@ import { Engine } from "@babylonjs/core/Engines/engine";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -16,15 +15,16 @@ import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
 import { ASSETS, ASSET_CATEGORIES, type AssetCategory, type AssetDefinition } from "./assets";
+import { instantiateAsset, loadAssetTemplate, type AssetTemplate } from "./editor/asset-runtime";
+import { SceneCoreController } from "./editor/scene-core-controller";
+import { SceneSessionController } from "./editor/scene-session-controller";
 import { SnapshotHistory } from "./editor/snapshot-history";
 import {
-  parseSerializedAssetScene,
   serializeAssetScene,
   type AssetSceneSerializableObject,
   type SerializedAssetScene,
 } from "./editor/scene-serialization";
 import {
-  clonePreviewMaterial,
   snapAngle as snapPlacementAngle,
   snapVectorForSize,
 } from "./editor/placement";
@@ -43,13 +43,7 @@ import {
 } from "./editor/ui";
 import { loadUserSettings, saveUserSettings, type UserSettings } from "./editor/user-settings";
 
-const GRID_EXTENT = 32;
 const ASSET_PREVIEW_BASE_PATH = "/generated/asset-previews";
-
-interface AssetTemplate {
-  root: TransformNode;
-  size: Vector3;
-}
 
 interface EditorObject {
   id: string;
@@ -69,6 +63,8 @@ export class ModularEditorApp {
   private readonly objects = new Map<string, EditorObject>();
   private readonly settings: UserSettings;
   private readonly history = new SnapshotHistory();
+  private readonly sceneCore: SceneCoreController;
+  private readonly sessionController: SceneSessionController;
 
   private gridMesh: Nullable<LinesMesh> = null;
   private activeCategory: AssetCategory | "All" = "All";
@@ -85,7 +81,6 @@ export class ModularEditorApp {
   private objectSequence = 0;
   private lastPointerPoint = Vector3.Zero();
   private settingsMenuOpen = false;
-  private dragHistorySnapshot: string | null = null;
   private statusNotice: string | null = null;
 
   constructor(ui: EditorUi) {
@@ -98,6 +93,19 @@ export class ModularEditorApp {
       createSkybox: false,
     });
     this.settings = loadUserSettings();
+    this.sessionController = new SceneSessionController({
+      history: this.history,
+      getSnapshotText: () => this.getSerializedSceneText(),
+      restoreSnapshot: async (scene) => {
+        await this.restoreSerializedScene(scene);
+      },
+      onStateChanged: () => {
+        this.updateToolbarState();
+      },
+      onNotice: (message) => {
+        this.setStatusNotice(message);
+      },
+    });
 
     this.camera = new ArcRotateCamera("camera", Math.PI / 3, Math.PI / 2.9, 22, new Vector3(0, 2, 0), this.scene);
     this.camera.lowerRadiusLimit = 6;
@@ -115,9 +123,6 @@ export class ModularEditorApp {
     groundMaterial.specularColor = Color3.Black();
     this.ground.material = groundMaterial;
     this.ground.isPickable = true;
-
-    this.renderGrid();
-    this.applyEnvironmentSetting();
 
     this.gizmoManager = new GizmoManager(this.scene);
     this.gizmoManager.usePointerToAttachGizmos = false;
@@ -164,6 +169,10 @@ export class ModularEditorApp {
       });
     }
 
+    this.sceneCore = new SceneCoreController(this.scene, this.gizmoManager);
+    this.renderGrid();
+    this.applyEnvironmentSetting();
+
     this.bindUi();
     this.bindSceneInteractions();
     this.bindShortcuts();
@@ -172,7 +181,7 @@ export class ModularEditorApp {
     this.syncPropertiesUi();
     this.syncToolbarUi();
     this.syncStatusUi();
-    this.resetHistory();
+    this.sessionController.resetHistory();
 
     this.engine.runRenderLoop(() => {
       this.scene.render();
@@ -230,15 +239,15 @@ export class ModularEditorApp {
     });
 
     this.ui.undoButton.addEventListener("click", () => {
-      void this.undoSceneChange();
+      void this.sessionController.undo();
     });
 
     this.ui.redoButton.addEventListener("click", () => {
-      void this.redoSceneChange();
+      void this.sessionController.redo();
     });
 
     this.ui.saveButton.addEventListener("click", () => {
-      this.saveSceneToFile();
+      this.sessionController.exportToFile();
     });
 
     this.ui.loadButton.addEventListener("click", () => {
@@ -250,7 +259,7 @@ export class ModularEditorApp {
       if (!file) {
         return;
       }
-      await this.loadSceneFromFile(file);
+      await this.sessionController.importFromFile(file);
       this.ui.loadInput.value = "";
     });
 
@@ -341,22 +350,22 @@ export class ModularEditorApp {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
         event.preventDefault();
         if (event.shiftKey) {
-          await this.redoSceneChange();
+          await this.sessionController.redo();
         } else {
-          await this.undoSceneChange();
+          await this.sessionController.undo();
         }
         return;
       }
 
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") {
         event.preventDefault();
-        await this.redoSceneChange();
+        await this.sessionController.redo();
         return;
       }
 
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
         event.preventDefault();
-        this.saveSceneToFile();
+        this.sessionController.exportToFile();
         return;
       }
 
@@ -387,58 +396,6 @@ export class ModularEditorApp {
 
   private renderAssetList() {
     this.syncAssetListUi();
-    return;
-    const query = this.ui.searchInput.value.trim().toLowerCase();
-    this.ui.assetList.innerHTML = "";
-
-    this.ui.categoryButtons.forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.category === this.activeCategory);
-    });
-
-    const filtered = ASSETS.filter((asset) => {
-      const matchesCategory = this.activeCategory === "All" || asset.category === this.activeCategory;
-      const haystack = `${asset.name} ${asset.category} ${asset.tags.join(" ")}`.toLowerCase();
-      const matchesQuery = !query || haystack.includes(query);
-      return matchesCategory && matchesQuery;
-    });
-
-    if (filtered.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "asset-empty";
-      empty.textContent = "No assets match the current filter.";
-      this.ui.assetList.appendChild(empty);
-      return;
-    }
-
-    filtered.forEach((asset) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "asset-row";
-      button.innerHTML = `
-        <span class="asset-swatch" style="background:${asset.placeholder.color}"></span>
-        <span class="asset-copy">
-          <span class="asset-name">${asset.name}</span>
-          <span class="asset-meta">${asset.category} · ${asset.fileName}</span>
-        </span>
-        <img class="asset-thumb" alt="" loading="lazy" src="${this.getAssetThumbnailUrl(asset)}" />
-      `;
-      const thumbnail = button.querySelector<HTMLImageElement>(".asset-thumb");
-      thumbnail?.addEventListener("error", () => {
-        thumbnail.hidden = true;
-      });
-      button.classList.toggle("is-active", asset.id === this.activeAssetId);
-      button.addEventListener("click", async () => {
-        this.activeAssetId = asset.id;
-        this.mode = "place";
-        this.previewRotationDegrees = 0;
-        await this.ensurePreviewForAsset(asset.id);
-        this.syncAssetListUi();
-        this.syncToolbarUi();
-        this.syncStatusUi();
-        this.syncPropertiesUi();
-      });
-      this.ui.assetList.appendChild(button);
-    });
   }
 
   private getAssetThumbnailUrl(asset: AssetDefinition) {
@@ -517,36 +474,6 @@ export class ModularEditorApp {
 
   private renderProperties() {
     this.syncPropertiesUi();
-    return;
-    const selected = this.selectedObjectId ? this.objects.get(this.selectedObjectId) : null;
-    const selectedAsset = selected ? ASSETS.find((asset) => asset.id === selected.assetId) : null;
-    const activeAsset = this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId) : null;
-
-    if (!selected || !selectedAsset) {
-      this.ui.propertiesPanel.innerHTML = `
-        <div class="properties-empty">
-          <strong>No object selected.</strong>
-          <span>Active asset: ${activeAsset ? activeAsset.name : "None"}</span>
-          <span>Use Delete Selected for one item or Clear Scene for all.</span>
-        </div>
-      `;
-      return;
-    }
-
-    const position = selected.root.position;
-    const rotationDegrees = Math.round(this.toDegrees(selected.root.rotation.y));
-    this.ui.propertiesPanel.innerHTML = `
-      <div class="properties-grid">
-        <span class="properties-label">Asset</span>
-        <span>${selectedAsset.name}</span>
-        <span class="properties-label">Position</span>
-        <span>${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}</span>
-        <span class="properties-label">Rotation</span>
-        <span>${rotationDegrees}deg</span>
-        <span class="properties-label">Snap</span>
-        <span>${this.snapEnabled ? `Grid ${this.gridSize}` : "Off"}</span>
-      </div>
-    `;
   }
 
   private getSerializedScene() {
@@ -574,7 +501,8 @@ export class ModularEditorApp {
         continue;
       }
 
-      const root = await this.instantiateAsset(asset, false);
+      const template = await this.getAssetTemplate(asset);
+      const root = await instantiateAsset(asset, false, template, this.scene);
       if (!root) {
         continue;
       }
@@ -583,7 +511,6 @@ export class ModularEditorApp {
       root.rotation.y = this.toRadians(entry.rotationYDegrees);
 
       const id = `object-${++this.objectSequence}`;
-      const template = await this.getAssetTemplate(asset);
       root.metadata = {
         objectId: id,
         assetId: asset.id,
@@ -600,107 +527,43 @@ export class ModularEditorApp {
   }
 
   private beginHistoryGesture() {
-    if (!this.selectedObjectId || this.dragHistorySnapshot) {
-      return;
-    }
-    this.dragHistorySnapshot = this.getSerializedSceneText();
+    this.sessionController.beginHistoryGesture(!!this.selectedObjectId);
   }
 
   private completeHistoryGesture() {
-    if (!this.dragHistorySnapshot) {
-      return;
-    }
-    this.pushHistoryCheckpoint(this.dragHistorySnapshot);
-    this.dragHistorySnapshot = null;
+    this.sessionController.completeHistoryGesture();
   }
 
   private resetHistory() {
-    this.history.reset(this.getSerializedSceneText());
-    this.updateToolbarState();
+    this.sessionController.resetHistory();
   }
 
   private pushHistoryCheckpoint(previousSnapshot?: string) {
-    const currentSnapshot = this.getSerializedSceneText();
-    this.history.push(currentSnapshot, previousSnapshot);
-    this.updateToolbarState();
+    this.sessionController.pushHistoryCheckpoint(previousSnapshot);
   }
 
   private async undoSceneChange() {
-    const previousSnapshot = this.history.undo();
-    if (!previousSnapshot) {
-      return;
-    }
-    await this.restoreSerializedScene(JSON.parse(previousSnapshot) as SerializedAssetScene);
-    this.updateToolbarState();
+    await this.sessionController.undo();
   }
 
   private async redoSceneChange() {
-    const nextSnapshot = this.history.redo();
-    if (!nextSnapshot) {
-      return;
-    }
-    await this.restoreSerializedScene(JSON.parse(nextSnapshot) as SerializedAssetScene);
-    this.updateToolbarState();
+    await this.sessionController.redo();
   }
 
   private saveSceneToFile() {
-    const blob = new Blob([this.getSerializedSceneText()], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "asset-scene.v1.json";
-    anchor.click();
-    URL.revokeObjectURL(url);
-    this.setStatusNotice("Scene saved as asset-scene.v1.json");
+    this.sessionController.exportToFile();
   }
 
   private async loadSceneFromFile(file: File) {
-    try {
-      const text = await file.text();
-      const parsed = parseSerializedAssetScene(JSON.parse(text) as unknown);
-      if (!parsed) {
-        this.setStatusNotice("Load failed: invalid scene file format or unsupported version.");
-        return;
-      }
-
-      await this.restoreSerializedScene(parsed);
-      this.resetHistory();
-      this.setStatusNotice(`Scene loaded: ${file.name}`);
-    } catch {
-      this.setStatusNotice(`Load failed: could not read ${file.name}.`);
-    }
+    await this.sessionController.importFromFile(file);
   }
 
   private updateToolbarState() {
     this.syncToolbarUi();
-    return;
-    this.ui.snapToggle.classList.toggle("is-active", this.snapEnabled);
-    this.ui.selectionModeButton.classList.toggle("is-active", this.mode === "select");
-    this.ui.placementModeButton.classList.toggle("is-active", this.mode === "place");
-    this.ui.settingsButton.classList.toggle("is-active", this.settingsMenuOpen);
-    this.ui.undoButton.disabled = !this.history.canUndo;
-    this.ui.redoButton.disabled = !this.history.canRedo;
-    this.ui.deleteSelectedButton.disabled = !this.selectedObjectId;
-    this.ui.clearSceneButton.disabled = this.objects.size === 0;
-    this.ui.gridSizeSelect.value = String(this.gridSize);
-    this.ui.rotationSelect.value = String(this.rotationStepDegrees);
-    this.ui.environmentToggle.checked = this.settings.environmentEnabled;
-    this.ui.settingsMenu.hidden = !this.settingsMenuOpen;
   }
 
   private updateStatus() {
     this.syncStatusUi();
-    return;
-    const activeAsset = this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId) : null;
-    this.ui.statusMode.textContent = this.mode === "place" ? "Placement" : "Selection";
-    this.ui.statusAsset.textContent = activeAsset ? activeAsset.name : "None";
-    this.ui.statusGrid.textContent = this.snapEnabled
-      ? `${this.gridSize}u · ${this.rotationStepDegrees}deg`
-      : `Free · ${this.rotationStepDegrees}deg`;
-    this.ui.statusHint.textContent =
-      this.mode === "place"
-        ? "R rotate · Click or Enter place · Esc cancel"
-        : "Click object select · Delete remove · R rotate";
   }
 
   private setStatusNotice(message: string | null) {
@@ -720,7 +583,7 @@ export class ModularEditorApp {
     }
 
     const template = await this.getAssetTemplate(asset);
-    const preview = await this.instantiateAsset(asset, true);
+    const preview = await instantiateAsset(asset, true, template, this.scene);
     if (!preview) {
       return;
     }
@@ -741,7 +604,8 @@ export class ModularEditorApp {
       return;
     }
 
-    const root = await this.instantiateAsset(asset, false);
+    const template = await this.getAssetTemplate(asset);
+    const root = await instantiateAsset(asset, false, template, this.scene);
     if (!root) {
       return;
     }
@@ -768,38 +632,6 @@ export class ModularEditorApp {
     }
   }
 
-  private async instantiateAsset(asset: AssetDefinition, preview: boolean) {
-    const template = await this.getAssetTemplate(asset);
-    const root = template.root.clone(`${asset.id}-${preview ? "preview" : "instance"}`);
-    if (!root) {
-      return null;
-    }
-
-    root.setEnabled(true);
-    root.position.set(0, 0, 0);
-    root.rotationQuaternion = null;
-    root.rotation.set(0, 0, 0);
-    root.scaling.setAll(1);
-    root.metadata = { assetId: asset.id, templateSize: template.size.asArray() };
-
-    root.getChildTransformNodes().forEach((node) => {
-      node.setEnabled(true);
-    });
-
-    root.getChildMeshes().forEach((mesh) => {
-      mesh.setEnabled(true);
-      mesh.isPickable = !preview;
-      mesh.showBoundingBox = false;
-      mesh.visibility = 1;
-      if (preview) {
-        mesh.material = clonePreviewMaterial(mesh.material, asset.placeholder.color, this.scene);
-        mesh.visibility = 0.72;
-      }
-    });
-
-    return root;
-  }
-
   private async getAssetTemplate(asset: AssetDefinition): Promise<AssetTemplate> {
     if (!this.assetTemplates.has(asset.id)) {
       this.assetTemplates.set(asset.id, this.loadAssetTemplate(asset));
@@ -808,98 +640,22 @@ export class ModularEditorApp {
   }
 
   private async loadAssetTemplate(asset: AssetDefinition): Promise<AssetTemplate> {
-    try {
-      const importResult = await SceneLoader.ImportMeshAsync("", "/assets/glTF/", asset.fileName, this.scene);
-      const root = new TransformNode(`template-${asset.id}`, this.scene);
-
-      [...importResult.transformNodes, ...importResult.meshes].forEach((node) => {
-        if (!node.parent && node !== root) {
-          node.parent = root;
-        }
-      });
-
-      const size = this.normalizeTemplateRoot(root);
-      root.setEnabled(false);
-      return { root, size };
-    } catch {
-      const root = this.createPlaceholderTemplate(asset);
-      const size = this.normalizeTemplateRoot(root);
-      root.setEnabled(false);
-      return { root, size };
-    }
-  }
-
-  private createPlaceholderTemplate(asset: AssetDefinition) {
-    const root = new TransformNode(`template-${asset.id}`, this.scene);
-    const material = new StandardMaterial(`${asset.id}-material`, this.scene);
-    material.diffuseColor = Color3.FromHexString(asset.placeholder.color);
-    material.specularColor = new Color3(0.1, 0.1, 0.1);
-
-    const [width, height, depth] = asset.placeholder.size;
-    const mesh =
-      asset.placeholder.shape === "column"
-        ? MeshBuilder.CreateCylinder(`${asset.id}-mesh`, { diameter: width, height }, this.scene)
-        : MeshBuilder.CreateBox(`${asset.id}-mesh`, { width, height, depth }, this.scene);
-
-    mesh.material = material;
-    mesh.parent = root;
-
-    if (asset.id === "door-frame") {
-      const lintel = MeshBuilder.CreateBox(`${asset.id}-lintel`, { width, height: 0.3, depth }, this.scene);
-      lintel.position.y = height / 2 - 0.15;
-      lintel.material = material;
-      lintel.parent = root;
-    }
-
-    return root;
-  }
-
-  private normalizeTemplateRoot(root: TransformNode) {
-    const bounds = root.getHierarchyBoundingVectors();
-    const centerX = (bounds.min.x + bounds.max.x) / 2;
-    const centerZ = (bounds.min.z + bounds.max.z) / 2;
-    const minY = bounds.min.y;
-
-    root
-      .getChildren((node) => node.parent === root)
-      .forEach((child) => {
-        if (child instanceof TransformNode) {
-          child.position.x -= centerX;
-          child.position.y -= minY;
-          child.position.z -= centerZ;
-        }
-      });
-
-    const normalizedBounds = root.getHierarchyBoundingVectors();
-    return normalizedBounds.max.subtract(normalizedBounds.min);
+    return loadAssetTemplate(asset, this.scene);
   }
 
   private renderGrid() {
-    this.gridMesh?.dispose();
-    const lines: Vector3[][] = [];
-
-    for (let offset = -GRID_EXTENT; offset <= GRID_EXTENT; offset += this.gridSize) {
-      lines.push([new Vector3(offset, 0.01, -GRID_EXTENT), new Vector3(offset, 0.01, GRID_EXTENT)]);
-      lines.push([new Vector3(-GRID_EXTENT, 0.01, offset), new Vector3(GRID_EXTENT, 0.01, offset)]);
-    }
-
-    this.gridMesh = MeshBuilder.CreateLineSystem("editor-grid", { lines }, this.scene);
-    this.gridMesh.color = new Color3(0.23, 0.25, 0.28);
-    this.gridMesh.alpha = 0.45;
-    this.gridMesh.isPickable = false;
+    this.gridMesh = this.sceneCore.renderGrid(this.gridMesh, this.gridSize);
   }
 
   private updatePreviewTransform() {
-    if (!this.placementPreview) {
-      return;
-    }
-
-    const point = this.snapEnabled
-      ? snapVectorForSize(this.lastPointerPoint, this.previewTemplateSize, this.snapEnabled, this.gridSize)
-      : this.lastPointerPoint.clone();
-    this.placementPreview.position.set(point.x, 0, point.z);
-    this.placementPreview.rotationQuaternion = null;
-    this.placementPreview.rotation.set(0, this.toRadians(this.previewRotationDegrees), 0);
+    this.sceneCore.updatePreviewTransform(
+      this.placementPreview,
+      this.lastPointerPoint,
+      this.previewTemplateSize,
+      this.snapEnabled,
+      this.gridSize,
+      this.toRadians(this.previewRotationDegrees),
+    );
   }
 
   private snapSelectedObject() {
@@ -1006,25 +762,16 @@ export class ModularEditorApp {
   }
 
   private disposePreview() {
-    this.placementPreview?.dispose(false, false);
-    this.placementPreview = null;
+    this.placementPreview = this.sceneCore.disposePreview(this.placementPreview);
     this.previewAssetId = null;
   }
 
   private applySnapSettings() {
-    if (this.gizmoManager.gizmos.positionGizmo) {
-      this.gizmoManager.gizmos.positionGizmo.snapDistance = this.snapEnabled ? this.gridSize : 0;
-    }
-    if (this.gizmoManager.gizmos.rotationGizmo) {
-      this.gizmoManager.gizmos.rotationGizmo.yGizmo.snapDistance = this.snapEnabled
-        ? this.toRadians(this.rotationStepDegrees)
-        : 0;
-    }
+    this.sceneCore.applySnapSettings(this.snapEnabled, this.gridSize, this.toRadians(this.rotationStepDegrees));
   }
 
   private applyEnvironmentSetting() {
-    this.scene.environmentTexture = this.settings.environmentEnabled ? this.defaultEnvironment?.environmentTexture ?? null : null;
-    this.scene.environmentIntensity = this.settings.environmentEnabled ? 0.75 : 0;
+    this.sceneCore.applyEnvironmentSetting(this.defaultEnvironment?.environmentTexture ?? null, this.settings.environmentEnabled);
   }
 
   private saveUserSettings() {
@@ -1032,21 +779,11 @@ export class ModularEditorApp {
   }
 
   private findObjectRoot(mesh: Nullable<AbstractMesh>) {
-    let current: Nullable<AbstractMesh | TransformNode> = mesh;
-    while (current) {
-      const objectId = current.metadata?.objectId as string | undefined;
-      if (objectId) {
-        return current as TransformNode;
-      }
-      current = current.parent as Nullable<AbstractMesh | TransformNode>;
-    }
-    return null;
+    return this.sceneCore.findObjectRoot(mesh);
   }
 
   private tagHierarchy(root: TransformNode, objectId: string) {
-    root.getChildMeshes().forEach((mesh) => {
-      mesh.metadata = { ...(mesh.metadata ?? {}), objectId };
-    });
+    this.sceneCore.tagHierarchy(root, objectId);
   }
 
   private toRadians(valueDegrees: number) {
@@ -1224,3 +961,4 @@ export function buildEditorMarkup() {
     </section>
   `;
 }
+
