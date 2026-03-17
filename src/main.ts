@@ -1,6 +1,7 @@
 import "./babylon-bootstrap";
 import "./style.css";
-import { buildEditorMarkup, createEditorUi, ModularEditorApp } from "./editor";
+import { ModularEditorApp } from "./editor";
+import { buildEditorMarkup, createEditorUi } from "./editor/ui";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
