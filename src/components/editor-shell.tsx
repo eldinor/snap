@@ -42,6 +42,8 @@ interface EditorToolbarProps {
   onToggleExportMenu: () => void;
   onToggleSettingsMenu: () => void;
   onEnvironmentToggle: (enabled: boolean) => void;
+  onEnvironmentIntensityChange: (value: number) => void;
+  onLightIntensityChange: (value: number) => void;
 }
 
 function EditorToolbar(props: EditorToolbarProps) {
@@ -217,6 +219,40 @@ function EditorToolbar(props: EditorToolbarProps) {
                   }}
                 />
                 <span className="setting-slider" aria-hidden="true"></span>
+              </span>
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Environment Intensity</span>
+              <span className="setting-meter-row">
+                <input
+                  className="setting-range"
+                  type="range"
+                  min="0"
+                  max="4"
+                  step="0.05"
+                  value={toolbar.environmentIntensity}
+                  onChange={(event) => {
+                    props.onEnvironmentIntensityChange(Number(event.target.value));
+                  }}
+                />
+                <span className="setting-value">{toolbar.environmentIntensity.toFixed(2)}</span>
+              </span>
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Light Intensity</span>
+              <span className="setting-meter-row">
+                <input
+                  className="setting-range"
+                  type="range"
+                  min="0"
+                  max="4"
+                  step="0.05"
+                  value={toolbar.lightIntensity}
+                  onChange={(event) => {
+                    props.onLightIntensityChange(Number(event.target.value));
+                  }}
+                />
+                <span className="setting-value">{toolbar.lightIntensity.toFixed(2)}</span>
               </span>
             </label>
           </div>
@@ -427,6 +463,8 @@ interface EditorShellProps {
   onToggleExportMenu: () => void;
   onToggleSettingsMenu: () => void;
   onEnvironmentToggle: (enabled: boolean) => void;
+  onEnvironmentIntensityChange: (value: number) => void;
+  onLightIntensityChange: (value: number) => void;
 }
 
 export function EditorShell(props: EditorShellProps) {
@@ -454,6 +492,8 @@ export function EditorShell(props: EditorShellProps) {
         onToggleExportMenu={props.onToggleExportMenu}
         onToggleSettingsMenu={props.onToggleSettingsMenu}
         onEnvironmentToggle={props.onEnvironmentToggle}
+        onEnvironmentIntensityChange={props.onEnvironmentIntensityChange}
+        onLightIntensityChange={props.onLightIntensityChange}
       />
       <div className="workspace">
         <AssetSidebar

@@ -3,6 +3,7 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { LinesMesh } from "@babylonjs/core/Meshes/linesMesh";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
@@ -42,9 +43,15 @@ export class SceneCoreController {
     }
   }
 
-  applyEnvironmentSetting(environmentTexture: Scene["environmentTexture"], enabled: boolean) {
-    this.scene.environmentTexture = enabled ? environmentTexture ?? null : null;
-    this.scene.environmentIntensity = enabled ? 0.75 : 0;
+  applyEnvironmentSetting(
+    environmentTexture: Scene["environmentTexture"],
+    enabled: boolean,
+    intensity: number,
+    skybox: Nullable<Mesh>,
+  ) {
+    this.scene.environmentTexture = enabled ? (environmentTexture ?? null) : null;
+    this.scene.environmentIntensity = enabled ? intensity : 0;
+    skybox?.setEnabled(enabled);
   }
 
   updatePreviewTransform(

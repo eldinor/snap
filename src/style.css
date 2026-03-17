@@ -240,8 +240,34 @@ select:focus-visible {
   font-size: 12px;
 }
 
+.setting-stack {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  color: #d8e0e7;
+  font-size: 12px;
+}
+
 .setting-copy {
   min-width: 0;
+}
+
+.setting-meter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.setting-range {
+  width: 100%;
+  margin: 0;
+}
+
+.setting-value {
+  min-width: 34px;
+  color: #aab6c1;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .setting-switch {

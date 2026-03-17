@@ -10,6 +10,8 @@ export interface ToolbarViewState {
   gridSize: number;
   rotationStepDegrees: number;
   environmentEnabled: boolean;
+  environmentIntensity: number;
+  lightIntensity: number;
 }
 
 export interface StatusViewState {
@@ -57,6 +59,8 @@ export function createInitialEditorViewState(): EditorViewState {
       gridSize: 1,
       rotationStepDegrees: 90,
       environmentEnabled: false,
+      environmentIntensity: 1.75,
+      lightIntensity: 1.1,
     },
     status: {
       mode: "select",

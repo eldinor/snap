@@ -125,6 +125,12 @@ export function App() {
       onEnvironmentToggle={(enabled) => {
         appRef.current?.setEnvironmentEnabled(enabled);
       }}
+      onEnvironmentIntensityChange={(value) => {
+        appRef.current?.setEnvironmentIntensity(value);
+      }}
+      onLightIntensityChange={(value) => {
+        appRef.current?.setLightIntensity(value);
+      }}
     />
   );
 }

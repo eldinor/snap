@@ -3,7 +3,9 @@ import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
-import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
+import type { EnvironmentHelper } from "@babylonjs/core/Helpers/environmentHelper";
+import type { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
+import { HemisphericLight as BabylonHemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -66,8 +68,10 @@ export class ModularEditorApp {
   private readonly camera: ArcRotateCamera;
   private readonly gizmoManager: GizmoManager;
   private readonly ground: Mesh;
+  private readonly mainLight: HemisphericLight;
   private readonly onViewStateChange;
-  private readonly defaultEnvironment;
+  private readonly defaultEnvironment: EnvironmentHelper | null;
+  private readonly defaultEnvironmentTexture: Scene["environmentTexture"];
   private readonly assetTemplates = new Map<string, Promise<AssetTemplate>>();
   private readonly objects = new Map<string, EditorObject>();
   private readonly settings: UserSettings;
@@ -101,7 +105,9 @@ export class ModularEditorApp {
     this.defaultEnvironment = this.scene.createDefaultEnvironment({
       createGround: false,
       createSkybox: false,
+      environmentTexture: "/photoStudio.env",
     });
+    this.defaultEnvironmentTexture = this.scene.environmentTexture;
     this.settings = loadUserSettings();
     this.sessionController = new SceneSessionController({
       history: this.history,
@@ -123,9 +129,9 @@ export class ModularEditorApp {
     this.camera.wheelDeltaPercentage = 0.02;
     this.camera.attachControl(options.canvas, true);
 
-    const light = new HemisphericLight("light", new Vector3(0.4, 1, 0.2), this.scene);
-    light.intensity = 1.1;
-    light.groundColor = new Color3(0.06, 0.07, 0.08);
+    this.mainLight = new BabylonHemisphericLight("light", new Vector3(0.4, 1, 0.2), this.scene);
+    this.mainLight.intensity = this.settings.lightIntensity;
+    this.mainLight.groundColor = new Color3(0.06, 0.07, 0.08);
 
     this.ground = MeshBuilder.CreateGround("ground", { width: 80, height: 80 }, this.scene);
     const groundMaterial = new StandardMaterial("ground-material", this.scene);
@@ -321,6 +327,8 @@ export class ModularEditorApp {
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
       environmentEnabled: this.settings.environmentEnabled,
+      environmentIntensity: this.settings.environmentIntensity,
+      lightIntensity: this.settings.lightIntensity,
     };
   }
 
@@ -625,7 +633,16 @@ export class ModularEditorApp {
   }
 
   private applyEnvironmentSetting() {
-    this.sceneCore.applyEnvironmentSetting(this.defaultEnvironment?.environmentTexture ?? null, this.settings.environmentEnabled);
+    this.sceneCore.applyEnvironmentSetting(
+      this.defaultEnvironmentTexture ?? null,
+      this.settings.environmentEnabled,
+      this.settings.environmentIntensity,
+      this.defaultEnvironment?.skybox ?? null,
+    );
+  }
+
+  private applyLightIntensity() {
+    this.mainLight.intensity = this.settings.lightIntensity;
   }
 
   private saveUserSettings() {
@@ -751,6 +768,30 @@ export class ModularEditorApp {
 
     this.settings.environmentEnabled = enabled;
     this.applyEnvironmentSetting();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setEnvironmentIntensity(intensity: number) {
+    const nextIntensity = Number.isFinite(intensity) ? Math.min(4, Math.max(0, intensity)) : this.settings.environmentIntensity;
+    if (this.settings.environmentIntensity === nextIntensity) {
+      return;
+    }
+
+    this.settings.environmentIntensity = nextIntensity;
+    this.applyEnvironmentSetting();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setLightIntensity(intensity: number) {
+    const nextIntensity = Number.isFinite(intensity) ? Math.min(4, Math.max(0, intensity)) : this.settings.lightIntensity;
+    if (this.settings.lightIntensity === nextIntensity) {
+      return;
+    }
+
+    this.settings.lightIntensity = nextIntensity;
+    this.applyLightIntensity();
     this.saveUserSettings();
     this.emitViewState();
   }
