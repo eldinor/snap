@@ -77,6 +77,16 @@ export function ExportIcon(props: IconProps) {
   );
 }
 
+export function SaveIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M5 4.5h8l2 2v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1Z" />
+      <path d="M7 4.8v4h5v-4" />
+      <path d="M8 13.2h4" />
+    </IconBase>
+  );
+}
+
 export function ImportIcon(props: IconProps) {
   return (
     <IconBase {...props}>

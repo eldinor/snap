@@ -7,6 +7,7 @@ import {
   ImportIcon,
   PlaceIcon,
   RedoIcon,
+  SaveIcon,
   SaveLoadIcon,
   SelectIcon,
   SettingsIcon,
@@ -29,6 +30,7 @@ interface EditorToolbarProps {
   onPlaceMode: () => void;
   onUndo: () => void;
   onRedo: () => void;
+  onSaveScene: () => void;
   onExportJson: () => void;
   onImportJson: () => void;
   onImportFile: (file: File) => void;
@@ -118,6 +120,12 @@ function EditorToolbar(props: EditorToolbarProps) {
           <span className="tool-button-content">
             <RedoIcon className="tool-icon" />
             <span>Redo</span>
+          </span>
+        </button>
+        <button type="button" className="tool-button" onClick={props.onSaveScene}>
+          <span className="tool-button-content">
+            <SaveIcon className="tool-icon" />
+            <span>Save</span>
           </span>
         </button>
         <input
@@ -407,6 +415,7 @@ interface EditorShellProps {
   onPlaceMode: () => void;
   onUndo: () => void;
   onRedo: () => void;
+  onSaveScene: () => void;
   onExportJson: () => void;
   onImportJson: () => void;
   onImportFile: (file: File) => void;
@@ -433,6 +442,7 @@ export function EditorShell(props: EditorShellProps) {
         onPlaceMode={props.onPlaceMode}
         onUndo={props.onUndo}
         onRedo={props.onRedo}
+        onSaveScene={props.onSaveScene}
         onExportJson={props.onExportJson}
         onImportJson={props.onImportJson}
         onImportFile={props.onImportFile}

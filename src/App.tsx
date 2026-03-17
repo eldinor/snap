@@ -83,6 +83,9 @@ export function App() {
       onRedo={() => {
         void appRef.current?.redo();
       }}
+      onSaveScene={() => {
+        appRef.current?.saveSceneToLocalStorage();
+      }}
       onExportJson={() => {
         appRef.current?.exportToFile();
         setExportMenuOpen(false);

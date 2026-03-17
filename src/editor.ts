@@ -17,7 +17,12 @@ import type { Nullable } from "@babylonjs/core/types";
 import { ASSETS, type AssetDefinition } from "./assets";
 import { instantiateAsset, loadAssetTemplate, type AssetTemplate } from "./editor/asset-runtime";
 import { SceneCoreController } from "./editor/scene-core-controller";
-import { loadAutosavedScene, saveAutosavedScene } from "./editor/scene-persistence";
+import {
+  loadAutosavedScene,
+  loadManualSavedScene,
+  saveAutosavedScene,
+  saveManualSavedScene,
+} from "./editor/scene-persistence";
 import { SceneSessionController } from "./editor/scene-session-controller";
 import { SnapshotHistory } from "./editor/snapshot-history";
 import {
@@ -685,19 +690,25 @@ export class ModularEditorApp {
     this.sessionController.exportToFile();
   }
 
+  saveSceneToLocalStorage() {
+    const scene = this.getSerializedScene();
+    saveManualSavedScene(scene);
+    this.setStatusNotice(`Scene saved to local storage (${scene.objects.length} objects).`);
+  }
+
   async importFromFile(file: File) {
     await this.sessionController.importFromFile(file);
   }
 
   async loadLastSavedScene() {
-    const autosaved = loadAutosavedScene();
-    if (!autosaved) {
-      this.setStatusNotice("No autosaved scene found in local storage.");
+    const saved = loadManualSavedScene();
+    if (!saved) {
+      this.setStatusNotice("No saved scene found in local storage.");
       return;
     }
 
-    await this.restoreSerializedScene(autosaved.scene);
-    this.statusNotice = `Loaded last saved scene (${autosaved.scene.objects.length} objects).`;
+    await this.restoreSerializedScene(saved.scene);
+    this.statusNotice = `Loaded last saved scene (${saved.scene.objects.length} objects).`;
     this.sessionController.resetHistory();
     this.emitViewState();
   }
