@@ -2,6 +2,7 @@ export type EditorMode = "select" | "place";
 
 export interface ToolbarViewState {
   snapEnabled: boolean;
+  ySnapEnabled: boolean;
   mode: EditorMode;
   canUndo: boolean;
   canRedo: boolean;
@@ -21,6 +22,7 @@ export interface StatusViewState {
   mode: EditorMode;
   activeAssetName: string | null;
   snapEnabled: boolean;
+  ySnapEnabled: boolean;
   gridSize: number;
   rotationStepDegrees: number;
   hint: string;
@@ -31,6 +33,8 @@ export interface SelectionViewState {
   selectedAssetName: string | null;
   activeAssetName: string | null;
   previewAssetName: string | null;
+  position: [number, number, number] | null;
+  rotationYDegrees: number | null;
   positionText: string | null;
   rotationText: string | null;
   snapText: string | null;
@@ -53,6 +57,7 @@ export interface EditorViewState {
   activeAssetId: string | null;
   previewAssetId: string | null;
   objectCount: number;
+  selectionCount: number;
   noticeMessage: string | null;
   lastManualSaveAt: string | null;
   lastRecoveredAutosaveAt: string | null;
@@ -67,10 +72,12 @@ export function createInitialEditorViewState(): EditorViewState {
     activeAssetId: null,
     previewAssetId: null,
     objectCount: 0,
+    selectionCount: 0,
     noticeMessage: null,
     sceneItems: [],
     toolbar: {
       snapEnabled: true,
+      ySnapEnabled: false,
       mode: "select",
       canUndo: false,
       canRedo: false,
@@ -78,11 +85,11 @@ export function createInitialEditorViewState(): EditorViewState {
       hasObjects: false,
       gridSize: 1,
       rotationStepDegrees: 90,
-      environmentEnabled: false,
-      environmentIntensity: 1.75,
+      environmentEnabled: true,
+      environmentIntensity: 0.1,
       lightIntensity: 1.1,
       gridVisible: true,
-      gridColor: "#3b4047",
+      gridColor: "#292f38",
       groundColor: "#1f2326",
     },
     lastManualSaveAt: null,
@@ -91,6 +98,7 @@ export function createInitialEditorViewState(): EditorViewState {
       mode: "select",
       activeAssetName: null,
       snapEnabled: true,
+      ySnapEnabled: false,
       gridSize: 1,
       rotationStepDegrees: 90,
       hint: "Click object select | Delete remove | R rotate",
@@ -100,6 +108,8 @@ export function createInitialEditorViewState(): EditorViewState {
       selectedAssetName: null,
       activeAssetName: null,
       previewAssetName: null,
+      position: null,
+      rotationYDegrees: null,
       positionText: null,
       rotationText: null,
       snapText: "Grid 1",

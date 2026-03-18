@@ -1,3 +1,5 @@
+import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -12,6 +14,14 @@ import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { snapVectorForSize } from "./placement";
 
 const GRID_EXTENT = 32;
+const HEIGHT_LABEL_TEXTURE_SIZE = 256;
+const HEIGHT_HELPER_FREE_HEX = "#8ac7ff";
+const HEIGHT_HELPER_SNAP_HEX = "#7ef0b8";
+const HEIGHT_LABEL_TEXT_HEX = "#eef7ff";
+const HEIGHT_LABEL_BG_FREE = "rgba(10, 18, 26, 0.86)";
+const HEIGHT_LABEL_BG_SNAP = "rgba(10, 26, 18, 0.88)";
+const HEIGHT_HELPER_MARKER_DIAMETER = 0.42;
+const HEIGHT_HELPER_MARKER_THICKNESS = 0.04;
 
 export class SceneCoreController {
   constructor(
@@ -37,6 +47,170 @@ export class SceneCoreController {
     nextGrid.alpha = 0.45;
     nextGrid.isPickable = false;
     return nextGrid;
+  }
+
+  renderVerticalHelper(verticalHelper: Nullable<LinesMesh>, root: TransformNode | null, ySnapEnabled: boolean) {
+    if (!root) {
+      verticalHelper?.dispose();
+      return null;
+    }
+
+    const bounds = root.getHierarchyBoundingVectors();
+    const helperTop = bounds.min.y;
+    if (helperTop <= 0.05) {
+      verticalHelper?.dispose();
+      return null;
+    }
+
+    const centerX = (bounds.min.x + bounds.max.x) * 0.5;
+    const centerZ = (bounds.min.z + bounds.max.z) * 0.5;
+    const points = [
+      new Vector3(centerX, 0.02, centerZ),
+      new Vector3(centerX, helperTop, centerZ),
+    ];
+
+    const nextHelper = verticalHelper
+      ? MeshBuilder.CreateLines("selection-vertical-helper", { points, instance: verticalHelper })
+      : MeshBuilder.CreateLines("selection-vertical-helper", { points, updatable: true }, this.scene);
+    const helperColor = Color3.FromHexString(ySnapEnabled ? HEIGHT_HELPER_SNAP_HEX : HEIGHT_HELPER_FREE_HEX);
+    nextHelper.color = helperColor;
+    nextHelper.alpha = 0.72;
+    nextHelper.isPickable = false;
+    nextHelper.alwaysSelectAsActiveMesh = true;
+    nextHelper.renderingGroupId = 2;
+    nextHelper.renderOverlay = true;
+    nextHelper.overlayColor = helperColor;
+    nextHelper.overlayAlpha = 0.9;
+    return nextHelper;
+  }
+
+  renderHeightLabel(heightLabel: Nullable<Mesh>, root: TransformNode | null, ySnapEnabled: boolean) {
+    if (!root) {
+      heightLabel?.dispose(false, false);
+      return null;
+    }
+
+    const bounds = root.getHierarchyBoundingVectors();
+    const helperTop = bounds.min.y;
+    if (helperTop <= 0.05) {
+      heightLabel?.dispose(false, false);
+      return null;
+    }
+
+    const centerX = (bounds.min.x + bounds.max.x) * 0.5;
+    const centerZ = (bounds.min.z + bounds.max.z) * 0.5;
+    const labelText = `${helperTop.toFixed(2)}u`;
+
+    const nextLabel =
+      heightLabel ??
+      MeshBuilder.CreatePlane(
+        "selection-height-label",
+        { width: 1.35, height: 0.38 },
+        this.scene,
+      );
+
+    nextLabel.billboardMode = Mesh.BILLBOARDMODE_ALL;
+    nextLabel.isPickable = false;
+    nextLabel.alwaysSelectAsActiveMesh = true;
+    nextLabel.position.set(centerX + 0.45, Math.max(0.3, helperTop * 0.5), centerZ);
+    nextLabel.renderingGroupId = 2;
+    nextLabel.renderOverlay = false;
+    nextLabel.overlayAlpha = 0;
+
+    let labelMaterial = nextLabel.material as StandardMaterial | null;
+    let labelTexture = labelMaterial?.diffuseTexture as DynamicTexture | null;
+
+    if (!labelMaterial || !labelTexture) {
+      labelTexture = new DynamicTexture(
+        "selection-height-label-texture",
+        { width: HEIGHT_LABEL_TEXTURE_SIZE, height: HEIGHT_LABEL_TEXTURE_SIZE / 2 },
+        this.scene,
+        true,
+      );
+      labelMaterial = new StandardMaterial("selection-height-label-material", this.scene);
+      labelMaterial.diffuseTexture = labelTexture;
+      labelMaterial.opacityTexture = labelTexture;
+      labelMaterial.emissiveColor = Color3.White();
+      labelMaterial.disableLighting = true;
+      labelMaterial.backFaceCulling = false;
+      labelMaterial.depthFunction = 519;
+      labelMaterial.forceDepthWrite = false;
+      labelMaterial.zOffset = -2;
+      nextLabel.material = labelMaterial;
+    }
+
+    const context = labelTexture.getContext();
+    const textureWidth = labelTexture.getSize().width;
+    const textureHeight = labelTexture.getSize().height;
+    context.clearRect(0, 0, textureWidth, textureHeight);
+    context.fillStyle = ySnapEnabled ? HEIGHT_LABEL_BG_SNAP : HEIGHT_LABEL_BG_FREE;
+    context.fillRect(8, 8, textureWidth - 16, textureHeight - 16);
+    context.strokeStyle = ySnapEnabled ? "rgba(126, 240, 184, 0.95)" : "rgba(138, 199, 255, 0.95)";
+    context.lineWidth = 6;
+    context.strokeRect(8, 8, textureWidth - 16, textureHeight - 16);
+    context.fillStyle = HEIGHT_LABEL_TEXT_HEX;
+    context.font = "bold 54px Segoe UI";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(labelText, textureWidth / 2, textureHeight / 2);
+    labelTexture.update();
+
+    return nextLabel;
+  }
+
+  renderVerticalHelperMarker(marker: Nullable<Mesh>, root: TransformNode | null, ySnapEnabled: boolean) {
+    if (!root) {
+      marker?.dispose(false, false);
+      return null;
+    }
+
+    const bounds = root.getHierarchyBoundingVectors();
+    const helperTop = bounds.min.y;
+    if (helperTop <= 0.05) {
+      marker?.dispose(false, false);
+      return null;
+    }
+
+    const centerX = (bounds.min.x + bounds.max.x) * 0.5;
+    const centerZ = (bounds.min.z + bounds.max.z) * 0.5;
+    const nextMarker =
+      marker ??
+      MeshBuilder.CreateTorus(
+        "selection-vertical-helper-marker",
+        {
+          diameter: HEIGHT_HELPER_MARKER_DIAMETER,
+          thickness: HEIGHT_HELPER_MARKER_THICKNESS,
+          tessellation: 32,
+        },
+        this.scene,
+      );
+
+    nextMarker.position.set(centerX, 0.025, centerZ);
+    nextMarker.rotation.x = Math.PI / 2;
+    nextMarker.isPickable = false;
+    nextMarker.alwaysSelectAsActiveMesh = true;
+    nextMarker.renderingGroupId = 2;
+    nextMarker.renderOverlay = true;
+    nextMarker.overlayColor = Color3.FromHexString(ySnapEnabled ? HEIGHT_HELPER_SNAP_HEX : HEIGHT_HELPER_FREE_HEX);
+    nextMarker.overlayAlpha = 0.9;
+
+    let markerMaterial = nextMarker.material as StandardMaterial | null;
+    if (!markerMaterial) {
+      markerMaterial = new StandardMaterial("selection-vertical-helper-marker-material", this.scene);
+      markerMaterial.disableLighting = true;
+      markerMaterial.backFaceCulling = false;
+      markerMaterial.depthFunction = 519;
+      markerMaterial.forceDepthWrite = false;
+      markerMaterial.zOffset = -2;
+      nextMarker.material = markerMaterial;
+    }
+
+    const markerColor = Color3.FromHexString(ySnapEnabled ? HEIGHT_HELPER_SNAP_HEX : HEIGHT_HELPER_FREE_HEX);
+    markerMaterial.emissiveColor = markerColor;
+    markerMaterial.diffuseColor = markerColor.scale(0.15);
+    markerMaterial.specularColor = Color3.Black();
+
+    return nextMarker;
   }
 
   applySnapSettings(snapEnabled: boolean, gridSize: number, rotationStepRadians: number) {

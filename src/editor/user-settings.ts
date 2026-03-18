@@ -40,5 +40,9 @@ export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSe
 }
 
 export function saveUserSettings(settings: UserSettings, storageKey = USER_SETTINGS_STORAGE_KEY) {
-  window.localStorage.setItem(storageKey, JSON.stringify(settings));
+  try {
+    window.localStorage.setItem(storageKey, JSON.stringify(settings));
+  } catch {
+    // Ignore persistence failures so the editor keeps working normally.
+  }
 }

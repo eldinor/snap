@@ -36,6 +36,7 @@ import {
 } from "./editor/scene-serialization";
 import {
   snapAngle as snapPlacementAngle,
+  snapScalar,
   snapVectorForSize,
 } from "./editor/placement";
 import {
@@ -97,8 +98,77 @@ export class ModularEditorApp {
   private readonly sceneCore: SceneCoreController;
   private readonly sessionController: SceneSessionController;
   private readonly resizeObserver: ResizeObserver;
+  private readonly handleWindowResize = () => {
+    this.engine.resize();
+  };
+  private readonly handleWindowKeyDown = async (event: KeyboardEvent) => {
+    const target = event.target as HTMLElement | null;
+    if (target && (target.tagName === "INPUT" || target.tagName === "SELECT")) {
+      return;
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
+      event.preventDefault();
+      if (event.shiftKey) {
+        await this.sessionController.redo();
+      } else {
+        await this.sessionController.undo();
+      }
+      return;
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") {
+      event.preventDefault();
+      await this.sessionController.redo();
+      return;
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+      event.preventDefault();
+      this.saveSceneToLocalStorage();
+      return;
+    }
+
+    if (event.shiftKey && event.key.toLowerCase() === "d") {
+      event.preventDefault();
+      await this.duplicateSelectedObject();
+      return;
+    }
+
+    if (event.shiftKey && event.key.toLowerCase() === "f") {
+      event.preventDefault();
+      this.frameSelectedObject();
+      return;
+    }
+
+    if (event.key.toLowerCase() === "r") {
+      event.preventDefault();
+      this.rotateActiveTarget();
+    }
+
+    if (event.key === "Delete") {
+      event.preventDefault();
+      this.deleteSelectedObject();
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      this.mode = "select";
+      this.disposePreview();
+      this.emitViewState();
+    }
+
+    if (event.key === "Enter" && this.mode === "place" && this.previewAssetId && this.placementPreview) {
+      event.preventDefault();
+      await this.placeActiveAsset();
+    }
+  };
 
   private gridMesh: Nullable<LinesMesh> = null;
+  private selectionVerticalHelper: Nullable<LinesMesh> = null;
+  private selectionHeightLabel: Nullable<Mesh> = null;
+  private selectionVerticalHelperMarker: Nullable<Mesh> = null;
+  private selectionHelperVisualsEnabled = true;
   private activeAssetId: string | null = null;
   private selectedObjectId: string | null = null;
   private placementPreview: TransformNode | null = null;
@@ -106,6 +176,7 @@ export class ModularEditorApp {
   private previewTemplateSize = new Vector3(1, 1, 1);
   private mode: "select" | "place" = "select";
   private snapEnabled = true;
+  private ySnapEnabled = false;
   private gridSize = 1;
   private rotationStepDegrees = 90;
   private previewRotationDegrees = 0;
@@ -220,12 +291,24 @@ export class ModularEditorApp {
     void this.initializePersistence();
 
     this.engine.runRenderLoop(() => {
+      if (this.selectionHelperVisualsEnabled) {
+        try {
+          this.renderSelectionVerticalHelper();
+        } catch {
+          this.selectionHelperVisualsEnabled = false;
+          this.selectionVerticalHelper?.dispose();
+          this.selectionVerticalHelper = null;
+          this.selectionHeightLabel?.dispose(false, false);
+          this.selectionHeightLabel = null;
+          this.selectionVerticalHelperMarker?.dispose(false, false);
+          this.selectionVerticalHelperMarker = null;
+          this.setStatusNotice("Selection height helper was disabled after a rendering error.");
+        }
+      }
       this.scene.render();
     });
 
-    window.addEventListener("resize", () => {
-      this.engine.resize();
-    });
+    window.addEventListener("resize", this.handleWindowResize);
 
     this.resizeObserver = new ResizeObserver(() => {
       this.engine.resize();
@@ -281,68 +364,7 @@ export class ModularEditorApp {
   }
 
   private bindShortcuts() {
-    window.addEventListener("keydown", async (event) => {
-      const target = event.target as HTMLElement | null;
-      if (target && (target.tagName === "INPUT" || target.tagName === "SELECT")) {
-        return;
-      }
-
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
-        event.preventDefault();
-        if (event.shiftKey) {
-          await this.sessionController.redo();
-        } else {
-          await this.sessionController.undo();
-        }
-        return;
-      }
-
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") {
-        event.preventDefault();
-        await this.sessionController.redo();
-        return;
-      }
-
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
-        event.preventDefault();
-        this.saveSceneToLocalStorage();
-        return;
-      }
-
-      if (event.shiftKey && event.key.toLowerCase() === "d") {
-        event.preventDefault();
-        await this.duplicateSelectedObject();
-        return;
-      }
-
-      if (event.shiftKey && event.key.toLowerCase() === "f") {
-        event.preventDefault();
-        this.frameSelectedObject();
-        return;
-      }
-
-      if (event.key.toLowerCase() === "r") {
-        event.preventDefault();
-        this.rotateActiveTarget();
-      }
-
-      if (event.key === "Delete") {
-        event.preventDefault();
-        this.deleteSelectedObject();
-      }
-
-      if (event.key === "Escape") {
-        event.preventDefault();
-        this.mode = "select";
-        this.disposePreview();
-        this.emitViewState();
-      }
-
-      if (event.key === "Enter" && this.mode === "place" && this.previewAssetId && this.placementPreview) {
-        event.preventDefault();
-        await this.placeActiveAsset();
-      }
-    });
+    window.addEventListener("keydown", this.handleWindowKeyDown);
   }
 
   private buildSelectionViewState(): SelectionViewState {
@@ -363,9 +385,11 @@ export class ModularEditorApp {
       selectedAssetName: selectedAsset?.name ?? selectedGroup?.name ?? null,
       activeAssetName: activeAsset?.name ?? null,
       previewAssetName: previewAsset?.name ?? null,
+      position: position ? [position.x, position.y, position.z] : null,
+      rotationYDegrees: rotationDegrees,
       positionText: position ? `${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}` : null,
       rotationText: rotationDegrees !== null ? `${rotationDegrees}deg` : null,
-      snapText: this.snapEnabled ? `Grid ${this.gridSize}` : "Off",
+      snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
     };
   }
 
@@ -399,7 +423,7 @@ export class ModularEditorApp {
           assetId: "",
           assetName: "Group",
           label: group.name,
-          selected: false,
+          selected: this.selectedGroupId === group.id,
           hidden: false,
           locked: false,
           type: "group",
@@ -490,6 +514,7 @@ export class ModularEditorApp {
   private buildToolbarViewState(): ToolbarViewState {
     return {
       snapEnabled: this.snapEnabled,
+      ySnapEnabled: this.ySnapEnabled,
       mode: this.mode,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
@@ -512,6 +537,7 @@ export class ModularEditorApp {
       mode: this.mode,
       activeAssetName: activeAsset?.name ?? null,
       snapEnabled: this.snapEnabled,
+      ySnapEnabled: this.ySnapEnabled,
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
       hint:
@@ -527,6 +553,7 @@ export class ModularEditorApp {
       activeAssetId: this.activeAssetId,
       previewAssetId: this.previewAssetId,
       objectCount: this.objects.size,
+      selectionCount: this.selectedObjectId || this.selectedGroupId ? 1 : 0,
       noticeMessage: this.statusNotice,
       lastManualSaveAt: this.lastManualSaveAt,
       lastRecoveredAutosaveAt: this.lastRecoveredAutosaveAt,
@@ -560,6 +587,7 @@ export class ModularEditorApp {
   private buildSceneMetadata(): SerializedAssetSceneMetadata {
     return {
       snapEnabled: this.snapEnabled,
+      ySnapEnabled: this.ySnapEnabled,
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
       environmentEnabled: this.settings.environmentEnabled,
@@ -579,6 +607,7 @@ export class ModularEditorApp {
 
   private getSerializedScene() {
     const serializableObjects: AssetSceneSerializableObject[] = Array.from(this.objects.values(), (object) => ({
+      id: object.id,
       assetId: object.assetId,
       position: [object.root.position.x, object.root.position.y, object.root.position.z],
       rotationYDegrees: this.toDegrees(object.root.rotation.y),
@@ -618,7 +647,11 @@ export class ModularEditorApp {
       root.position.set(entry.position[0], entry.position[1], entry.position[2]);
       root.rotation.y = this.toRadians(entry.rotationYDegrees);
 
-      const id = `object-${++this.objectSequence}`;
+      const id = typeof entry.id === "string" && entry.id ? entry.id : `object-${++this.objectSequence}`;
+      const numericObjectId = Number(id.replace("object-", ""));
+      if (Number.isFinite(numericObjectId)) {
+        this.objectSequence = Math.max(this.objectSequence, numericObjectId);
+      }
       const defaultName = `${asset.name} ${String(this.objectSequence).padStart(2, "0")}`;
       root.metadata = {
         objectId: id,
@@ -673,6 +706,9 @@ export class ModularEditorApp {
 
     if (typeof metadata.snapEnabled === "boolean") {
       this.snapEnabled = metadata.snapEnabled;
+    }
+    if (typeof metadata.ySnapEnabled === "boolean") {
+      this.ySnapEnabled = metadata.ySnapEnabled;
     }
     if (typeof metadata.gridSize === "number") {
       this.gridSize = metadata.gridSize;
@@ -808,6 +844,25 @@ export class ModularEditorApp {
     });
   }
 
+  private cleanupGroupAfterChildRemoval(groupId: string) {
+    const group = this.groups.get(groupId);
+    if (!group) {
+      return;
+    }
+
+    if (group.childIds.length === 0) {
+      if (this.selectedGroupId === groupId) {
+        this.selectedGroupId = null;
+      }
+      this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== groupId);
+      group.root.dispose();
+      this.groups.delete(groupId);
+      return;
+    }
+
+    this.recenterGroupRoot(groupId);
+  }
+
   private applyObjectVisibility(objectId: string) {
     const object = this.objects.get(objectId);
     if (!object) {
@@ -843,6 +898,36 @@ export class ModularEditorApp {
     }
 
     this.gizmoManager.attachToNode(object.root);
+  }
+
+  private getSelectedRoot() {
+    if (this.selectedGroupId) {
+      return this.groups.get(this.selectedGroupId)?.root ?? null;
+    }
+
+    if (!this.selectedObjectId) {
+      return null;
+    }
+
+    return this.objects.get(this.selectedObjectId)?.root ?? null;
+  }
+
+  private renderSelectionVerticalHelper() {
+    this.selectionVerticalHelper = this.sceneCore.renderVerticalHelper(
+      this.selectionVerticalHelper,
+      this.getSelectedRoot(),
+      this.ySnapEnabled,
+    );
+    this.selectionHeightLabel = this.sceneCore.renderHeightLabel(
+      this.selectionHeightLabel,
+      this.getSelectedRoot(),
+      this.ySnapEnabled,
+    );
+    this.selectionVerticalHelperMarker = this.sceneCore.renderVerticalHelperMarker(
+      this.selectionVerticalHelperMarker,
+      this.getSelectedRoot(),
+      this.ySnapEnabled,
+    );
   }
 
   private async ensurePreviewForAsset(assetId: string) {
@@ -954,10 +1039,12 @@ export class ModularEditorApp {
         const snapped = snapVectorForSize(group.root.position, new Vector3(1, 1, 1), this.snapEnabled, this.gridSize);
         group.root.position.x = snapped.x;
         group.root.position.z = snapped.z;
+        if (this.ySnapEnabled) {
+          group.root.position.y = snapScalar(group.root.position.y, this.gridSize);
+        }
         group.root.rotation.y = this.snapAngle(group.root.rotation.y);
       }
 
-      group.root.position.y = 0;
       this.emitViewState();
       return;
     }
@@ -978,10 +1065,12 @@ export class ModularEditorApp {
       const snapped = snapVectorForSize(object.root.position, templateSize, this.snapEnabled, this.gridSize);
       object.root.position.x = snapped.x;
       object.root.position.z = snapped.z;
+      if (this.ySnapEnabled) {
+        object.root.position.y = snapScalar(object.root.position.y, this.gridSize);
+      }
       object.root.rotation.y = this.snapAngle(object.root.rotation.y);
     }
 
-    object.root.position.y = 0;
     this.emitViewState();
   }
 
@@ -1247,6 +1336,108 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
+  toggleYSnap() {
+    this.ySnapEnabled = !this.ySnapEnabled;
+    this.emitViewState();
+  }
+
+  setSelectionPosition(axis: "x" | "y" | "z", value: number) {
+    if (!Number.isFinite(value)) {
+      return;
+    }
+
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group || group.root.position[axis] === value) {
+        return;
+      }
+
+      group.root.position[axis] = value;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const object = this.objects.get(this.selectedObjectId);
+    if (!object || object.root.position[axis] === value) {
+      return;
+    }
+
+    object.root.position[axis] = value;
+    if (object.parentId) {
+      this.recenterGroupRoot(object.parentId);
+    }
+    this.pushHistoryCheckpoint();
+    this.emitViewState();
+  }
+
+  setSelectionRotationDegrees(value: number) {
+    if (!Number.isFinite(value)) {
+      return;
+    }
+
+    const nextRadians = this.toRadians(value);
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group || group.root.rotation.y === nextRadians) {
+        return;
+      }
+
+      group.root.rotation.y = nextRadians;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const object = this.objects.get(this.selectedObjectId);
+    if (!object || object.root.rotation.y === nextRadians) {
+      return;
+    }
+
+    object.root.rotation.y = nextRadians;
+    this.refreshSelectionAttachment();
+    this.pushHistoryCheckpoint();
+    this.emitViewState();
+  }
+
+  dropSelectionToGround() {
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group || group.root.position.y === 0) {
+        return;
+      }
+
+      group.root.position.y = 0;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const object = this.objects.get(this.selectedObjectId);
+    if (!object || object.root.position.y === 0) {
+      return;
+    }
+
+    object.root.position.y = 0;
+    if (object.parentId) {
+      this.recenterGroupRoot(object.parentId);
+    }
+    this.pushHistoryCheckpoint();
+    this.emitViewState();
+  }
+
   enterSelectionMode() {
     if (this.mode === "select" && !this.placementPreview) {
       return;
@@ -1390,8 +1581,10 @@ export class ModularEditorApp {
     if (object.parentId) {
       const parentGroup = this.groups.get(object.parentId);
       if (parentGroup) {
+        object.root.setParent(null);
+        object.parentId = null;
         parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
-        this.recenterGroupRoot(parentGroup.id);
+        this.cleanupGroupAfterChildRemoval(parentGroup.id);
       }
     } else {
       this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
@@ -1406,12 +1599,14 @@ export class ModularEditorApp {
 
   private removeObjectFromParentContainer(object: EditorObject) {
     if (object.parentId) {
-      const parentGroup = this.groups.get(object.parentId);
+      const parentGroupId = object.parentId;
+      const parentGroup = this.groups.get(parentGroupId);
       if (parentGroup) {
         parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
       }
       object.root.setParent(null);
       object.parentId = null;
+      this.cleanupGroupAfterChildRemoval(parentGroupId);
       return;
     }
 
@@ -1462,7 +1657,10 @@ export class ModularEditorApp {
     if (previousParentId) {
       const previousGroup = this.groups.get(previousParentId);
       if (previousGroup) {
+        object.root.setParent(null);
+        object.parentId = null;
         previousGroup.childIds = previousGroup.childIds.filter((id) => id !== object.id);
+        this.cleanupGroupAfterChildRemoval(previousParentId);
       }
     } else {
       this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
@@ -1582,8 +1780,10 @@ export class ModularEditorApp {
       return;
     }
 
+    object.root.setParent(null);
+    object.parentId = null;
     parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
-    this.recenterGroupRoot(parentGroup.id);
+    this.cleanupGroupAfterChildRemoval(parentGroup.id);
     const groupRootIndex = this.sceneRootOrder.indexOf(parentGroup.id);
     this.insertObjectIntoRoot(object, groupRootIndex >= 0 ? groupRootIndex + 1 : this.sceneRootOrder.length);
     this.pushHistoryCheckpoint();
@@ -1769,6 +1969,11 @@ export class ModularEditorApp {
 
   destroy() {
     this.resizeObserver.disconnect();
+    window.removeEventListener("resize", this.handleWindowResize);
+    window.removeEventListener("keydown", this.handleWindowKeyDown);
+    this.selectionVerticalHelper?.dispose();
+    this.selectionHeightLabel?.dispose(false, false);
+    this.selectionVerticalHelperMarker?.dispose(false, false);
     this.disposePreview();
     this.scene.dispose();
     this.engine.dispose();

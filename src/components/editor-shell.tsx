@@ -42,6 +42,7 @@ interface EditorToolbarProps {
   settingsMenuOpen: boolean;
   importInputRef: RefObject<HTMLInputElement | null>;
   onToggleSnap: () => void;
+  onToggleYSnap: () => void;
   onSelectMode: () => void;
   onPlaceMode: () => void;
   onUndo: () => void;
@@ -93,6 +94,16 @@ function EditorToolbar(props: EditorToolbarProps) {
           <span className="tool-button-content">
             <SnapIcon className="tool-icon" />
             <span>Snap</span>
+          </span>
+        </button>
+        <button
+          type="button"
+          className={`tool-button${toolbar.ySnapEnabled ? " is-active" : ""}`}
+          onClick={props.onToggleYSnap}
+          title="Snap vertical movement to the grid"
+        >
+          <span className="tool-button-content">
+            <span>Y Snap</span>
           </span>
         </button>
         <label className="tool-field">
@@ -385,30 +396,150 @@ function AssetList(props: AssetListProps) {
 
 interface SelectionPanelProps {
   viewState: EditorViewState;
+  onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
+  onSelectionRotationChange: (value: number) => void;
+  onSelectionDropToGround: () => void;
 }
 
-function SelectionPanel({ viewState }: SelectionPanelProps) {
-  if (!viewState.selection.selectedAssetName) {
+function SelectionPanel(props: SelectionPanelProps) {
+  const { selection } = props.viewState;
+  const [draftPosition, setDraftPosition] = useState({ x: "", y: "", z: "" });
+  const [draftRotation, setDraftRotation] = useState("");
+
+  useEffect(() => {
+    const [x, y, z] = selection.position ?? [null, null, null];
+    setDraftPosition({
+      x: x === null ? "" : x.toFixed(2),
+      y: y === null ? "" : y.toFixed(2),
+      z: z === null ? "" : z.toFixed(2),
+    });
+    setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
+  }, [selection.position, selection.rotationYDegrees, selection.selectedObjectId]);
+
+  const commitPosition = (axis: "x" | "y" | "z") => {
+    const raw = draftPosition[axis].trim();
+    if (!raw) {
+      return;
+    }
+
+    const nextValue = Number(raw);
+    if (!Number.isFinite(nextValue)) {
+      return;
+    }
+
+    props.onSelectionPositionChange(axis, nextValue);
+  };
+
+  const commitRotation = () => {
+    const raw = draftRotation.trim();
+    if (!raw) {
+      return;
+    }
+
+    const nextValue = Number(raw);
+    if (!Number.isFinite(nextValue)) {
+      return;
+    }
+
+    props.onSelectionRotationChange(nextValue);
+  };
+
+  const resetDrafts = () => {
+    const [x, y, z] = selection.position ?? [null, null, null];
+    setDraftPosition({
+      x: x === null ? "" : x.toFixed(2),
+      y: y === null ? "" : y.toFixed(2),
+      z: z === null ? "" : z.toFixed(2),
+    });
+    setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
+  };
+
+  const handleTransformFieldKeyDown = (event: KeyboardEvent<HTMLInputElement>, commit: () => void) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      commit();
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      resetDrafts();
+    }
+  };
+
+  if (!selection.selectedAssetName) {
     return (
       <div className="properties-empty">
         <strong>No object selected.</strong>
-        <span>Active asset: {viewState.selection.activeAssetName ?? "None"}</span>
-        <span>Preview: {viewState.selection.previewAssetName ?? "None"}</span>
+        <span>Active asset: {selection.activeAssetName ?? "None"}</span>
+        <span>Preview: {selection.previewAssetName ?? "None"}</span>
         <span>Use Delete Selected for one item or Clear Scene for all.</span>
       </div>
     );
   }
 
+  const positionFields: Array<{ axis: "x" | "y" | "z"; label: string }> = [
+    { axis: "x", label: "X" },
+    { axis: "y", label: "Y" },
+    { axis: "z", label: "Z" },
+  ];
+
   return (
     <div className="properties-grid">
       <span className="properties-label">Asset</span>
-      <span>{viewState.selection.selectedAssetName}</span>
+      <span>{selection.selectedAssetName}</span>
       <span className="properties-label">Position</span>
-      <span>{viewState.selection.positionText ?? "-"}</span>
+      <div className="transform-fields">
+        {positionFields.map((field) => (
+          <label key={field.axis} className="transform-field">
+            <span>{field.label}</span>
+            <input
+              className="transform-input"
+              type="number"
+              step="0.25"
+              value={draftPosition[field.axis]}
+              onChange={(event) => {
+                setDraftPosition((current) => ({ ...current, [field.axis]: event.target.value }));
+              }}
+              onBlur={() => {
+                commitPosition(field.axis);
+              }}
+              onKeyDown={(event) => {
+                handleTransformFieldKeyDown(event, () => {
+                  commitPosition(field.axis);
+                });
+              }}
+            />
+          </label>
+        ))}
+      </div>
       <span className="properties-label">Rotation</span>
-      <span>{viewState.selection.rotationText ?? "-"}</span>
+      <div className="transform-fields transform-fields-single">
+        <label className="transform-field">
+          <span>Y</span>
+          <input
+            className="transform-input"
+            type="number"
+            step="15"
+            value={draftRotation}
+            onChange={(event) => {
+              setDraftRotation(event.target.value);
+            }}
+            onBlur={commitRotation}
+            onKeyDown={(event) => {
+              handleTransformFieldKeyDown(event, commitRotation);
+            }}
+          />
+        </label>
+      </div>
       <span className="properties-label">Snap</span>
-      <span>{viewState.selection.snapText ?? "-"}</span>
+      <span>{selection.snapText ?? "-"}</span>
+      <span className="properties-label">Actions</span>
+      <div className="transform-actions">
+        <button type="button" className="toolbar-menu-button" onClick={props.onSelectionDropToGround}>
+          <span>Drop To Ground</span>
+        </button>
+      </div>
     </div>
   );
 }
@@ -504,8 +635,9 @@ function SceneList(props: SceneListProps) {
           }}
           style={{ marginLeft: `${item.depth * 14}px` }}
         >
-          <button
-            type="button"
+          <div
+            role="button"
+            tabIndex={-1}
             className={`scene-row-handle${props.sceneSortMode === "manual" ? " is-enabled" : ""}`}
             aria-label={props.sceneSortMode === "manual" ? `Drag ${item.label}` : "Manual sort only"}
             title={props.sceneSortMode === "manual" ? "Drag to reorder" : "Switch to Manual sort to drag"}
@@ -517,6 +649,7 @@ function SceneList(props: SceneListProps) {
               }
               event.stopPropagation();
               event.dataTransfer.effectAllowed = "move";
+              event.dataTransfer.setData("text/plain", item.id);
               setDraggedId(item.id);
             }}
             onDragEnd={() => {
@@ -528,7 +661,7 @@ function SceneList(props: SceneListProps) {
             }}
           >
             <DragHandleIcon className="tool-icon" />
-          </button>
+          </div>
           <button
             type="button"
             className="scene-row-main"
@@ -724,10 +857,13 @@ interface RightSidebarProps {
   onSceneItemFrame: (objectId: string) => void;
   onSceneItemDelete: (objectId: string) => void;
   onSceneItemDuplicate: (objectId: string) => void;
-  onSceneItemRename: (objectId: string) => void;
+  onSceneItemRename: (objectId: string, nextName: string) => void;
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
+  onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
+  onSelectionRotationChange: (value: number) => void;
+  onSelectionDropToGround: () => void;
 }
 
 function RightSidebar(props: RightSidebarProps) {
@@ -777,9 +913,16 @@ function RightSidebar(props: RightSidebarProps) {
         />
       </div>
       <div className="sidebar-section sidebar-properties">
-        <div className="panel-label">{`Selection${props.viewState.objectCount ? ` (${props.viewState.objectCount})` : ""}`}</div>
+        <div className="panel-label">
+          {`Selection${props.viewState.selectionCount ? ` (${props.viewState.selectionCount})` : ""}`}
+        </div>
         <div className="properties-panel">
-          <SelectionPanel viewState={props.viewState} />
+          <SelectionPanel
+            viewState={props.viewState}
+            onSelectionPositionChange={props.onSelectionPositionChange}
+            onSelectionRotationChange={props.onSelectionRotationChange}
+            onSelectionDropToGround={props.onSelectionDropToGround}
+          />
         </div>
       </div>
     </aside>
@@ -807,7 +950,9 @@ function StatusBar({ viewState }: { viewState: EditorViewState }) {
       <span>
         <strong>Snap</strong>{" "}
         <span>
-          {status.snapEnabled ? `${status.gridSize}u | ${status.rotationStepDegrees}deg` : `Free | ${status.rotationStepDegrees}deg`}
+          {status.snapEnabled
+            ? `${status.gridSize}u${status.ySnapEnabled ? " +Y" : ""} | ${status.rotationStepDegrees}deg`
+            : `Free${status.ySnapEnabled ? " +Y" : ""} | ${status.rotationStepDegrees}deg`}
         </span>
       </span>
       <span>
@@ -841,6 +986,7 @@ interface EditorShellProps {
   onSceneItemToggleLocked: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
   onToggleSnap: () => void;
+  onToggleYSnap: () => void;
   onSelectMode: () => void;
   onPlaceMode: () => void;
   onUndo: () => void;
@@ -865,6 +1011,9 @@ interface EditorShellProps {
   onRestoreDefaults: () => void;
   onSceneSortModeChange: (mode: SceneSortMode) => void;
   onCreateGroup: () => void;
+  onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
+  onSelectionRotationChange: (value: number) => void;
+  onSelectionDropToGround: () => void;
 }
 
 export function EditorShell(props: EditorShellProps) {
@@ -881,7 +1030,11 @@ export function EditorShell(props: EditorShellProps) {
   });
 
   useEffect(() => {
-    window.localStorage.setItem(RIGHT_SIDEBAR_WIDTH_STORAGE_KEY, String(rightSidebarWidth));
+    try {
+      window.localStorage.setItem(RIGHT_SIDEBAR_WIDTH_STORAGE_KEY, String(rightSidebarWidth));
+    } catch {
+      // Ignore persistence failures so resizing still works.
+    }
   }, [rightSidebarWidth]);
 
   const startRightSidebarResize = (startClientX: number) => {
@@ -911,6 +1064,7 @@ export function EditorShell(props: EditorShellProps) {
         settingsMenuOpen={props.settingsMenuOpen}
         importInputRef={props.importInputRef}
         onToggleSnap={props.onToggleSnap}
+        onToggleYSnap={props.onToggleYSnap}
         onSelectMode={props.onSelectMode}
         onPlaceMode={props.onPlaceMode}
         onUndo={props.onUndo}
@@ -964,6 +1118,9 @@ export function EditorShell(props: EditorShellProps) {
           onSceneItemToggleHidden={props.onSceneItemToggleHidden}
           onSceneItemToggleLocked={props.onSceneItemToggleLocked}
           onSceneItemUngroup={props.onSceneItemUngroup}
+          onSelectionPositionChange={props.onSelectionPositionChange}
+          onSelectionRotationChange={props.onSelectionRotationChange}
+          onSelectionDropToGround={props.onSelectionDropToGround}
         />
       </div>
       <StatusBar viewState={props.viewState} />

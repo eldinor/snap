@@ -100,6 +100,9 @@ export function App() {
       onToggleSnap={() => {
         appRef.current?.toggleSnap();
       }}
+      onToggleYSnap={() => {
+        appRef.current?.toggleYSnap();
+      }}
       onSelectMode={() => {
         appRef.current?.enterSelectionMode();
       }}
@@ -175,6 +178,15 @@ export function App() {
       onSceneSortModeChange={setSceneSortMode}
       onCreateGroup={() => {
         appRef.current?.createGroupFromSelected();
+      }}
+      onSelectionPositionChange={(axis, value) => {
+        appRef.current?.setSelectionPosition(axis, value);
+      }}
+      onSelectionRotationChange={(value) => {
+        appRef.current?.setSelectionRotationDegrees(value);
+      }}
+      onSelectionDropToGround={() => {
+        appRef.current?.dropSelectionToGround();
       }}
     />
   );

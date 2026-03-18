@@ -1,4 +1,5 @@
 export interface AssetSceneSerializableObject {
+  id?: string;
   assetId: string;
   position: [number, number, number];
   rotationYDegrees: number;
@@ -11,6 +12,7 @@ export interface AssetSceneSerializableObject {
 export interface SerializedAssetSceneMetadata {
   savedAt?: string;
   snapEnabled?: boolean;
+  ySnapEnabled?: boolean;
   gridSize?: number;
   rotationStepDegrees?: number;
   environmentEnabled?: boolean;
@@ -47,6 +49,7 @@ export function serializeAssetScene(
         }
       : undefined,
     objects: Array.from(objects, (object) => ({
+      id: object.id,
       assetId: object.assetId,
       position: [...object.position] as [number, number, number],
       rotationYDegrees: object.rotationYDegrees,
@@ -78,6 +81,7 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
     const hasInvalidMetadata =
       (metadata.savedAt !== undefined && typeof metadata.savedAt !== "string") ||
       (metadata.snapEnabled !== undefined && typeof metadata.snapEnabled !== "boolean") ||
+      (metadata.ySnapEnabled !== undefined && typeof metadata.ySnapEnabled !== "boolean") ||
       (metadata.gridSize !== undefined && typeof metadata.gridSize !== "number") ||
       (metadata.rotationStepDegrees !== undefined && typeof metadata.rotationStepDegrees !== "number") ||
       (metadata.environmentEnabled !== undefined && typeof metadata.environmentEnabled !== "boolean") ||
@@ -112,6 +116,7 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
 
     const entry = object as Partial<AssetSceneSerializableObject>;
     return (
+      (entry.id === undefined || typeof entry.id === "string") &&
       typeof entry.assetId === "string" &&
       typeof entry.rotationYDegrees === "number" &&
       (entry.name === undefined || typeof entry.name === "string") &&
