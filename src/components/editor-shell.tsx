@@ -3,6 +3,7 @@ import { ASSETS, ASSET_CATEGORIES, type AssetCategory, type AssetDefinition } fr
 import type { EditorViewState } from "../editor/view-state";
 import {
   ClearIcon,
+  ChevronRightIcon,
   DuplicateIcon,
   DragHandleIcon,
   ExportIcon,
@@ -563,6 +564,7 @@ function SceneList(props: SceneListProps) {
   const [editingName, setEditingName] = useState("");
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const [collapsedGroupIds, setCollapsedGroupIds] = useState<string[]>([]);
 
   if (props.viewState.sceneItems.length === 0) {
     return <div className="properties-empty">No placed objects yet.</div>;
@@ -602,9 +604,17 @@ function SceneList(props: SceneListProps) {
     }
   };
 
+  const visibleItems = sortedItems.filter((item) => {
+    if (!item.parentId) {
+      return true;
+    }
+
+    return !collapsedGroupIds.includes(item.parentId);
+  });
+
   return (
     <div className="scene-list">
-      {sortedItems.map((item) => (
+      {visibleItems.map((item) => (
         <div
           key={item.id}
           className={`scene-row${item.selected ? " is-active" : ""}${item.hidden ? " is-hidden" : ""}${dragOverId === item.id ? " is-drag-over" : ""}`}
@@ -689,13 +699,29 @@ function SceneList(props: SceneListProps) {
                 }}
               />
             ) : (
-              <span className="scene-row-title">{item.label}</span>
+              <span className="scene-row-title-row">
+                {item.type === "group" ? (
+                  <button
+                    type="button"
+                    className={`scene-row-collapse${collapsedGroupIds.includes(item.id) ? " is-collapsed" : ""}`}
+                    aria-label={collapsedGroupIds.includes(item.id) ? `Expand ${item.label}` : `Collapse ${item.label}`}
+                    title={collapsedGroupIds.includes(item.id) ? "Expand children" : "Collapse children"}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setCollapsedGroupIds((current) =>
+                        current.includes(item.id) ? current.filter((id) => id !== item.id) : [...current, item.id],
+                      );
+                    }}
+                  >
+                    <ChevronRightIcon className="tool-icon" />
+                  </button>
+                ) : (
+                  <span className="scene-row-collapse-spacer" aria-hidden="true"></span>
+                )}
+                <span className="scene-row-title">{item.label}</span>
+                <span className={`scene-row-kind scene-row-kind-${item.type}`}>{item.type === "group" ? "Group" : "Object"}</span>
+              </span>
             )}
-            <span className="scene-row-meta">
-              {item.type === "group" ? "Group" : item.id}
-              {item.locked ? " | Locked" : ""}
-              {item.hidden ? " | Hidden" : ""}
-            </span>
           </button>
           <div className="scene-row-actions">
             {item.type === "object" ? <button
@@ -776,6 +802,11 @@ function SceneList(props: SceneListProps) {
             >
               <TrashIcon className="tool-icon" />
             </button>
+            <span className="scene-row-meta">
+              {item.locked ? "Locked" : ""}
+              {item.locked && item.hidden ? " | " : ""}
+              {item.hidden ? "Hidden" : ""}
+            </span>
           </div>
         </div>
       ))}

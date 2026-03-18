@@ -250,3 +250,11 @@ export function DragHandleIcon(props: IconProps) {
     </IconBase>
   );
 }
+
+export function ChevronRightIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="m7.5 4.8 5 5.2-5 5.2" />
+    </IconBase>
+  );
+}

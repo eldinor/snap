@@ -1825,7 +1825,6 @@ export class ModularEditorApp {
     const group = this.groups.get(objectId);
     if (group) {
       this.sceneCore.frameSelection(this.camera, group.root);
-      this.selectSceneItem(group.id);
       this.setStatusNotice(`Framed ${group.name}.`);
       return;
     }
@@ -1836,7 +1835,6 @@ export class ModularEditorApp {
     }
 
     this.sceneCore.frameSelection(this.camera, object.root);
-    this.selectObjectByRoot(object.root);
     this.setStatusNotice(`Framed ${ASSETS.find((asset) => asset.id === object.assetId)?.name ?? "selection"}.`);
   }
 
