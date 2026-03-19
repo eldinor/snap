@@ -579,7 +579,7 @@ function SceneList(props: SceneListProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [draggedId, setDraggedId] = useState<string | null>(null);
-  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const [dragTarget, setDragTarget] = useState<{ id: string; mode: "into" | "before" } | null>(null);
   const [collapsedGroupIds, setCollapsedGroupIds] = useState<string[]>([]);
 
   if (props.viewState.sceneItems.length === 0) {
@@ -638,17 +638,17 @@ function SceneList(props: SceneListProps) {
       {visibleItems.map((item) => (
         <div
           key={item.id}
-          className={`scene-row${item.selected ? " is-active" : ""}${item.hidden ? " is-hidden" : ""}${dragOverId === item.id ? " is-drag-over" : ""}`}
+          className={`scene-row${item.selected ? " is-active" : ""}${item.hidden ? " is-hidden" : ""}${dragTarget?.id === item.id ? " is-drag-over" : ""}${dragTarget?.id === item.id && dragTarget.mode === "into" ? " is-drag-into" : ""}${dragTarget?.id === item.id && dragTarget.mode === "before" ? " is-drag-before" : ""}`}
           onDragOver={(event) => {
             if (props.sceneSortMode !== "manual" || !draggedId || draggedId === item.id) {
               return;
             }
             event.preventDefault();
-            setDragOverId(item.id);
+            setDragTarget({ id: item.id, mode: item.type === "group" ? "into" : "before" });
           }}
           onDragLeave={() => {
-            if (dragOverId === item.id) {
-              setDragOverId(null);
+            if (dragTarget?.id === item.id) {
+              setDragTarget(null);
             }
           }}
           onDrop={(event) => {
@@ -658,11 +658,11 @@ function SceneList(props: SceneListProps) {
             event.preventDefault();
             props.onSceneItemMove(draggedId, item.id);
             setDraggedId(null);
-            setDragOverId(null);
+            setDragTarget(null);
           }}
           onDragEnd={() => {
             setDraggedId(null);
-            setDragOverId(null);
+            setDragTarget(null);
           }}
           style={{ marginLeft: `${item.depth * 14}px` }}
         >
@@ -685,7 +685,7 @@ function SceneList(props: SceneListProps) {
             }}
             onDragEnd={() => {
               setDraggedId(null);
-              setDragOverId(null);
+              setDragTarget(null);
             }}
             onPointerDown={(event) => {
               event.stopPropagation();
@@ -693,6 +693,11 @@ function SceneList(props: SceneListProps) {
           >
             <DragHandleIcon className="tool-icon" />
           </div>
+          {dragTarget?.id === item.id ? (
+            <span className={`scene-row-drop-hint scene-row-drop-hint-${dragTarget.mode}`}>
+              {dragTarget.mode === "into" ? "Drop into group" : "Drop before item"}
+            </span>
+          ) : null}
           <button
             type="button"
             className="scene-row-main"
@@ -795,28 +800,28 @@ function SceneList(props: SceneListProps) {
             >
               <RenameIcon className="tool-icon" />
             </button>
-            {item.type === "object" ? <button
+            <button
               type="button"
               className={`scene-row-action${item.hidden ? " is-toggled" : ""}`}
-              aria-label={`${item.hidden ? "Show" : "Hide"} ${item.assetName}`}
+              aria-label={`${item.hidden ? "Show" : "Hide"} ${item.label}`}
               title={item.hidden ? "Show" : "Hide"}
               onClick={() => {
                 props.onSceneItemToggleHidden(item.id);
               }}
             >
               {item.hidden ? <ShowIcon className="tool-icon" /> : <HideIcon className="tool-icon" />}
-            </button> : null}
-            {item.type === "object" ? <button
+            </button>
+            <button
               type="button"
               className={`scene-row-action${item.locked ? " is-toggled" : ""}`}
-              aria-label={`${item.locked ? "Unlock" : "Lock"} ${item.assetName}`}
+              aria-label={`${item.locked ? "Unlock" : "Lock"} ${item.label}`}
               title={item.locked ? "Unlock" : "Lock"}
               onClick={() => {
                 props.onSceneItemToggleLocked(item.id);
               }}
             >
               {item.locked ? <LockIcon className="tool-icon" /> : <UnlockIcon className="tool-icon" />}
-            </button> : null}
+            </button>
             <button
               type="button"
               className="scene-row-action"

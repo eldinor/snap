@@ -30,6 +30,8 @@ export interface SerializedSceneGroup {
   id: string;
   name: string;
   childIds: string[];
+  hidden?: boolean;
+  locked?: boolean;
   parentId?: string | null;
 }
 
@@ -103,6 +105,10 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
               typeof group !== "object" ||
               typeof (group as Partial<SerializedSceneGroup>).id !== "string" ||
               typeof (group as Partial<SerializedSceneGroup>).name !== "string" ||
+              ((group as Partial<SerializedSceneGroup>).hidden !== undefined &&
+                typeof (group as Partial<SerializedSceneGroup>).hidden !== "boolean") ||
+              ((group as Partial<SerializedSceneGroup>).locked !== undefined &&
+                typeof (group as Partial<SerializedSceneGroup>).locked !== "boolean") ||
               ((group as Partial<SerializedSceneGroup>).parentId !== undefined &&
                 (group as Partial<SerializedSceneGroup>).parentId !== null &&
                 typeof (group as Partial<SerializedSceneGroup>).parentId !== "string") ||

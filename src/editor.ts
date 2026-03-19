@@ -72,6 +72,8 @@ interface EditorGroup {
   name: string;
   type: "group";
   childIds: string[];
+  hidden: boolean;
+  locked: boolean;
   parentId: string | null;
   root: TransformNode;
 }
@@ -431,8 +433,8 @@ export class ModularEditorApp {
         placementKind: object.placementKind,
         label: object.name || `${asset?.name ?? object.assetId}`,
         selected: this.selectedObjectId === object.id,
-        hidden: object.hidden,
-        locked: object.locked,
+        hidden: this.isObjectHidden(object),
+        locked: this.isObjectLocked(object),
         type: object.type,
         parentId: object.parentId,
         depth,
@@ -451,8 +453,8 @@ export class ModularEditorApp {
         placementKind: null,
         label: group.name,
         selected: this.selectedGroupId === group.id,
-        hidden: false,
-        locked: false,
+        hidden: this.isGroupHidden(group.id),
+        locked: this.isGroupLocked(group.id),
         type: "group",
         parentId: group.parentId,
         depth,
@@ -625,6 +627,8 @@ export class ModularEditorApp {
         id: group.id,
         name: group.name,
         childIds: [...group.childIds],
+        hidden: group.hidden,
+        locked: group.locked,
         parentId: group.parentId,
       })),
       sceneRootOrder: [...this.sceneRootOrder],
@@ -787,6 +791,8 @@ export class ModularEditorApp {
           name: group.name,
           type: "group",
           childIds: [...group.childIds],
+          hidden: !!group.hidden,
+          locked: !!group.locked,
           parentId: group.parentId ?? null,
           root: this.createGroupRoot(group.id),
         });
@@ -862,6 +868,73 @@ export class ModularEditorApp {
     return depth;
   }
 
+  private isGroupHidden(groupId: string) {
+    let current = this.groups.get(groupId);
+    while (current) {
+      if (current.hidden) {
+        return true;
+      }
+      current = current.parentId ? this.groups.get(current.parentId) ?? null : null;
+    }
+    return false;
+  }
+
+  private isGroupLocked(groupId: string) {
+    let current = this.groups.get(groupId);
+    while (current) {
+      if (current.locked) {
+        return true;
+      }
+      current = current.parentId ? this.groups.get(current.parentId) ?? null : null;
+    }
+    return false;
+  }
+
+  private isObjectHidden(object: EditorObject) {
+    return object.hidden || (object.parentId ? this.isGroupHidden(object.parentId) : false);
+  }
+
+  private isObjectLocked(object: EditorObject) {
+    return object.locked || (object.parentId ? this.isGroupLocked(object.parentId) : false);
+  }
+
+  private isObjectInGroup(object: EditorObject, groupId: string) {
+    let currentGroupId = object.parentId;
+    while (currentGroupId) {
+      if (currentGroupId === groupId) {
+        return true;
+      }
+      currentGroupId = this.groups.get(currentGroupId)?.parentId ?? null;
+    }
+    return false;
+  }
+
+  private isGroupInGroup(groupId: string, ancestorGroupId: string) {
+    let currentGroupId = this.groups.get(groupId)?.parentId ?? null;
+    while (currentGroupId) {
+      if (currentGroupId === ancestorGroupId) {
+        return true;
+      }
+      currentGroupId = this.groups.get(currentGroupId)?.parentId ?? null;
+    }
+    return false;
+  }
+
+  private clearSelectionIfInsideGroup(groupId: string) {
+    const selectedObject = this.selectedObjectId ? this.objects.get(this.selectedObjectId) : null;
+    if (selectedObject && this.isObjectInGroup(selectedObject, groupId)) {
+      this.clearSelection();
+      return true;
+    }
+
+    if (this.selectedGroupId && (this.selectedGroupId === groupId || this.isGroupInGroup(this.selectedGroupId, groupId))) {
+      this.clearSelection();
+      return true;
+    }
+
+    return false;
+  }
+
   private isGroupWithinGroup(groupId: string, potentialAncestorId: string) {
     let current = this.groups.get(groupId);
     while (current?.parentId) {
@@ -882,6 +955,26 @@ export class ModularEditorApp {
   private getContainerInsertIndex(containerId: string | null, targetId: string) {
     const children = containerId ? this.groups.get(containerId)?.childIds ?? [] : this.sceneRootOrder;
     return children.indexOf(targetId);
+  }
+
+  private forEachGroupDescendantObject(groupId: string, callback: (object: EditorObject) => void) {
+    const group = this.groups.get(groupId);
+    if (!group) {
+      return;
+    }
+
+    group.childIds.forEach((childId) => {
+      const childGroup = this.groups.get(childId);
+      if (childGroup) {
+        this.forEachGroupDescendantObject(childGroup.id, callback);
+        return;
+      }
+
+      const childObject = this.objects.get(childId);
+      if (childObject) {
+        callback(childObject);
+      }
+    });
   }
 
   private insertRootId(itemId: string, insertIndex?: number) {
@@ -1033,16 +1126,23 @@ export class ModularEditorApp {
       return;
     }
 
-    object.root.setEnabled(!object.hidden);
+    const hidden = this.isObjectHidden(object);
+    object.root.setEnabled(!hidden);
     object.root.getChildMeshes().forEach((mesh) => {
-      mesh.isPickable = !object.hidden;
+      mesh.isPickable = !hidden;
+    });
+  }
+
+  private applyGroupVisibility(groupId: string) {
+    this.forEachGroupDescendantObject(groupId, (object) => {
+      this.applyObjectVisibility(object.id);
     });
   }
 
   private refreshSelectionAttachment() {
     if (this.selectedGroupId) {
       const group = this.groups.get(this.selectedGroupId);
-      if (!group) {
+      if (!group || this.isGroupHidden(group.id) || this.isGroupLocked(group.id)) {
         this.gizmoManager.attachToNode(null);
         return;
       }
@@ -1056,7 +1156,7 @@ export class ModularEditorApp {
     }
 
     const object = this.objects.get(this.selectedObjectId);
-    if (!object || object.hidden || object.locked) {
+    if (!object || this.isObjectHidden(object) || this.isObjectLocked(object)) {
       this.gizmoManager.attachToNode(null);
       return;
     }
@@ -1267,7 +1367,7 @@ export class ModularEditorApp {
     }
 
     const object = this.objects.get(this.selectedObjectId);
-    if (!object || object.locked || object.hidden) {
+    if (!object || this.isObjectLocked(object) || this.isObjectHidden(object)) {
       return;
     }
 
@@ -1434,7 +1534,7 @@ export class ModularEditorApp {
     }
 
     const object = this.objects.get(objectId);
-    if (!object || object.hidden) {
+    if (!object || this.isObjectHidden(object)) {
       return;
     }
 
@@ -1694,6 +1794,9 @@ export class ModularEditorApp {
   selectSceneItem(objectId: string) {
     const group = this.groups.get(objectId);
     if (group) {
+      if (this.isGroupHidden(group.id)) {
+        return;
+      }
       this.clearSelection();
       this.selectedGroupId = group.id;
       this.mode = "select";
@@ -1705,7 +1808,7 @@ export class ModularEditorApp {
     }
 
     const object = this.objects.get(objectId);
-    if (!object || object.hidden) {
+    if (!object || this.isObjectHidden(object)) {
       return;
     }
 
@@ -1829,14 +1932,16 @@ export class ModularEditorApp {
     const groupName = `Group ${String(this.groupSequence).padStart(2, "0")}`;
     const groupRoot = this.createGroupRoot(groupId);
     groupRoot.position.set(0, 0, 0);
-    this.groups.set(groupId, {
-      id: groupId,
-      name: groupName,
-      type: "group",
-      childIds: [],
-      parentId: null,
-      root: groupRoot,
-    });
+        this.groups.set(groupId, {
+          id: groupId,
+          name: groupName,
+          type: "group",
+          childIds: [],
+          hidden: false,
+          locked: false,
+          parentId: null,
+          root: groupRoot,
+        });
     this.sceneRootOrder.push(groupId);
     this.clearSelection();
     this.selectedGroupId = groupId;
@@ -1884,6 +1989,8 @@ export class ModularEditorApp {
       name: groupName,
       type: "group",
       childIds: [object.id],
+      hidden: false,
+      locked: false,
       parentId: null,
       root: groupRoot,
     });
@@ -2067,6 +2174,17 @@ export class ModularEditorApp {
   }
 
   toggleSceneItemHidden(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      group.hidden = !group.hidden;
+      this.applyGroupVisibility(group.id);
+      this.clearSelectionIfInsideGroup(group.id);
+      this.refreshSelectionAttachment();
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`${group.hidden ? "Hidden" : "Shown"} ${group.name}.`);
+      return;
+    }
+
     const object = this.objects.get(objectId);
     if (!object) {
       return;
@@ -2074,9 +2192,9 @@ export class ModularEditorApp {
 
     object.hidden = !object.hidden;
     this.applyObjectVisibility(objectId);
-    if (object.hidden && this.selectedObjectId === objectId) {
+    if (this.isObjectHidden(object) && this.selectedObjectId === objectId) {
       this.clearSelection();
-    } else if (!object.hidden && this.selectedObjectId === objectId) {
+    } else if (!this.isObjectHidden(object) && this.selectedObjectId === objectId) {
       this.refreshSelectionAttachment();
     }
     this.pushHistoryCheckpoint();
@@ -2084,6 +2202,16 @@ export class ModularEditorApp {
   }
 
   toggleSceneItemLocked(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      group.locked = !group.locked;
+      this.clearSelectionIfInsideGroup(group.id);
+      this.refreshSelectionAttachment();
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`${group.locked ? "Locked" : "Unlocked"} ${group.name}.`);
+      return;
+    }
+
     const object = this.objects.get(objectId);
     if (!object) {
       return;
@@ -2100,13 +2228,16 @@ export class ModularEditorApp {
   frameSceneItem(objectId: string) {
     const group = this.groups.get(objectId);
     if (group) {
+      if (this.isGroupHidden(group.id)) {
+        return;
+      }
       this.sceneCore.frameSelection(this.camera, group.root);
       this.setStatusNotice(`Framed ${group.name}.`);
       return;
     }
 
     const object = this.objects.get(objectId);
-    if (!object || object.hidden) {
+    if (!object || this.isObjectHidden(object)) {
       return;
     }
 

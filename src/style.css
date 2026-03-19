@@ -517,6 +517,7 @@ select:focus-visible {
 }
 
 .scene-row {
+  position: relative;
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr);
   gap: 8px;
@@ -540,6 +541,51 @@ select:focus-visible {
 .scene-row.is-drag-over {
   border-color: #8ac7ff;
   box-shadow: inset 0 0 0 1px rgba(138, 199, 255, 0.35);
+}
+
+.scene-row.is-drag-before::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: -1px;
+  height: 2px;
+  border-radius: 999px;
+  background: #8ac7ff;
+  box-shadow: 0 0 0 1px rgba(138, 199, 255, 0.18);
+}
+
+.scene-row.is-drag-into {
+  background: #13202a;
+  border-color: #79c47d;
+  box-shadow: inset 0 0 0 1px rgba(121, 196, 125, 0.32);
+}
+
+.scene-row-drop-hint {
+  position: absolute;
+  top: -9px;
+  right: 10px;
+  z-index: 1;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 9px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.scene-row-drop-hint-before {
+  color: #d6ecff;
+  background: #1e435f;
+  border: 1px solid #4d88b4;
+}
+
+.scene-row-drop-hint-into {
+  color: #e0f6dc;
+  background: #21452b;
+  border: 1px solid #5ca767;
 }
 
 .scene-row-handle {
