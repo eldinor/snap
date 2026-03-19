@@ -32,6 +32,7 @@ export interface StatusViewState {
 export interface SelectionViewState {
   selectedObjectId: string | null;
   selectedAssetName: string | null;
+  multiSelected: boolean;
   activeAssetName: string | null;
   previewAssetName: string | null;
   objectPlacementKind: "clone" | "instance" | null;
@@ -110,6 +111,7 @@ export function createInitialEditorViewState(): EditorViewState {
     selection: {
       selectedObjectId: null,
       selectedAssetName: null,
+      multiSelected: false,
       activeAssetName: null,
       previewAssetName: null,
       objectPlacementKind: null,

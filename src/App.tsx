@@ -70,8 +70,8 @@ export function App() {
       onAssetClick={(assetId) => {
         void appRef.current?.activateAsset(assetId);
       }}
-      onSceneItemSelect={(objectId) => {
-        appRef.current?.selectSceneItem(objectId);
+      onSceneItemSelect={(selectionIds, primaryId) => {
+        appRef.current?.setSceneItemSelection(selectionIds, primaryId);
       }}
       onSceneItemMove={(draggedId, targetId) => {
         appRef.current?.moveSceneItem(draggedId, targetId);

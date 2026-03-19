@@ -174,6 +174,7 @@ export class ModularEditorApp {
   private selectionVerticalHelperMarker: Nullable<Mesh> = null;
   private selectionHelperVisualsEnabled = true;
   private activeAssetId: string | null = null;
+  private selectedSceneItemIds = new Set<string>();
   private selectedObjectId: string | null = null;
   private placementPreview: TransformNode | null = null;
   private previewAssetId: string | null = null;
@@ -392,6 +393,23 @@ export class ModularEditorApp {
   }
 
   private buildSelectionViewState(): SelectionViewState {
+    const selectionCount = this.selectedSceneItemIds.size;
+    if (selectionCount > 1) {
+      return {
+        selectedObjectId: null,
+        selectedAssetName: `${selectionCount} items selected`,
+        multiSelected: true,
+        activeAssetName: this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId)?.name ?? null : null,
+        previewAssetName: this.previewAssetId ? ASSETS.find((asset) => asset.id === this.previewAssetId)?.name ?? null : null,
+        objectPlacementKind: null,
+        position: null,
+        rotationYDegrees: null,
+        positionText: null,
+        rotationText: null,
+        snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
+      };
+    }
+
     const selected = this.selectedObjectId ? this.objects.get(this.selectedObjectId) : null;
     const selectedGroup = this.selectedGroupId ? this.groups.get(this.selectedGroupId) : null;
     const selectedAsset = selected ? ASSETS.find((asset) => asset.id === selected.assetId) : null;
@@ -407,6 +425,7 @@ export class ModularEditorApp {
     return {
       selectedObjectId: this.selectedObjectId ?? this.selectedGroupId,
       selectedAssetName: selectedAsset?.name ?? selectedGroup?.name ?? null,
+      multiSelected: false,
       activeAssetName: activeAsset?.name ?? null,
       previewAssetName: previewAsset?.name ?? null,
       objectPlacementKind: selected?.placementKind ?? null,
@@ -432,7 +451,7 @@ export class ModularEditorApp {
         assetName: asset?.name ?? object.assetId,
         placementKind: object.placementKind,
         label: object.name || `${asset?.name ?? object.assetId}`,
-        selected: this.selectedObjectId === object.id,
+        selected: this.selectedSceneItemIds.has(object.id),
         hidden: this.isObjectHidden(object),
         locked: this.isObjectLocked(object),
         type: object.type,
@@ -452,7 +471,7 @@ export class ModularEditorApp {
         assetName: "Group",
         placementKind: null,
         label: group.name,
-        selected: this.selectedGroupId === group.id,
+        selected: this.selectedSceneItemIds.has(group.id),
         hidden: this.isGroupHidden(group.id),
         locked: this.isGroupLocked(group.id),
         type: "group",
@@ -545,7 +564,7 @@ export class ModularEditorApp {
       mode: this.mode,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
-      hasSelection: !!this.selectedObjectId || !!this.selectedGroupId,
+      hasSelection: this.selectedSceneItemIds.size > 0,
       hasObjects: this.objects.size > 0,
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
@@ -580,7 +599,7 @@ export class ModularEditorApp {
       activeAssetId: this.activeAssetId,
       previewAssetId: this.previewAssetId,
       objectCount: this.objects.size,
-      selectionCount: this.selectedObjectId || this.selectedGroupId ? 1 : 0,
+      selectionCount: this.selectedSceneItemIds.size,
       noticeMessage: this.statusNotice,
       lastManualSaveAt: this.lastManualSaveAt,
       lastRecoveredAutosaveAt: this.lastRecoveredAutosaveAt,
@@ -831,6 +850,72 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
+  private clearSelectionVisuals() {
+    this.selectedSceneItemIds.forEach((itemId) => {
+      const selectedGroup = this.groups.get(itemId);
+      if (selectedGroup) {
+        this.setGroupHighlight(selectedGroup, false);
+      }
+    });
+
+    if (this.selectedObjectId) {
+      this.selectedObjectId = clearSceneSelection(this.objects, this.selectedObjectId, this.gizmoManager);
+    } else {
+      this.gizmoManager.attachToNode(null);
+    }
+  }
+
+  private applySceneItemSelection(selectionIds: Iterable<string>, primaryId: string | null, emit = true) {
+    this.clearSelectionVisuals();
+
+    const nextSelectedIds = Array.from(
+      new Set(
+        Array.from(selectionIds).filter((id) => this.objects.has(id) || this.groups.has(id)),
+      ),
+    );
+    this.selectedSceneItemIds = new Set(nextSelectedIds);
+
+    const nextPrimaryId =
+      primaryId && this.selectedSceneItemIds.has(primaryId)
+        ? primaryId
+        : nextSelectedIds[nextSelectedIds.length - 1] ?? null;
+
+    this.selectedObjectId = null;
+    this.selectedGroupId = null;
+
+    if (nextPrimaryId) {
+      const selectedGroup = this.groups.get(nextPrimaryId);
+      if (selectedGroup && !this.isGroupHidden(selectedGroup.id)) {
+        this.selectedGroupId = selectedGroup.id;
+      } else {
+        const selectedObject = this.objects.get(nextPrimaryId);
+        if (selectedObject && !this.isObjectHidden(selectedObject)) {
+          this.selectedObjectId = nextPrimaryId;
+        }
+      }
+    }
+
+    this.selectedSceneItemIds.forEach((itemId) => {
+      const selectedGroup = this.groups.get(itemId);
+      if (selectedGroup) {
+        this.setGroupHighlight(selectedGroup, true);
+      }
+    });
+
+    if (this.selectedObjectId) {
+      const selectedObject = this.objects.get(this.selectedObjectId);
+      if (selectedObject) {
+        selectSceneObject(selectedObject.root, this.gizmoManager);
+      }
+    } else {
+      this.gizmoManager.attachToNode(null);
+    }
+
+    if (emit) {
+      this.emitViewState();
+    }
+  }
+
   private createGroupRoot(groupId: string) {
     const root = new TransformNode(`group-root-${groupId}`, this.scene);
     root.metadata = { ...(root.metadata ?? {}), groupId };
@@ -921,18 +1006,26 @@ export class ModularEditorApp {
   }
 
   private clearSelectionIfInsideGroup(groupId: string) {
-    const selectedObject = this.selectedObjectId ? this.objects.get(this.selectedObjectId) : null;
-    if (selectedObject && this.isObjectInGroup(selectedObject, groupId)) {
-      this.clearSelection();
-      return true;
+    const remainingSelectionIds = Array.from(this.selectedSceneItemIds).filter((itemId) => {
+      const selectedObject = this.objects.get(itemId);
+      if (selectedObject) {
+        return !this.isObjectInGroup(selectedObject, groupId);
+      }
+
+      const selectedGroup = this.groups.get(itemId);
+      if (selectedGroup) {
+        return selectedGroup.id !== groupId && !this.isGroupInGroup(selectedGroup.id, groupId);
+      }
+
+      return false;
+    });
+
+    if (remainingSelectionIds.length === this.selectedSceneItemIds.size) {
+      return false;
     }
 
-    if (this.selectedGroupId && (this.selectedGroupId === groupId || this.isGroupInGroup(this.selectedGroupId, groupId))) {
-      this.clearSelection();
-      return true;
-    }
-
-    return false;
+    this.applySceneItemSelection(remainingSelectionIds, remainingSelectionIds[remainingSelectionIds.length - 1] ?? null);
+    return true;
   }
 
   private isGroupWithinGroup(groupId: string, potentialAncestorId: string) {
@@ -1098,8 +1191,12 @@ export class ModularEditorApp {
     }
 
     if (group.childIds.length === 0) {
-      if (this.selectedGroupId === groupId) {
-        this.selectedGroupId = null;
+      if (this.selectedSceneItemIds.has(groupId)) {
+        this.applySceneItemSelection(
+          Array.from(this.selectedSceneItemIds).filter((id) => id !== groupId),
+          null,
+          false,
+        );
       }
       if (group.parentId) {
         const parentGroupId = group.parentId;
@@ -1474,12 +1571,22 @@ export class ModularEditorApp {
   }
 
   private deleteSelectedObject() {
+    if (this.selectedSceneItemIds.size > 1) {
+      const selectedIds = Array.from(this.selectedSceneItemIds);
+      this.clearSelection();
+      selectedIds.forEach((itemId) => {
+        this.deleteSceneItem(itemId);
+      });
+      return;
+    }
+
     if (this.selectedObjectId) {
       const deleted = deleteSceneObject(this.objects, this.selectedObjectId, this.gizmoManager);
       if (!deleted) {
         return;
       }
 
+      this.selectedSceneItemIds.delete(this.selectedObjectId);
       this.selectedObjectId = null;
       this.pushHistoryCheckpoint();
       this.emitViewState();
@@ -1499,6 +1606,7 @@ export class ModularEditorApp {
     }
 
     this.disposePreview();
+    this.selectedSceneItemIds.clear();
     this.selectedObjectId = null;
     this.selectedGroupId = null;
     this.disposeAllGroups();
@@ -1509,25 +1617,10 @@ export class ModularEditorApp {
   }
 
   private clearSelection() {
-    if (this.selectedGroupId) {
-      const group = this.groups.get(this.selectedGroupId);
-      if (group) {
-        this.setGroupHighlight(group, false);
-      }
-    }
-
-    if (this.selectedObjectId) {
-      this.selectedObjectId = clearSceneSelection(this.objects, this.selectedObjectId, this.gizmoManager);
-    } else {
-      this.gizmoManager.attachToNode(null);
-    }
-    this.selectedGroupId = null;
-    this.emitViewState();
+    this.applySceneItemSelection([], null);
   }
 
   private selectObjectByRoot(root: TransformNode) {
-    this.clearSelection();
-
     const objectId = selectSceneObject(root, this.gizmoManager);
     if (!objectId) {
       return;
@@ -1538,8 +1631,7 @@ export class ModularEditorApp {
       return;
     }
 
-    this.selectedObjectId = objectId;
-    this.selectedGroupId = null;
+    this.applySceneItemSelection([objectId], objectId, false);
     this.mode = "select";
     this.disposePreview();
     this.refreshSelectionAttachment();
@@ -1791,17 +1883,19 @@ export class ModularEditorApp {
     this.setStatusNotice(`Renamed to ${trimmed}.`);
   }
 
+  setSceneItemSelection(selectionIds: string[], primaryId: string | null = null) {
+    this.applySceneItemSelection(selectionIds, primaryId);
+  }
+
   selectSceneItem(objectId: string) {
     const group = this.groups.get(objectId);
     if (group) {
       if (this.isGroupHidden(group.id)) {
         return;
       }
-      this.clearSelection();
-      this.selectedGroupId = group.id;
+      this.applySceneItemSelection([group.id], group.id, false);
       this.mode = "select";
       this.disposePreview();
-      this.setGroupHighlight(group, true);
       this.refreshSelectionAttachment();
       this.emitViewState();
       return;
@@ -1812,14 +1906,22 @@ export class ModularEditorApp {
       return;
     }
 
-    this.selectObjectByRoot(object.root);
+    this.applySceneItemSelection([object.id], object.id, false);
+    this.mode = "select";
+    this.disposePreview();
+    this.refreshSelectionAttachment();
+    this.emitViewState();
   }
 
   deleteSceneItem(objectId: string) {
     const group = this.groups.get(objectId);
     if (group) {
-      if (this.selectedGroupId === group.id) {
-        this.clearSelection();
+      if (this.selectedSceneItemIds.has(group.id)) {
+        this.applySceneItemSelection(
+          Array.from(this.selectedSceneItemIds).filter((id) => id !== group.id),
+          null,
+          false,
+        );
       }
       const parentContainerId = this.getNextParentContainerId(group.id);
       const insertIndex = group.parentId
@@ -1864,9 +1966,17 @@ export class ModularEditorApp {
       return;
     }
 
-    this.selectedGroupId = null;
-    if (this.selectedObjectId !== objectId) {
-      this.selectedObjectId = objectId;
+    if (this.selectedSceneItemIds.has(objectId)) {
+      this.applySceneItemSelection(
+        Array.from(this.selectedSceneItemIds).filter((id) => id !== objectId),
+        null,
+        false,
+      );
+    } else {
+      this.selectedGroupId = null;
+      if (this.selectedObjectId !== objectId) {
+        this.selectedObjectId = objectId;
+      }
     }
     if (object.parentId) {
       const parentGroup = this.groups.get(object.parentId);
@@ -1883,7 +1993,7 @@ export class ModularEditorApp {
   }
 
   duplicateSceneItem(objectId: string) {
-    this.selectedObjectId = objectId;
+    this.applySceneItemSelection([objectId], objectId, false);
     void this.duplicateSelectedObject();
   }
 
@@ -1943,8 +2053,7 @@ export class ModularEditorApp {
           root: groupRoot,
         });
     this.sceneRootOrder.push(groupId);
-    this.clearSelection();
-    this.selectedGroupId = groupId;
+    this.applySceneItemSelection([groupId], groupId, false);
     this.refreshSelectionAttachment();
     this.pushHistoryCheckpoint();
     this.setStatusNotice(`Created empty ${groupName}.`);
@@ -2012,9 +2121,7 @@ export class ModularEditorApp {
     } else {
       this.insertGroupIntoRoot(newGroup, previousInsertIndex >= 0 ? previousInsertIndex : undefined);
     }
-    this.selectedObjectId = null;
-    this.selectedGroupId = groupId;
-    this.setGroupHighlight(newGroup, true);
+    this.applySceneItemSelection([groupId], groupId, false);
     this.refreshSelectionAttachment();
     this.pushHistoryCheckpoint();
     this.setStatusNotice(`Created ${groupName}.`);

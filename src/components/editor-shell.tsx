@@ -1,4 +1,4 @@
-import { useEffect, useState, type KeyboardEvent, type RefObject } from "react";
+import { useEffect, useState, type KeyboardEvent, type MouseEvent, type RefObject } from "react";
 import { ASSETS, ASSET_CATEGORIES, type AssetCategory, type AssetDefinition } from "../assets";
 import type { EditorViewState } from "../editor/view-state";
 import {
@@ -494,6 +494,16 @@ function SelectionPanel(props: SelectionPanelProps) {
     );
   }
 
+  if (selection.multiSelected) {
+    return (
+      <div className="properties-empty">
+        <strong>{selection.selectedAssetName}</strong>
+        <span>Shift selects a range. Ctrl adds or removes individual items.</span>
+        <span>Transforms still apply to the primary selection only.</span>
+      </div>
+    );
+  }
+
   const positionFields: Array<{ axis: "x" | "y" | "z"; label: string }> = [
     { axis: "x", label: "X" },
     { axis: "y", label: "Y" },
@@ -564,7 +574,7 @@ interface SceneListProps {
   viewState: EditorViewState;
   sceneSortMode: SceneSortMode;
   onSceneItemMove: (draggedId: string, targetId: string) => void;
-  onSceneItemSelect: (objectId: string) => void;
+  onSceneItemSelect: (selectionIds: string[], primaryId: string | null) => void;
   onSceneItemFrame: (objectId: string) => void;
   onSceneItemDelete: (objectId: string) => void;
   onSceneItemDuplicate: (objectId: string) => void;
@@ -581,6 +591,7 @@ function SceneList(props: SceneListProps) {
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragTarget, setDragTarget] = useState<{ id: string; mode: "into" | "before" } | null>(null);
   const [collapsedGroupIds, setCollapsedGroupIds] = useState<string[]>([]);
+  const [selectionAnchorId, setSelectionAnchorId] = useState<string | null>(null);
 
   if (props.viewState.sceneItems.length === 0) {
     return <div className="properties-empty">No placed objects yet.</div>;
@@ -632,6 +643,41 @@ function SceneList(props: SceneListProps) {
 
     return true;
   });
+
+  const selectedIds = props.viewState.sceneItems.filter((item) => item.selected).map((item) => item.id);
+  const selectedIdSet = new Set(selectedIds);
+
+  const applyTreeSelection = (
+    itemId: string,
+    event: Pick<MouseEvent<HTMLButtonElement>, "shiftKey" | "ctrlKey" | "metaKey">,
+  ) => {
+    const additive = event.ctrlKey || event.metaKey;
+
+    if (event.shiftKey) {
+      const anchorId = selectionAnchorId && visibleItems.some((item) => item.id === selectionAnchorId) ? selectionAnchorId : itemId;
+      const anchorIndex = visibleItems.findIndex((item) => item.id === anchorId);
+      const itemIndex = visibleItems.findIndex((item) => item.id === itemId);
+      if (anchorIndex >= 0 && itemIndex >= 0) {
+        const rangeIds = visibleItems
+          .slice(Math.min(anchorIndex, itemIndex), Math.max(anchorIndex, itemIndex) + 1)
+          .map((item) => item.id);
+        props.onSceneItemSelect(additive ? Array.from(new Set([...selectedIds, ...rangeIds])) : rangeIds, itemId);
+        return;
+      }
+    }
+
+    if (additive) {
+      const nextIds = selectedIdSet.has(itemId)
+        ? selectedIds.filter((id) => id !== itemId)
+        : [...selectedIds, itemId];
+      setSelectionAnchorId(itemId);
+      props.onSceneItemSelect(nextIds, nextIds.includes(itemId) ? itemId : nextIds[nextIds.length - 1] ?? null);
+      return;
+    }
+
+    setSelectionAnchorId(itemId);
+    props.onSceneItemSelect([itemId], itemId);
+  };
 
   return (
     <div className="scene-list">
@@ -701,8 +747,8 @@ function SceneList(props: SceneListProps) {
           <button
             type="button"
             className="scene-row-main"
-            onClick={() => {
-              props.onSceneItemSelect(item.id);
+            onClick={(event) => {
+              applyTreeSelection(item.id, event);
             }}
           >
             {editingId === item.id ? (
@@ -927,7 +973,7 @@ interface RightSidebarProps {
   onCreateEmptyGroup: () => void;
   onCreateGroupFromSelected: () => void;
   onSceneItemMove: (draggedId: string, targetId: string) => void;
-  onSceneItemSelect: (objectId: string) => void;
+  onSceneItemSelect: (selectionIds: string[], primaryId: string | null) => void;
   onSceneItemFrame: (objectId: string) => void;
   onSceneItemDelete: (objectId: string) => void;
   onSceneItemDuplicate: (objectId: string) => void;
@@ -1055,7 +1101,7 @@ interface EditorShellProps {
   onSearchQueryChange: (value: string) => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
   onAssetClick: (assetId: string) => void;
-  onSceneItemSelect: (objectId: string) => void;
+  onSceneItemSelect: (selectionIds: string[], primaryId: string | null) => void;
   onSceneItemMove: (draggedId: string, targetId: string) => void;
   onSceneItemFrame: (objectId: string) => void;
   onSceneItemDelete: (objectId: string) => void;
