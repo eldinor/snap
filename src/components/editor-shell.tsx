@@ -412,6 +412,9 @@ function AssetList(props: AssetListProps) {
 
 interface SelectionPanelProps {
   viewState: EditorViewState;
+  onCreateGroupFromSelected: () => void;
+  onToggleSelectedHidden: () => void;
+  onToggleSelectedLocked: () => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionRotationChange: (value: number) => void;
   onSelectionDropToGround: () => void;
@@ -495,11 +498,25 @@ function SelectionPanel(props: SelectionPanelProps) {
   }
 
   if (selection.multiSelected) {
+    const selectedItems = props.viewState.sceneItems.filter((item) => item.selected);
+    const allHidden = selectedItems.length > 0 && selectedItems.every((item) => item.hidden);
+    const allLocked = selectedItems.length > 0 && selectedItems.every((item) => item.locked);
     return (
       <div className="properties-empty">
         <strong>{selection.selectedAssetName}</strong>
         <span>Shift selects a range. Ctrl adds or removes individual items.</span>
         <span>Transforms still apply to the primary selection only.</span>
+        <div className="transform-actions">
+          <button type="button" className="toolbar-menu-button" onClick={props.onCreateGroupFromSelected}>
+            <span>Group Selected</span>
+          </button>
+          <button type="button" className="toolbar-menu-button" onClick={props.onToggleSelectedHidden}>
+            <span>{allHidden ? "Show Selected" : "Hide Selected"}</span>
+          </button>
+          <button type="button" className="toolbar-menu-button" onClick={props.onToggleSelectedLocked}>
+            <span>{allLocked ? "Unlock Selected" : "Lock Selected"}</span>
+          </button>
+        </div>
       </div>
     );
   }
@@ -792,6 +809,9 @@ function SceneList(props: SceneListProps) {
                 )}
                 <span className="scene-row-title">{item.label}</span>
                 <span className={`scene-row-kind scene-row-kind-${item.type}`}>{item.type === "group" ? "Group" : "Object"}</span>
+                {item.type === "group" && item.childCount !== null ? (
+                  <span className="scene-row-kind scene-row-kind-count">{item.childCount}</span>
+                ) : null}
                 {item.type === "object" && item.placementKind ? (
                   <span className={`scene-row-kind scene-row-kind-placement scene-row-kind-${item.placementKind}`}>
                     {item.placementKind === "instance" ? "Instance" : "Clone"}
@@ -890,11 +910,12 @@ function SceneList(props: SceneListProps) {
             >
               <TrashIcon className="tool-icon" />
             </button>
-            <span className="scene-row-meta">
-              {item.locked ? "Locked" : ""}
-              {item.locked && item.hidden ? " | " : ""}
-              {item.hidden ? "Hidden" : ""}
-            </span>
+            {item.locked || item.hidden ? (
+              <span className="scene-row-meta">
+                {item.locked ? <span className="scene-row-meta-locked">Locked</span> : null}
+                {item.hidden ? <span className="scene-row-meta-hidden">Hidden</span> : null}
+              </span>
+            ) : null}
           </div>
         </div>
       ))}
@@ -982,6 +1003,9 @@ interface RightSidebarProps {
   onSceneItemToggleLocked: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
   onSceneItemUnchildGroup: (groupId: string) => void;
+  onCreateGroupFromSelected: () => void;
+  onToggleSelectedHidden: () => void;
+  onToggleSelectedLocked: () => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionRotationChange: (value: number) => void;
   onSelectionDropToGround: () => void;
@@ -1044,6 +1068,9 @@ function RightSidebar(props: RightSidebarProps) {
         <div className="properties-panel">
           <SelectionPanel
             viewState={props.viewState}
+            onCreateGroupFromSelected={props.onCreateGroupFromSelected}
+            onToggleSelectedHidden={props.onToggleSelectedHidden}
+            onToggleSelectedLocked={props.onToggleSelectedLocked}
             onSelectionPositionChange={props.onSelectionPositionChange}
             onSelectionRotationChange={props.onSelectionRotationChange}
             onSelectionDropToGround={props.onSelectionDropToGround}
@@ -1111,6 +1138,8 @@ interface EditorShellProps {
   onSceneItemToggleLocked: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
   onSceneItemUnchildGroup: (groupId: string) => void;
+  onToggleSelectedHidden: () => void;
+  onToggleSelectedLocked: () => void;
   onToggleSnap: () => void;
   onToggleYSnap: () => void;
   onSelectMode: () => void;
@@ -1249,6 +1278,8 @@ export function EditorShell(props: EditorShellProps) {
           onSceneItemToggleLocked={props.onSceneItemToggleLocked}
           onSceneItemUngroup={props.onSceneItemUngroup}
           onSceneItemUnchildGroup={props.onSceneItemUnchildGroup}
+          onToggleSelectedHidden={props.onToggleSelectedHidden}
+          onToggleSelectedLocked={props.onToggleSelectedLocked}
           onSelectionPositionChange={props.onSelectionPositionChange}
           onSelectionRotationChange={props.onSelectionRotationChange}
           onSelectionDropToGround={props.onSelectionDropToGround}

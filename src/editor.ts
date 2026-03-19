@@ -169,6 +169,7 @@ export class ModularEditorApp {
   };
 
   private gridMesh: Nullable<LinesMesh> = null;
+  private originMarker: Nullable<Mesh> = null;
   private selectionVerticalHelper: Nullable<LinesMesh> = null;
   private selectionHeightLabel: Nullable<Mesh> = null;
   private selectionVerticalHelperMarker: Nullable<Mesh> = null;
@@ -450,6 +451,7 @@ export class ModularEditorApp {
         assetId: object.assetId,
         assetName: asset?.name ?? object.assetId,
         placementKind: object.placementKind,
+        childCount: null,
         label: object.name || `${asset?.name ?? object.assetId}`,
         selected: this.selectedSceneItemIds.has(object.id),
         hidden: this.isObjectHidden(object),
@@ -470,6 +472,7 @@ export class ModularEditorApp {
         assetId: "",
         assetName: "Group",
         placementKind: null,
+        childCount: group.childIds.length,
         label: group.name,
         selected: this.selectedSceneItemIds.has(group.id),
         hidden: this.isGroupHidden(group.id),
@@ -1005,6 +1008,57 @@ export class ModularEditorApp {
     return false;
   }
 
+  private isSceneItemWithinGroup(itemId: string, ancestorGroupId: string) {
+    const object = this.objects.get(itemId);
+    if (object) {
+      return this.isObjectInGroup(object, ancestorGroupId);
+    }
+
+    const group = this.groups.get(itemId);
+    if (group) {
+      return group.id === ancestorGroupId || this.isGroupInGroup(group.id, ancestorGroupId);
+    }
+
+    return false;
+  }
+
+  private getOrderedSelectedTopLevelSceneItemIds() {
+    const selectedIds = new Set(this.selectedSceneItemIds);
+    return this.buildSceneItemsViewState()
+      .map((item) => item.id)
+      .filter((itemId) => selectedIds.has(itemId))
+      .filter((itemId) => {
+        const object = this.objects.get(itemId);
+        if (object?.parentId && selectedIds.has(object.parentId)) {
+          return false;
+        }
+
+        const group = this.groups.get(itemId);
+        return !(group?.parentId && selectedIds.has(group.parentId));
+      });
+  }
+
+  private getSceneItemParentId(itemId: string) {
+    const object = this.objects.get(itemId);
+    if (object) {
+      return object.parentId;
+    }
+
+    return this.groups.get(itemId)?.parentId ?? null;
+  }
+
+  private getSceneItemInsertIndex(itemId: string, parentId: string | null) {
+    return this.getContainerInsertIndex(parentId, itemId);
+  }
+
+  private getSceneItemRoot(itemId: string) {
+    return this.objects.get(itemId)?.root ?? this.groups.get(itemId)?.root ?? null;
+  }
+
+  private getSceneItemLabel(itemId: string) {
+    return this.objects.get(itemId)?.name ?? this.groups.get(itemId)?.name ?? "item";
+  }
+
   private clearSelectionIfInsideGroup(groupId: string) {
     const remainingSelectionIds = Array.from(this.selectedSceneItemIds).filter((itemId) => {
       const selectedObject = this.objects.get(itemId);
@@ -1042,7 +1096,7 @@ export class ModularEditorApp {
   private getGroupChildren(group: EditorGroup) {
     return group.childIds
       .map((childId) => this.groups.get(childId)?.root ?? this.objects.get(childId)?.root ?? null)
-      .filter((child): child is TransformNode => !!child);
+      .filter((child): child is TransformNode => !!child && child.getChildMeshes().length > 0);
   }
 
   private getContainerInsertIndex(containerId: string | null, targetId: string) {
@@ -1191,26 +1245,9 @@ export class ModularEditorApp {
     }
 
     if (group.childIds.length === 0) {
-      if (this.selectedSceneItemIds.has(groupId)) {
-        this.applySceneItemSelection(
-          Array.from(this.selectedSceneItemIds).filter((id) => id !== groupId),
-          null,
-          false,
-        );
-      }
       if (group.parentId) {
-        const parentGroupId = group.parentId;
-        const parentGroup = this.groups.get(parentGroupId);
-        if (parentGroup) {
-          parentGroup.childIds = parentGroup.childIds.filter((id) => id !== groupId);
-        }
-        group.parentId = null;
-        this.cleanupGroupAfterChildRemoval(parentGroupId);
-      } else {
-        this.removeRootId(groupId);
+        this.recenterGroupRoot(group.parentId);
       }
-      group.root.dispose();
-      this.groups.delete(groupId);
       return;
     }
 
@@ -1374,6 +1411,11 @@ export class ModularEditorApp {
     this.gridMesh = this.sceneCore.renderGrid(
       this.gridMesh,
       this.gridSize,
+      this.settings.gridVisible,
+      this.settings.gridColor,
+    );
+    this.originMarker = this.sceneCore.renderOriginMarker(
+      this.originMarker,
       this.settings.gridVisible,
       this.settings.gridColor,
     );
@@ -1856,6 +1898,79 @@ export class ModularEditorApp {
     this.deleteSelectedObject();
   }
 
+  toggleSelectedHidden() {
+    if (this.selectedSceneItemIds.size <= 1) {
+      return;
+    }
+
+    const selectedIds = Array.from(this.selectedSceneItemIds);
+    const shouldHide = selectedIds.some((itemId) => {
+      const group = this.groups.get(itemId);
+      if (group) {
+        return !group.hidden;
+      }
+      const object = this.objects.get(itemId);
+      return object ? !object.hidden : false;
+    });
+
+    selectedIds.forEach((itemId) => {
+      const group = this.groups.get(itemId);
+      if (group) {
+        group.hidden = shouldHide;
+        this.applyGroupVisibility(group.id);
+        return;
+      }
+
+      const object = this.objects.get(itemId);
+      if (object) {
+        object.hidden = shouldHide;
+        this.applyObjectVisibility(object.id);
+      }
+    });
+
+    if (shouldHide) {
+      this.clearSelection();
+    } else {
+      this.refreshSelectionAttachment();
+      this.emitViewState();
+    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`${shouldHide ? "Hidden" : "Shown"} ${selectedIds.length} selected items.`);
+  }
+
+  toggleSelectedLocked() {
+    if (this.selectedSceneItemIds.size <= 1) {
+      return;
+    }
+
+    const selectedIds = Array.from(this.selectedSceneItemIds);
+    const shouldLock = selectedIds.some((itemId) => {
+      const group = this.groups.get(itemId);
+      if (group) {
+        return !group.locked;
+      }
+      const object = this.objects.get(itemId);
+      return object ? !object.locked : false;
+    });
+
+    selectedIds.forEach((itemId) => {
+      const group = this.groups.get(itemId);
+      if (group) {
+        group.locked = shouldLock;
+        return;
+      }
+
+      const object = this.objects.get(itemId);
+      if (object) {
+        object.locked = shouldLock;
+      }
+    });
+
+    this.refreshSelectionAttachment();
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`${shouldLock ? "Locked" : "Unlocked"} ${selectedIds.length} selected items.`);
+  }
+
   renameSceneItem(objectId: string, nextName: string) {
     const trimmed = nextName.trim();
     if (!trimmed) {
@@ -1884,7 +1999,21 @@ export class ModularEditorApp {
   }
 
   setSceneItemSelection(selectionIds: string[], primaryId: string | null = null) {
-    this.applySceneItemSelection(selectionIds, primaryId);
+    if (selectionIds.length === 0) {
+      this.clearSelection();
+      return;
+    }
+
+    if (selectionIds.length === 1) {
+      this.selectSceneItem(selectionIds[0]);
+      return;
+    }
+
+    this.applySceneItemSelection(selectionIds, primaryId, false);
+    this.mode = "select";
+    this.disposePreview();
+    this.refreshSelectionAttachment();
+    this.emitViewState();
   }
 
   selectSceneItem(objectId: string) {
@@ -2060,67 +2189,79 @@ export class ModularEditorApp {
   }
 
   createGroupFromSelected() {
-    if (!this.selectedObjectId) {
+    const selectedIds = this.getOrderedSelectedTopLevelSceneItemIds();
+    if (selectedIds.length === 0) {
       return;
     }
 
-    const object = this.objects.get(this.selectedObjectId);
-    if (!object) {
+    const parentIds = selectedIds.map((itemId) => this.getSceneItemParentId(itemId));
+    const commonParentId = parentIds.every((parentId) => parentId === parentIds[0]) ? parentIds[0] ?? null : null;
+    const commonInsertIndex =
+      parentIds.every((parentId) => parentId === parentIds[0]) && selectedIds.length > 0
+        ? Math.min(
+            ...selectedIds
+              .map((itemId) => this.getSceneItemInsertIndex(itemId, commonParentId))
+              .filter((index) => index >= 0),
+          )
+        : undefined;
+
+    const roots = selectedIds
+      .map((itemId) => this.getSceneItemRoot(itemId))
+      .filter((root): root is TransformNode => !!root);
+    if (roots.length === 0) {
       return;
     }
 
-    const previousParentId = object.parentId;
-    const previousParentContainerId = previousParentId ? this.getNextParentContainerId(previousParentId) : null;
-    const previousParentContainerIndex = previousParentId
-      ? this.getContainerInsertIndex(previousParentContainerId, previousParentId)
-      : -1;
-    const previousInsertIndex = previousParentId
-      ? this.getContainerInsertIndex(previousParentId, object.id)
-      : this.getContainerInsertIndex(null, object.id);
-    if (previousParentId) {
-      const previousGroup = this.groups.get(previousParentId);
-      if (previousGroup) {
-        object.root.setParent(null);
-        object.parentId = null;
-        previousGroup.childIds = previousGroup.childIds.filter((id) => id !== object.id);
-        this.cleanupGroupAfterChildRemoval(previousParentId);
-      }
-    } else {
-      this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
-    }
+    let min: Vector3 | null = null;
+    let max: Vector3 | null = null;
+    roots.forEach((root) => {
+      const bounds = root.getHierarchyBoundingVectors();
+      min = min ? Vector3.Minimize(min, bounds.min) : bounds.min.clone();
+      max = max ? Vector3.Maximize(max, bounds.max) : bounds.max.clone();
+    });
+    const center = min && max ? min.add(max).scale(0.5) : Vector3.Zero();
 
     const groupId = `group-${++this.groupSequence}`;
     const groupName = `Group ${String(this.groupSequence).padStart(2, "0")}`;
     const groupRoot = this.createGroupRoot(groupId);
-    groupRoot.position.copyFrom(object.root.getAbsolutePosition());
+    groupRoot.position.copyFrom(center);
     this.groups.set(groupId, {
       id: groupId,
       name: groupName,
       type: "group",
-      childIds: [object.id],
+      childIds: [],
       hidden: false,
       locked: false,
       parentId: null,
       root: groupRoot,
     });
-    object.root.setParent(groupRoot);
-    object.parentId = groupId;
     const newGroup = this.groups.get(groupId)!;
-    if (previousParentId && this.groups.has(previousParentId)) {
-      this.insertGroupIntoGroup(newGroup, previousParentId, previousInsertIndex >= 0 ? previousInsertIndex : undefined);
-    } else if (previousParentId) {
-      if (previousParentContainerId) {
-        this.insertGroupIntoGroup(
-          newGroup,
-          previousParentContainerId,
-          previousParentContainerIndex >= 0 ? previousParentContainerIndex : undefined,
-        );
-      } else {
-        this.insertGroupIntoRoot(newGroup, previousParentContainerIndex >= 0 ? previousParentContainerIndex : undefined);
+
+    selectedIds.forEach((itemId) => {
+      const object = this.objects.get(itemId);
+      if (object) {
+        this.removeObjectFromParentContainer(object);
+        object.root.setParent(groupRoot);
+        object.parentId = groupId;
+        newGroup.childIds.push(object.id);
+        return;
       }
+
+      const group = this.groups.get(itemId);
+      if (group) {
+        this.removeGroupFromParentContainer(group);
+        group.root.setParent(groupRoot);
+        group.parentId = groupId;
+        newGroup.childIds.push(group.id);
+      }
+    });
+
+    if (commonParentId) {
+      this.insertGroupIntoGroup(newGroup, commonParentId, commonInsertIndex);
     } else {
-      this.insertGroupIntoRoot(newGroup, previousInsertIndex >= 0 ? previousInsertIndex : undefined);
+      this.insertGroupIntoRoot(newGroup, commonInsertIndex);
     }
+
     this.applySceneItemSelection([groupId], groupId, false);
     this.refreshSelectionAttachment();
     this.pushHistoryCheckpoint();
@@ -2145,6 +2286,37 @@ export class ModularEditorApp {
     }
 
     if (targetGroup) {
+      if (this.selectedSceneItemIds.has(draggedId) && this.selectedSceneItemIds.size > 1) {
+        const selectedIds = this.getOrderedSelectedTopLevelSceneItemIds().filter((itemId) => itemId !== targetGroup.id);
+        const movableIds = selectedIds.filter((itemId) => !this.isSceneItemWithinGroup(targetGroup.id, itemId));
+        if (movableIds.length === 0) {
+          return;
+        }
+
+        movableIds.forEach((itemId) => {
+          const selectedObject = this.objects.get(itemId);
+          if (selectedObject) {
+            this.removeObjectFromParentContainer(selectedObject);
+            this.insertObjectIntoGroup(selectedObject, targetGroup.id);
+            return;
+          }
+
+          const selectedGroup = this.groups.get(itemId);
+          if (selectedGroup) {
+            this.removeGroupFromParentContainer(selectedGroup);
+            this.insertGroupIntoGroup(selectedGroup, targetGroup.id);
+          }
+        });
+
+        this.pushHistoryCheckpoint();
+        this.setStatusNotice(
+          movableIds.length === 1
+            ? `Moved 1 item into ${targetGroup.name}.`
+            : `Moved ${movableIds.length} items into ${targetGroup.name}.`,
+        );
+        return;
+      }
+
       if (draggedObject) {
         this.removeObjectFromParentContainer(draggedObject);
         if (!this.insertObjectIntoGroup(draggedObject, targetGroup.id)) {
@@ -2494,6 +2666,7 @@ export class ModularEditorApp {
     this.resizeObserver.disconnect();
     window.removeEventListener("resize", this.handleWindowResize);
     window.removeEventListener("keydown", this.handleWindowKeyDown);
+    this.originMarker?.dispose();
     this.selectionVerticalHelper?.dispose();
     this.selectionHeightLabel?.dispose(false, false);
     this.selectionVerticalHelperMarker?.dispose(false, false);

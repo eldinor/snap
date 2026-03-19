@@ -48,6 +48,7 @@ export interface SceneItemViewState {
   assetId: string;
   assetName: string;
   placementKind: "clone" | "instance" | null;
+  childCount: number | null;
   label: string;
   selected: boolean;
   hidden: boolean;

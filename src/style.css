@@ -514,6 +514,7 @@ select:focus-visible {
   gap: 6px;
   min-height: 0;
   overflow: auto;
+  padding-top: 10px;
 }
 
 .scene-row {
@@ -666,6 +667,15 @@ select:focus-visible {
   background: rgba(255, 255, 255, 0.03);
 }
 
+.scene-row-kind-count {
+  min-width: 18px;
+  padding: 1px 5px;
+  border-color: #394249;
+  color: #d5dde5;
+  background: rgba(255, 255, 255, 0.04);
+  text-align: center;
+}
+
 .scene-row-kind-placement {
   border-color: #4f5f45;
   color: #d9f2c7;
@@ -723,19 +733,31 @@ select:focus-visible {
 
 .scene-row-meta {
   margin-left: auto;
+  display: grid;
+  align-content: center;
+  justify-items: end;
+  gap: 1px;
   color: #8e9aa5;
-  font-size: 10px;
-  line-height: 1.15;
+  font-size: 9px;
+  line-height: 0.95;
   text-align: right;
   white-space: nowrap;
 }
 
+.scene-row-meta-locked {
+  color: #e2b861;
+}
+
+.scene-row-meta-hidden {
+  color: #8fb0c9;
+}
+
 .scene-row-actions {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 4px;
   padding-top: 2px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-start;
   grid-column: 2;
   padding: 0 8px 6px;

@@ -100,6 +100,12 @@ export function App() {
       onSceneItemUnchildGroup={(groupId) => {
         appRef.current?.unchildGroup(groupId);
       }}
+      onToggleSelectedHidden={() => {
+        appRef.current?.toggleSelectedHidden();
+      }}
+      onToggleSelectedLocked={() => {
+        appRef.current?.toggleSelectedLocked();
+      }}
       onToggleSnap={() => {
         appRef.current?.toggleSnap();
       }}

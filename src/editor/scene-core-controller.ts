@@ -22,6 +22,7 @@ const HEIGHT_LABEL_BG_FREE = "rgba(10, 18, 26, 0.86)";
 const HEIGHT_LABEL_BG_SNAP = "rgba(10, 26, 18, 0.88)";
 const HEIGHT_HELPER_MARKER_DIAMETER = 0.42;
 const HEIGHT_HELPER_MARKER_THICKNESS = 0.04;
+const GRID_ORIGIN_MARKER_SIZE = 0.0675;
 
 export class SceneCoreController {
   constructor(
@@ -49,8 +50,43 @@ export class SceneCoreController {
     return nextGrid;
   }
 
+  renderOriginMarker(originMarker: Nullable<Mesh>, visible: boolean, colorHex: string) {
+    originMarker?.dispose(false, false);
+    if (!visible) {
+      return null;
+    }
+
+    const nextMarker = MeshBuilder.CreateDisc(
+      "editor-grid-origin-marker",
+      { radius: GRID_ORIGIN_MARKER_SIZE, tessellation: 24 },
+      this.scene,
+    );
+    const gridColor = Color3.FromHexString(colorHex);
+    const markerColor = Color3.Lerp(gridColor, Color3.White(), 0.88);
+    nextMarker.position.set(0, 0.025, 0);
+    nextMarker.rotation.x = Math.PI / 2;
+    nextMarker.isPickable = false;
+    nextMarker.alwaysSelectAsActiveMesh = true;
+    nextMarker.renderingGroupId = 1;
+    nextMarker.renderOverlay = false;
+
+    const markerMaterial = new StandardMaterial("editor-grid-origin-marker-material", this.scene);
+    markerMaterial.disableLighting = true;
+    markerMaterial.backFaceCulling = false;
+    markerMaterial.emissiveColor = markerColor.scale(1.2);
+    markerMaterial.diffuseColor = markerColor.scale(0.2);
+    markerMaterial.alpha = 0.92;
+    markerMaterial.specularColor = Color3.Black();
+    nextMarker.material = markerMaterial;
+    return nextMarker;
+  }
+
+  private hasHelperGeometry(root: TransformNode | null) {
+    return !!root && root.getChildMeshes().length > 0;
+  }
+
   renderVerticalHelper(verticalHelper: Nullable<LinesMesh>, root: TransformNode | null, ySnapEnabled: boolean) {
-    if (!root) {
+    if (!this.hasHelperGeometry(root)) {
       verticalHelper?.dispose();
       return null;
     }
@@ -85,7 +121,7 @@ export class SceneCoreController {
   }
 
   renderHeightLabel(heightLabel: Nullable<Mesh>, root: TransformNode | null, ySnapEnabled: boolean) {
-    if (!root) {
+    if (!this.hasHelperGeometry(root)) {
       heightLabel?.dispose(false, false);
       return null;
     }
@@ -159,7 +195,7 @@ export class SceneCoreController {
   }
 
   renderVerticalHelperMarker(marker: Nullable<Mesh>, root: TransformNode | null, ySnapEnabled: boolean) {
-    if (!root) {
+    if (!this.hasHelperGeometry(root)) {
       marker?.dispose(false, false);
       return null;
     }
