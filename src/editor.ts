@@ -564,6 +564,7 @@ export class ModularEditorApp {
       snapEnabled: this.snapEnabled,
       ySnapEnabled: this.ySnapEnabled,
       newObjectPlacementKind: this.settings.newObjectPlacementKind,
+      heightLabelMode: this.settings.heightLabelMode,
       mode: this.mode,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
@@ -1320,6 +1321,7 @@ export class ModularEditorApp {
       this.selectionHeightLabel,
       this.getSelectedRoot(),
       this.ySnapEnabled,
+      this.settings.heightLabelMode,
     );
     this.selectionVerticalHelperMarker = this.sceneCore.renderVerticalHelperMarker(
       this.selectionVerticalHelperMarker,
@@ -2592,6 +2594,7 @@ export class ModularEditorApp {
     this.settings.gridColor = DEFAULT_USER_SETTINGS.gridColor;
     this.settings.groundColor = DEFAULT_USER_SETTINGS.groundColor;
     this.settings.newObjectPlacementKind = DEFAULT_USER_SETTINGS.newObjectPlacementKind;
+    this.settings.heightLabelMode = DEFAULT_USER_SETTINGS.heightLabelMode;
 
     this.renderGrid();
     this.applyEnvironmentSetting();
@@ -2642,6 +2645,16 @@ export class ModularEditorApp {
     }
 
     this.settings.newObjectPlacementKind = value;
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setHeightLabelMode(value: "transform" | "geometry") {
+    if (this.settings.heightLabelMode === value) {
+      return;
+    }
+
+    this.settings.heightLabelMode = value;
     this.saveUserSettings();
     this.emitViewState();
   }

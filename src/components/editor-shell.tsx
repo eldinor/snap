@@ -67,6 +67,7 @@ interface EditorToolbarProps {
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
   onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
+  onHeightLabelModeChange: (value: "transform" | "geometry") => void;
   onRestoreDefaults: () => void;
 }
 
@@ -171,12 +172,6 @@ function EditorToolbar(props: EditorToolbarProps) {
             <span>Redo</span>
           </span>
         </button>
-        <button type="button" className="tool-button" onClick={props.onSaveScene}>
-          <span className="tool-button-content">
-            <SaveIcon className="tool-icon" />
-            <span>Save</span>
-          </span>
-        </button>
         <input
           type="file"
           accept="application/json,.json"
@@ -213,39 +208,47 @@ function EditorToolbar(props: EditorToolbarProps) {
             <span>Clear Scene</span>
           </span>
         </button>
-        <div className="toolbar-popover">
-          <button
-            type="button"
-            className={`tool-button tool-button-icon-only${props.exportMenuOpen ? " is-active" : ""}`}
-            aria-label="Export and import"
-            title="Export and import"
-            onClick={props.onToggleExportMenu}
-          >
-            <SaveLoadIcon className="tool-icon" />
+        <div className="toolbar-file-group">
+          <button type="button" className="tool-button" onClick={props.onSaveScene}>
+            <span className="tool-button-content">
+              <SaveIcon className="tool-icon" />
+              <span>Save</span>
+            </span>
           </button>
-          <div className="toolbar-menu" hidden={!props.exportMenuOpen}>
-            <div className="panel-label settings-menu-label">Scene File</div>
-            <div className="toolbar-menu-actions">
-              <button type="button" className="toolbar-menu-button" onClick={props.onExportJson}>
-                <ExportIcon className="tool-icon" />
-                <span>Export JSON</span>
-              </button>
-              <button type="button" className="toolbar-menu-button" onClick={props.onImportJson}>
-                <ImportIcon className="tool-icon" />
-                <span>Import JSON</span>
-              </button>
-              <button type="button" className="toolbar-menu-button" onClick={props.onLoadLastSaved}>
-                <SaveLoadIcon className="tool-icon" />
-                <span>Load Last Saved</span>
-              </button>
-            </div>
-            <div className="toolbar-menu-meta">
-              <span>Last Saved</span>
-              <strong>{formatSavedAt(props.viewState.lastManualSaveAt)}</strong>
-            </div>
-            <div className="toolbar-menu-meta">
-              <span>Autosave Recovered</span>
-              <strong>{formatSavedAt(props.viewState.lastRecoveredAutosaveAt)}</strong>
+          <div className="toolbar-popover">
+            <button
+              type="button"
+              className={`tool-button tool-button-icon-only${props.exportMenuOpen ? " is-active" : ""}`}
+              aria-label="Export and import"
+              title="Export and import"
+              onClick={props.onToggleExportMenu}
+            >
+              <SaveLoadIcon className="tool-icon" />
+            </button>
+            <div className="toolbar-menu" hidden={!props.exportMenuOpen}>
+              <div className="panel-label settings-menu-label">Scene File</div>
+              <div className="toolbar-menu-actions">
+                <button type="button" className="toolbar-menu-button" onClick={props.onExportJson}>
+                  <ExportIcon className="tool-icon" />
+                  <span>Export JSON</span>
+                </button>
+                <button type="button" className="toolbar-menu-button" onClick={props.onImportJson}>
+                  <ImportIcon className="tool-icon" />
+                  <span>Import JSON</span>
+                </button>
+                <button type="button" className="toolbar-menu-button" onClick={props.onLoadLastSaved}>
+                  <SaveLoadIcon className="tool-icon" />
+                  <span>Load Last Saved</span>
+                </button>
+              </div>
+              <div className="toolbar-menu-meta">
+                <span>Last Saved</span>
+                <strong>{formatSavedAt(props.viewState.lastManualSaveAt)}</strong>
+              </div>
+              <div className="toolbar-menu-meta">
+                <span>Autosave Recovered</span>
+                <strong>{formatSavedAt(props.viewState.lastRecoveredAutosaveAt)}</strong>
+              </div>
             </div>
           </div>
         </div>
@@ -356,6 +359,19 @@ function EditorToolbar(props: EditorToolbarProps) {
               >
                 <option value="instance">Instance</option>
                 <option value="clone">Clone</option>
+              </select>
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Height Label</span>
+              <select
+                className="editor-input"
+                value={toolbar.heightLabelMode}
+                onChange={(event) => {
+                  props.onHeightLabelModeChange(event.target.value as "transform" | "geometry");
+                }}
+              >
+                <option value="transform">Transform Y</option>
+                <option value="geometry">Geometry Bottom</option>
               </select>
             </label>
             <button type="button" className="toolbar-menu-button setting-action" onClick={props.onRestoreDefaults}>
@@ -1164,6 +1180,7 @@ interface EditorShellProps {
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
   onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
+  onHeightLabelModeChange: (value: "transform" | "geometry") => void;
   onRestoreDefaults: () => void;
   onSceneSortModeChange: (mode: SceneSortMode) => void;
   onCreateEmptyGroup: () => void;
@@ -1244,6 +1261,7 @@ export function EditorShell(props: EditorShellProps) {
         onGridColorChange={props.onGridColorChange}
         onGroundColorChange={props.onGroundColorChange}
         onNewObjectPlacementKindChange={props.onNewObjectPlacementKindChange}
+        onHeightLabelModeChange={props.onHeightLabelModeChange}
         onRestoreDefaults={props.onRestoreDefaults}
       />
       <div

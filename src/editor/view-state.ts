@@ -4,6 +4,7 @@ export interface ToolbarViewState {
   snapEnabled: boolean;
   ySnapEnabled: boolean;
   newObjectPlacementKind: "clone" | "instance";
+  heightLabelMode: "transform" | "geometry";
   mode: EditorMode;
   canUndo: boolean;
   canRedo: boolean;
@@ -84,6 +85,7 @@ export function createInitialEditorViewState(): EditorViewState {
       snapEnabled: true,
       ySnapEnabled: false,
       newObjectPlacementKind: "instance",
+      heightLabelMode: "transform",
       mode: "select",
       canUndo: false,
       canRedo: false,

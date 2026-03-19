@@ -184,6 +184,9 @@ export function App() {
       onNewObjectPlacementKindChange={(value) => {
         appRef.current?.setNewObjectPlacementKind(value);
       }}
+      onHeightLabelModeChange={(value) => {
+        appRef.current?.setHeightLabelMode(value);
+      }}
       onRestoreDefaults={() => {
         appRef.current?.restoreDefaultUserSettings();
       }}

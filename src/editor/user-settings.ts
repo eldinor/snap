@@ -8,6 +8,7 @@ export interface UserSettings {
   gridColor: string;
   groundColor: string;
   newObjectPlacementKind: "clone" | "instance";
+  heightLabelMode: "transform" | "geometry";
 }
 
 export const DEFAULT_USER_SETTINGS: UserSettings = {
@@ -18,6 +19,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   gridColor: "#292f38",
   groundColor: "#1f2326",
   newObjectPlacementKind: "instance",
+  heightLabelMode: "transform",
 };
 
 export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSettings {
@@ -39,6 +41,10 @@ export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSe
         parsed.newObjectPlacementKind === "clone" || parsed.newObjectPlacementKind === "instance"
           ? parsed.newObjectPlacementKind
           : DEFAULT_USER_SETTINGS.newObjectPlacementKind,
+      heightLabelMode:
+        parsed.heightLabelMode === "transform" || parsed.heightLabelMode === "geometry"
+          ? parsed.heightLabelMode
+          : DEFAULT_USER_SETTINGS.heightLabelMode,
     };
   } catch {
     return { ...DEFAULT_USER_SETTINGS };

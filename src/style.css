@@ -88,6 +88,12 @@ select:focus-visible {
   position: relative;
 }
 
+.toolbar-file-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .tool-button,
 .chip {
   height: 28px;

@@ -120,7 +120,12 @@ export class SceneCoreController {
     return nextHelper;
   }
 
-  renderHeightLabel(heightLabel: Nullable<Mesh>, root: TransformNode | null, ySnapEnabled: boolean) {
+  renderHeightLabel(
+    heightLabel: Nullable<Mesh>,
+    root: TransformNode | null,
+    ySnapEnabled: boolean,
+    heightLabelMode: "transform" | "geometry",
+  ) {
     if (!this.hasHelperGeometry(root)) {
       heightLabel?.dispose(false, false);
       return null;
@@ -128,14 +133,16 @@ export class SceneCoreController {
 
     const bounds = root.getHierarchyBoundingVectors();
     const helperTop = bounds.min.y;
-    if (helperTop <= 0.05) {
+    const transformHeight = root.getAbsolutePosition().y;
+    const displayedHeight = heightLabelMode === "transform" ? transformHeight : helperTop;
+    if (displayedHeight <= 0.05) {
       heightLabel?.dispose(false, false);
       return null;
     }
 
     const centerX = (bounds.min.x + bounds.max.x) * 0.5;
     const centerZ = (bounds.min.z + bounds.max.z) * 0.5;
-    const labelText = `${helperTop.toFixed(2)}u`;
+    const labelText = `${displayedHeight.toFixed(2)}u`;
 
     const nextLabel =
       heightLabel ??
