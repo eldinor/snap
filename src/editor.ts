@@ -150,6 +150,30 @@ export class ModularEditorApp {
       this.rotateActiveTarget();
     }
 
+    if (this.mode === "select") {
+      const key = event.key.toLowerCase();
+      if (key === "w") {
+        event.preventDefault();
+        this.moveSelectedByCameraAxes(1, 0);
+        return;
+      }
+      if (key === "s") {
+        event.preventDefault();
+        this.moveSelectedByCameraAxes(-1, 0);
+        return;
+      }
+      if (key === "a") {
+        event.preventDefault();
+        this.moveSelectedByCameraAxes(0, -1);
+        return;
+      }
+      if (key === "d") {
+        event.preventDefault();
+        this.moveSelectedByCameraAxes(0, 1);
+        return;
+      }
+    }
+
     if (event.key === "Delete") {
       event.preventDefault();
       this.deleteSelectedObject();
@@ -1030,12 +1054,14 @@ export class ModularEditorApp {
       .filter((itemId) => selectedIds.has(itemId))
       .filter((itemId) => {
         const object = this.objects.get(itemId);
-        if (object?.parentId && selectedIds.has(object.parentId)) {
+        if (object?.parentId && Array.from(selectedIds).some((selectedId) => this.groups.has(selectedId) && this.isObjectInGroup(object, selectedId))) {
           return false;
         }
 
         const group = this.groups.get(itemId);
-        return !(group?.parentId && selectedIds.has(group.parentId));
+        return !Array.from(selectedIds).some(
+          (selectedId) => selectedId !== itemId && this.groups.has(selectedId) && this.isGroupInGroup(itemId, selectedId),
+        );
       });
   }
 
@@ -1058,6 +1084,65 @@ export class ModularEditorApp {
 
   private getSceneItemLabel(itemId: string) {
     return this.objects.get(itemId)?.name ?? this.groups.get(itemId)?.name ?? "item";
+  }
+
+  private canMoveSceneItem(itemId: string) {
+    const object = this.objects.get(itemId);
+    if (object) {
+      return !this.isObjectHidden(object) && !this.isObjectLocked(object);
+    }
+
+    const group = this.groups.get(itemId);
+    if (group) {
+      return !this.isGroupHidden(group.id) && !this.isGroupLocked(group.id);
+    }
+
+    return false;
+  }
+
+  private moveSelectedByCameraAxes(forwardAmount: number, rightAmount: number) {
+    const selectionIds = this.getOrderedSelectedTopLevelSceneItemIds().filter((itemId) => this.canMoveSceneItem(itemId));
+    if (selectionIds.length === 0) {
+      return;
+    }
+
+    const cameraForward = this.camera.getTarget().subtract(this.camera.position);
+    cameraForward.y = 0;
+    if (cameraForward.lengthSquared() <= 0.0001) {
+      return;
+    }
+    cameraForward.normalize();
+    const step = this.snapEnabled ? this.gridSize : 0.25;
+    const forwardAxis =
+      Math.abs(cameraForward.x) >= Math.abs(cameraForward.z)
+        ? new Vector3(Math.sign(cameraForward.x) || 1, 0, 0)
+        : new Vector3(0, 0, Math.sign(cameraForward.z) || 1);
+    const rightAxis = new Vector3(forwardAxis.z, 0, -forwardAxis.x);
+    const delta = forwardAxis.scale(forwardAmount * step).add(rightAxis.scale(rightAmount * step));
+    if (delta.lengthSquared() <= 0.0001) {
+      return;
+    }
+
+    const affectedParentGroupIds = new Set<string>();
+    selectionIds.forEach((itemId) => {
+      const root = this.getSceneItemRoot(itemId);
+      if (!root) {
+        return;
+      }
+
+      root.setAbsolutePosition(root.getAbsolutePosition().add(delta));
+      const parentId = this.getSceneItemParentId(itemId);
+      if (parentId) {
+        affectedParentGroupIds.add(parentId);
+      }
+    });
+
+    affectedParentGroupIds.forEach((groupId) => {
+      this.recenterGroupRoot(groupId);
+    });
+
+    this.pushHistoryCheckpoint();
+    this.emitViewState();
   }
 
   private clearSelectionIfInsideGroup(groupId: string) {
