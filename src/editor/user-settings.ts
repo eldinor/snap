@@ -7,6 +7,7 @@ export interface UserSettings {
   gridVisible: boolean;
   gridColor: string;
   groundColor: string;
+  newObjectPlacementKind: "clone" | "instance";
 }
 
 export const DEFAULT_USER_SETTINGS: UserSettings = {
@@ -16,6 +17,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   gridVisible: true,
   gridColor: "#292f38",
   groundColor: "#1f2326",
+  newObjectPlacementKind: "instance",
 };
 
 export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSettings {
@@ -33,6 +35,10 @@ export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSe
       gridVisible: parsed.gridVisible ?? DEFAULT_USER_SETTINGS.gridVisible,
       gridColor: typeof parsed.gridColor === "string" ? parsed.gridColor : DEFAULT_USER_SETTINGS.gridColor,
       groundColor: typeof parsed.groundColor === "string" ? parsed.groundColor : DEFAULT_USER_SETTINGS.groundColor,
+      newObjectPlacementKind:
+        parsed.newObjectPlacementKind === "clone" || parsed.newObjectPlacementKind === "instance"
+          ? parsed.newObjectPlacementKind
+          : DEFAULT_USER_SETTINGS.newObjectPlacementKind,
     };
   } catch {
     return { ...DEFAULT_USER_SETTINGS };

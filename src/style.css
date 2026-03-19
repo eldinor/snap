@@ -620,6 +620,24 @@ select:focus-visible {
   background: rgba(255, 255, 255, 0.03);
 }
 
+.scene-row-kind-placement {
+  border-color: #4f5f45;
+  color: #d9f2c7;
+  background: rgba(111, 147, 74, 0.16);
+}
+
+.scene-row-kind-clone {
+  border-color: #4f5f45;
+  color: #d9f2c7;
+  background: rgba(111, 147, 74, 0.16);
+}
+
+.scene-row-kind-instance {
+  border-color: #6b5f39;
+  color: #f4e1ae;
+  background: rgba(160, 130, 52, 0.16);
+}
+
 .scene-row-collapse,
 .scene-row-collapse-spacer {
   width: 18px;
@@ -788,6 +806,7 @@ select:focus-visible {
   background: #161b20;
   color: #b2bcc6;
   font-size: 11px;
+  pointer-events: none;
 }
 
 .statusbar strong {

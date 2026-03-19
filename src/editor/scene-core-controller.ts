@@ -258,16 +258,25 @@ export class SceneCoreController {
     return null;
   }
 
-  findObjectRoot(mesh: Nullable<AbstractMesh>) {
+  findObjectId(mesh: Nullable<AbstractMesh>) {
     let current: Nullable<AbstractMesh | TransformNode> = mesh;
+    let matchedObjectId: string | null = null;
+
     while (current) {
       const objectId = current.metadata?.objectId as string | undefined;
       if (objectId) {
-        return current as TransformNode;
+        if (!matchedObjectId) {
+          matchedObjectId = objectId;
+        } else if (objectId !== matchedObjectId) {
+          break;
+        } else {
+          matchedObjectId = objectId;
+        }
       }
       current = current.parent as Nullable<AbstractMesh | TransformNode>;
     }
-    return null;
+
+    return matchedObjectId;
   }
 
   tagHierarchy(root: TransformNode, objectId: string) {

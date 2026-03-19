@@ -18,8 +18,12 @@ export async function instantiateAsset(
   preview: boolean,
   template: AssetTemplate,
   scene: Scene,
+  placementKind: "clone" | "instance" = "clone",
 ) {
-  const root = template.root.clone(`${asset.id}-${preview ? "preview" : "instance"}`);
+  const root =
+    preview || placementKind === "clone"
+      ? template.root.clone(`${asset.id}-${preview ? "preview" : "clone"}`)
+      : template.root.instantiateHierarchy(null, { doNotInstantiate: false });
   if (!root) {
     return null;
   }

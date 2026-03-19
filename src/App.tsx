@@ -97,6 +97,9 @@ export function App() {
       onSceneItemUngroup={(objectId) => {
         appRef.current?.ungroupSceneItem(objectId);
       }}
+      onSceneItemUnchildGroup={(groupId) => {
+        appRef.current?.unchildGroup(groupId);
+      }}
       onToggleSnap={() => {
         appRef.current?.toggleSnap();
       }}
@@ -172,11 +175,17 @@ export function App() {
       onGroundColorChange={(value) => {
         appRef.current?.setGroundColor(value);
       }}
+      onNewObjectPlacementKindChange={(value) => {
+        appRef.current?.setNewObjectPlacementKind(value);
+      }}
       onRestoreDefaults={() => {
         appRef.current?.restoreDefaultUserSettings();
       }}
       onSceneSortModeChange={setSceneSortMode}
-      onCreateGroup={() => {
+      onCreateEmptyGroup={() => {
+        appRef.current?.createEmptyGroup();
+      }}
+      onCreateGroupFromSelected={() => {
         appRef.current?.createGroupFromSelected();
       }}
       onSelectionPositionChange={(axis, value) => {

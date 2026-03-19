@@ -3,6 +3,7 @@ export type EditorMode = "select" | "place";
 export interface ToolbarViewState {
   snapEnabled: boolean;
   ySnapEnabled: boolean;
+  newObjectPlacementKind: "clone" | "instance";
   mode: EditorMode;
   canUndo: boolean;
   canRedo: boolean;
@@ -33,6 +34,7 @@ export interface SelectionViewState {
   selectedAssetName: string | null;
   activeAssetName: string | null;
   previewAssetName: string | null;
+  objectPlacementKind: "clone" | "instance" | null;
   position: [number, number, number] | null;
   rotationYDegrees: number | null;
   positionText: string | null;
@@ -44,6 +46,7 @@ export interface SceneItemViewState {
   id: string;
   assetId: string;
   assetName: string;
+  placementKind: "clone" | "instance" | null;
   label: string;
   selected: boolean;
   hidden: boolean;
@@ -78,6 +81,7 @@ export function createInitialEditorViewState(): EditorViewState {
     toolbar: {
       snapEnabled: true,
       ySnapEnabled: false,
+      newObjectPlacementKind: "instance",
       mode: "select",
       canUndo: false,
       canRedo: false,
@@ -108,6 +112,7 @@ export function createInitialEditorViewState(): EditorViewState {
       selectedAssetName: null,
       activeAssetName: null,
       previewAssetName: null,
+      objectPlacementKind: null,
       position: null,
       rotationYDegrees: null,
       positionText: null,

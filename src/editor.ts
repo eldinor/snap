@@ -58,6 +58,7 @@ import {
 interface EditorObject {
   id: string;
   assetId: string;
+  placementKind: "clone" | "instance";
   root: TransformNode;
   name: string;
   hidden: boolean;
@@ -71,6 +72,7 @@ interface EditorGroup {
   name: string;
   type: "group";
   childIds: string[];
+  parentId: string | null;
   root: TransformNode;
 }
 
@@ -347,18 +349,38 @@ export class ModularEditorApp {
       }
 
       if (pointerInfo.type === PointerEventTypes.POINTERDOWN) {
-        if (this.mode === "place" && this.previewAssetId && this.placementPreview) {
+        const pointerEvent = pointerInfo.event as PointerEvent | undefined;
+        const isPrimaryButton = (pointerEvent?.button ?? 0) === 0;
+
+        if (this.mode === "place" && this.previewAssetId && this.placementPreview && isPrimaryButton) {
           await this.placeActiveAsset();
           return;
         }
 
-        const pick = this.scene.pick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh !== this.ground);
-        const objectRoot = this.findObjectRoot(pick?.pickedMesh ?? null);
-        if (objectRoot) {
-          this.selectObjectByRoot(objectRoot);
-        } else {
-          this.clearSelection();
+        const hits = this.scene.multiPick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh !== this.ground) ?? [];
+        for (const hit of hits) {
+          const pickedMesh = hit.pickedMesh;
+          if (!pickedMesh) {
+            continue;
+          }
+
+          const objectId = this.findObjectId(pickedMesh);
+          if (objectId) {
+            const object = this.objects.get(objectId);
+            if (object) {
+              this.selectObjectByRoot(object.root);
+              return;
+            }
+          }
+
+          const groupId = pickedMesh.metadata?.groupId as string | undefined;
+          if (groupId) {
+            this.selectSceneItem(groupId);
+            return;
+          }
         }
+
+        this.clearSelection();
       }
     });
   }
@@ -385,6 +407,7 @@ export class ModularEditorApp {
       selectedAssetName: selectedAsset?.name ?? selectedGroup?.name ?? null,
       activeAssetName: activeAsset?.name ?? null,
       previewAssetName: previewAsset?.name ?? null,
+      objectPlacementKind: selected?.placementKind ?? null,
       position: position ? [position.x, position.y, position.z] : null,
       rotationYDegrees: rotationDegrees,
       positionText: position ? `${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}` : null,
@@ -396,14 +419,16 @@ export class ModularEditorApp {
   private buildSceneItemsViewState(): SceneItemViewState[] {
     this.normalizeSceneRootOrder();
     const items: SceneItemViewState[] = [];
-    const seenRootIds = new Set<string>();
+    const visitedIds = new Set<string>();
 
     const pushObject = (object: EditorObject, depth: number) => {
+      visitedIds.add(object.id);
       const asset = ASSETS.find((entry) => entry.id === object.assetId);
       items.push({
         id: object.id,
         assetId: object.assetId,
         assetName: asset?.name ?? object.assetId,
+        placementKind: object.placementKind,
         label: object.name || `${asset?.name ?? object.assetId}`,
         selected: this.selectedObjectId === object.id,
         hidden: object.hidden,
@@ -414,64 +439,61 @@ export class ModularEditorApp {
       });
     };
 
-    this.sceneRootOrder.forEach((rootId) => {
-      const group = this.groups.get(rootId);
-      if (group) {
-        seenRootIds.add(rootId);
-        items.push({
-          id: group.id,
-          assetId: "",
-          assetName: "Group",
-          label: group.name,
-          selected: this.selectedGroupId === group.id,
-          hidden: false,
-          locked: false,
-          type: "group",
-          parentId: null,
-          depth: 0,
-        });
-        group.childIds.forEach((childId) => {
-          const child = this.objects.get(childId);
-          if (child) {
-            pushObject(child, 1);
-          }
-        });
+    const pushGroup = (group: EditorGroup, depth: number) => {
+      if (visitedIds.has(group.id)) {
         return;
       }
-
-      const object = this.objects.get(rootId);
-      if (object && !object.parentId) {
-        seenRootIds.add(rootId);
-        pushObject(object, 0);
-      }
-    });
-
-    this.groups.forEach((group) => {
-      if (seenRootIds.has(group.id)) {
-        return;
-      }
+      visitedIds.add(group.id);
       items.push({
         id: group.id,
         assetId: "",
         assetName: "Group",
+        placementKind: null,
         label: group.name,
         selected: this.selectedGroupId === group.id,
         hidden: false,
         locked: false,
         type: "group",
-        parentId: null,
-        depth: 0,
+        parentId: group.parentId,
+        depth,
       });
+
       group.childIds.forEach((childId) => {
-        const child = this.objects.get(childId);
-        if (child) {
-          pushObject(child, 1);
+        const childGroup = this.groups.get(childId);
+        if (childGroup) {
+          pushGroup(childGroup, depth + 1);
+          return;
+        }
+
+        const childObject = this.objects.get(childId);
+        if (childObject) {
+          pushObject(childObject, depth + 1);
         }
       });
+    };
+
+    this.sceneRootOrder.forEach((rootId) => {
+      const group = this.groups.get(rootId);
+      if (group && !group.parentId) {
+        pushGroup(group, 0);
+        return;
+      }
+
+      const object = this.objects.get(rootId);
+      if (object && !object.parentId) {
+        pushObject(object, 0);
+      }
+    });
+
+    this.groups.forEach((group) => {
+      if (visitedIds.has(group.id) || group.parentId) {
+        return;
+      }
+      pushGroup(group, 0);
     });
 
     this.objects.forEach((object) => {
-      if (!object.parentId && !seenRootIds.has(object.id)) {
+      if (!object.parentId && !visitedIds.has(object.id)) {
         pushObject(object, 0);
       }
     });
@@ -482,7 +504,9 @@ export class ModularEditorApp {
   private normalizeSceneRootOrder() {
     const seen = new Set<string>();
     const validRootIds = new Set<string>([
-      ...this.groups.keys(),
+      ...Array.from(this.groups.values())
+        .filter((group) => !group.parentId)
+        .map((group) => group.id),
       ...Array.from(this.objects.values())
         .filter((object) => !object.parentId)
         .map((object) => object.id),
@@ -497,7 +521,7 @@ export class ModularEditorApp {
     });
 
     this.groups.forEach((group) => {
-      if (!seen.has(group.id)) {
+      if (!group.parentId && !seen.has(group.id)) {
         this.sceneRootOrder.push(group.id);
         seen.add(group.id);
       }
@@ -515,6 +539,7 @@ export class ModularEditorApp {
     return {
       snapEnabled: this.snapEnabled,
       ySnapEnabled: this.ySnapEnabled,
+      newObjectPlacementKind: this.settings.newObjectPlacementKind,
       mode: this.mode,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
@@ -600,6 +625,7 @@ export class ModularEditorApp {
         id: group.id,
         name: group.name,
         childIds: [...group.childIds],
+        parentId: group.parentId,
       })),
       sceneRootOrder: [...this.sceneRootOrder],
     };
@@ -639,7 +665,13 @@ export class ModularEditorApp {
       }
 
       const template = await this.getAssetTemplate(asset);
-      const root = await instantiateAsset(asset, false, template, this.scene);
+      const root = await instantiateAsset(
+        asset,
+        false,
+        template,
+        this.scene,
+        entry.placementKind === "clone" || entry.placementKind === "instance" ? entry.placementKind : "instance",
+      );
       if (!root) {
         continue;
       }
@@ -662,6 +694,7 @@ export class ModularEditorApp {
       this.objects.set(id, {
         id,
         assetId: asset.id,
+        placementKind: entry.placementKind === "clone" || entry.placementKind === "instance" ? entry.placementKind : "instance",
         root,
         name: entry.name?.trim() || defaultName,
         hidden: !!entry.hidden,
@@ -677,18 +710,31 @@ export class ModularEditorApp {
 
     this.groups.forEach((group) => {
       group.childIds.forEach((childId) => {
-        const child = this.objects.get(childId);
-        if (!child) {
+        const childGroup = this.groups.get(childId);
+        if (childGroup) {
+          childGroup.root.setParent(group.root);
+          childGroup.parentId = group.id;
           return;
         }
-        child.root.setParent(group.root);
-        child.parentId = group.id;
+
+        const childObject = this.objects.get(childId);
+        if (!childObject) {
+          return;
+        }
+        childObject.root.setParent(group.root);
+        childObject.parentId = group.id;
       });
-      this.recenterGroupRoot(group.id);
     });
 
+    Array.from(this.groups.values())
+      .sort((left, right) => this.getGroupDepth(left.id) - this.getGroupDepth(right.id))
+      .reverse()
+      .forEach((group) => {
+        this.recenterGroupRoot(group.id);
+      });
+
     this.groups.forEach((group) => {
-      if (!this.sceneRootOrder.includes(group.id)) {
+      if (!group.parentId && !this.sceneRootOrder.includes(group.id)) {
         this.sceneRootOrder.push(group.id);
       }
     });
@@ -741,6 +787,7 @@ export class ModularEditorApp {
           name: group.name,
           type: "group",
           childIds: [...group.childIds],
+          parentId: group.parentId ?? null,
           root: this.createGroupRoot(group.id),
         });
       });
@@ -793,18 +840,123 @@ export class ModularEditorApp {
   }
 
   private setGroupHighlight(group: EditorGroup, highlighted: boolean) {
-    group.childIds.forEach((childId) => {
-      const child = this.objects.get(childId);
-      if (!child) {
-        return;
-      }
-      child.root.getChildMeshes().forEach((mesh) => {
-        mesh.showBoundingBox = highlighted;
-        mesh.outlineColor = new Color3(0.55, 0.82, 1);
-        mesh.outlineWidth = 0.03;
-        mesh.renderOutline = highlighted;
-      });
+    group.root.getChildMeshes().forEach((mesh) => {
+      mesh.showBoundingBox = highlighted;
+      mesh.outlineColor = new Color3(0.55, 0.82, 1);
+      mesh.outlineWidth = 0.03;
+      mesh.renderOutline = highlighted;
     });
+  }
+
+  private getGroupDepth(groupId: string) {
+    let depth = 0;
+    let current = this.groups.get(groupId);
+    while (current?.parentId) {
+      const next = this.groups.get(current.parentId);
+      if (!next) {
+        break;
+      }
+      depth += 1;
+      current = next;
+    }
+    return depth;
+  }
+
+  private isGroupWithinGroup(groupId: string, potentialAncestorId: string) {
+    let current = this.groups.get(groupId);
+    while (current?.parentId) {
+      if (current.parentId === potentialAncestorId) {
+        return true;
+      }
+      current = this.groups.get(current.parentId);
+    }
+    return false;
+  }
+
+  private getGroupChildren(group: EditorGroup) {
+    return group.childIds
+      .map((childId) => this.groups.get(childId)?.root ?? this.objects.get(childId)?.root ?? null)
+      .filter((child): child is TransformNode => !!child);
+  }
+
+  private getContainerInsertIndex(containerId: string | null, targetId: string) {
+    const children = containerId ? this.groups.get(containerId)?.childIds ?? [] : this.sceneRootOrder;
+    return children.indexOf(targetId);
+  }
+
+  private insertRootId(itemId: string, insertIndex?: number) {
+    const nextRootOrder = this.sceneRootOrder.filter((id) => id !== itemId);
+    const safeIndex =
+      insertIndex === undefined
+        ? nextRootOrder.length
+        : Math.min(nextRootOrder.length, Math.max(0, insertIndex));
+    nextRootOrder.splice(safeIndex, 0, itemId);
+    this.sceneRootOrder = nextRootOrder;
+  }
+
+  private removeRootId(itemId: string) {
+    this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== itemId);
+  }
+
+  private removeGroupFromParentContainer(group: EditorGroup) {
+    if (group.parentId) {
+      const parentGroupId = group.parentId;
+      const parentGroup = this.groups.get(parentGroupId);
+      if (parentGroup) {
+        parentGroup.childIds = parentGroup.childIds.filter((id) => id !== group.id);
+      }
+      group.root.setParent(null);
+      group.parentId = null;
+      this.cleanupGroupAfterChildRemoval(parentGroupId);
+      return;
+    }
+
+    this.removeRootId(group.id);
+  }
+
+  private insertGroupIntoRoot(group: EditorGroup, insertIndex?: number) {
+    group.root.setParent(null);
+    group.parentId = null;
+    this.insertRootId(group.id, insertIndex);
+  }
+
+  private insertGroupIntoGroup(group: EditorGroup, parentGroupId: string, insertIndex?: number) {
+    const parentGroup = this.groups.get(parentGroupId);
+    if (!parentGroup || parentGroup.id === group.id || this.isGroupWithinGroup(parentGroup.id, group.id)) {
+      return false;
+    }
+
+    group.root.setParent(parentGroup.root);
+    group.parentId = parentGroup.id;
+    const nextChildIds = parentGroup.childIds.filter((id) => id !== group.id);
+    const safeIndex =
+      insertIndex === undefined
+        ? nextChildIds.length
+        : Math.min(nextChildIds.length, Math.max(0, insertIndex));
+    nextChildIds.splice(safeIndex, 0, group.id);
+    parentGroup.childIds = nextChildIds;
+    this.recenterGroupRoot(parentGroup.id);
+    return true;
+  }
+
+  private getNextParentContainerId(parentId: string | null) {
+    const parentGroup = parentId ? this.groups.get(parentId) : null;
+    return parentGroup?.parentId ?? null;
+  }
+
+  private getSiblingInsertIndexAfterParent(parentId: string | null) {
+    if (!parentId) {
+      return this.sceneRootOrder.length;
+    }
+
+    const parentGroup = this.groups.get(parentId);
+    if (!parentGroup) {
+      return this.sceneRootOrder.length;
+    }
+
+    const parentContainerId = parentGroup.parentId;
+    const parentInsertIndex = this.getContainerInsertIndex(parentContainerId, parentGroup.id);
+    return parentInsertIndex >= 0 ? parentInsertIndex + 1 : undefined;
   }
 
   private recenterGroupRoot(groupId: string) {
@@ -813,9 +965,7 @@ export class ModularEditorApp {
       return;
     }
 
-    const children = group.childIds
-      .map((childId) => this.objects.get(childId))
-      .filter((child): child is EditorObject => !!child);
+    const children = this.getGroupChildren(group);
 
     if (children.length === 0) {
       return;
@@ -825,7 +975,7 @@ export class ModularEditorApp {
     let max: Vector3 | null = null;
 
     children.forEach((child) => {
-      const bounds = child.root.getHierarchyBoundingVectors();
+      const bounds = child.getHierarchyBoundingVectors();
       min = min ? Vector3.Minimize(min, bounds.min) : bounds.min.clone();
       max = max ? Vector3.Maximize(max, bounds.max) : bounds.max.clone();
     });
@@ -836,12 +986,16 @@ export class ModularEditorApp {
 
     const center = min.add(max).scale(0.5);
     children.forEach((child) => {
-      child.root.setParent(null);
+      child.setParent(null);
     });
     group.root.position.copyFrom(center);
     children.forEach((child) => {
-      child.root.setParent(group.root);
+      child.setParent(group.root);
     });
+
+    if (group.parentId) {
+      this.recenterGroupRoot(group.parentId);
+    }
   }
 
   private cleanupGroupAfterChildRemoval(groupId: string) {
@@ -854,7 +1008,17 @@ export class ModularEditorApp {
       if (this.selectedGroupId === groupId) {
         this.selectedGroupId = null;
       }
-      this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== groupId);
+      if (group.parentId) {
+        const parentGroupId = group.parentId;
+        const parentGroup = this.groups.get(parentGroupId);
+        if (parentGroup) {
+          parentGroup.childIds = parentGroup.childIds.filter((id) => id !== groupId);
+        }
+        group.parentId = null;
+        this.cleanupGroupAfterChildRemoval(parentGroupId);
+      } else {
+        this.removeRootId(groupId);
+      }
       group.root.dispose();
       this.groups.delete(groupId);
       return;
@@ -938,7 +1102,7 @@ export class ModularEditorApp {
     }
 
     const template = await this.getAssetTemplate(asset);
-    const preview = await instantiateAsset(asset, true, template, this.scene);
+    const preview = await instantiateAsset(asset, true, template, this.scene, "clone");
     if (!preview) {
       return;
     }
@@ -960,7 +1124,7 @@ export class ModularEditorApp {
     }
 
     const template = await this.getAssetTemplate(asset);
-    const root = await instantiateAsset(asset, false, template, this.scene);
+    const root = await instantiateAsset(asset, false, template, this.scene, this.settings.newObjectPlacementKind);
     if (!root) {
       return;
     }
@@ -979,6 +1143,7 @@ export class ModularEditorApp {
     this.objects.set(id, {
       id,
       assetId: asset.id,
+      placementKind: this.settings.newObjectPlacementKind,
       root,
       name: defaultName,
       hidden: false,
@@ -1131,7 +1296,7 @@ export class ModularEditorApp {
     }
 
     const template = await this.getAssetTemplate(asset);
-    const root = await instantiateAsset(asset, false, template, this.scene);
+    const root = await instantiateAsset(asset, false, template, this.scene, this.settings.newObjectPlacementKind);
     if (!root) {
       return;
     }
@@ -1160,6 +1325,7 @@ export class ModularEditorApp {
     this.objects.set(id, {
       id,
       assetId: asset.id,
+      placementKind: this.settings.newObjectPlacementKind,
       root,
       name: `${source.name} Copy`,
       hidden: false,
@@ -1552,14 +1718,35 @@ export class ModularEditorApp {
       if (this.selectedGroupId === group.id) {
         this.clearSelection();
       }
-      const rootIndex = this.sceneRootOrder.indexOf(group.id);
-      this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== group.id);
-      group.childIds.forEach((childId, index) => {
-        const child = this.objects.get(childId);
-        if (child) {
-          child.root.setParent(null);
-          child.parentId = null;
-          this.sceneRootOrder.splice(rootIndex >= 0 ? rootIndex + index : this.sceneRootOrder.length, 0, child.id);
+      const parentContainerId = this.getNextParentContainerId(group.id);
+      const insertIndex = group.parentId
+        ? this.getContainerInsertIndex(parentContainerId, group.id)
+        : this.getContainerInsertIndex(null, group.id);
+      const childIds = [...group.childIds];
+      this.removeGroupFromParentContainer(group);
+      childIds.forEach((childId, index) => {
+        const childGroup = this.groups.get(childId);
+        if (childGroup) {
+          childGroup.root.setParent(null);
+          childGroup.parentId = null;
+          if (parentContainerId) {
+            this.insertGroupIntoGroup(childGroup, parentContainerId, insertIndex === undefined ? undefined : insertIndex + index);
+          } else {
+            this.insertGroupIntoRoot(childGroup, insertIndex === undefined ? undefined : insertIndex + index);
+          }
+          return;
+        }
+
+        const childObject = this.objects.get(childId);
+        if (!childObject) {
+          return;
+        }
+        childObject.root.setParent(null);
+        childObject.parentId = null;
+        if (parentContainerId) {
+          this.insertObjectIntoGroup(childObject, parentContainerId, insertIndex === undefined ? undefined : insertIndex + index);
+        } else {
+          this.insertObjectIntoRoot(childObject, insertIndex === undefined ? undefined : insertIndex + index);
         }
       });
       group.root.dispose();
@@ -1615,13 +1802,7 @@ export class ModularEditorApp {
 
   private insertObjectIntoRoot(object: EditorObject, insertIndex?: number) {
     object.parentId = null;
-    const nextRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
-    const safeIndex =
-      insertIndex === undefined
-        ? nextRootOrder.length
-        : Math.min(nextRootOrder.length, Math.max(0, insertIndex));
-    nextRootOrder.splice(safeIndex, 0, object.id);
-    this.sceneRootOrder = nextRootOrder;
+    this.insertRootId(object.id, insertIndex);
   }
 
   private insertObjectIntoGroup(object: EditorObject, groupId: string, insertIndex?: number) {
@@ -1643,6 +1824,27 @@ export class ModularEditorApp {
     return true;
   }
 
+  createEmptyGroup() {
+    const groupId = `group-${++this.groupSequence}`;
+    const groupName = `Group ${String(this.groupSequence).padStart(2, "0")}`;
+    const groupRoot = this.createGroupRoot(groupId);
+    groupRoot.position.set(0, 0, 0);
+    this.groups.set(groupId, {
+      id: groupId,
+      name: groupName,
+      type: "group",
+      childIds: [],
+      parentId: null,
+      root: groupRoot,
+    });
+    this.sceneRootOrder.push(groupId);
+    this.clearSelection();
+    this.selectedGroupId = groupId;
+    this.refreshSelectionAttachment();
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Created empty ${groupName}.`);
+  }
+
   createGroupFromSelected() {
     if (!this.selectedObjectId) {
       return;
@@ -1654,6 +1856,13 @@ export class ModularEditorApp {
     }
 
     const previousParentId = object.parentId;
+    const previousParentContainerId = previousParentId ? this.getNextParentContainerId(previousParentId) : null;
+    const previousParentContainerIndex = previousParentId
+      ? this.getContainerInsertIndex(previousParentContainerId, previousParentId)
+      : -1;
+    const previousInsertIndex = previousParentId
+      ? this.getContainerInsertIndex(previousParentId, object.id)
+      : this.getContainerInsertIndex(null, object.id);
     if (previousParentId) {
       const previousGroup = this.groups.get(previousParentId);
       if (previousGroup) {
@@ -1675,14 +1884,30 @@ export class ModularEditorApp {
       name: groupName,
       type: "group",
       childIds: [object.id],
+      parentId: null,
       root: groupRoot,
     });
     object.root.setParent(groupRoot);
     object.parentId = groupId;
-    this.sceneRootOrder.push(groupId);
+    const newGroup = this.groups.get(groupId)!;
+    if (previousParentId && this.groups.has(previousParentId)) {
+      this.insertGroupIntoGroup(newGroup, previousParentId, previousInsertIndex >= 0 ? previousInsertIndex : undefined);
+    } else if (previousParentId) {
+      if (previousParentContainerId) {
+        this.insertGroupIntoGroup(
+          newGroup,
+          previousParentContainerId,
+          previousParentContainerIndex >= 0 ? previousParentContainerIndex : undefined,
+        );
+      } else {
+        this.insertGroupIntoRoot(newGroup, previousParentContainerIndex >= 0 ? previousParentContainerIndex : undefined);
+      }
+    } else {
+      this.insertGroupIntoRoot(newGroup, previousInsertIndex >= 0 ? previousInsertIndex : undefined);
+    }
     this.selectedObjectId = null;
     this.selectedGroupId = groupId;
-    this.setGroupHighlight(this.groups.get(groupId)!, true);
+    this.setGroupHighlight(newGroup, true);
     this.refreshSelectionAttachment();
     this.pushHistoryCheckpoint();
     this.setStatusNotice(`Created ${groupName}.`);
@@ -1698,71 +1923,83 @@ export class ModularEditorApp {
     const draggedObject = this.objects.get(draggedId);
     const targetObject = this.objects.get(targetId);
 
-    if (draggedObject && targetGroup) {
-      this.removeObjectFromParentContainer(draggedObject);
-      if (!this.insertObjectIntoGroup(draggedObject, targetGroup.id)) {
-        return;
-      }
-      this.pushHistoryCheckpoint();
-      this.setStatusNotice(`Moved ${draggedObject.name} into ${targetGroup.name}.`);
+    const draggedLabel = draggedGroup?.name ?? draggedObject?.name;
+    const destinationGroupId = targetGroup?.id ?? targetObject?.parentId ?? null;
+
+    if (draggedGroup && destinationGroupId && (destinationGroupId === draggedGroup.id || this.isGroupWithinGroup(destinationGroupId, draggedGroup.id))) {
       return;
     }
 
-    if ((draggedGroup || (draggedObject && !draggedObject.parentId)) && (targetGroup || (targetObject && !targetObject.parentId))) {
-      const nextRootOrder = this.sceneRootOrder.filter((id) => id !== draggedId);
-      const targetIndex = nextRootOrder.indexOf(targetId);
-      if (targetIndex === -1) {
+    if (targetGroup) {
+      if (draggedObject) {
+        this.removeObjectFromParentContainer(draggedObject);
+        if (!this.insertObjectIntoGroup(draggedObject, targetGroup.id)) {
+          return;
+        }
+      } else if (draggedGroup) {
+        this.removeGroupFromParentContainer(draggedGroup);
+        if (!this.insertGroupIntoGroup(draggedGroup, targetGroup.id)) {
+          return;
+        }
+      } else {
         return;
       }
-      nextRootOrder.splice(targetIndex, 0, draggedId);
-      this.sceneRootOrder = nextRootOrder;
+
       this.pushHistoryCheckpoint();
-      this.emitViewState();
+      this.setStatusNotice(`Moved ${draggedLabel ?? "item"} into ${targetGroup.name}.`);
       return;
     }
 
-    if (draggedObject && targetObject) {
-      this.removeObjectFromParentContainer(draggedObject);
+    if (!targetObject) {
+      return;
+    }
 
-      if (targetObject.parentId) {
-        const targetGroupForObject = this.groups.get(targetObject.parentId);
-        if (!targetGroupForObject) {
-          return;
-        }
-        const targetIndex = targetGroupForObject.childIds.indexOf(targetObject.id);
-        if (!this.insertObjectIntoGroup(draggedObject, targetGroupForObject.id, targetIndex)) {
-          return;
-        }
-        this.pushHistoryCheckpoint();
-        this.setStatusNotice(`Moved ${draggedObject.name} into ${targetGroupForObject.name}.`);
+    if (targetObject.parentId) {
+      const targetParentGroup = this.groups.get(targetObject.parentId);
+      if (!targetParentGroup) {
         return;
       }
-
-      const targetIndex = this.sceneRootOrder.filter((id) => id !== draggedObject.id).indexOf(targetObject.id);
+      const targetIndex = this.getContainerInsertIndex(targetParentGroup.id, targetObject.id);
       if (targetIndex === -1) {
         return;
       }
+
+      if (draggedObject) {
+        this.removeObjectFromParentContainer(draggedObject);
+        if (!this.insertObjectIntoGroup(draggedObject, targetParentGroup.id, targetIndex)) {
+          return;
+        }
+      } else if (draggedGroup) {
+        this.removeGroupFromParentContainer(draggedGroup);
+        if (!this.insertGroupIntoGroup(draggedGroup, targetParentGroup.id, targetIndex)) {
+          return;
+        }
+      } else {
+        return;
+      }
+
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Moved ${draggedLabel ?? "item"} into ${targetParentGroup.name}.`);
+      return;
+    }
+
+    const targetIndex = this.getContainerInsertIndex(null, targetObject.id);
+    if (targetIndex === -1) {
+      return;
+    }
+
+    if (draggedObject) {
+      this.removeObjectFromParentContainer(draggedObject);
       this.insertObjectIntoRoot(draggedObject, targetIndex);
-      this.pushHistoryCheckpoint();
-      this.setStatusNotice(`Moved ${draggedObject.name} to root.`);
+    } else if (draggedGroup) {
+      this.removeGroupFromParentContainer(draggedGroup);
+      this.insertGroupIntoRoot(draggedGroup, targetIndex);
+    } else {
       return;
     }
 
-    if (draggedObject && targetObject && draggedObject.parentId && draggedObject.parentId === targetObject.parentId) {
-      const parentGroup = this.groups.get(draggedObject.parentId);
-      if (!parentGroup) {
-        return;
-      }
-      const nextChildIds = parentGroup.childIds.filter((id) => id !== draggedId);
-      const targetIndex = nextChildIds.indexOf(targetId);
-      if (targetIndex === -1) {
-        return;
-      }
-      nextChildIds.splice(targetIndex, 0, draggedId);
-      parentGroup.childIds = nextChildIds;
-      this.pushHistoryCheckpoint();
-      this.emitViewState();
-    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Moved ${draggedLabel ?? "item"} to root.`);
   }
 
   ungroupSceneItem(objectId: string) {
@@ -1775,19 +2012,58 @@ export class ModularEditorApp {
     if (!parentGroup) {
       object.root.setParent(null);
       object.parentId = null;
+      this.insertObjectIntoRoot(object);
       this.pushHistoryCheckpoint();
       this.setStatusNotice(`Ungrouped ${object.name}.`);
       return;
     }
 
+    const parentContainerId = this.getNextParentContainerId(object.parentId);
+    const insertIndex = this.getSiblingInsertIndexAfterParent(object.parentId);
     object.root.setParent(null);
     object.parentId = null;
     parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
     this.cleanupGroupAfterChildRemoval(parentGroup.id);
-    const groupRootIndex = this.sceneRootOrder.indexOf(parentGroup.id);
-    this.insertObjectIntoRoot(object, groupRootIndex >= 0 ? groupRootIndex + 1 : this.sceneRootOrder.length);
+    if (parentContainerId) {
+      this.insertObjectIntoGroup(object, parentContainerId, insertIndex);
+    } else {
+      this.insertObjectIntoRoot(object, insertIndex);
+    }
     this.pushHistoryCheckpoint();
     this.setStatusNotice(`Ungrouped ${object.name}.`);
+  }
+
+  unchildGroup(groupId: string) {
+    const group = this.groups.get(groupId);
+    if (!group?.parentId) {
+      return;
+    }
+
+    const parentGroupId = group.parentId;
+    const parentGroup = this.groups.get(parentGroupId);
+    const nextParentContainerId = this.getNextParentContainerId(parentGroupId);
+    const insertIndex = this.getSiblingInsertIndexAfterParent(parentGroupId);
+
+    if (!parentGroup) {
+      group.root.setParent(null);
+      group.parentId = null;
+      this.insertGroupIntoRoot(group, insertIndex);
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Removed ${group.name} from its parent group.`);
+      return;
+    }
+
+    group.root.setParent(null);
+    parentGroup.childIds = parentGroup.childIds.filter((id) => id !== group.id);
+    group.parentId = null;
+    this.cleanupGroupAfterChildRemoval(parentGroupId);
+    if (nextParentContainerId) {
+      this.insertGroupIntoGroup(group, nextParentContainerId, insertIndex);
+    } else {
+      this.insertGroupIntoRoot(group, insertIndex);
+    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Removed ${group.name} from its parent group.`);
   }
 
   toggleSceneItemHidden(objectId: string) {
@@ -1905,6 +2181,7 @@ export class ModularEditorApp {
     this.settings.gridVisible = DEFAULT_USER_SETTINGS.gridVisible;
     this.settings.gridColor = DEFAULT_USER_SETTINGS.gridColor;
     this.settings.groundColor = DEFAULT_USER_SETTINGS.groundColor;
+    this.settings.newObjectPlacementKind = DEFAULT_USER_SETTINGS.newObjectPlacementKind;
 
     this.renderGrid();
     this.applyEnvironmentSetting();
@@ -1949,8 +2226,18 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
-  private findObjectRoot(mesh: Nullable<AbstractMesh>) {
-    return this.sceneCore.findObjectRoot(mesh);
+  setNewObjectPlacementKind(value: "clone" | "instance") {
+    if (this.settings.newObjectPlacementKind === value) {
+      return;
+    }
+
+    this.settings.newObjectPlacementKind = value;
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  private findObjectId(mesh: Nullable<AbstractMesh>) {
+    return this.sceneCore.findObjectId(mesh);
   }
 
   private tagHierarchy(root: TransformNode, objectId: string) {

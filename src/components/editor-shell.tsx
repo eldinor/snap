@@ -8,6 +8,7 @@ import {
   DragHandleIcon,
   ExportIcon,
   FocusIcon,
+  GroupAddIcon,
   GroupIcon,
   HideIcon,
   ImportIcon,
@@ -65,6 +66,7 @@ interface EditorToolbarProps {
   onGridVisibleChange: (visible: boolean) => void;
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
+  onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
   onRestoreDefaults: () => void;
 }
 
@@ -343,6 +345,19 @@ function EditorToolbar(props: EditorToolbarProps) {
                 }}
               />
             </label>
+            <label className="setting-stack">
+              <span className="setting-copy">New Objects</span>
+              <select
+                className="editor-input"
+                value={toolbar.newObjectPlacementKind}
+                onChange={(event) => {
+                  props.onNewObjectPlacementKindChange(event.target.value as "clone" | "instance");
+                }}
+              >
+                <option value="instance">Instance</option>
+                <option value="clone">Clone</option>
+              </select>
+            </label>
             <button type="button" className="toolbar-menu-button setting-action" onClick={props.onRestoreDefaults}>
               <span>Restore Defaults</span>
             </button>
@@ -557,6 +572,7 @@ interface SceneListProps {
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
+  onSceneItemUnchildGroup: (groupId: string) => void;
 }
 
 function SceneList(props: SceneListProps) {
@@ -604,12 +620,17 @@ function SceneList(props: SceneListProps) {
     }
   };
 
+  const itemsById = new Map(sortedItems.map((item) => [item.id, item]));
   const visibleItems = sortedItems.filter((item) => {
-    if (!item.parentId) {
-      return true;
+    let currentParentId = item.parentId;
+    while (currentParentId) {
+      if (collapsedGroupIds.includes(currentParentId)) {
+        return false;
+      }
+      currentParentId = itemsById.get(currentParentId)?.parentId ?? null;
     }
 
-    return !collapsedGroupIds.includes(item.parentId);
+    return true;
   });
 
   return (
@@ -720,6 +741,11 @@ function SceneList(props: SceneListProps) {
                 )}
                 <span className="scene-row-title">{item.label}</span>
                 <span className={`scene-row-kind scene-row-kind-${item.type}`}>{item.type === "group" ? "Group" : "Object"}</span>
+                {item.type === "object" && item.placementKind ? (
+                  <span className={`scene-row-kind scene-row-kind-placement scene-row-kind-${item.placementKind}`}>
+                    {item.placementKind === "instance" ? "Instance" : "Clone"}
+                  </span>
+                ) : null}
               </span>
             )}
           </button>
@@ -742,6 +768,17 @@ function SceneList(props: SceneListProps) {
               title="Remove from group"
               onClick={() => {
                 props.onSceneItemUngroup(item.id);
+              }}
+            >
+              <UngroupIcon className="tool-icon" />
+            </button> : null}
+            {item.type === "group" && item.parentId ? <button
+              type="button"
+              className="scene-row-action"
+              aria-label={`Remove ${item.label} from parent group`}
+              title="Remove from parent group"
+              onClick={() => {
+                props.onSceneItemUnchildGroup(item.id);
               }}
             >
               <UngroupIcon className="tool-icon" />
@@ -882,7 +919,8 @@ interface RightSidebarProps {
   sceneSortMode: SceneSortMode;
   onSceneSortModeChange: (mode: SceneSortMode) => void;
   onResizeStart: (clientX: number) => void;
-  onCreateGroup: () => void;
+  onCreateEmptyGroup: () => void;
+  onCreateGroupFromSelected: () => void;
   onSceneItemMove: (draggedId: string, targetId: string) => void;
   onSceneItemSelect: (objectId: string) => void;
   onSceneItemFrame: (objectId: string) => void;
@@ -892,6 +930,7 @@ interface RightSidebarProps {
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
+  onSceneItemUnchildGroup: (groupId: string) => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionRotationChange: (value: number) => void;
   onSelectionDropToGround: () => void;
@@ -913,7 +952,10 @@ function RightSidebar(props: RightSidebarProps) {
         <div className="sidebar-header-row">
           <div className="panel-label">{`Scene${props.viewState.objectCount ? ` (${props.viewState.objectCount})` : ""}`}</div>
           <div className="scene-header-actions">
-            <button type="button" className="scene-header-button" onClick={props.onCreateGroup} title="Create group">
+            <button type="button" className="scene-header-button" onClick={props.onCreateEmptyGroup} title="Create empty group">
+              <GroupAddIcon className="tool-icon" />
+            </button>
+            <button type="button" className="scene-header-button" onClick={props.onCreateGroupFromSelected} title="Group selected">
               <GroupIcon className="tool-icon" />
             </button>
             <select
@@ -941,6 +983,7 @@ function RightSidebar(props: RightSidebarProps) {
           onSceneItemToggleHidden={props.onSceneItemToggleHidden}
           onSceneItemToggleLocked={props.onSceneItemToggleLocked}
           onSceneItemUngroup={props.onSceneItemUngroup}
+          onSceneItemUnchildGroup={props.onSceneItemUnchildGroup}
         />
       </div>
       <div className="sidebar-section sidebar-properties">
@@ -1016,6 +1059,7 @@ interface EditorShellProps {
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
+  onSceneItemUnchildGroup: (groupId: string) => void;
   onToggleSnap: () => void;
   onToggleYSnap: () => void;
   onSelectMode: () => void;
@@ -1039,9 +1083,11 @@ interface EditorShellProps {
   onGridVisibleChange: (visible: boolean) => void;
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
+  onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
   onRestoreDefaults: () => void;
   onSceneSortModeChange: (mode: SceneSortMode) => void;
-  onCreateGroup: () => void;
+  onCreateEmptyGroup: () => void;
+  onCreateGroupFromSelected: () => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionRotationChange: (value: number) => void;
   onSelectionDropToGround: () => void;
@@ -1117,6 +1163,7 @@ export function EditorShell(props: EditorShellProps) {
         onGridVisibleChange={props.onGridVisibleChange}
         onGridColorChange={props.onGridColorChange}
         onGroundColorChange={props.onGroundColorChange}
+        onNewObjectPlacementKindChange={props.onNewObjectPlacementKindChange}
         onRestoreDefaults={props.onRestoreDefaults}
       />
       <div
@@ -1139,7 +1186,8 @@ export function EditorShell(props: EditorShellProps) {
           sceneSortMode={props.sceneSortMode}
           onSceneSortModeChange={props.onSceneSortModeChange}
           onResizeStart={startRightSidebarResize}
-          onCreateGroup={props.onCreateGroup}
+          onCreateEmptyGroup={props.onCreateEmptyGroup}
+          onCreateGroupFromSelected={props.onCreateGroupFromSelected}
           onSceneItemMove={props.onSceneItemMove}
           onSceneItemSelect={props.onSceneItemSelect}
           onSceneItemFrame={props.onSceneItemFrame}
@@ -1149,6 +1197,7 @@ export function EditorShell(props: EditorShellProps) {
           onSceneItemToggleHidden={props.onSceneItemToggleHidden}
           onSceneItemToggleLocked={props.onSceneItemToggleLocked}
           onSceneItemUngroup={props.onSceneItemUngroup}
+          onSceneItemUnchildGroup={props.onSceneItemUnchildGroup}
           onSelectionPositionChange={props.onSelectionPositionChange}
           onSelectionRotationChange={props.onSelectionRotationChange}
           onSelectionDropToGround={props.onSelectionDropToGround}

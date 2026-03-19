@@ -226,6 +226,18 @@ export function GroupIcon(props: IconProps) {
   );
 }
 
+export function GroupAddIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <rect x="3.8" y="4.8" width="12.4" height="10.4" rx="1.4" />
+      <path d="M7 8.8h6" />
+      <path d="M10 5.8v6" />
+      <path d="M6.2 15.2v1.2" />
+      <path d="M13.8 15.2v1.2" />
+    </IconBase>
+  );
+}
+
 export function UngroupIcon(props: IconProps) {
   return (
     <IconBase {...props}>

@@ -1,6 +1,7 @@
 export interface AssetSceneSerializableObject {
   id?: string;
   assetId: string;
+  placementKind?: "clone" | "instance";
   position: [number, number, number];
   rotationYDegrees: number;
   name?: string;
@@ -29,6 +30,7 @@ export interface SerializedSceneGroup {
   id: string;
   name: string;
   childIds: string[];
+  parentId?: string | null;
 }
 
 export interface SerializedAssetScene {
@@ -51,6 +53,7 @@ export function serializeAssetScene(
     objects: Array.from(objects, (object) => ({
       id: object.id,
       assetId: object.assetId,
+      placementKind: object.placementKind,
       position: [...object.position] as [number, number, number],
       rotationYDegrees: object.rotationYDegrees,
       name: object.name,
@@ -100,6 +103,9 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
               typeof group !== "object" ||
               typeof (group as Partial<SerializedSceneGroup>).id !== "string" ||
               typeof (group as Partial<SerializedSceneGroup>).name !== "string" ||
+              ((group as Partial<SerializedSceneGroup>).parentId !== undefined &&
+                (group as Partial<SerializedSceneGroup>).parentId !== null &&
+                typeof (group as Partial<SerializedSceneGroup>).parentId !== "string") ||
               !Array.isArray((group as Partial<SerializedSceneGroup>).childIds) ||
               (group as Partial<SerializedSceneGroup>).childIds!.some((id) => typeof id !== "string"),
           )));
@@ -117,6 +123,7 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
     const entry = object as Partial<AssetSceneSerializableObject>;
     return (
       (entry.id === undefined || typeof entry.id === "string") &&
+      (entry.placementKind === undefined || entry.placementKind === "clone" || entry.placementKind === "instance") &&
       typeof entry.assetId === "string" &&
       typeof entry.rotationYDegrees === "number" &&
       (entry.name === undefined || typeof entry.name === "string") &&
