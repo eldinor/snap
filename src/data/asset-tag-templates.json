@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "categories": {
+    "Floors": ["floor", "floors"],
+    "Walls": ["wall", "walls"],
+    "Corners": ["corner", "corners"],
+    "Doors": ["door", "doors"],
+    "Windows": ["window", "windows"],
+    "Roofs": ["roof", "roofs"],
+    "Stairs": ["stairs", "stair"],
+    "Props": ["prop", "props"],
+    "Balconies": ["balcony", "balconies"],
+    "Decorations": ["decoration", "decorations"]
+  }
+}

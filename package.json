@@ -7,6 +7,9 @@
     "dev": "vite",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "assets:validate": "node scripts/asset-library.mjs validate",
+    "assets:regenerate": "node scripts/asset-library.mjs regenerate",
+    "assets:thumbnails": "node scripts/asset-library.mjs thumbnails",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

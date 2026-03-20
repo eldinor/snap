@@ -33,7 +33,7 @@ import {
 import { TreeView } from "./tree-view";
 
 function getAssetThumbnailUrl(asset: AssetDefinition) {
-  return `/generated/asset-previews/${asset.fileName.replace(/\.[^.]+$/u, ".png")}`;
+  return `/generated/asset-previews/${asset.thumbnailFileName}`;
 }
 
 export type SceneSortMode = "manual" | "name" | "asset";

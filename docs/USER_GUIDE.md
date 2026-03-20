@@ -12,6 +12,107 @@ The editor is divided into three main areas:
 - Center: 3D viewport
 - Right sidebar: Scene Tree and Selection panel
 
+The built-in asset library is defined by [`src/data/assets-manifest.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/assets-manifest.json), while the actual model files remain under `public/assets/glTF/`.
+
+## Asset Library Maintenance
+
+Use [`asset-library-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-library-studio.html) to maintain the built-in asset library.
+
+### Before You Start
+
+1. Run `npm run assets:validate`.
+2. Open [`asset-library-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-library-studio.html).
+3. Keep these two files in mind:
+   - [`src/data/assets-manifest.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/assets-manifest.json): assets, categories, tags, thumbnails, placeholders
+   - [`src/data/asset-tag-templates.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/asset-tag-templates.json): curated category tag templates
+
+### Clean Up the Asset Manifest
+
+Use the left sidebar first:
+
+- `Search`: find assets by name, file, or tags
+- `Category`: narrow the list to one category
+- `Show`: focus on:
+  - all assets
+  - missing tags
+  - duplicate names
+  - duplicate tags
+
+Use `Filtered Assets` for bulk edits:
+
+- `Set Category`: apply one category to all currently shown assets
+- `Add Tag`: add one tag to all currently shown assets
+
+Use the selected asset panel for precise edits:
+
+- `Name`
+- `Category`
+- `Tags`
+
+Check `Validation` on the right:
+
+- warns about empty names
+- warns about duplicate names
+- warns about duplicate tags
+- warns when an asset has no tags
+
+### Normalize Tag Vocabulary
+
+Use `Consistency` on the left to see:
+
+- total unique tags
+- singleton tags
+- most common tags
+- tags that should be reviewed first
+
+Use `Tag Cleanup` when two tags mean the same thing:
+
+1. Choose the old tag in `Replace Tag`.
+2. Enter the preferred tag in `With`.
+3. Click `Merge`.
+
+This updates all matching assets and removes duplicate tags created by the merge.
+
+### Maintain Category Templates
+
+Category templates are curated tag sets for each asset category.
+
+Use `Category Templates` to:
+
+- choose a category
+- edit its curated template tags directly
+- save or download template JSON
+
+Use:
+
+- `Promote Selected Tags`: copy tags from the selected asset into the current category template
+- `Promote Filtered Tags`: copy tags from all currently shown assets of that category into the current template
+
+Check `Template Validation`:
+
+- warns if the current template is empty
+- warns if other categories still have empty templates
+- warns when the current template overlaps too much with another category
+
+### Apply Category Templates Back to Assets
+
+When an asset is selected, the right-side `Category Template` block shows the current category’s template tags.
+
+You can:
+
+- click an individual template tag to append it to the asset
+- click `Apply To Selected` to add the whole template to the selected asset
+- click `Apply To Filtered` to add the template to all currently shown assets in the same category
+
+### Save Your Changes
+
+When you finish:
+
+1. Save or download the asset manifest.
+2. Save or download the category templates.
+3. Run `npm run assets:validate` again.
+4. If thumbnails are missing or outdated, run `npm run assets:thumbnails`.
+
 ## Asset Placement
 
 1. Choose an asset from the left sidebar.

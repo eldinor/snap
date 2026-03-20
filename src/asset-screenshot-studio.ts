@@ -125,7 +125,7 @@ app.innerHTML = `
           <label>Source
             <select id="sourceMode">
               <option value="catalog">Current catalog</option>
-              <option value="manifest">Manifest URL</option>
+              <option value="manifest" selected>Manifest URL</option>
             </select>
           </label>
           <label>Manifest URL
@@ -240,6 +240,15 @@ function jsonBlob(value: unknown) {
   return new Blob([JSON.stringify(value, null, 2)], { type: "application/json" });
 }
 
+async function initializePreferredSourceMode() {
+  try {
+    const response = await fetch(manifestUrl.value, { method: "GET" });
+    sourceMode.value = response.ok ? "manifest" : "catalog";
+  } catch {
+    sourceMode.value = "catalog";
+  }
+}
+
 pickDirectoryButton.addEventListener("click", async () => {
   const targetWindow = window as DirectoryPickerWindow;
   if (!targetWindow.showDirectoryPicker) {
@@ -323,3 +332,4 @@ startBatchButton.addEventListener("click", async () => {
 
 pickDirectoryButton.disabled = saveMode.value !== "picked";
 setStatus("Output folder: not selected", "Pick public/generated/asset-previews to save app-ready screenshots.");
+void initializePreferredSourceMode();
