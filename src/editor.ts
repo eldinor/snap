@@ -3,8 +3,9 @@ import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
-import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
+import type { EnvironmentHelper } from "@babylonjs/core/Helpers/environmentHelper";
+import type { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
+import { HemisphericLight as BabylonHemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -15,100 +16,71 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
-import { ASSETS, ASSET_CATEGORIES, type AssetCategory, type AssetDefinition } from "./assets";
-
-const GRID_EXTENT = 32;
-const ASSET_PREVIEW_BASE_PATH = "/generated/asset-previews";
-const USER_SETTINGS_STORAGE_KEY = "snap:user-settings";
-
-interface UserSettings {
-  environmentEnabled: boolean;
-}
-
-interface AssetTemplate {
-  root: TransformNode;
-  size: Vector3;
-}
+import { ASSETS, type AssetDefinition } from "./assets";
+import { instantiateAsset, loadAssetTemplate, type AssetTemplate } from "./editor/asset-runtime";
+import { SceneCoreController } from "./editor/scene-core-controller";
+import {
+  loadAutosavedScene,
+  loadManualSavedScene,
+  saveAutosavedScene,
+  saveManualSavedScene,
+} from "./editor/scene-persistence";
+import { SceneSessionController } from "./editor/scene-session-controller";
+import { SnapshotHistory } from "./editor/snapshot-history";
+import {
+  serializeAssetScene,
+  type AssetSceneSerializableObject,
+  type SerializedSceneGroup,
+  type SerializedAssetSceneMetadata,
+  type SerializedAssetScene,
+} from "./editor/scene-serialization";
+import {
+  snapAngle as snapPlacementAngle,
+  snapScalar,
+  snapVectorForSize,
+} from "./editor/placement";
+import {
+  clearSceneObjects,
+  clearSelection as clearSceneSelection,
+  deleteSelectedObject as deleteSceneObject,
+  selectObject as selectSceneObject,
+} from "./editor/scene-actions";
+import { DEFAULT_USER_SETTINGS, loadUserSettings, saveUserSettings, type UserSettings } from "./editor/user-settings";
+import {
+  createInitialEditorViewState,
+  type EditorViewState,
+  type SceneItemViewState,
+  type SelectionViewState,
+  type StatusViewState,
+  type ToolbarViewState,
+} from "./editor/view-state";
 
 interface EditorObject {
   id: string;
   assetId: string;
+  placementKind: "clone" | "instance";
+  root: TransformNode;
+  name: string;
+  hidden: boolean;
+  locked: boolean;
+  type: "object";
+  parentId: string | null;
+}
+
+interface EditorGroup {
+  id: string;
+  name: string;
+  type: "group";
+  childIds: string[];
+  hidden: boolean;
+  locked: boolean;
+  parentId: string | null;
   root: TransformNode;
 }
 
-interface SerializedAssetObject {
-  assetId: string;
-  position: [number, number, number];
-  rotationYDegrees: number;
-}
-
-interface SerializedAssetScene {
-  version: 1;
-  objects: SerializedAssetObject[];
-}
-
-function isSerializedAssetScene(value: unknown): value is SerializedAssetScene {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  const candidate = value as Partial<SerializedAssetScene>;
-  if (candidate.version !== 1 || !Array.isArray(candidate.objects)) {
-    return false;
-  }
-
-  return candidate.objects.every((object) => {
-    if (!object || typeof object !== "object") {
-      return false;
-    }
-
-    const entry = object as Partial<SerializedAssetObject>;
-    return (
-      typeof entry.assetId === "string" &&
-      typeof entry.rotationYDegrees === "number" &&
-      Array.isArray(entry.position) &&
-      entry.position.length === 3 &&
-      entry.position.every((component) => typeof component === "number")
-    );
-  });
-}
-
-export function serializeAssetScene(objects: Iterable<EditorObject>): SerializedAssetScene {
-  return {
-    version: 1,
-    objects: Array.from(objects, (object) => ({
-      assetId: object.assetId,
-      position: [object.root.position.x, object.root.position.y, object.root.position.z],
-      rotationYDegrees: (object.root.rotation.y * 180) / Math.PI,
-    })),
-  };
-}
-
-export interface EditorUi {
+interface ModularEditorAppOptions {
   canvas: HTMLCanvasElement;
-  searchInput: HTMLInputElement;
-  categoryButtons: HTMLButtonElement[];
-  assetList: HTMLDivElement;
-  snapToggle: HTMLButtonElement;
-  selectionModeButton: HTMLButtonElement;
-  placementModeButton: HTMLButtonElement;
-  undoButton: HTMLButtonElement;
-  redoButton: HTMLButtonElement;
-  saveButton: HTMLButtonElement;
-  loadButton: HTMLButtonElement;
-  loadInput: HTMLInputElement;
-  deleteSelectedButton: HTMLButtonElement;
-  clearSceneButton: HTMLButtonElement;
-  gridSizeSelect: HTMLSelectElement;
-  rotationSelect: HTMLSelectElement;
-  settingsButton: HTMLButtonElement;
-  settingsMenu: HTMLDivElement;
-  environmentToggle: HTMLInputElement;
-  statusMode: HTMLElement;
-  statusAsset: HTMLElement;
-  statusGrid: HTMLElement;
-  statusHint: HTMLElement;
-  propertiesPanel: HTMLDivElement;
+  onViewStateChange?: (state: EditorViewState) => void;
 }
 
 export class ModularEditorApp {
@@ -117,62 +89,181 @@ export class ModularEditorApp {
   private readonly camera: ArcRotateCamera;
   private readonly gizmoManager: GizmoManager;
   private readonly ground: Mesh;
-  private readonly ui: EditorUi;
-  private readonly defaultEnvironment;
+  private readonly groundMaterial: StandardMaterial;
+  private readonly mainLight: HemisphericLight;
+  private readonly onViewStateChange;
+  private readonly defaultEnvironment: EnvironmentHelper | null;
+  private readonly defaultEnvironmentTexture: Scene["environmentTexture"];
   private readonly assetTemplates = new Map<string, Promise<AssetTemplate>>();
   private readonly objects = new Map<string, EditorObject>();
+  private readonly groups = new Map<string, EditorGroup>();
   private readonly settings: UserSettings;
+  private readonly history = new SnapshotHistory();
+  private readonly sceneCore: SceneCoreController;
+  private readonly sessionController: SceneSessionController;
+  private readonly resizeObserver: ResizeObserver;
+  private readonly handleWindowResize = () => {
+    this.engine.resize();
+  };
+  private readonly handleWindowKeyDown = async (event: KeyboardEvent) => {
+    const target = event.target as HTMLElement | null;
+    if (target && (target.tagName === "INPUT" || target.tagName === "SELECT")) {
+      return;
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
+      event.preventDefault();
+      if (event.shiftKey) {
+        await this.sessionController.redo();
+      } else {
+        await this.sessionController.undo();
+      }
+      return;
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") {
+      event.preventDefault();
+      await this.sessionController.redo();
+      return;
+    }
+
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+      event.preventDefault();
+      this.saveSceneToLocalStorage();
+      return;
+    }
+
+    if (event.shiftKey && event.key.toLowerCase() === "d") {
+      event.preventDefault();
+      await this.duplicateSelectedObject();
+      return;
+    }
+
+    if (event.shiftKey && event.key.toLowerCase() === "f") {
+      event.preventDefault();
+      this.frameSelectedObject();
+      return;
+    }
+
+    if (event.key.toLowerCase() === "r") {
+      event.preventDefault();
+      this.rotateActiveTarget();
+    }
+
+    if (this.mode === "select") {
+      const key = event.key.toLowerCase();
+      if (key === "w") {
+        event.preventDefault();
+        this.moveSelectedByCameraAxes(1, 0);
+        return;
+      }
+      if (key === "s") {
+        event.preventDefault();
+        this.moveSelectedByCameraAxes(-1, 0);
+        return;
+      }
+      if (key === "a") {
+        event.preventDefault();
+        this.moveSelectedByCameraAxes(0, -1);
+        return;
+      }
+      if (key === "d") {
+        event.preventDefault();
+        this.moveSelectedByCameraAxes(0, 1);
+        return;
+      }
+    }
+
+    if (event.key === "Delete") {
+      event.preventDefault();
+      this.deleteSelectedObject();
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      this.mode = "select";
+      this.disposePreview();
+      this.emitViewState();
+    }
+
+    if (event.key === "Enter" && this.mode === "place" && this.previewAssetId && this.placementPreview) {
+      event.preventDefault();
+      await this.placeActiveAsset();
+    }
+  };
 
   private gridMesh: Nullable<LinesMesh> = null;
-  private activeCategory: AssetCategory | "All" = "All";
+  private originMarker: Nullable<Mesh> = null;
+  private selectionVerticalHelper: Nullable<LinesMesh> = null;
+  private selectionHeightLabel: Nullable<Mesh> = null;
+  private selectionVerticalHelperMarker: Nullable<Mesh> = null;
+  private selectionHelperVisualsEnabled = true;
   private activeAssetId: string | null = null;
+  private selectedSceneItemIds = new Set<string>();
   private selectedObjectId: string | null = null;
   private placementPreview: TransformNode | null = null;
   private previewAssetId: string | null = null;
   private previewTemplateSize = new Vector3(1, 1, 1);
   private mode: "select" | "place" = "select";
   private snapEnabled = true;
+  private ySnapEnabled = false;
   private gridSize = 1;
   private rotationStepDegrees = 90;
   private previewRotationDegrees = 0;
   private objectSequence = 0;
+  private groupSequence = 0;
+  private sceneRootOrder: string[] = [];
+  private selectedGroupId: string | null = null;
   private lastPointerPoint = Vector3.Zero();
-  private settingsMenuOpen = false;
-  private undoStack: string[] = [];
-  private redoStack: string[] = [];
-  private dragHistorySnapshot: string | null = null;
   private statusNotice: string | null = null;
+  private viewState: EditorViewState = createInitialEditorViewState();
+  private lastAutosavedSnapshotText: string | null = null;
+  private lastManualSaveAt: string | null = null;
+  private lastRecoveredAutosaveAt: string | null = null;
+  private persistenceReady = false;
 
-  constructor(ui: EditorUi) {
-    this.ui = ui;
-    this.engine = new Engine(ui.canvas, true);
+  constructor(options: ModularEditorAppOptions) {
+    this.onViewStateChange = options.onViewStateChange;
+    this.engine = new Engine(options.canvas, true);
     this.scene = new Scene(this.engine);
     this.scene.clearColor = new Color4(0.09, 0.1, 0.12, 1);
     this.defaultEnvironment = this.scene.createDefaultEnvironment({
       createGround: false,
       createSkybox: false,
+      environmentTexture: "/photoStudio.env",
     });
-    this.settings = this.loadUserSettings();
+    this.defaultEnvironmentTexture = this.scene.environmentTexture;
+    this.settings = loadUserSettings();
+    this.sessionController = new SceneSessionController({
+      history: this.history,
+      getSnapshotText: () => this.getSerializedSceneText(),
+      restoreSnapshot: async (scene) => {
+        await this.restoreSerializedScene(scene);
+      },
+      onStateChanged: () => {
+        this.emitViewState();
+      },
+      onNotice: (message) => {
+        this.setStatusNotice(message);
+      },
+    });
 
     this.camera = new ArcRotateCamera("camera", Math.PI / 3, Math.PI / 2.9, 22, new Vector3(0, 2, 0), this.scene);
     this.camera.lowerRadiusLimit = 6;
     this.camera.upperRadiusLimit = 48;
     this.camera.wheelDeltaPercentage = 0.02;
-    this.camera.attachControl(ui.canvas, true);
+    this.camera.attachControl(options.canvas, true);
 
-    const light = new HemisphericLight("light", new Vector3(0.4, 1, 0.2), this.scene);
-    light.intensity = 1.1;
-    light.groundColor = new Color3(0.06, 0.07, 0.08);
+    this.mainLight = new BabylonHemisphericLight("light", new Vector3(0.4, 1, 0.2), this.scene);
+    this.mainLight.intensity = this.settings.lightIntensity;
+    this.mainLight.groundColor = new Color3(0.06, 0.07, 0.08);
 
     this.ground = MeshBuilder.CreateGround("ground", { width: 80, height: 80 }, this.scene);
-    const groundMaterial = new StandardMaterial("ground-material", this.scene);
-    groundMaterial.diffuseColor = new Color3(0.12, 0.13, 0.15);
-    groundMaterial.specularColor = Color3.Black();
-    this.ground.material = groundMaterial;
+    this.groundMaterial = new StandardMaterial("ground-material", this.scene);
+    this.groundMaterial.diffuseColor = Color3.FromHexString(this.settings.groundColor);
+    this.groundMaterial.specularColor = Color3.Black();
+    this.ground.material = this.groundMaterial;
     this.ground.isPickable = true;
-
-    this.renderGrid();
-    this.applyEnvironmentSetting();
 
     this.gizmoManager = new GizmoManager(this.scene);
     this.gizmoManager.usePointerToAttachGizmos = false;
@@ -219,144 +310,60 @@ export class ModularEditorApp {
       });
     }
 
-    this.bindUi();
+    this.sceneCore = new SceneCoreController(this.scene, this.gizmoManager);
+    this.renderGrid();
+    this.applyEnvironmentSetting();
+
     this.bindSceneInteractions();
     this.bindShortcuts();
     this.applySnapSettings();
-    this.renderAssetList();
-    this.renderProperties();
-    this.updateToolbarState();
-    this.updateStatus();
-    this.resetHistory();
+    this.emitViewState();
+    void this.initializePersistence();
 
     this.engine.runRenderLoop(() => {
+      if (this.selectionHelperVisualsEnabled) {
+        try {
+          this.renderSelectionVerticalHelper();
+        } catch {
+          this.selectionHelperVisualsEnabled = false;
+          this.selectionVerticalHelper?.dispose();
+          this.selectionVerticalHelper = null;
+          this.selectionHeightLabel?.dispose(false, false);
+          this.selectionHeightLabel = null;
+          this.selectionVerticalHelperMarker?.dispose(false, false);
+          this.selectionVerticalHelperMarker = null;
+          this.setStatusNotice("Selection height helper was disabled after a rendering error.");
+        }
+      }
       this.scene.render();
     });
 
-    window.addEventListener("resize", () => {
+    window.addEventListener("resize", this.handleWindowResize);
+
+    this.resizeObserver = new ResizeObserver(() => {
       this.engine.resize();
     });
+    this.resizeObserver.observe(options.canvas);
+    if (options.canvas.parentElement) {
+      this.resizeObserver.observe(options.canvas.parentElement);
+    }
   }
 
-  private bindUi() {
-    this.ui.searchInput.addEventListener("input", () => {
-      this.renderAssetList();
-    });
+  private async initializePersistence() {
+    const manualSaved = loadManualSavedScene();
+    this.lastManualSaveAt = manualSaved?.savedAt ?? null;
 
-    this.ui.categoryButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        this.activeCategory = button.dataset.category as AssetCategory | "All";
-        this.renderAssetList();
-      });
-    });
+    const autosaved = loadAutosavedScene();
+    if (autosaved) {
+      await this.restoreSerializedScene(autosaved.scene);
+      this.lastRecoveredAutosaveAt = autosaved.savedAt;
+      this.statusNotice = `Recovered autosaved scene (${autosaved.scene.objects.length} objects).`;
+    }
 
-    this.ui.snapToggle.addEventListener("click", () => {
-      this.snapEnabled = !this.snapEnabled;
-      this.applySnapSettings();
-      this.updatePreviewTransform();
-      this.updateToolbarState();
-      this.updateStatus();
-      this.renderProperties();
-    });
-
-    this.ui.selectionModeButton.addEventListener("click", () => {
-      this.mode = "select";
-      this.disposePreview();
-      this.updateToolbarState();
-      this.updateStatus();
-    });
-
-    this.ui.placementModeButton.addEventListener("click", async () => {
-      if (!this.activeAssetId) {
-        return;
-      }
-      this.mode = "place";
-      await this.ensurePreviewForAsset(this.activeAssetId);
-      this.updateToolbarState();
-      this.updateStatus();
-    });
-
-    this.ui.deleteSelectedButton.addEventListener("click", () => {
-      this.deleteSelectedObject();
-    });
-
-    this.ui.clearSceneButton.addEventListener("click", () => {
-      this.clearScene();
-    });
-
-    this.ui.undoButton.addEventListener("click", () => {
-      void this.undoSceneChange();
-    });
-
-    this.ui.redoButton.addEventListener("click", () => {
-      void this.redoSceneChange();
-    });
-
-    this.ui.saveButton.addEventListener("click", () => {
-      this.saveSceneToFile();
-    });
-
-    this.ui.loadButton.addEventListener("click", () => {
-      this.ui.loadInput.click();
-    });
-
-    this.ui.loadInput.addEventListener("change", async () => {
-      const file = this.ui.loadInput.files?.[0];
-      if (!file) {
-        return;
-      }
-      await this.loadSceneFromFile(file);
-      this.ui.loadInput.value = "";
-    });
-
-    this.ui.gridSizeSelect.addEventListener("change", () => {
-      this.gridSize = Number(this.ui.gridSizeSelect.value);
-      this.applySnapSettings();
-      this.renderGrid();
-      this.updatePreviewTransform();
-      this.updateStatus();
-      this.renderProperties();
-    });
-
-    this.ui.rotationSelect.addEventListener("change", () => {
-      this.rotationStepDegrees = Number(this.ui.rotationSelect.value);
-      this.applySnapSettings();
-      this.updatePreviewTransform();
-      this.updateStatus();
-      this.renderProperties();
-    });
-
-    this.ui.settingsButton.addEventListener("pointerdown", (event) => {
-      event.stopPropagation();
-    });
-
-    this.ui.settingsButton.addEventListener("click", (event) => {
-      event.stopPropagation();
-      this.settingsMenuOpen = !this.settingsMenuOpen;
-      this.updateToolbarState();
-    });
-
-    this.ui.settingsMenu.addEventListener("pointerdown", (event) => {
-      event.stopPropagation();
-    });
-
-    this.ui.settingsMenu.addEventListener("click", (event) => {
-      event.stopPropagation();
-    });
-
-    this.ui.environmentToggle.addEventListener("change", () => {
-      this.settings.environmentEnabled = this.ui.environmentToggle.checked;
-      this.applyEnvironmentSetting();
-      this.saveUserSettings();
-    });
-
-    window.addEventListener("pointerdown", () => {
-      if (!this.settingsMenuOpen) {
-        return;
-      }
-      this.settingsMenuOpen = false;
-      this.updateToolbarState();
-    });
+    this.persistenceReady = true;
+    this.sessionController.resetHistory();
+    this.persistAutosavedScene();
+    this.emitViewState();
   }
 
   private bindSceneInteractions() {
@@ -370,168 +377,324 @@ export class ModularEditorApp {
       }
 
       if (pointerInfo.type === PointerEventTypes.POINTERDOWN) {
-        if (this.mode === "place" && this.previewAssetId && this.placementPreview) {
+        const pointerEvent = pointerInfo.event as PointerEvent | undefined;
+        const isPrimaryButton = (pointerEvent?.button ?? 0) === 0;
+
+        if (this.mode === "place" && this.previewAssetId && this.placementPreview && isPrimaryButton) {
           await this.placeActiveAsset();
           return;
         }
 
-        const pick = this.scene.pick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh !== this.ground);
-        const objectRoot = this.findObjectRoot(pick?.pickedMesh ?? null);
-        if (objectRoot) {
-          this.selectObjectByRoot(objectRoot);
-        } else {
-          this.clearSelection();
+        const hits = this.scene.multiPick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh !== this.ground) ?? [];
+        for (const hit of hits) {
+          const pickedMesh = hit.pickedMesh;
+          if (!pickedMesh) {
+            continue;
+          }
+
+          const objectId = this.findObjectId(pickedMesh);
+          if (objectId) {
+            const object = this.objects.get(objectId);
+            if (object) {
+              this.selectObjectByRoot(object.root);
+              return;
+            }
+          }
+
+          const groupId = pickedMesh.metadata?.groupId as string | undefined;
+          if (groupId) {
+            this.selectSceneItem(groupId);
+            return;
+          }
         }
+
+        this.clearSelection();
       }
     });
   }
 
   private bindShortcuts() {
-    window.addEventListener("keydown", async (event) => {
-      const target = event.target as HTMLElement | null;
-      if (target && (target.tagName === "INPUT" || target.tagName === "SELECT")) {
-        return;
-      }
-
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
-        event.preventDefault();
-        if (event.shiftKey) {
-          await this.redoSceneChange();
-        } else {
-          await this.undoSceneChange();
-        }
-        return;
-      }
-
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") {
-        event.preventDefault();
-        await this.redoSceneChange();
-        return;
-      }
-
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
-        event.preventDefault();
-        this.saveSceneToFile();
-        return;
-      }
-
-      if (event.key.toLowerCase() === "r") {
-        event.preventDefault();
-        this.rotateActiveTarget();
-      }
-
-      if (event.key === "Delete") {
-        event.preventDefault();
-        this.deleteSelectedObject();
-      }
-
-      if (event.key === "Escape") {
-        event.preventDefault();
-        this.mode = "select";
-        this.disposePreview();
-        this.updateToolbarState();
-        this.updateStatus();
-      }
-
-      if (event.key === "Enter" && this.mode === "place" && this.previewAssetId && this.placementPreview) {
-        event.preventDefault();
-        await this.placeActiveAsset();
-      }
-    });
+    window.addEventListener("keydown", this.handleWindowKeyDown);
   }
 
-  private renderAssetList() {
-    const query = this.ui.searchInput.value.trim().toLowerCase();
-    this.ui.assetList.innerHTML = "";
-
-    this.ui.categoryButtons.forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.category === this.activeCategory);
-    });
-
-    const filtered = ASSETS.filter((asset) => {
-      const matchesCategory = this.activeCategory === "All" || asset.category === this.activeCategory;
-      const haystack = `${asset.name} ${asset.category} ${asset.tags.join(" ")}`.toLowerCase();
-      const matchesQuery = !query || haystack.includes(query);
-      return matchesCategory && matchesQuery;
-    });
-
-    if (filtered.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "asset-empty";
-      empty.textContent = "No assets match the current filter.";
-      this.ui.assetList.appendChild(empty);
-      return;
+  private buildSelectionViewState(): SelectionViewState {
+    const selectionCount = this.selectedSceneItemIds.size;
+    if (selectionCount > 1) {
+      return {
+        selectedObjectId: null,
+        selectedAssetName: `${selectionCount} items selected`,
+        multiSelected: true,
+        activeAssetName: this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId)?.name ?? null : null,
+        previewAssetName: this.previewAssetId ? ASSETS.find((asset) => asset.id === this.previewAssetId)?.name ?? null : null,
+        objectPlacementKind: null,
+        position: null,
+        rotationYDegrees: null,
+        positionText: null,
+        rotationText: null,
+        snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
+      };
     }
 
-    filtered.forEach((asset) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "asset-row";
-      button.innerHTML = `
-        <span class="asset-swatch" style="background:${asset.placeholder.color}"></span>
-        <span class="asset-copy">
-          <span class="asset-name">${asset.name}</span>
-          <span class="asset-meta">${asset.category} · ${asset.fileName}</span>
-        </span>
-        <img class="asset-thumb" alt="" loading="lazy" src="${this.getAssetThumbnailUrl(asset)}" />
-      `;
-      const thumbnail = button.querySelector<HTMLImageElement>(".asset-thumb");
-      thumbnail?.addEventListener("error", () => {
-        thumbnail.hidden = true;
-      });
-      button.classList.toggle("is-active", asset.id === this.activeAssetId);
-      button.addEventListener("click", async () => {
-        this.activeAssetId = asset.id;
-        this.mode = "place";
-        this.previewRotationDegrees = 0;
-        await this.ensurePreviewForAsset(asset.id);
-        this.renderAssetList();
-        this.updateToolbarState();
-        this.updateStatus();
-        this.renderProperties();
-      });
-      this.ui.assetList.appendChild(button);
-    });
-  }
-
-  private getAssetThumbnailUrl(asset: AssetDefinition) {
-    return `${ASSET_PREVIEW_BASE_PATH}/${asset.fileName.replace(/\.[^.]+$/u, ".png")}`;
-  }
-
-  private renderProperties() {
     const selected = this.selectedObjectId ? this.objects.get(this.selectedObjectId) : null;
+    const selectedGroup = this.selectedGroupId ? this.groups.get(this.selectedGroupId) : null;
     const selectedAsset = selected ? ASSETS.find((asset) => asset.id === selected.assetId) : null;
     const activeAsset = this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId) : null;
+    const previewAsset = this.previewAssetId ? ASSETS.find((asset) => asset.id === this.previewAssetId) : null;
+    const position = selected ? selected.root.position : selectedGroup?.root.position ?? null;
+    const rotationDegrees = selected
+      ? Math.round(this.toDegrees(selected.root.rotation.y))
+      : selectedGroup
+        ? Math.round(this.toDegrees(selectedGroup.root.rotation.y))
+        : null;
 
-    if (!selected || !selectedAsset) {
-      this.ui.propertiesPanel.innerHTML = `
-        <div class="properties-empty">
-          <strong>No object selected.</strong>
-          <span>Active asset: ${activeAsset ? activeAsset.name : "None"}</span>
-          <span>Use Delete Selected for one item or Clear Scene for all.</span>
-        </div>
-      `;
+    return {
+      selectedObjectId: this.selectedObjectId ?? this.selectedGroupId,
+      selectedAssetName: selectedAsset?.name ?? selectedGroup?.name ?? null,
+      multiSelected: false,
+      activeAssetName: activeAsset?.name ?? null,
+      previewAssetName: previewAsset?.name ?? null,
+      objectPlacementKind: selected?.placementKind ?? null,
+      position: position ? [position.x, position.y, position.z] : null,
+      rotationYDegrees: rotationDegrees,
+      positionText: position ? `${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}` : null,
+      rotationText: rotationDegrees !== null ? `${rotationDegrees}deg` : null,
+      snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
+    };
+  }
+
+  private buildSceneItemsViewState(): SceneItemViewState[] {
+    this.normalizeSceneRootOrder();
+    const items: SceneItemViewState[] = [];
+    const visitedIds = new Set<string>();
+
+    const pushObject = (object: EditorObject, depth: number) => {
+      visitedIds.add(object.id);
+      const asset = ASSETS.find((entry) => entry.id === object.assetId);
+      items.push({
+        id: object.id,
+        assetId: object.assetId,
+        assetName: asset?.name ?? object.assetId,
+        placementKind: object.placementKind,
+        childCount: null,
+        label: object.name || `${asset?.name ?? object.assetId}`,
+        selected: this.selectedSceneItemIds.has(object.id),
+        hidden: this.isObjectHidden(object),
+        locked: this.isObjectLocked(object),
+        type: object.type,
+        parentId: object.parentId,
+        depth,
+      });
+    };
+
+    const pushGroup = (group: EditorGroup, depth: number) => {
+      if (visitedIds.has(group.id)) {
+        return;
+      }
+      visitedIds.add(group.id);
+      items.push({
+        id: group.id,
+        assetId: "",
+        assetName: "Group",
+        placementKind: null,
+        childCount: group.childIds.length,
+        label: group.name,
+        selected: this.selectedSceneItemIds.has(group.id),
+        hidden: this.isGroupHidden(group.id),
+        locked: this.isGroupLocked(group.id),
+        type: "group",
+        parentId: group.parentId,
+        depth,
+      });
+
+      group.childIds.forEach((childId) => {
+        const childGroup = this.groups.get(childId);
+        if (childGroup) {
+          pushGroup(childGroup, depth + 1);
+          return;
+        }
+
+        const childObject = this.objects.get(childId);
+        if (childObject) {
+          pushObject(childObject, depth + 1);
+        }
+      });
+    };
+
+    this.sceneRootOrder.forEach((rootId) => {
+      const group = this.groups.get(rootId);
+      if (group && !group.parentId) {
+        pushGroup(group, 0);
+        return;
+      }
+
+      const object = this.objects.get(rootId);
+      if (object && !object.parentId) {
+        pushObject(object, 0);
+      }
+    });
+
+    this.groups.forEach((group) => {
+      if (visitedIds.has(group.id) || group.parentId) {
+        return;
+      }
+      pushGroup(group, 0);
+    });
+
+    this.objects.forEach((object) => {
+      if (!object.parentId && !visitedIds.has(object.id)) {
+        pushObject(object, 0);
+      }
+    });
+
+    return items;
+  }
+
+  private normalizeSceneRootOrder() {
+    const seen = new Set<string>();
+    const validRootIds = new Set<string>([
+      ...Array.from(this.groups.values())
+        .filter((group) => !group.parentId)
+        .map((group) => group.id),
+      ...Array.from(this.objects.values())
+        .filter((object) => !object.parentId)
+        .map((object) => object.id),
+    ]);
+
+    this.sceneRootOrder = this.sceneRootOrder.filter((id) => {
+      if (!validRootIds.has(id) || seen.has(id)) {
+        return false;
+      }
+      seen.add(id);
+      return true;
+    });
+
+    this.groups.forEach((group) => {
+      if (!group.parentId && !seen.has(group.id)) {
+        this.sceneRootOrder.push(group.id);
+        seen.add(group.id);
+      }
+    });
+
+    this.objects.forEach((object) => {
+      if (!object.parentId && !seen.has(object.id)) {
+        this.sceneRootOrder.push(object.id);
+        seen.add(object.id);
+      }
+    });
+  }
+
+  private buildToolbarViewState(): ToolbarViewState {
+    return {
+      snapEnabled: this.snapEnabled,
+      ySnapEnabled: this.ySnapEnabled,
+      newObjectPlacementKind: this.settings.newObjectPlacementKind,
+      heightLabelMode: this.settings.heightLabelMode,
+      mode: this.mode,
+      canUndo: this.history.canUndo,
+      canRedo: this.history.canRedo,
+      hasSelection: this.selectedSceneItemIds.size > 0,
+      hasObjects: this.objects.size > 0,
+      gridSize: this.gridSize,
+      rotationStepDegrees: this.rotationStepDegrees,
+      environmentEnabled: this.settings.environmentEnabled,
+      environmentIntensity: this.settings.environmentIntensity,
+      lightIntensity: this.settings.lightIntensity,
+      gridVisible: this.settings.gridVisible,
+      gridColor: this.settings.gridColor,
+      groundColor: this.settings.groundColor,
+    };
+  }
+
+  private buildStatusViewState(): StatusViewState {
+    const activeAsset = this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId) : null;
+    return {
+      mode: this.mode,
+      activeAssetName: activeAsset?.name ?? null,
+      snapEnabled: this.snapEnabled,
+      ySnapEnabled: this.ySnapEnabled,
+      gridSize: this.gridSize,
+      rotationStepDegrees: this.rotationStepDegrees,
+      hint:
+        this.statusNotice ??
+        (this.mode === "place"
+          ? "R rotate · Click or Enter place · Esc cancel"
+          : "Click object select · Delete remove · R rotate"),
+    };
+  }
+
+  private buildViewState(): EditorViewState {
+    return {
+      activeAssetId: this.activeAssetId,
+      previewAssetId: this.previewAssetId,
+      objectCount: this.objects.size,
+      selectionCount: this.selectedSceneItemIds.size,
+      noticeMessage: this.statusNotice,
+      lastManualSaveAt: this.lastManualSaveAt,
+      lastRecoveredAutosaveAt: this.lastRecoveredAutosaveAt,
+      sceneItems: this.buildSceneItemsViewState(),
+      toolbar: this.buildToolbarViewState(),
+      status: this.buildStatusViewState(),
+      selection: this.buildSelectionViewState(),
+    };
+  }
+
+  private emitViewState() {
+    this.viewState = this.buildViewState();
+    this.persistAutosavedScene();
+    this.onViewStateChange?.(this.viewState);
+  }
+
+  private persistAutosavedScene() {
+    if (!this.persistenceReady) {
       return;
     }
 
-    const position = selected.root.position;
-    const rotationDegrees = Math.round(this.toDegrees(selected.root.rotation.y));
-    this.ui.propertiesPanel.innerHTML = `
-      <div class="properties-grid">
-        <span class="properties-label">Asset</span>
-        <span>${selectedAsset.name}</span>
-        <span class="properties-label">Position</span>
-        <span>${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}</span>
-        <span class="properties-label">Rotation</span>
-        <span>${rotationDegrees}deg</span>
-        <span class="properties-label">Snap</span>
-        <span>${this.snapEnabled ? `Grid ${this.gridSize}` : "Off"}</span>
-      </div>
-    `;
+    const snapshotText = this.getSerializedSceneText();
+    if (snapshotText === this.lastAutosavedSnapshotText) {
+      return;
+    }
+
+    this.lastAutosavedSnapshotText = snapshotText;
+    saveAutosavedScene(JSON.parse(snapshotText) as SerializedAssetScene);
+  }
+
+  private buildSceneMetadata(): SerializedAssetSceneMetadata {
+    return {
+      snapEnabled: this.snapEnabled,
+      ySnapEnabled: this.ySnapEnabled,
+      gridSize: this.gridSize,
+      rotationStepDegrees: this.rotationStepDegrees,
+      environmentEnabled: this.settings.environmentEnabled,
+      environmentIntensity: this.settings.environmentIntensity,
+      lightIntensity: this.settings.lightIntensity,
+      gridVisible: this.settings.gridVisible,
+      gridColor: this.settings.gridColor,
+      groundColor: this.settings.groundColor,
+      sceneGroups: Array.from(this.groups.values(), (group): SerializedSceneGroup => ({
+        id: group.id,
+        name: group.name,
+        childIds: [...group.childIds],
+        hidden: group.hidden,
+        locked: group.locked,
+        parentId: group.parentId,
+      })),
+      sceneRootOrder: [...this.sceneRootOrder],
+    };
   }
 
   private getSerializedScene() {
-    return serializeAssetScene(this.objects.values());
+    const serializableObjects: AssetSceneSerializableObject[] = Array.from(this.objects.values(), (object) => ({
+      id: object.id,
+      assetId: object.assetId,
+      position: [object.root.position.x, object.root.position.y, object.root.position.z],
+      rotationYDegrees: this.toDegrees(object.root.rotation.y),
+      name: object.name,
+      hidden: object.hidden,
+      locked: object.locked,
+      parentId: object.parentId,
+    }));
+
+    return serializeAssetScene(serializableObjects, this.buildSceneMetadata());
   }
 
   private getSerializedSceneText() {
@@ -541,11 +704,10 @@ export class ModularEditorApp {
   private async restoreSerializedScene(serialized: SerializedAssetScene) {
     this.disposePreview();
     this.clearSelection();
-
-    this.objects.forEach((object) => {
-      object.root.dispose(false, false);
-    });
-    this.objects.clear();
+    clearSceneObjects(this.objects, this.gizmoManager);
+    this.disposeAllGroups();
+    this.sceneRootOrder = [];
+    this.applySceneMetadata(serialized.metadata);
 
     for (const entry of serialized.objects) {
       const asset = ASSETS.find((candidate) => candidate.id === entry.assetId);
@@ -553,7 +715,14 @@ export class ModularEditorApp {
         continue;
       }
 
-      const root = await this.instantiateAsset(asset, false);
+      const template = await this.getAssetTemplate(asset);
+      const root = await instantiateAsset(
+        asset,
+        false,
+        template,
+        this.scene,
+        entry.placementKind === "clone" || entry.placementKind === "instance" ? entry.placementKind : "instance",
+      );
       if (!root) {
         continue;
       }
@@ -561,147 +730,689 @@ export class ModularEditorApp {
       root.position.set(entry.position[0], entry.position[1], entry.position[2]);
       root.rotation.y = this.toRadians(entry.rotationYDegrees);
 
-      const id = `object-${++this.objectSequence}`;
-      const template = await this.getAssetTemplate(asset);
+      const id = typeof entry.id === "string" && entry.id ? entry.id : `object-${++this.objectSequence}`;
+      const numericObjectId = Number(id.replace("object-", ""));
+      if (Number.isFinite(numericObjectId)) {
+        this.objectSequence = Math.max(this.objectSequence, numericObjectId);
+      }
+      const defaultName = `${asset.name} ${String(this.objectSequence).padStart(2, "0")}`;
       root.metadata = {
         objectId: id,
         assetId: asset.id,
         templateSize: template.size.asArray(),
       };
       this.tagHierarchy(root, id);
-      this.objects.set(id, { id, assetId: asset.id, root });
+      this.objects.set(id, {
+        id,
+        assetId: asset.id,
+        placementKind: entry.placementKind === "clone" || entry.placementKind === "instance" ? entry.placementKind : "instance",
+        root,
+        name: entry.name?.trim() || defaultName,
+        hidden: !!entry.hidden,
+        locked: !!entry.locked,
+        type: "object",
+        parentId: entry.parentId ?? null,
+      });
+      this.applyObjectVisibility(id);
+      if (!entry.parentId && !this.sceneRootOrder.includes(id)) {
+        this.sceneRootOrder.push(id);
+      }
     }
 
+    this.groups.forEach((group) => {
+      group.childIds.forEach((childId) => {
+        const childGroup = this.groups.get(childId);
+        if (childGroup) {
+          childGroup.root.setParent(group.root);
+          childGroup.parentId = group.id;
+          return;
+        }
+
+        const childObject = this.objects.get(childId);
+        if (!childObject) {
+          return;
+        }
+        childObject.root.setParent(group.root);
+        childObject.parentId = group.id;
+      });
+    });
+
+    Array.from(this.groups.values())
+      .sort((left, right) => this.getGroupDepth(left.id) - this.getGroupDepth(right.id))
+      .reverse()
+      .forEach((group) => {
+        this.recenterGroupRoot(group.id);
+      });
+
+    this.groups.forEach((group) => {
+      if (!group.parentId && !this.sceneRootOrder.includes(group.id)) {
+        this.sceneRootOrder.push(group.id);
+      }
+    });
+
+    this.normalizeSceneRootOrder();
+
     this.mode = "select";
-    this.updateToolbarState();
-    this.updateStatus();
-    this.renderProperties();
+    this.emitViewState();
+  }
+
+  private applySceneMetadata(metadata?: SerializedAssetSceneMetadata) {
+    if (!metadata) {
+      return;
+    }
+
+    if (typeof metadata.snapEnabled === "boolean") {
+      this.snapEnabled = metadata.snapEnabled;
+    }
+    if (typeof metadata.ySnapEnabled === "boolean") {
+      this.ySnapEnabled = metadata.ySnapEnabled;
+    }
+    if (typeof metadata.gridSize === "number") {
+      this.gridSize = metadata.gridSize;
+    }
+    if (typeof metadata.rotationStepDegrees === "number") {
+      this.rotationStepDegrees = metadata.rotationStepDegrees;
+    }
+    if (typeof metadata.environmentEnabled === "boolean") {
+      this.settings.environmentEnabled = metadata.environmentEnabled;
+    }
+    if (typeof metadata.environmentIntensity === "number") {
+      this.settings.environmentIntensity = metadata.environmentIntensity;
+    }
+    if (typeof metadata.lightIntensity === "number") {
+      this.settings.lightIntensity = metadata.lightIntensity;
+    }
+    if (typeof metadata.gridVisible === "boolean") {
+      this.settings.gridVisible = metadata.gridVisible;
+    }
+    if (typeof metadata.gridColor === "string") {
+      this.settings.gridColor = metadata.gridColor;
+    }
+    if (typeof metadata.groundColor === "string") {
+      this.settings.groundColor = metadata.groundColor;
+    }
+    if (Array.isArray(metadata.sceneGroups)) {
+      metadata.sceneGroups.forEach((group) => {
+        this.groups.set(group.id, {
+          id: group.id,
+          name: group.name,
+          type: "group",
+          childIds: [...group.childIds],
+          hidden: !!group.hidden,
+          locked: !!group.locked,
+          parentId: group.parentId ?? null,
+          root: this.createGroupRoot(group.id),
+        });
+      });
+      this.groupSequence = Math.max(
+        0,
+        ...metadata.sceneGroups.map((group) => Number(group.id.replace("group-", "")) || 0),
+      );
+    }
+    if (Array.isArray(metadata.sceneRootOrder)) {
+      this.sceneRootOrder = [...metadata.sceneRootOrder];
+    }
+
+    this.applySnapSettings();
+    this.renderGrid();
+    this.applyEnvironmentSetting();
+    this.applyLightIntensity();
+    this.applyGroundColor();
+    this.saveUserSettings();
   }
 
   private beginHistoryGesture() {
-    if (!this.selectedObjectId || this.dragHistorySnapshot) {
-      return;
-    }
-    this.dragHistorySnapshot = this.getSerializedSceneText();
+    this.sessionController.beginHistoryGesture(!!this.selectedObjectId || !!this.selectedGroupId);
   }
 
   private completeHistoryGesture() {
-    if (!this.dragHistorySnapshot) {
-      return;
-    }
-    this.pushHistoryCheckpoint(this.dragHistorySnapshot);
-    this.dragHistorySnapshot = null;
-  }
-
-  private resetHistory() {
-    this.undoStack = [this.getSerializedSceneText()];
-    this.redoStack = [];
-    this.updateToolbarState();
+    this.sessionController.completeHistoryGesture();
   }
 
   private pushHistoryCheckpoint(previousSnapshot?: string) {
-    const currentSnapshot = this.getSerializedSceneText();
-    const baseline = previousSnapshot ?? this.undoStack[this.undoStack.length - 1];
-    if (baseline === currentSnapshot) {
-      this.updateToolbarState();
-      return;
-    }
-
-    this.undoStack.push(currentSnapshot);
-    this.redoStack = [];
-    this.updateToolbarState();
-  }
-
-  private async undoSceneChange() {
-    if (this.undoStack.length <= 1) {
-      return;
-    }
-
-    const currentSnapshot = this.undoStack.pop();
-    if (!currentSnapshot) {
-      return;
-    }
-    this.redoStack.push(currentSnapshot);
-
-    const previousSnapshot = this.undoStack[this.undoStack.length - 1];
-    await this.restoreSerializedScene(JSON.parse(previousSnapshot) as SerializedAssetScene);
-    this.updateToolbarState();
-  }
-
-  private async redoSceneChange() {
-    const nextSnapshot = this.redoStack.pop();
-    if (!nextSnapshot) {
-      return;
-    }
-
-    this.undoStack.push(nextSnapshot);
-    await this.restoreSerializedScene(JSON.parse(nextSnapshot) as SerializedAssetScene);
-    this.updateToolbarState();
-  }
-
-  private saveSceneToFile() {
-    const blob = new Blob([this.getSerializedSceneText()], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "asset-scene.v1.json";
-    anchor.click();
-    URL.revokeObjectURL(url);
-    this.setStatusNotice("Scene saved as asset-scene.v1.json");
-  }
-
-  private async loadSceneFromFile(file: File) {
-    try {
-      const text = await file.text();
-      const parsed = JSON.parse(text) as unknown;
-      if (!isSerializedAssetScene(parsed)) {
-        this.setStatusNotice("Load failed: invalid scene file format or unsupported version.");
-        return;
-      }
-
-      await this.restoreSerializedScene(parsed);
-      this.resetHistory();
-      this.setStatusNotice(`Scene loaded: ${file.name}`);
-    } catch {
-      this.setStatusNotice(`Load failed: could not read ${file.name}.`);
-    }
-  }
-
-  private updateToolbarState() {
-    this.ui.snapToggle.classList.toggle("is-active", this.snapEnabled);
-    this.ui.selectionModeButton.classList.toggle("is-active", this.mode === "select");
-    this.ui.placementModeButton.classList.toggle("is-active", this.mode === "place");
-    this.ui.settingsButton.classList.toggle("is-active", this.settingsMenuOpen);
-    this.ui.undoButton.disabled = this.undoStack.length <= 1;
-    this.ui.redoButton.disabled = this.redoStack.length === 0;
-    this.ui.deleteSelectedButton.disabled = !this.selectedObjectId;
-    this.ui.clearSceneButton.disabled = this.objects.size === 0;
-    this.ui.gridSizeSelect.value = String(this.gridSize);
-    this.ui.rotationSelect.value = String(this.rotationStepDegrees);
-    this.ui.environmentToggle.checked = this.settings.environmentEnabled;
-    this.ui.settingsMenu.hidden = !this.settingsMenuOpen;
-  }
-
-  private updateStatus() {
-    const activeAsset = this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId) : null;
-    this.ui.statusMode.textContent = this.mode === "place" ? "Placement" : "Selection";
-    this.ui.statusAsset.textContent = activeAsset ? activeAsset.name : "None";
-    this.ui.statusGrid.textContent = this.snapEnabled
-      ? `${this.gridSize}u · ${this.rotationStepDegrees}deg`
-      : `Free · ${this.rotationStepDegrees}deg`;
-    this.ui.statusHint.textContent =
-      this.mode === "place"
-        ? "R rotate · Click or Enter place · Esc cancel"
-        : "Click object select · Delete remove · R rotate";
+    this.sessionController.pushHistoryCheckpoint(previousSnapshot);
   }
 
   private setStatusNotice(message: string | null) {
     this.statusNotice = message;
-    if (message) {
-      this.ui.statusHint.textContent = message;
+    this.emitViewState();
+  }
+
+  private clearSelectionVisuals() {
+    this.selectedSceneItemIds.forEach((itemId) => {
+      const selectedGroup = this.groups.get(itemId);
+      if (selectedGroup) {
+        this.setGroupHighlight(selectedGroup, false);
+      }
+    });
+
+    if (this.selectedObjectId) {
+      this.selectedObjectId = clearSceneSelection(this.objects, this.selectedObjectId, this.gizmoManager);
+    } else {
+      this.gizmoManager.attachToNode(null);
+    }
+  }
+
+  private applySceneItemSelection(selectionIds: Iterable<string>, primaryId: string | null, emit = true) {
+    this.clearSelectionVisuals();
+
+    const nextSelectedIds = Array.from(
+      new Set(
+        Array.from(selectionIds).filter((id) => this.objects.has(id) || this.groups.has(id)),
+      ),
+    );
+    this.selectedSceneItemIds = new Set(nextSelectedIds);
+
+    const nextPrimaryId =
+      primaryId && this.selectedSceneItemIds.has(primaryId)
+        ? primaryId
+        : nextSelectedIds[nextSelectedIds.length - 1] ?? null;
+
+    this.selectedObjectId = null;
+    this.selectedGroupId = null;
+
+    if (nextPrimaryId) {
+      const selectedGroup = this.groups.get(nextPrimaryId);
+      if (selectedGroup && !this.isGroupHidden(selectedGroup.id)) {
+        this.selectedGroupId = selectedGroup.id;
+      } else {
+        const selectedObject = this.objects.get(nextPrimaryId);
+        if (selectedObject && !this.isObjectHidden(selectedObject)) {
+          this.selectedObjectId = nextPrimaryId;
+        }
+      }
+    }
+
+    this.selectedSceneItemIds.forEach((itemId) => {
+      const selectedGroup = this.groups.get(itemId);
+      if (selectedGroup) {
+        this.setGroupHighlight(selectedGroup, true);
+      }
+    });
+
+    if (this.selectedObjectId) {
+      const selectedObject = this.objects.get(this.selectedObjectId);
+      if (selectedObject) {
+        selectSceneObject(selectedObject.root, this.gizmoManager);
+      }
+    } else {
+      this.gizmoManager.attachToNode(null);
+    }
+
+    if (emit) {
+      this.emitViewState();
+    }
+  }
+
+  private createGroupRoot(groupId: string) {
+    const root = new TransformNode(`group-root-${groupId}`, this.scene);
+    root.metadata = { ...(root.metadata ?? {}), groupId };
+    return root;
+  }
+
+  private disposeAllGroups() {
+    this.groups.forEach((group) => {
+      group.root.dispose();
+    });
+    this.groups.clear();
+    this.selectedGroupId = null;
+  }
+
+  private setGroupHighlight(group: EditorGroup, highlighted: boolean) {
+    group.root.getChildMeshes().forEach((mesh) => {
+      mesh.showBoundingBox = highlighted;
+      mesh.outlineColor = new Color3(0.55, 0.82, 1);
+      mesh.outlineWidth = 0.03;
+      mesh.renderOutline = highlighted;
+    });
+  }
+
+  private getGroupDepth(groupId: string) {
+    let depth = 0;
+    let current = this.groups.get(groupId);
+    while (current?.parentId) {
+      const next = this.groups.get(current.parentId);
+      if (!next) {
+        break;
+      }
+      depth += 1;
+      current = next;
+    }
+    return depth;
+  }
+
+  private isGroupHidden(groupId: string) {
+    let current = this.groups.get(groupId);
+    while (current) {
+      if (current.hidden) {
+        return true;
+      }
+      current = current.parentId ? this.groups.get(current.parentId) ?? null : null;
+    }
+    return false;
+  }
+
+  private isGroupLocked(groupId: string) {
+    let current = this.groups.get(groupId);
+    while (current) {
+      if (current.locked) {
+        return true;
+      }
+      current = current.parentId ? this.groups.get(current.parentId) ?? null : null;
+    }
+    return false;
+  }
+
+  private isObjectHidden(object: EditorObject) {
+    return object.hidden || (object.parentId ? this.isGroupHidden(object.parentId) : false);
+  }
+
+  private isObjectLocked(object: EditorObject) {
+    return object.locked || (object.parentId ? this.isGroupLocked(object.parentId) : false);
+  }
+
+  private isObjectInGroup(object: EditorObject, groupId: string) {
+    let currentGroupId = object.parentId;
+    while (currentGroupId) {
+      if (currentGroupId === groupId) {
+        return true;
+      }
+      currentGroupId = this.groups.get(currentGroupId)?.parentId ?? null;
+    }
+    return false;
+  }
+
+  private isGroupInGroup(groupId: string, ancestorGroupId: string) {
+    let currentGroupId = this.groups.get(groupId)?.parentId ?? null;
+    while (currentGroupId) {
+      if (currentGroupId === ancestorGroupId) {
+        return true;
+      }
+      currentGroupId = this.groups.get(currentGroupId)?.parentId ?? null;
+    }
+    return false;
+  }
+
+  private isSceneItemWithinGroup(itemId: string, ancestorGroupId: string) {
+    const object = this.objects.get(itemId);
+    if (object) {
+      return this.isObjectInGroup(object, ancestorGroupId);
+    }
+
+    const group = this.groups.get(itemId);
+    if (group) {
+      return group.id === ancestorGroupId || this.isGroupInGroup(group.id, ancestorGroupId);
+    }
+
+    return false;
+  }
+
+  private getOrderedSelectedTopLevelSceneItemIds() {
+    const selectedIds = new Set(this.selectedSceneItemIds);
+    return this.buildSceneItemsViewState()
+      .map((item) => item.id)
+      .filter((itemId) => selectedIds.has(itemId))
+      .filter((itemId) => {
+        const object = this.objects.get(itemId);
+        if (object?.parentId && Array.from(selectedIds).some((selectedId) => this.groups.has(selectedId) && this.isObjectInGroup(object, selectedId))) {
+          return false;
+        }
+
+        const group = this.groups.get(itemId);
+        return !Array.from(selectedIds).some(
+          (selectedId) => selectedId !== itemId && this.groups.has(selectedId) && this.isGroupInGroup(itemId, selectedId),
+        );
+      });
+  }
+
+  private getSceneItemParentId(itemId: string) {
+    const object = this.objects.get(itemId);
+    if (object) {
+      return object.parentId;
+    }
+
+    return this.groups.get(itemId)?.parentId ?? null;
+  }
+
+  private getSceneItemInsertIndex(itemId: string, parentId: string | null) {
+    return this.getContainerInsertIndex(parentId, itemId);
+  }
+
+  private getSceneItemRoot(itemId: string) {
+    return this.objects.get(itemId)?.root ?? this.groups.get(itemId)?.root ?? null;
+  }
+
+  private getSceneItemLabel(itemId: string) {
+    return this.objects.get(itemId)?.name ?? this.groups.get(itemId)?.name ?? "item";
+  }
+
+  private canMoveSceneItem(itemId: string) {
+    const object = this.objects.get(itemId);
+    if (object) {
+      return !this.isObjectHidden(object) && !this.isObjectLocked(object);
+    }
+
+    const group = this.groups.get(itemId);
+    if (group) {
+      return !this.isGroupHidden(group.id) && !this.isGroupLocked(group.id);
+    }
+
+    return false;
+  }
+
+  private moveSelectedByCameraAxes(forwardAmount: number, rightAmount: number) {
+    const selectionIds = this.getOrderedSelectedTopLevelSceneItemIds().filter((itemId) => this.canMoveSceneItem(itemId));
+    if (selectionIds.length === 0) {
       return;
     }
-    this.updateStatus();
+
+    const cameraForward = this.camera.getTarget().subtract(this.camera.position);
+    cameraForward.y = 0;
+    if (cameraForward.lengthSquared() <= 0.0001) {
+      return;
+    }
+    cameraForward.normalize();
+    const step = this.snapEnabled ? this.gridSize : 0.25;
+    const forwardAxis =
+      Math.abs(cameraForward.x) >= Math.abs(cameraForward.z)
+        ? new Vector3(Math.sign(cameraForward.x) || 1, 0, 0)
+        : new Vector3(0, 0, Math.sign(cameraForward.z) || 1);
+    const rightAxis = new Vector3(forwardAxis.z, 0, -forwardAxis.x);
+    const delta = forwardAxis.scale(forwardAmount * step).add(rightAxis.scale(rightAmount * step));
+    if (delta.lengthSquared() <= 0.0001) {
+      return;
+    }
+
+    const affectedParentGroupIds = new Set<string>();
+    selectionIds.forEach((itemId) => {
+      const root = this.getSceneItemRoot(itemId);
+      if (!root) {
+        return;
+      }
+
+      root.setAbsolutePosition(root.getAbsolutePosition().add(delta));
+      const parentId = this.getSceneItemParentId(itemId);
+      if (parentId) {
+        affectedParentGroupIds.add(parentId);
+      }
+    });
+
+    affectedParentGroupIds.forEach((groupId) => {
+      this.recenterGroupRoot(groupId);
+    });
+
+    this.pushHistoryCheckpoint();
+    this.emitViewState();
+  }
+
+  private clearSelectionIfInsideGroup(groupId: string) {
+    const remainingSelectionIds = Array.from(this.selectedSceneItemIds).filter((itemId) => {
+      const selectedObject = this.objects.get(itemId);
+      if (selectedObject) {
+        return !this.isObjectInGroup(selectedObject, groupId);
+      }
+
+      const selectedGroup = this.groups.get(itemId);
+      if (selectedGroup) {
+        return selectedGroup.id !== groupId && !this.isGroupInGroup(selectedGroup.id, groupId);
+      }
+
+      return false;
+    });
+
+    if (remainingSelectionIds.length === this.selectedSceneItemIds.size) {
+      return false;
+    }
+
+    this.applySceneItemSelection(remainingSelectionIds, remainingSelectionIds[remainingSelectionIds.length - 1] ?? null);
+    return true;
+  }
+
+  private isGroupWithinGroup(groupId: string, potentialAncestorId: string) {
+    let current = this.groups.get(groupId);
+    while (current?.parentId) {
+      if (current.parentId === potentialAncestorId) {
+        return true;
+      }
+      current = this.groups.get(current.parentId);
+    }
+    return false;
+  }
+
+  private getGroupChildren(group: EditorGroup) {
+    return group.childIds
+      .map((childId) => this.groups.get(childId)?.root ?? this.objects.get(childId)?.root ?? null)
+      .filter((child): child is TransformNode => !!child && child.getChildMeshes().length > 0);
+  }
+
+  private getContainerInsertIndex(containerId: string | null, targetId: string) {
+    const children = containerId ? this.groups.get(containerId)?.childIds ?? [] : this.sceneRootOrder;
+    return children.indexOf(targetId);
+  }
+
+  private forEachGroupDescendantObject(groupId: string, callback: (object: EditorObject) => void) {
+    const group = this.groups.get(groupId);
+    if (!group) {
+      return;
+    }
+
+    group.childIds.forEach((childId) => {
+      const childGroup = this.groups.get(childId);
+      if (childGroup) {
+        this.forEachGroupDescendantObject(childGroup.id, callback);
+        return;
+      }
+
+      const childObject = this.objects.get(childId);
+      if (childObject) {
+        callback(childObject);
+      }
+    });
+  }
+
+  private insertRootId(itemId: string, insertIndex?: number) {
+    const nextRootOrder = this.sceneRootOrder.filter((id) => id !== itemId);
+    const safeIndex =
+      insertIndex === undefined
+        ? nextRootOrder.length
+        : Math.min(nextRootOrder.length, Math.max(0, insertIndex));
+    nextRootOrder.splice(safeIndex, 0, itemId);
+    this.sceneRootOrder = nextRootOrder;
+  }
+
+  private removeRootId(itemId: string) {
+    this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== itemId);
+  }
+
+  private removeGroupFromParentContainer(group: EditorGroup) {
+    if (group.parentId) {
+      const parentGroupId = group.parentId;
+      const parentGroup = this.groups.get(parentGroupId);
+      if (parentGroup) {
+        parentGroup.childIds = parentGroup.childIds.filter((id) => id !== group.id);
+      }
+      group.root.setParent(null);
+      group.parentId = null;
+      this.cleanupGroupAfterChildRemoval(parentGroupId);
+      return;
+    }
+
+    this.removeRootId(group.id);
+  }
+
+  private insertGroupIntoRoot(group: EditorGroup, insertIndex?: number) {
+    group.root.setParent(null);
+    group.parentId = null;
+    this.insertRootId(group.id, insertIndex);
+  }
+
+  private insertGroupIntoGroup(group: EditorGroup, parentGroupId: string, insertIndex?: number) {
+    const parentGroup = this.groups.get(parentGroupId);
+    if (!parentGroup || parentGroup.id === group.id || this.isGroupWithinGroup(parentGroup.id, group.id)) {
+      return false;
+    }
+
+    group.root.setParent(parentGroup.root);
+    group.parentId = parentGroup.id;
+    const nextChildIds = parentGroup.childIds.filter((id) => id !== group.id);
+    const safeIndex =
+      insertIndex === undefined
+        ? nextChildIds.length
+        : Math.min(nextChildIds.length, Math.max(0, insertIndex));
+    nextChildIds.splice(safeIndex, 0, group.id);
+    parentGroup.childIds = nextChildIds;
+    this.recenterGroupRoot(parentGroup.id);
+    return true;
+  }
+
+  private getNextParentContainerId(parentId: string | null) {
+    const parentGroup = parentId ? this.groups.get(parentId) : null;
+    return parentGroup?.parentId ?? null;
+  }
+
+  private getSiblingInsertIndexAfterParent(parentId: string | null) {
+    if (!parentId) {
+      return this.sceneRootOrder.length;
+    }
+
+    const parentGroup = this.groups.get(parentId);
+    if (!parentGroup) {
+      return this.sceneRootOrder.length;
+    }
+
+    const parentContainerId = parentGroup.parentId;
+    const parentInsertIndex = this.getContainerInsertIndex(parentContainerId, parentGroup.id);
+    return parentInsertIndex >= 0 ? parentInsertIndex + 1 : undefined;
+  }
+
+  private recenterGroupRoot(groupId: string) {
+    const group = this.groups.get(groupId);
+    if (!group) {
+      return;
+    }
+
+    const children = this.getGroupChildren(group);
+
+    if (children.length === 0) {
+      return;
+    }
+
+    let min: Vector3 | null = null;
+    let max: Vector3 | null = null;
+
+    children.forEach((child) => {
+      const bounds = child.getHierarchyBoundingVectors();
+      min = min ? Vector3.Minimize(min, bounds.min) : bounds.min.clone();
+      max = max ? Vector3.Maximize(max, bounds.max) : bounds.max.clone();
+    });
+
+    if (!min || !max) {
+      return;
+    }
+
+    const center = min.add(max).scale(0.5);
+    children.forEach((child) => {
+      child.setParent(null);
+    });
+    group.root.position.copyFrom(center);
+    children.forEach((child) => {
+      child.setParent(group.root);
+    });
+
+    if (group.parentId) {
+      this.recenterGroupRoot(group.parentId);
+    }
+  }
+
+  private cleanupGroupAfterChildRemoval(groupId: string) {
+    const group = this.groups.get(groupId);
+    if (!group) {
+      return;
+    }
+
+    if (group.childIds.length === 0) {
+      if (group.parentId) {
+        this.recenterGroupRoot(group.parentId);
+      }
+      return;
+    }
+
+    this.recenterGroupRoot(groupId);
+  }
+
+  private applyObjectVisibility(objectId: string) {
+    const object = this.objects.get(objectId);
+    if (!object) {
+      return;
+    }
+
+    const hidden = this.isObjectHidden(object);
+    object.root.setEnabled(!hidden);
+    object.root.getChildMeshes().forEach((mesh) => {
+      mesh.isPickable = !hidden;
+    });
+  }
+
+  private applyGroupVisibility(groupId: string) {
+    this.forEachGroupDescendantObject(groupId, (object) => {
+      this.applyObjectVisibility(object.id);
+    });
+  }
+
+  private refreshSelectionAttachment() {
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group || this.isGroupHidden(group.id) || this.isGroupLocked(group.id)) {
+        this.gizmoManager.attachToNode(null);
+        return;
+      }
+      this.gizmoManager.attachToNode(group.root);
+      return;
+    }
+
+    if (!this.selectedObjectId) {
+      this.gizmoManager.attachToNode(null);
+      return;
+    }
+
+    const object = this.objects.get(this.selectedObjectId);
+    if (!object || this.isObjectHidden(object) || this.isObjectLocked(object)) {
+      this.gizmoManager.attachToNode(null);
+      return;
+    }
+
+    this.gizmoManager.attachToNode(object.root);
+  }
+
+  private getSelectedRoot() {
+    if (this.selectedGroupId) {
+      return this.groups.get(this.selectedGroupId)?.root ?? null;
+    }
+
+    if (!this.selectedObjectId) {
+      return null;
+    }
+
+    return this.objects.get(this.selectedObjectId)?.root ?? null;
+  }
+
+  private renderSelectionVerticalHelper() {
+    this.selectionVerticalHelper = this.sceneCore.renderVerticalHelper(
+      this.selectionVerticalHelper,
+      this.getSelectedRoot(),
+      this.ySnapEnabled,
+    );
+    this.selectionHeightLabel = this.sceneCore.renderHeightLabel(
+      this.selectionHeightLabel,
+      this.getSelectedRoot(),
+      this.ySnapEnabled,
+      this.settings.heightLabelMode,
+    );
+    this.selectionVerticalHelperMarker = this.sceneCore.renderVerticalHelperMarker(
+      this.selectionVerticalHelperMarker,
+      this.getSelectedRoot(),
+      this.ySnapEnabled,
+    );
   }
 
   private async ensurePreviewForAsset(assetId: string) {
@@ -712,7 +1423,7 @@ export class ModularEditorApp {
     }
 
     const template = await this.getAssetTemplate(asset);
-    const preview = await this.instantiateAsset(asset, true);
+    const preview = await instantiateAsset(asset, true, template, this.scene, "clone");
     if (!preview) {
       return;
     }
@@ -733,7 +1444,8 @@ export class ModularEditorApp {
       return;
     }
 
-    const root = await this.instantiateAsset(asset, false);
+    const template = await this.getAssetTemplate(asset);
+    const root = await instantiateAsset(asset, false, template, this.scene, this.settings.newObjectPlacementKind);
     if (!root) {
       return;
     }
@@ -742,54 +1454,33 @@ export class ModularEditorApp {
     root.rotation.y = this.placementPreview?.rotation.y ?? 0;
 
     const id = `object-${++this.objectSequence}`;
+    const defaultName = `${asset.name} ${String(this.objectSequence).padStart(2, "0")}`;
     root.metadata = {
       objectId: id,
       assetId: asset.id,
       templateSize: this.previewTemplateSize.asArray(),
     };
     this.tagHierarchy(root, id);
-    this.objects.set(id, { id, assetId: asset.id, root });
+    this.objects.set(id, {
+      id,
+      assetId: asset.id,
+      placementKind: this.settings.newObjectPlacementKind,
+      root,
+      name: defaultName,
+      hidden: false,
+      locked: false,
+      type: "object",
+      parentId: null,
+    });
+    this.sceneRootOrder.push(id);
     this.selectObjectByRoot(root);
     this.pushHistoryCheckpoint();
 
     if (this.activeAssetId === asset.id) {
       this.mode = "place";
       await this.ensurePreviewForAsset(asset.id);
-      this.updateToolbarState();
-      this.updateStatus();
+      this.emitViewState();
     }
-  }
-
-  private async instantiateAsset(asset: AssetDefinition, preview: boolean) {
-    const template = await this.getAssetTemplate(asset);
-    const root = template.root.clone(`${asset.id}-${preview ? "preview" : "instance"}`);
-    if (!root) {
-      return null;
-    }
-
-    root.setEnabled(true);
-    root.position.set(0, 0, 0);
-    root.rotationQuaternion = null;
-    root.rotation.set(0, 0, 0);
-    root.scaling.setAll(1);
-    root.metadata = { assetId: asset.id, templateSize: template.size.asArray() };
-
-    root.getChildTransformNodes().forEach((node) => {
-      node.setEnabled(true);
-    });
-
-    root.getChildMeshes().forEach((mesh) => {
-      mesh.setEnabled(true);
-      mesh.isPickable = !preview;
-      mesh.showBoundingBox = false;
-      mesh.visibility = 1;
-      if (preview) {
-        mesh.material = this.clonePreviewMaterial(mesh.material, asset.placeholder.color);
-        mesh.visibility = 0.72;
-      }
-    });
-
-    return root;
   }
 
   private async getAssetTemplate(asset: AssetDefinition): Promise<AssetTemplate> {
@@ -800,139 +1491,55 @@ export class ModularEditorApp {
   }
 
   private async loadAssetTemplate(asset: AssetDefinition): Promise<AssetTemplate> {
-    try {
-      const importResult = await SceneLoader.ImportMeshAsync("", "/assets/glTF/", asset.fileName, this.scene);
-      const root = new TransformNode(`template-${asset.id}`, this.scene);
-
-      [...importResult.transformNodes, ...importResult.meshes].forEach((node) => {
-        if (!node.parent && node !== root) {
-          node.parent = root;
-        }
-      });
-
-      const size = this.normalizeTemplateRoot(root);
-      root.setEnabled(false);
-      return { root, size };
-    } catch {
-      const root = this.createPlaceholderTemplate(asset);
-      const size = this.normalizeTemplateRoot(root);
-      root.setEnabled(false);
-      return { root, size };
-    }
-  }
-
-  private createPlaceholderTemplate(asset: AssetDefinition) {
-    const root = new TransformNode(`template-${asset.id}`, this.scene);
-    const material = new StandardMaterial(`${asset.id}-material`, this.scene);
-    material.diffuseColor = Color3.FromHexString(asset.placeholder.color);
-    material.specularColor = new Color3(0.1, 0.1, 0.1);
-
-    const [width, height, depth] = asset.placeholder.size;
-    const mesh =
-      asset.placeholder.shape === "column"
-        ? MeshBuilder.CreateCylinder(`${asset.id}-mesh`, { diameter: width, height }, this.scene)
-        : MeshBuilder.CreateBox(`${asset.id}-mesh`, { width, height, depth }, this.scene);
-
-    mesh.material = material;
-    mesh.parent = root;
-
-    if (asset.id === "door-frame") {
-      const lintel = MeshBuilder.CreateBox(`${asset.id}-lintel`, { width, height: 0.3, depth }, this.scene);
-      lintel.position.y = height / 2 - 0.15;
-      lintel.material = material;
-      lintel.parent = root;
-    }
-
-    return root;
-  }
-
-  private normalizeTemplateRoot(root: TransformNode) {
-    const bounds = root.getHierarchyBoundingVectors();
-    const centerX = (bounds.min.x + bounds.max.x) / 2;
-    const centerZ = (bounds.min.z + bounds.max.z) / 2;
-    const minY = bounds.min.y;
-
-    root
-      .getChildren((node) => node.parent === root)
-      .forEach((child) => {
-        if (child instanceof TransformNode) {
-          child.position.x -= centerX;
-          child.position.y -= minY;
-          child.position.z -= centerZ;
-        }
-      });
-
-    const normalizedBounds = root.getHierarchyBoundingVectors();
-    return normalizedBounds.max.subtract(normalizedBounds.min);
-  }
-
-  private clonePreviewMaterial(material: unknown, fallbackHex: string) {
-    if (material instanceof StandardMaterial) {
-      const clone = material.clone(`${material.name}-preview`);
-      clone.alpha = 0.72;
-      clone.diffuseColor = Color3.Lerp(material.diffuseColor, Color3.White(), 0.55);
-      clone.emissiveColor = clone.diffuseColor.scale(0.45);
-      clone.specularColor = clone.diffuseColor.scale(0.15);
-      return clone;
-    }
-
-    const previewMaterial = new StandardMaterial("preview-material", this.scene);
-    previewMaterial.diffuseColor = Color3.Lerp(Color3.FromHexString(fallbackHex), Color3.White(), 0.55);
-    previewMaterial.alpha = 0.72;
-    previewMaterial.emissiveColor = previewMaterial.diffuseColor.scale(0.45);
-    previewMaterial.specularColor = previewMaterial.diffuseColor.scale(0.15);
-    return previewMaterial;
+    return loadAssetTemplate(asset, this.scene);
   }
 
   private renderGrid() {
-    this.gridMesh?.dispose();
-    const lines: Vector3[][] = [];
-
-    for (let offset = -GRID_EXTENT; offset <= GRID_EXTENT; offset += this.gridSize) {
-      lines.push([new Vector3(offset, 0.01, -GRID_EXTENT), new Vector3(offset, 0.01, GRID_EXTENT)]);
-      lines.push([new Vector3(-GRID_EXTENT, 0.01, offset), new Vector3(GRID_EXTENT, 0.01, offset)]);
-    }
-
-    this.gridMesh = MeshBuilder.CreateLineSystem("editor-grid", { lines }, this.scene);
-    this.gridMesh.color = new Color3(0.23, 0.25, 0.28);
-    this.gridMesh.alpha = 0.45;
-    this.gridMesh.isPickable = false;
-  }
-
-  private updatePreviewTransform() {
-    if (!this.placementPreview) {
-      return;
-    }
-
-    const point = this.snapEnabled
-      ? this.snapVectorForSize(this.lastPointerPoint, this.previewTemplateSize)
-      : this.lastPointerPoint.clone();
-    this.placementPreview.position.set(point.x, 0, point.z);
-    this.placementPreview.rotationQuaternion = null;
-    this.placementPreview.rotation.set(0, this.toRadians(this.previewRotationDegrees), 0);
-  }
-
-  private snapVectorForSize(point: Vector3, size: Vector3) {
-    const xOffset = this.computeSnapOffset(size.x);
-    const zOffset = this.computeSnapOffset(size.z);
-
-    return new Vector3(
-      this.snapScalar(point.x - xOffset, this.gridSize) + xOffset,
-      0,
-      this.snapScalar(point.z - zOffset, this.gridSize) + zOffset,
+    this.gridMesh = this.sceneCore.renderGrid(
+      this.gridMesh,
+      this.gridSize,
+      this.settings.gridVisible,
+      this.settings.gridColor,
+    );
+    this.originMarker = this.sceneCore.renderOriginMarker(
+      this.originMarker,
+      this.settings.gridVisible,
+      this.settings.gridColor,
     );
   }
 
-  private computeSnapOffset(size: number) {
-    if (!this.snapEnabled || this.gridSize <= 0) {
-      return 0;
-    }
-
-    const cells = Math.max(1, Math.round(size / this.gridSize));
-    return cells % 2 === 0 ? 0 : this.gridSize / 2;
+  private updatePreviewTransform() {
+    this.sceneCore.updatePreviewTransform(
+      this.placementPreview,
+      this.lastPointerPoint,
+      this.previewTemplateSize,
+      this.snapEnabled,
+      this.gridSize,
+      this.toRadians(this.previewRotationDegrees),
+    );
   }
 
   private snapSelectedObject() {
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group) {
+        return;
+      }
+
+      if (this.snapEnabled) {
+        const snapped = snapVectorForSize(group.root.position, new Vector3(1, 1, 1), this.snapEnabled, this.gridSize);
+        group.root.position.x = snapped.x;
+        group.root.position.z = snapped.z;
+        if (this.ySnapEnabled) {
+          group.root.position.y = snapScalar(group.root.position.y, this.gridSize);
+        }
+        group.root.rotation.y = this.snapAngle(group.root.rotation.y);
+      }
+
+      this.emitViewState();
+      return;
+    }
+
     if (!this.selectedObjectId) {
       return;
     }
@@ -946,27 +1553,20 @@ export class ModularEditorApp {
       const templateSize = Array.isArray(object.root.metadata?.templateSize)
         ? Vector3.FromArray(object.root.metadata.templateSize as number[])
         : new Vector3(1, 1, 1);
-      const snapped = this.snapVectorForSize(object.root.position, templateSize);
+      const snapped = snapVectorForSize(object.root.position, templateSize, this.snapEnabled, this.gridSize);
       object.root.position.x = snapped.x;
       object.root.position.z = snapped.z;
+      if (this.ySnapEnabled) {
+        object.root.position.y = snapScalar(object.root.position.y, this.gridSize);
+      }
       object.root.rotation.y = this.snapAngle(object.root.rotation.y);
     }
 
-    object.root.position.y = 0;
-    this.renderProperties();
-  }
-
-  private snapScalar(value: number, step: number) {
-    return Math.round(value / step) * step;
+    this.emitViewState();
   }
 
   private snapAngle(valueRadians: number) {
-    if (!this.snapEnabled) {
-      return valueRadians;
-    }
-
-    const stepRadians = this.toRadians(this.rotationStepDegrees);
-    return Math.round(valueRadians / stepRadians) * stepRadians;
+    return snapPlacementAngle(valueRadians, this.snapEnabled, this.toRadians(this.rotationStepDegrees));
   }
 
   private rotateActiveTarget() {
@@ -976,155 +1576,1180 @@ export class ModularEditorApp {
       return;
     }
 
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group) {
+        return;
+      }
+
+      group.root.rotation.y = this.snapAngle(group.root.rotation.y + this.toRadians(this.rotationStepDegrees));
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
     if (!this.selectedObjectId) {
       return;
     }
 
     const object = this.objects.get(this.selectedObjectId);
-    if (!object) {
+    if (!object || this.isObjectLocked(object) || this.isObjectHidden(object)) {
       return;
     }
 
     object.root.rotation.y = this.snapAngle(object.root.rotation.y + this.toRadians(this.rotationStepDegrees));
-    this.renderProperties();
     this.pushHistoryCheckpoint();
+    this.emitViewState();
   }
 
-  private deleteSelectedObject() {
+  private async duplicateSelectedObject() {
+    if (this.selectedGroupId) {
+      return;
+    }
+
     if (!this.selectedObjectId) {
       return;
     }
 
-    const object = this.objects.get(this.selectedObjectId);
-    if (!object) {
+    const source = this.objects.get(this.selectedObjectId);
+    if (!source) {
       return;
     }
 
-    object.root.dispose(false, false);
-    this.objects.delete(object.id);
-    this.selectedObjectId = null;
-    this.gizmoManager.attachToNode(null);
-    this.renderProperties();
-    this.updateToolbarState();
-    this.updateStatus();
+    const asset = ASSETS.find((entry) => entry.id === source.assetId);
+    if (!asset) {
+      return;
+    }
+
+    const template = await this.getAssetTemplate(asset);
+    const root = await instantiateAsset(asset, false, template, this.scene, this.settings.newObjectPlacementKind);
+    if (!root) {
+      return;
+    }
+
+    const templateSize = Array.isArray(source.root.metadata?.templateSize)
+      ? Vector3.FromArray(source.root.metadata.templateSize as number[])
+      : template.size.clone();
+    root.position.copyFrom(source.root.position);
+    root.position.x += Math.max(this.gridSize, templateSize.x || this.gridSize);
+    root.rotation.y = source.root.rotation.y;
+
+    if (this.snapEnabled) {
+      const snapped = snapVectorForSize(root.position, templateSize, this.snapEnabled, this.gridSize);
+      root.position.x = snapped.x;
+      root.position.z = snapped.z;
+      root.rotation.y = this.snapAngle(root.rotation.y);
+    }
+
+    const id = `object-${++this.objectSequence}`;
+    root.metadata = {
+      objectId: id,
+      assetId: asset.id,
+      templateSize: templateSize.asArray(),
+    };
+    this.tagHierarchy(root, id);
+    this.objects.set(id, {
+      id,
+      assetId: asset.id,
+      placementKind: this.settings.newObjectPlacementKind,
+      root,
+      name: `${source.name} Copy`,
+      hidden: false,
+      locked: source.locked,
+      type: "object",
+      parentId: source.parentId,
+    });
+    if (source.parentId) {
+      const group = this.groups.get(source.parentId);
+      if (group) {
+        const sourceIndex = group.childIds.indexOf(source.id);
+        group.childIds.splice(sourceIndex >= 0 ? sourceIndex + 1 : group.childIds.length, 0, id);
+      }
+    } else {
+      const sourceIndex = this.sceneRootOrder.indexOf(source.id);
+      this.sceneRootOrder.splice(sourceIndex >= 0 ? sourceIndex + 1 : this.sceneRootOrder.length, 0, id);
+    }
+    this.selectObjectByRoot(root);
     this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Duplicated ${asset.name}.`);
+  }
+
+  private frameSelectedObject() {
+    if (this.selectedGroupId) {
+      const selectedGroup = this.groups.get(this.selectedGroupId);
+      if (!selectedGroup) {
+        return;
+      }
+
+      this.sceneCore.frameSelection(this.camera, selectedGroup.root);
+      this.setStatusNotice(`Framed ${selectedGroup.name}.`);
+      return;
+    }
+
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const selected = this.objects.get(this.selectedObjectId);
+    if (!selected) {
+      return;
+    }
+
+    this.sceneCore.frameSelection(this.camera, selected.root);
+    this.setStatusNotice(`Framed ${ASSETS.find((asset) => asset.id === selected.assetId)?.name ?? "selection"}.`);
+  }
+
+  private deleteSelectedObject() {
+    if (this.selectedSceneItemIds.size > 1) {
+      const selectedIds = Array.from(this.selectedSceneItemIds);
+      this.clearSelection();
+      selectedIds.forEach((itemId) => {
+        this.deleteSceneItem(itemId);
+      });
+      return;
+    }
+
+    if (this.selectedObjectId) {
+      const deleted = deleteSceneObject(this.objects, this.selectedObjectId, this.gizmoManager);
+      if (!deleted) {
+        return;
+      }
+
+      this.selectedSceneItemIds.delete(this.selectedObjectId);
+      this.selectedObjectId = null;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
+    if (this.selectedGroupId) {
+      this.deleteSceneItem(this.selectedGroupId);
+    }
   }
 
   private clearScene() {
-    if (this.objects.size === 0) {
+    const cleared = clearSceneObjects(this.objects, this.gizmoManager);
+    const hadGroups = this.groups.size > 0;
+    if (!cleared && !hadGroups) {
       return;
     }
 
     this.disposePreview();
-    this.objects.forEach((object) => {
-      object.root.dispose(false, false);
-    });
-    this.objects.clear();
+    this.selectedSceneItemIds.clear();
     this.selectedObjectId = null;
-    this.gizmoManager.attachToNode(null);
+    this.selectedGroupId = null;
+    this.disposeAllGroups();
+    this.sceneRootOrder = [];
     this.mode = "select";
-    this.renderProperties();
-    this.updateToolbarState();
-    this.updateStatus();
     this.pushHistoryCheckpoint();
+    this.emitViewState();
   }
 
   private clearSelection() {
-    if (!this.selectedObjectId) {
-      return;
-    }
-
-    const object = this.objects.get(this.selectedObjectId);
-    if (object) {
-      object.root.getChildMeshes().forEach((mesh) => {
-        mesh.showBoundingBox = false;
-      });
-    }
-
-    this.selectedObjectId = null;
-    this.gizmoManager.attachToNode(null);
-    this.renderProperties();
-    this.updateToolbarState();
+    this.applySceneItemSelection([], null);
   }
 
   private selectObjectByRoot(root: TransformNode) {
-    this.clearSelection();
-
-    const objectId = root.metadata?.objectId as string | undefined;
+    const objectId = selectSceneObject(root, this.gizmoManager);
     if (!objectId) {
       return;
     }
 
-    this.selectedObjectId = objectId;
-    root.getChildMeshes().forEach((mesh) => {
-      mesh.showBoundingBox = true;
-    });
-    this.gizmoManager.attachToNode(root);
+    const object = this.objects.get(objectId);
+    if (!object || this.isObjectHidden(object)) {
+      return;
+    }
+
+    this.applySceneItemSelection([objectId], objectId, false);
     this.mode = "select";
     this.disposePreview();
-    this.updateToolbarState();
-    this.updateStatus();
-    this.renderProperties();
+    this.refreshSelectionAttachment();
+    this.emitViewState();
   }
 
   private disposePreview() {
-    this.placementPreview?.dispose(false, false);
-    this.placementPreview = null;
+    this.placementPreview = this.sceneCore.disposePreview(this.placementPreview);
     this.previewAssetId = null;
   }
 
   private applySnapSettings() {
-    if (this.gizmoManager.gizmos.positionGizmo) {
-      this.gizmoManager.gizmos.positionGizmo.snapDistance = this.snapEnabled ? this.gridSize : 0;
-    }
-    if (this.gizmoManager.gizmos.rotationGizmo) {
-      this.gizmoManager.gizmos.rotationGizmo.yGizmo.snapDistance = this.snapEnabled
-        ? this.toRadians(this.rotationStepDegrees)
-        : 0;
-    }
+    this.sceneCore.applySnapSettings(this.snapEnabled, this.gridSize, this.toRadians(this.rotationStepDegrees));
   }
 
   private applyEnvironmentSetting() {
-    this.scene.environmentTexture = this.settings.environmentEnabled ? this.defaultEnvironment?.environmentTexture ?? null : null;
-    this.scene.environmentIntensity = this.settings.environmentEnabled ? 0.75 : 0;
+    this.sceneCore.applyEnvironmentSetting(
+      this.defaultEnvironmentTexture ?? null,
+      this.settings.environmentEnabled,
+      this.settings.environmentIntensity,
+      this.defaultEnvironment?.skybox ?? null,
+    );
   }
 
-  private loadUserSettings(): UserSettings {
-    try {
-      const raw = window.localStorage.getItem(USER_SETTINGS_STORAGE_KEY);
-      if (!raw) {
-        return { environmentEnabled: false };
-      }
+  private applyLightIntensity() {
+    this.mainLight.intensity = this.settings.lightIntensity;
+  }
 
-      const parsed = JSON.parse(raw) as Partial<UserSettings>;
-      return {
-        environmentEnabled: parsed.environmentEnabled ?? false,
-      };
-    } catch {
-      return { environmentEnabled: false };
-    }
+  private applyGroundColor() {
+    this.groundMaterial.diffuseColor = Color3.FromHexString(this.settings.groundColor);
   }
 
   private saveUserSettings() {
-    window.localStorage.setItem(USER_SETTINGS_STORAGE_KEY, JSON.stringify(this.settings));
+    saveUserSettings(this.settings);
   }
 
-  private findObjectRoot(mesh: Nullable<AbstractMesh>) {
-    let current: Nullable<AbstractMesh | TransformNode> = mesh;
-    while (current) {
-      const objectId = current.metadata?.objectId as string | undefined;
-      if (objectId) {
-        return current as TransformNode;
-      }
-      current = current.parent as Nullable<AbstractMesh | TransformNode>;
+  async activateAsset(assetId: string) {
+    if (this.activeAssetId === assetId && this.mode === "place") {
+      await this.ensurePreviewForAsset(assetId);
+      this.emitViewState();
+      return;
     }
-    return null;
+
+    const asset = ASSETS.find((entry) => entry.id === assetId);
+    if (!asset) {
+      return;
+    }
+
+    this.activeAssetId = asset.id;
+    this.mode = "place";
+    this.previewRotationDegrees = 0;
+    await this.ensurePreviewForAsset(asset.id);
+    this.emitViewState();
+  }
+
+  toggleSnap() {
+    this.snapEnabled = !this.snapEnabled;
+    this.applySnapSettings();
+    this.updatePreviewTransform();
+    this.emitViewState();
+  }
+
+  toggleYSnap() {
+    this.ySnapEnabled = !this.ySnapEnabled;
+    this.emitViewState();
+  }
+
+  setSelectionPosition(axis: "x" | "y" | "z", value: number) {
+    if (!Number.isFinite(value)) {
+      return;
+    }
+
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group || group.root.position[axis] === value) {
+        return;
+      }
+
+      group.root.position[axis] = value;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const object = this.objects.get(this.selectedObjectId);
+    if (!object || object.root.position[axis] === value) {
+      return;
+    }
+
+    object.root.position[axis] = value;
+    if (object.parentId) {
+      this.recenterGroupRoot(object.parentId);
+    }
+    this.pushHistoryCheckpoint();
+    this.emitViewState();
+  }
+
+  setSelectionRotationDegrees(value: number) {
+    if (!Number.isFinite(value)) {
+      return;
+    }
+
+    const nextRadians = this.toRadians(value);
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group || group.root.rotation.y === nextRadians) {
+        return;
+      }
+
+      group.root.rotation.y = nextRadians;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const object = this.objects.get(this.selectedObjectId);
+    if (!object || object.root.rotation.y === nextRadians) {
+      return;
+    }
+
+    object.root.rotation.y = nextRadians;
+    this.refreshSelectionAttachment();
+    this.pushHistoryCheckpoint();
+    this.emitViewState();
+  }
+
+  dropSelectionToGround() {
+    if (this.selectedGroupId) {
+      const group = this.groups.get(this.selectedGroupId);
+      if (!group || group.root.position.y === 0) {
+        return;
+      }
+
+      group.root.position.y = 0;
+      this.pushHistoryCheckpoint();
+      this.emitViewState();
+      return;
+    }
+
+    if (!this.selectedObjectId) {
+      return;
+    }
+
+    const object = this.objects.get(this.selectedObjectId);
+    if (!object || object.root.position.y === 0) {
+      return;
+    }
+
+    object.root.position.y = 0;
+    if (object.parentId) {
+      this.recenterGroupRoot(object.parentId);
+    }
+    this.pushHistoryCheckpoint();
+    this.emitViewState();
+  }
+
+  enterSelectionMode() {
+    if (this.mode === "select" && !this.placementPreview) {
+      return;
+    }
+
+    this.mode = "select";
+    this.disposePreview();
+    this.emitViewState();
+  }
+
+  async enterPlacementMode() {
+    if (!this.activeAssetId) {
+      return;
+    }
+
+    this.mode = "place";
+    await this.ensurePreviewForAsset(this.activeAssetId);
+    this.emitViewState();
+  }
+
+  async undo() {
+    await this.sessionController.undo();
+  }
+
+  async redo() {
+    await this.sessionController.redo();
+  }
+
+  exportToFile() {
+    this.sessionController.exportToFile();
+  }
+
+  saveSceneToLocalStorage() {
+    const scene = this.getSerializedScene();
+    this.lastManualSaveAt = saveManualSavedScene(scene);
+    this.setStatusNotice(`Scene saved to local storage (${scene.objects.length} objects).`);
+  }
+
+  async importFromFile(file: File) {
+    await this.sessionController.importFromFile(file);
+  }
+
+  async loadLastSavedScene() {
+    const saved = loadManualSavedScene();
+    if (!saved) {
+      this.setStatusNotice("No saved scene found in local storage.");
+      return;
+    }
+
+    await this.restoreSerializedScene(saved.scene);
+    this.lastManualSaveAt = saved.savedAt;
+    this.statusNotice = `Loaded last saved scene (${saved.scene.objects.length} objects).`;
+    this.sessionController.resetHistory();
+    this.emitViewState();
+  }
+
+  deleteSelected() {
+    this.deleteSelectedObject();
+  }
+
+  toggleSelectedHidden() {
+    if (this.selectedSceneItemIds.size <= 1) {
+      return;
+    }
+
+    const selectedIds = Array.from(this.selectedSceneItemIds);
+    const shouldHide = selectedIds.some((itemId) => {
+      const group = this.groups.get(itemId);
+      if (group) {
+        return !group.hidden;
+      }
+      const object = this.objects.get(itemId);
+      return object ? !object.hidden : false;
+    });
+
+    selectedIds.forEach((itemId) => {
+      const group = this.groups.get(itemId);
+      if (group) {
+        group.hidden = shouldHide;
+        this.applyGroupVisibility(group.id);
+        return;
+      }
+
+      const object = this.objects.get(itemId);
+      if (object) {
+        object.hidden = shouldHide;
+        this.applyObjectVisibility(object.id);
+      }
+    });
+
+    if (shouldHide) {
+      this.clearSelection();
+    } else {
+      this.refreshSelectionAttachment();
+      this.emitViewState();
+    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`${shouldHide ? "Hidden" : "Shown"} ${selectedIds.length} selected items.`);
+  }
+
+  toggleSelectedLocked() {
+    if (this.selectedSceneItemIds.size <= 1) {
+      return;
+    }
+
+    const selectedIds = Array.from(this.selectedSceneItemIds);
+    const shouldLock = selectedIds.some((itemId) => {
+      const group = this.groups.get(itemId);
+      if (group) {
+        return !group.locked;
+      }
+      const object = this.objects.get(itemId);
+      return object ? !object.locked : false;
+    });
+
+    selectedIds.forEach((itemId) => {
+      const group = this.groups.get(itemId);
+      if (group) {
+        group.locked = shouldLock;
+        return;
+      }
+
+      const object = this.objects.get(itemId);
+      if (object) {
+        object.locked = shouldLock;
+      }
+    });
+
+    this.refreshSelectionAttachment();
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`${shouldLock ? "Locked" : "Unlocked"} ${selectedIds.length} selected items.`);
+  }
+
+  renameSceneItem(objectId: string, nextName: string) {
+    const trimmed = nextName.trim();
+    if (!trimmed) {
+      return;
+    }
+
+    const group = this.groups.get(objectId);
+    if (group) {
+      if (group.name === trimmed) {
+        return;
+      }
+      group.name = trimmed;
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Renamed to ${trimmed}.`);
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object || object.name === trimmed) {
+      return;
+    }
+
+    object.name = trimmed;
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Renamed to ${trimmed}.`);
+  }
+
+  setSceneItemSelection(selectionIds: string[], primaryId: string | null = null) {
+    if (selectionIds.length === 0) {
+      this.clearSelection();
+      return;
+    }
+
+    if (selectionIds.length === 1) {
+      this.selectSceneItem(selectionIds[0]);
+      return;
+    }
+
+    this.applySceneItemSelection(selectionIds, primaryId, false);
+    this.mode = "select";
+    this.disposePreview();
+    this.refreshSelectionAttachment();
+    this.emitViewState();
+  }
+
+  selectSceneItem(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      if (this.isGroupHidden(group.id)) {
+        return;
+      }
+      this.applySceneItemSelection([group.id], group.id, false);
+      this.mode = "select";
+      this.disposePreview();
+      this.refreshSelectionAttachment();
+      this.emitViewState();
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object || this.isObjectHidden(object)) {
+      return;
+    }
+
+    this.applySceneItemSelection([object.id], object.id, false);
+    this.mode = "select";
+    this.disposePreview();
+    this.refreshSelectionAttachment();
+    this.emitViewState();
+  }
+
+  deleteSceneItem(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      if (this.selectedSceneItemIds.has(group.id)) {
+        this.applySceneItemSelection(
+          Array.from(this.selectedSceneItemIds).filter((id) => id !== group.id),
+          null,
+          false,
+        );
+      }
+      const parentContainerId = this.getNextParentContainerId(group.id);
+      const insertIndex = group.parentId
+        ? this.getContainerInsertIndex(parentContainerId, group.id)
+        : this.getContainerInsertIndex(null, group.id);
+      const childIds = [...group.childIds];
+      this.removeGroupFromParentContainer(group);
+      childIds.forEach((childId, index) => {
+        const childGroup = this.groups.get(childId);
+        if (childGroup) {
+          childGroup.root.setParent(null);
+          childGroup.parentId = null;
+          if (parentContainerId) {
+            this.insertGroupIntoGroup(childGroup, parentContainerId, insertIndex === undefined ? undefined : insertIndex + index);
+          } else {
+            this.insertGroupIntoRoot(childGroup, insertIndex === undefined ? undefined : insertIndex + index);
+          }
+          return;
+        }
+
+        const childObject = this.objects.get(childId);
+        if (!childObject) {
+          return;
+        }
+        childObject.root.setParent(null);
+        childObject.parentId = null;
+        if (parentContainerId) {
+          this.insertObjectIntoGroup(childObject, parentContainerId, insertIndex === undefined ? undefined : insertIndex + index);
+        } else {
+          this.insertObjectIntoRoot(childObject, insertIndex === undefined ? undefined : insertIndex + index);
+        }
+      });
+      group.root.dispose();
+      this.groups.delete(group.id);
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Deleted group ${group.name}.`);
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object) {
+      return;
+    }
+
+    if (this.selectedSceneItemIds.has(objectId)) {
+      this.applySceneItemSelection(
+        Array.from(this.selectedSceneItemIds).filter((id) => id !== objectId),
+        null,
+        false,
+      );
+    } else {
+      this.selectedGroupId = null;
+      if (this.selectedObjectId !== objectId) {
+        this.selectedObjectId = objectId;
+      }
+    }
+    if (object.parentId) {
+      const parentGroup = this.groups.get(object.parentId);
+      if (parentGroup) {
+        object.root.setParent(null);
+        object.parentId = null;
+        parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
+        this.cleanupGroupAfterChildRemoval(parentGroup.id);
+      }
+    } else {
+      this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
+    }
+    this.deleteSelectedObject();
+  }
+
+  duplicateSceneItem(objectId: string) {
+    this.applySceneItemSelection([objectId], objectId, false);
+    void this.duplicateSelectedObject();
+  }
+
+  private removeObjectFromParentContainer(object: EditorObject) {
+    if (object.parentId) {
+      const parentGroupId = object.parentId;
+      const parentGroup = this.groups.get(parentGroupId);
+      if (parentGroup) {
+        parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
+      }
+      object.root.setParent(null);
+      object.parentId = null;
+      this.cleanupGroupAfterChildRemoval(parentGroupId);
+      return;
+    }
+
+    this.sceneRootOrder = this.sceneRootOrder.filter((id) => id !== object.id);
+  }
+
+  private insertObjectIntoRoot(object: EditorObject, insertIndex?: number) {
+    object.parentId = null;
+    this.insertRootId(object.id, insertIndex);
+  }
+
+  private insertObjectIntoGroup(object: EditorObject, groupId: string, insertIndex?: number) {
+    const group = this.groups.get(groupId);
+    if (!group) {
+      return false;
+    }
+
+    object.root.setParent(group.root);
+    object.parentId = groupId;
+    const nextChildIds = group.childIds.filter((id) => id !== object.id);
+    const safeIndex =
+      insertIndex === undefined
+        ? nextChildIds.length
+        : Math.min(nextChildIds.length, Math.max(0, insertIndex));
+    nextChildIds.splice(safeIndex, 0, object.id);
+    group.childIds = nextChildIds;
+    this.recenterGroupRoot(groupId);
+    return true;
+  }
+
+  createEmptyGroup() {
+    const groupId = `group-${++this.groupSequence}`;
+    const groupName = `Group ${String(this.groupSequence).padStart(2, "0")}`;
+    const groupRoot = this.createGroupRoot(groupId);
+    groupRoot.position.set(0, 0, 0);
+        this.groups.set(groupId, {
+          id: groupId,
+          name: groupName,
+          type: "group",
+          childIds: [],
+          hidden: false,
+          locked: false,
+          parentId: null,
+          root: groupRoot,
+        });
+    this.sceneRootOrder.push(groupId);
+    this.applySceneItemSelection([groupId], groupId, false);
+    this.refreshSelectionAttachment();
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Created empty ${groupName}.`);
+  }
+
+  createGroupFromSelected() {
+    const selectedIds = this.getOrderedSelectedTopLevelSceneItemIds();
+    if (selectedIds.length === 0) {
+      return;
+    }
+
+    const parentIds = selectedIds.map((itemId) => this.getSceneItemParentId(itemId));
+    const commonParentId = parentIds.every((parentId) => parentId === parentIds[0]) ? parentIds[0] ?? null : null;
+    const commonInsertIndex =
+      parentIds.every((parentId) => parentId === parentIds[0]) && selectedIds.length > 0
+        ? Math.min(
+            ...selectedIds
+              .map((itemId) => this.getSceneItemInsertIndex(itemId, commonParentId))
+              .filter((index) => index >= 0),
+          )
+        : undefined;
+
+    const roots = selectedIds
+      .map((itemId) => this.getSceneItemRoot(itemId))
+      .filter((root): root is TransformNode => !!root);
+    if (roots.length === 0) {
+      return;
+    }
+
+    let min: Vector3 | null = null;
+    let max: Vector3 | null = null;
+    roots.forEach((root) => {
+      const bounds = root.getHierarchyBoundingVectors();
+      min = min ? Vector3.Minimize(min, bounds.min) : bounds.min.clone();
+      max = max ? Vector3.Maximize(max, bounds.max) : bounds.max.clone();
+    });
+    const center = min && max ? min.add(max).scale(0.5) : Vector3.Zero();
+
+    const groupId = `group-${++this.groupSequence}`;
+    const groupName = `Group ${String(this.groupSequence).padStart(2, "0")}`;
+    const groupRoot = this.createGroupRoot(groupId);
+    groupRoot.position.copyFrom(center);
+    this.groups.set(groupId, {
+      id: groupId,
+      name: groupName,
+      type: "group",
+      childIds: [],
+      hidden: false,
+      locked: false,
+      parentId: null,
+      root: groupRoot,
+    });
+    const newGroup = this.groups.get(groupId)!;
+
+    selectedIds.forEach((itemId) => {
+      const object = this.objects.get(itemId);
+      if (object) {
+        this.removeObjectFromParentContainer(object);
+        object.root.setParent(groupRoot);
+        object.parentId = groupId;
+        newGroup.childIds.push(object.id);
+        return;
+      }
+
+      const group = this.groups.get(itemId);
+      if (group) {
+        this.removeGroupFromParentContainer(group);
+        group.root.setParent(groupRoot);
+        group.parentId = groupId;
+        newGroup.childIds.push(group.id);
+      }
+    });
+
+    if (commonParentId) {
+      this.insertGroupIntoGroup(newGroup, commonParentId, commonInsertIndex);
+    } else {
+      this.insertGroupIntoRoot(newGroup, commonInsertIndex);
+    }
+
+    this.applySceneItemSelection([groupId], groupId, false);
+    this.refreshSelectionAttachment();
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Created ${groupName}.`);
+  }
+
+  moveSceneItem(draggedId: string, targetId: string) {
+    if (draggedId === targetId) {
+      return;
+    }
+
+    const draggedGroup = this.groups.get(draggedId);
+    const targetGroup = this.groups.get(targetId);
+    const draggedObject = this.objects.get(draggedId);
+    const targetObject = this.objects.get(targetId);
+
+    const draggedLabel = draggedGroup?.name ?? draggedObject?.name;
+    const destinationGroupId = targetGroup?.id ?? targetObject?.parentId ?? null;
+
+    if (draggedGroup && destinationGroupId && (destinationGroupId === draggedGroup.id || this.isGroupWithinGroup(destinationGroupId, draggedGroup.id))) {
+      return;
+    }
+
+    if (targetGroup) {
+      if (this.selectedSceneItemIds.has(draggedId) && this.selectedSceneItemIds.size > 1) {
+        const selectedIds = this.getOrderedSelectedTopLevelSceneItemIds().filter((itemId) => itemId !== targetGroup.id);
+        const movableIds = selectedIds.filter((itemId) => !this.isSceneItemWithinGroup(targetGroup.id, itemId));
+        if (movableIds.length === 0) {
+          return;
+        }
+
+        movableIds.forEach((itemId) => {
+          const selectedObject = this.objects.get(itemId);
+          if (selectedObject) {
+            this.removeObjectFromParentContainer(selectedObject);
+            this.insertObjectIntoGroup(selectedObject, targetGroup.id);
+            return;
+          }
+
+          const selectedGroup = this.groups.get(itemId);
+          if (selectedGroup) {
+            this.removeGroupFromParentContainer(selectedGroup);
+            this.insertGroupIntoGroup(selectedGroup, targetGroup.id);
+          }
+        });
+
+        this.pushHistoryCheckpoint();
+        this.setStatusNotice(
+          movableIds.length === 1
+            ? `Moved 1 item into ${targetGroup.name}.`
+            : `Moved ${movableIds.length} items into ${targetGroup.name}.`,
+        );
+        return;
+      }
+
+      if (draggedObject) {
+        this.removeObjectFromParentContainer(draggedObject);
+        if (!this.insertObjectIntoGroup(draggedObject, targetGroup.id)) {
+          return;
+        }
+      } else if (draggedGroup) {
+        this.removeGroupFromParentContainer(draggedGroup);
+        if (!this.insertGroupIntoGroup(draggedGroup, targetGroup.id)) {
+          return;
+        }
+      } else {
+        return;
+      }
+
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Moved ${draggedLabel ?? "item"} into ${targetGroup.name}.`);
+      return;
+    }
+
+    if (!targetObject) {
+      return;
+    }
+
+    if (targetObject.parentId) {
+      const targetParentGroup = this.groups.get(targetObject.parentId);
+      if (!targetParentGroup) {
+        return;
+      }
+      const targetIndex = this.getContainerInsertIndex(targetParentGroup.id, targetObject.id);
+      if (targetIndex === -1) {
+        return;
+      }
+
+      if (draggedObject) {
+        this.removeObjectFromParentContainer(draggedObject);
+        if (!this.insertObjectIntoGroup(draggedObject, targetParentGroup.id, targetIndex)) {
+          return;
+        }
+      } else if (draggedGroup) {
+        this.removeGroupFromParentContainer(draggedGroup);
+        if (!this.insertGroupIntoGroup(draggedGroup, targetParentGroup.id, targetIndex)) {
+          return;
+        }
+      } else {
+        return;
+      }
+
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Moved ${draggedLabel ?? "item"} into ${targetParentGroup.name}.`);
+      return;
+    }
+
+    const targetIndex = this.getContainerInsertIndex(null, targetObject.id);
+    if (targetIndex === -1) {
+      return;
+    }
+
+    if (draggedObject) {
+      this.removeObjectFromParentContainer(draggedObject);
+      this.insertObjectIntoRoot(draggedObject, targetIndex);
+    } else if (draggedGroup) {
+      this.removeGroupFromParentContainer(draggedGroup);
+      this.insertGroupIntoRoot(draggedGroup, targetIndex);
+    } else {
+      return;
+    }
+
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Moved ${draggedLabel ?? "item"} to root.`);
+  }
+
+  ungroupSceneItem(objectId: string) {
+    const object = this.objects.get(objectId);
+    if (!object?.parentId) {
+      return;
+    }
+
+    const parentGroup = this.groups.get(object.parentId);
+    if (!parentGroup) {
+      object.root.setParent(null);
+      object.parentId = null;
+      this.insertObjectIntoRoot(object);
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Ungrouped ${object.name}.`);
+      return;
+    }
+
+    const parentContainerId = this.getNextParentContainerId(object.parentId);
+    const insertIndex = this.getSiblingInsertIndexAfterParent(object.parentId);
+    object.root.setParent(null);
+    object.parentId = null;
+    parentGroup.childIds = parentGroup.childIds.filter((id) => id !== object.id);
+    this.cleanupGroupAfterChildRemoval(parentGroup.id);
+    if (parentContainerId) {
+      this.insertObjectIntoGroup(object, parentContainerId, insertIndex);
+    } else {
+      this.insertObjectIntoRoot(object, insertIndex);
+    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Ungrouped ${object.name}.`);
+  }
+
+  unchildGroup(groupId: string) {
+    const group = this.groups.get(groupId);
+    if (!group?.parentId) {
+      return;
+    }
+
+    const parentGroupId = group.parentId;
+    const parentGroup = this.groups.get(parentGroupId);
+    const nextParentContainerId = this.getNextParentContainerId(parentGroupId);
+    const insertIndex = this.getSiblingInsertIndexAfterParent(parentGroupId);
+
+    if (!parentGroup) {
+      group.root.setParent(null);
+      group.parentId = null;
+      this.insertGroupIntoRoot(group, insertIndex);
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Removed ${group.name} from its parent group.`);
+      return;
+    }
+
+    group.root.setParent(null);
+    parentGroup.childIds = parentGroup.childIds.filter((id) => id !== group.id);
+    group.parentId = null;
+    this.cleanupGroupAfterChildRemoval(parentGroupId);
+    if (nextParentContainerId) {
+      this.insertGroupIntoGroup(group, nextParentContainerId, insertIndex);
+    } else {
+      this.insertGroupIntoRoot(group, insertIndex);
+    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Removed ${group.name} from its parent group.`);
+  }
+
+  toggleSceneItemHidden(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      group.hidden = !group.hidden;
+      this.applyGroupVisibility(group.id);
+      this.clearSelectionIfInsideGroup(group.id);
+      this.refreshSelectionAttachment();
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`${group.hidden ? "Hidden" : "Shown"} ${group.name}.`);
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object) {
+      return;
+    }
+
+    object.hidden = !object.hidden;
+    this.applyObjectVisibility(objectId);
+    if (this.isObjectHidden(object) && this.selectedObjectId === objectId) {
+      this.clearSelection();
+    } else if (!this.isObjectHidden(object) && this.selectedObjectId === objectId) {
+      this.refreshSelectionAttachment();
+    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`${object.hidden ? "Hidden" : "Shown"} ${object.name}.`);
+  }
+
+  toggleSceneItemLocked(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      group.locked = !group.locked;
+      this.clearSelectionIfInsideGroup(group.id);
+      this.refreshSelectionAttachment();
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`${group.locked ? "Locked" : "Unlocked"} ${group.name}.`);
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object) {
+      return;
+    }
+
+    object.locked = !object.locked;
+    if (this.selectedObjectId === objectId) {
+      this.refreshSelectionAttachment();
+    }
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`${object.locked ? "Locked" : "Unlocked"} ${object.name}.`);
+  }
+
+  frameSceneItem(objectId: string) {
+    const group = this.groups.get(objectId);
+    if (group) {
+      if (this.isGroupHidden(group.id)) {
+        return;
+      }
+      this.sceneCore.frameSelection(this.camera, group.root);
+      this.setStatusNotice(`Framed ${group.name}.`);
+      return;
+    }
+
+    const object = this.objects.get(objectId);
+    if (!object || this.isObjectHidden(object)) {
+      return;
+    }
+
+    this.sceneCore.frameSelection(this.camera, object.root);
+    this.setStatusNotice(`Framed ${ASSETS.find((asset) => asset.id === object.assetId)?.name ?? "selection"}.`);
+  }
+
+  clearSceneContents() {
+    this.clearScene();
+  }
+
+  setGridSize(value: number) {
+    if (this.gridSize === value) {
+      return;
+    }
+
+    this.gridSize = value;
+    this.applySnapSettings();
+    this.renderGrid();
+    this.updatePreviewTransform();
+    this.emitViewState();
+  }
+
+  setRotationStepDegrees(value: number) {
+    if (this.rotationStepDegrees === value) {
+      return;
+    }
+
+    this.rotationStepDegrees = value;
+    this.applySnapSettings();
+    this.updatePreviewTransform();
+    this.emitViewState();
+  }
+
+  setGridVisible(visible: boolean) {
+    if (this.settings.gridVisible === visible) {
+      return;
+    }
+
+    this.settings.gridVisible = visible;
+    this.renderGrid();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setGridColor(colorHex: string) {
+    if (!/^#[0-9a-f]{6}$/iu.test(colorHex) || this.settings.gridColor === colorHex) {
+      return;
+    }
+
+    this.settings.gridColor = colorHex;
+    this.renderGrid();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setGroundColor(colorHex: string) {
+    if (!/^#[0-9a-f]{6}$/iu.test(colorHex) || this.settings.groundColor === colorHex) {
+      return;
+    }
+
+    this.settings.groundColor = colorHex;
+    this.applyGroundColor();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  restoreDefaultUserSettings() {
+    this.settings.environmentEnabled = DEFAULT_USER_SETTINGS.environmentEnabled;
+    this.settings.environmentIntensity = DEFAULT_USER_SETTINGS.environmentIntensity;
+    this.settings.lightIntensity = DEFAULT_USER_SETTINGS.lightIntensity;
+    this.settings.gridVisible = DEFAULT_USER_SETTINGS.gridVisible;
+    this.settings.gridColor = DEFAULT_USER_SETTINGS.gridColor;
+    this.settings.groundColor = DEFAULT_USER_SETTINGS.groundColor;
+    this.settings.newObjectPlacementKind = DEFAULT_USER_SETTINGS.newObjectPlacementKind;
+    this.settings.heightLabelMode = DEFAULT_USER_SETTINGS.heightLabelMode;
+
+    this.renderGrid();
+    this.applyEnvironmentSetting();
+    this.applyLightIntensity();
+    this.applyGroundColor();
+    this.saveUserSettings();
+    this.setStatusNotice("User settings restored to defaults.");
+  }
+
+  setEnvironmentEnabled(enabled: boolean) {
+    if (this.settings.environmentEnabled === enabled) {
+      return;
+    }
+
+    this.settings.environmentEnabled = enabled;
+    this.applyEnvironmentSetting();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setEnvironmentIntensity(intensity: number) {
+    const nextIntensity = Number.isFinite(intensity) ? Math.min(4, Math.max(0, intensity)) : this.settings.environmentIntensity;
+    if (this.settings.environmentIntensity === nextIntensity) {
+      return;
+    }
+
+    this.settings.environmentIntensity = nextIntensity;
+    this.applyEnvironmentSetting();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setLightIntensity(intensity: number) {
+    const nextIntensity = Number.isFinite(intensity) ? Math.min(4, Math.max(0, intensity)) : this.settings.lightIntensity;
+    if (this.settings.lightIntensity === nextIntensity) {
+      return;
+    }
+
+    this.settings.lightIntensity = nextIntensity;
+    this.applyLightIntensity();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setNewObjectPlacementKind(value: "clone" | "instance") {
+    if (this.settings.newObjectPlacementKind === value) {
+      return;
+    }
+
+    this.settings.newObjectPlacementKind = value;
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setHeightLabelMode(value: "transform" | "geometry") {
+    if (this.settings.heightLabelMode === value) {
+      return;
+    }
+
+    this.settings.heightLabelMode = value;
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  private findObjectId(mesh: Nullable<AbstractMesh>) {
+    return this.sceneCore.findObjectId(mesh);
   }
 
   private tagHierarchy(root: TransformNode, objectId: string) {
-    root.getChildMeshes().forEach((mesh) => {
-      mesh.metadata = { ...(mesh.metadata ?? {}), objectId };
-    });
+    this.sceneCore.tagHierarchy(root, objectId);
   }
 
   private toRadians(valueDegrees: number) {
@@ -1134,171 +2759,19 @@ export class ModularEditorApp {
   private toDegrees(valueRadians: number) {
     return (valueRadians * 180) / Math.PI;
   }
-}
 
-export function createEditorUi(canvas: HTMLCanvasElement): EditorUi {
-  const searchInput = document.querySelector<HTMLInputElement>("[data-role='search-input']");
-  const assetList = document.querySelector<HTMLDivElement>("[data-role='asset-list']");
-  const snapToggle = document.querySelector<HTMLButtonElement>("[data-role='snap-toggle']");
-  const selectionModeButton = document.querySelector<HTMLButtonElement>("[data-role='selection-mode']");
-  const placementModeButton = document.querySelector<HTMLButtonElement>("[data-role='placement-mode']");
-  const undoButton = document.querySelector<HTMLButtonElement>("[data-role='undo']");
-  const redoButton = document.querySelector<HTMLButtonElement>("[data-role='redo']");
-  const saveButton = document.querySelector<HTMLButtonElement>("[data-role='save']");
-  const loadButton = document.querySelector<HTMLButtonElement>("[data-role='load']");
-  const loadInput = document.querySelector<HTMLInputElement>("[data-role='load-input']");
-  const deleteSelectedButton = document.querySelector<HTMLButtonElement>("[data-role='delete-selected']");
-  const clearSceneButton = document.querySelector<HTMLButtonElement>("[data-role='clear-scene']");
-  const gridSizeSelect = document.querySelector<HTMLSelectElement>("[data-role='grid-size']");
-  const rotationSelect = document.querySelector<HTMLSelectElement>("[data-role='rotation-step']");
-  const settingsButton = document.querySelector<HTMLButtonElement>("[data-role='settings-button']");
-  const settingsMenu = document.querySelector<HTMLDivElement>("[data-role='settings-menu']");
-  const environmentToggle = document.querySelector<HTMLInputElement>("[data-role='environment-toggle']");
-  const statusMode = document.querySelector<HTMLElement>("[data-role='status-mode']");
-  const statusAsset = document.querySelector<HTMLElement>("[data-role='status-asset']");
-  const statusGrid = document.querySelector<HTMLElement>("[data-role='status-grid']");
-  const statusHint = document.querySelector<HTMLElement>("[data-role='status-hint']");
-  const propertiesPanel = document.querySelector<HTMLDivElement>("[data-role='properties-panel']");
-  const categoryButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-role='category-filter']"));
-
-  if (
-    !searchInput ||
-    !assetList ||
-    !snapToggle ||
-    !selectionModeButton ||
-    !placementModeButton ||
-    !undoButton ||
-    !redoButton ||
-    !saveButton ||
-    !loadButton ||
-    !loadInput ||
-    !deleteSelectedButton ||
-    !clearSceneButton ||
-    !gridSizeSelect ||
-    !rotationSelect ||
-    !settingsButton ||
-    !settingsMenu ||
-    !environmentToggle ||
-    !statusMode ||
-    !statusAsset ||
-    !statusGrid ||
-    !statusHint ||
-    !propertiesPanel
-  ) {
-    throw new Error("Editor UI is incomplete.");
+  destroy() {
+    this.resizeObserver.disconnect();
+    window.removeEventListener("resize", this.handleWindowResize);
+    window.removeEventListener("keydown", this.handleWindowKeyDown);
+    this.originMarker?.dispose();
+    this.selectionVerticalHelper?.dispose();
+    this.selectionHeightLabel?.dispose(false, false);
+    this.selectionVerticalHelperMarker?.dispose(false, false);
+    this.disposePreview();
+    this.scene.dispose();
+    this.engine.dispose();
   }
-
-  return {
-    canvas,
-    searchInput,
-    categoryButtons,
-    assetList,
-    snapToggle,
-    selectionModeButton,
-    placementModeButton,
-    undoButton,
-    redoButton,
-    saveButton,
-    loadButton,
-    loadInput,
-    deleteSelectedButton,
-    clearSceneButton,
-    gridSizeSelect,
-    rotationSelect,
-    settingsButton,
-    settingsMenu,
-    environmentToggle,
-    statusMode,
-    statusAsset,
-    statusGrid,
-    statusHint,
-    propertiesPanel,
-  };
 }
 
-export function buildEditorMarkup() {
-  const categoryButtons = [
-    `<button type="button" class="chip is-active" data-role="category-filter" data-category="All">All</button>`,
-    ...ASSET_CATEGORIES.map(
-      (category) =>
-        `<button type="button" class="chip" data-role="category-filter" data-category="${category}">${category}</button>`,
-    ),
-  ].join("");
 
-  return `
-    <section class="shell">
-      <header class="toolbar">
-        <div class="toolbar-group">
-          <button type="button" class="tool-button is-active" data-role="snap-toggle">Snap</button>
-          <label class="tool-field">
-            <span>Grid</span>
-            <select data-role="grid-size">
-              <option value="2">2</option>
-              <option value="1" selected>1</option>
-              <option value="0.5">0.5</option>
-              <option value="0.25">0.25</option>
-              <option value="0.125">0.125</option>
-            </select>
-          </label>
-          <label class="tool-field">
-            <span>Rotate</span>
-            <select data-role="rotation-step">
-              <option value="90" selected>90deg</option>
-              <option value="45">45deg</option>
-              <option value="15">15deg</option>
-            </select>
-          </label>
-        </div>
-        <div class="toolbar-group">
-          <button type="button" class="tool-button is-active" data-role="selection-mode">Select</button>
-          <button type="button" class="tool-button" data-role="placement-mode">Place</button>
-          <button type="button" class="tool-button" data-role="undo" disabled>Undo</button>
-          <button type="button" class="tool-button" data-role="redo" disabled>Redo</button>
-          <button type="button" class="tool-button" data-role="save">Export JSON</button>
-          <button type="button" class="tool-button" data-role="load">Import JSON</button>
-          <input type="file" data-role="load-input" accept="application/json,.json" hidden />
-          <button type="button" class="tool-button tool-button-danger" data-role="delete-selected" disabled>Delete Selected</button>
-          <button type="button" class="tool-button tool-button-danger" data-role="clear-scene" disabled>Clear Scene</button>
-          <div class="toolbar-settings">
-            <button type="button" class="tool-button tool-button-icon" data-role="settings-button" aria-label="User settings">Settings</button>
-            <div class="settings-menu" data-role="settings-menu" hidden>
-              <div class="panel-label settings-menu-label">User Settings</div>
-              <label class="setting-row">
-                <span class="setting-copy">Environment Lighting</span>
-                <span class="setting-switch">
-                  <input type="checkbox" data-role="environment-toggle" />
-                  <span class="setting-slider" aria-hidden="true"></span>
-                </span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </header>
-      <div class="workspace">
-        <aside class="sidebar">
-          <div class="sidebar-section">
-            <label class="panel-label" for="asset-search">Assets</label>
-            <input id="asset-search" data-role="search-input" class="editor-input" type="text" placeholder="Search assets" />
-          </div>
-          <div class="sidebar-section">
-            <div class="chip-row">${categoryButtons}</div>
-          </div>
-          <div class="asset-list" data-role="asset-list"></div>
-          <div class="sidebar-section sidebar-properties">
-            <div class="panel-label">Selection</div>
-            <div class="properties-panel" data-role="properties-panel"></div>
-          </div>
-        </aside>
-        <main class="viewport-panel">
-          <canvas id="renderCanvas"></canvas>
-        </main>
-      </div>
-      <footer class="statusbar">
-        <span><strong>Mode</strong> <span data-role="status-mode">Selection</span></span>
-        <span><strong>Asset</strong> <span data-role="status-asset">None</span></span>
-        <span><strong>Snap</strong> <span data-role="status-grid">1u · 90deg</span></span>
-        <span class="statusbar-hint" data-role="status-hint">Click object select · Delete remove · R rotate</span>
-      </footer>
-    </section>
-  `;
-}
