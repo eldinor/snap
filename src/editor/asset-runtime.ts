@@ -107,10 +107,11 @@ export async function instantiateAsset(
 export async function loadAssetTemplate(
   asset: AssetDefinition,
   scene: Scene,
+  basePath: string,
   freezeModelMaterials = true,
 ): Promise<AssetTemplate> {
   try {
-    const importResult = await SceneLoader.ImportMeshAsync("", "/assets/glTF/", asset.fileName, scene);
+    const importResult = await SceneLoader.ImportMeshAsync("", basePath, asset.fileName, scene);
     const root = new TransformNode(`template-${asset.id}`, scene);
 
     const importedRootNodes = [...importResult.transformNodes, ...importResult.meshes].filter((node) => !node.parent);

@@ -1,4 +1,4 @@
-import { ASSETS } from "./assets";
+import { ASSETS, BUILT_IN_LIBRARY, getAssetBasePath } from "./assets";
 import { AssetPreviewRenderer } from "./asset-preview-runtime";
 
 type DirectoryPickerWindow = Window &
@@ -132,7 +132,7 @@ app.innerHTML = `
             <input id="manifestUrl" value="/generated/asset-screenshot-manifest.json" />
           </label>
           <label>Asset base path
-            <input id="basePath" value="/assets/glTF/" />
+            <input id="basePath" value="${getAssetBasePath()}" />
           </label>
           <label>Width
             <input id="width" type="number" min="128" step="64" value="1024" />
@@ -151,7 +151,7 @@ app.innerHTML = `
         <h2>Status</h2>
         <div class="status" id="statusText">
           <span>Output folder: not selected</span>
-          <span>Pick <code>public/generated/asset-previews</code> to save app-ready screenshots.</span>
+          <span>Pick <code>public${BUILT_IN_LIBRARY.thumbnailBasePath}</code> to save app-ready screenshots.</span>
         </div>
       </div>
       <div class="panel">
@@ -264,7 +264,7 @@ saveMode.addEventListener("change", () => {
   pickDirectoryButton.disabled = saveMode.value !== "picked";
   setStatus(
     outputDirectory ? `Output folder: ${outputDirectory.name}` : "Output folder: not selected",
-    outputDirectory ? "Ready." : "Pick public/generated/asset-previews to save app-ready screenshots.",
+    outputDirectory ? "Ready." : `Pick public${BUILT_IN_LIBRARY.thumbnailBasePath} to save app-ready screenshots.`,
   );
 });
 
@@ -331,5 +331,5 @@ startBatchButton.addEventListener("click", async () => {
 });
 
 pickDirectoryButton.disabled = saveMode.value !== "picked";
-setStatus("Output folder: not selected", "Pick public/generated/asset-previews to save app-ready screenshots.");
+setStatus("Output folder: not selected", `Pick public${BUILT_IN_LIBRARY.thumbnailBasePath} to save app-ready screenshots.`);
 void initializePreferredSourceMode();

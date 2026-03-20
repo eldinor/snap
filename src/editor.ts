@@ -21,7 +21,7 @@ import type { Observer } from "@babylonjs/core/Misc/observable";
 import type { Nullable } from "@babylonjs/core/types";
 import { GLTF2Export } from "@babylonjs/serializers/glTF/2.0/glTFSerializer";
 import JSZip from "jszip";
-import { ASSETS, type AssetDefinition } from "./assets";
+import { ACTIVE_LIBRARY, findAssetByRef, getAssetBasePathForLibrary, getAssetRefKey, type AssetDefinition } from "./assets";
 import { instantiateAsset, loadAssetTemplate, setRootMaterialsFrozen, type AssetTemplate } from "./editor/asset-runtime";
 import { SceneCoreController } from "./editor/scene-core-controller";
 import {
@@ -70,6 +70,7 @@ import {
 
 interface EditorObject {
   id: string;
+  libraryId: string;
   assetId: string;
   placementKind: "clone" | "instance";
   root: TransformNode;
@@ -211,10 +212,12 @@ export class ModularEditorApp {
   private selectionHeightLabel: Nullable<Mesh> = null;
   private selectionVerticalHelperMarker: Nullable<Mesh> = null;
   private selectionHelperVisualsEnabled = true;
+  private activeAssetLibraryId: string | null = null;
   private activeAssetId: string | null = null;
   private selectedSceneItemIds = new Set<string>();
   private selectedObjectId: string | null = null;
   private placementPreview: TransformNode | null = null;
+  private previewAssetLibraryId: string | null = null;
   private previewAssetId: string | null = null;
   private previewTemplateSize = new Vector3(1, 1, 1);
   private mode: "select" | "place" = "select";
@@ -489,8 +492,14 @@ export class ModularEditorApp {
         selectedObjectId: null,
         selectedAssetName: `${selectionCount} items selected`,
         multiSelected: true,
-        activeAssetName: this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId)?.name ?? null : null,
-        previewAssetName: this.previewAssetId ? ASSETS.find((asset) => asset.id === this.previewAssetId)?.name ?? null : null,
+        activeAssetName:
+          this.activeAssetId && this.activeAssetLibraryId
+            ? findAssetByRef({ libraryId: this.activeAssetLibraryId, assetId: this.activeAssetId })?.name ?? null
+            : null,
+        previewAssetName:
+          this.previewAssetId && this.previewAssetLibraryId
+            ? findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })?.name ?? null
+            : null,
         objectPlacementKind: null,
         position: null,
         rotationYDegrees: null,
@@ -502,9 +511,15 @@ export class ModularEditorApp {
 
     const selected = this.selectedObjectId ? this.objects.get(this.selectedObjectId) : null;
     const selectedGroup = this.selectedGroupId ? this.groups.get(this.selectedGroupId) : null;
-    const selectedAsset = selected ? ASSETS.find((asset) => asset.id === selected.assetId) : null;
-    const activeAsset = this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId) : null;
-    const previewAsset = this.previewAssetId ? ASSETS.find((asset) => asset.id === this.previewAssetId) : null;
+    const selectedAsset = selected ? findAssetByRef({ libraryId: selected.libraryId, assetId: selected.assetId }) : null;
+    const activeAsset =
+      this.activeAssetId && this.activeAssetLibraryId
+        ? findAssetByRef({ libraryId: this.activeAssetLibraryId, assetId: this.activeAssetId })
+        : null;
+    const previewAsset =
+      this.previewAssetId && this.previewAssetLibraryId
+        ? findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })
+        : null;
     const position = selected ? selected.root.position : selectedGroup?.root.position ?? null;
     const rotationDegrees = selected
       ? Math.round(this.toDegrees(selected.root.rotation.y))
@@ -534,9 +549,10 @@ export class ModularEditorApp {
 
     const pushObject = (object: EditorObject, depth: number) => {
       visitedIds.add(object.id);
-      const asset = ASSETS.find((entry) => entry.id === object.assetId);
+      const asset = findAssetByRef({ libraryId: object.libraryId, assetId: object.assetId });
       items.push({
         id: object.id,
+        libraryId: object.libraryId,
         assetId: object.assetId,
         assetName: asset?.name ?? object.assetId,
         placementKind: object.placementKind,
@@ -556,10 +572,11 @@ export class ModularEditorApp {
         return;
       }
       visitedIds.add(group.id);
-      items.push({
-        id: group.id,
-        assetId: "",
-        assetName: "Group",
+        items.push({
+          id: group.id,
+          libraryId: ACTIVE_LIBRARY.id,
+          assetId: "",
+          assetName: "Group",
         placementKind: null,
         childCount: group.childIds.length,
         label: group.name,
@@ -676,7 +693,10 @@ export class ModularEditorApp {
   }
 
   private buildStatusViewState(): StatusViewState {
-    const activeAsset = this.activeAssetId ? ASSETS.find((asset) => asset.id === this.activeAssetId) : null;
+    const activeAsset =
+      this.activeAssetId && this.activeAssetLibraryId
+        ? findAssetByRef({ libraryId: this.activeAssetLibraryId, assetId: this.activeAssetId })
+        : null;
     return {
       mode: this.mode,
       activeAssetName: activeAsset?.name ?? null,
@@ -695,9 +715,11 @@ export class ModularEditorApp {
   }
 
   private buildViewState(): EditorViewState {
-    return {
-      activeAssetId: this.activeAssetId,
-      previewAssetId: this.previewAssetId,
+      return {
+        activeAssetLibraryId: this.activeAssetLibraryId,
+        activeAssetId: this.activeAssetId,
+        previewAssetLibraryId: this.previewAssetLibraryId,
+        previewAssetId: this.previewAssetId,
       objectCount: this.objects.size,
       selectionCount: this.selectedSceneItemIds.size,
       noticeMessage: this.statusNotice,
@@ -859,6 +881,7 @@ export class ModularEditorApp {
   private getSerializedScene() {
     const serializableObjects: AssetSceneSerializableObject[] = Array.from(this.objects.values(), (object) => ({
       id: object.id,
+      libraryId: object.libraryId,
       assetId: object.assetId,
       position: [object.root.position.x, object.root.position.y, object.root.position.z],
       rotationDegrees: [
@@ -889,12 +912,13 @@ export class ModularEditorApp {
     this.applySceneMetadata(serialized.metadata);
 
     for (const entry of serialized.objects) {
-      const asset = ASSETS.find((candidate) => candidate.id === entry.assetId);
+      const objectLibraryId = entry.libraryId;
+      const asset = findAssetByRef({ libraryId: objectLibraryId, assetId: entry.assetId });
       if (!asset) {
         continue;
       }
 
-      const template = await this.getAssetTemplate(asset);
+      const template = await this.getAssetTemplate(asset, source.libraryId);
       const root = await instantiateAsset(
         asset,
         false,
@@ -924,12 +948,14 @@ export class ModularEditorApp {
       const defaultName = this.createNextSceneObjectName(asset.name);
       root.metadata = {
         objectId: id,
+        libraryId: objectLibraryId,
         assetId: asset.id,
         templateSize: template.size.asArray(),
       };
       this.tagHierarchy(root, id);
       this.objects.set(id, {
         id,
+        libraryId: objectLibraryId,
         assetId: asset.id,
         placementKind: entry.placementKind === "clone" || entry.placementKind === "instance" ? entry.placementKind : "instance",
         root,
@@ -1615,14 +1641,14 @@ export class ModularEditorApp {
     );
   }
 
-  private async ensurePreviewForAsset(assetId: string) {
+  private async ensurePreviewForAsset(libraryId: string, assetId: string) {
     this.disposePreview();
-    const asset = ASSETS.find((entry) => entry.id === assetId);
+    const asset = findAssetByRef({ libraryId, assetId });
     if (!asset) {
       return;
     }
 
-    const template = await this.getAssetTemplate(asset);
+      const template = await this.getAssetTemplate(asset, libraryId);
     const preview = await instantiateAsset(asset, true, template, this.scene, "clone");
     if (!preview) {
       return;
@@ -1630,6 +1656,7 @@ export class ModularEditorApp {
 
     this.previewTemplateSize = template.size.clone();
     this.placementPreview = preview;
+    this.previewAssetLibraryId = libraryId;
     this.previewAssetId = assetId;
     this.updatePreviewTransform();
   }
@@ -1639,12 +1666,15 @@ export class ModularEditorApp {
       return;
     }
 
-    const asset = ASSETS.find((entry) => entry.id === this.previewAssetId);
+      const asset =
+        this.previewAssetLibraryId
+          ? findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })
+          : null;
     if (!asset) {
       return;
     }
 
-    const template = await this.getAssetTemplate(asset);
+      const template = await this.getAssetTemplate(asset, this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id);
     const root = await instantiateAsset(asset, false, template, this.scene, this.settings.newObjectPlacementKind);
     if (!root) {
       return;
@@ -1655,17 +1685,19 @@ export class ModularEditorApp {
 
     const id = `object-${++this.objectSequence}`;
     const defaultName = this.createNextSceneObjectName(asset.name);
-    root.metadata = {
-      objectId: id,
-      assetId: asset.id,
-      templateSize: this.previewTemplateSize.asArray(),
-    };
+      root.metadata = {
+        objectId: id,
+        libraryId: this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id,
+        assetId: asset.id,
+        templateSize: this.previewTemplateSize.asArray(),
+      };
     this.tagHierarchy(root, id);
-    this.objects.set(id, {
-      id,
-      assetId: asset.id,
-      placementKind: this.settings.newObjectPlacementKind,
-      root,
+      this.objects.set(id, {
+        id,
+        libraryId: this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id,
+        assetId: asset.id,
+        placementKind: this.settings.newObjectPlacementKind,
+        root,
       name: defaultName,
       hidden: false,
       locked: false,
@@ -1684,15 +1716,16 @@ export class ModularEditorApp {
     }
   }
 
-  private async getAssetTemplate(asset: AssetDefinition): Promise<AssetTemplate> {
-    if (!this.assetTemplates.has(asset.id)) {
-      this.assetTemplates.set(asset.id, this.loadAssetTemplate(asset));
+  private async getAssetTemplate(asset: AssetDefinition, libraryId: string): Promise<AssetTemplate> {
+    const templateKey = getAssetRefKey({ libraryId, assetId: asset.id });
+    if (!this.assetTemplates.has(templateKey)) {
+      this.assetTemplates.set(templateKey, this.loadAssetTemplate(asset, libraryId));
     }
-    return this.assetTemplates.get(asset.id)!;
+    return this.assetTemplates.get(templateKey)!;
   }
 
-  private async loadAssetTemplate(asset: AssetDefinition): Promise<AssetTemplate> {
-    return loadAssetTemplate(asset, this.scene, this.settings.freezeModelMaterials);
+  private async loadAssetTemplate(asset: AssetDefinition, libraryId: string): Promise<AssetTemplate> {
+    return loadAssetTemplate(asset, this.scene, getAssetBasePathForLibrary(libraryId), this.settings.freezeModelMaterials);
   }
 
   private renderGrid() {
@@ -1826,12 +1859,12 @@ export class ModularEditorApp {
       return;
     }
 
-    const asset = ASSETS.find((entry) => entry.id === source.assetId);
+    const asset = findAssetByRef({ libraryId: source.libraryId, assetId: source.assetId });
     if (!asset) {
       return;
     }
 
-    const template = await this.getAssetTemplate(asset);
+    const template = await this.getAssetTemplate(asset, source.libraryId);
     const root = await instantiateAsset(asset, false, template, this.scene, this.settings.newObjectPlacementKind);
     if (!root) {
       return;
@@ -1855,12 +1888,14 @@ export class ModularEditorApp {
     const nextName = this.createDuplicateSceneObjectName(source, asset);
     root.metadata = {
       objectId: id,
+      libraryId: source.libraryId,
       assetId: asset.id,
       templateSize: templateSize.asArray(),
     };
     this.tagHierarchy(root, id);
     this.objects.set(id, {
       id,
+      libraryId: source.libraryId,
       assetId: asset.id,
       placementKind: this.settings.newObjectPlacementKind,
       root,
@@ -1908,7 +1943,7 @@ export class ModularEditorApp {
     }
 
     this.sceneCore.frameSelection(this.camera, selected.root);
-    this.setStatusNotice(`Framed ${ASSETS.find((asset) => asset.id === selected.assetId)?.name ?? "selection"}.`);
+    this.setStatusNotice(`Framed ${findAssetByRef({ libraryId: selected.libraryId, assetId: selected.assetId })?.name ?? "selection"}.`);
   }
 
   private deleteSelectedObject() {
@@ -1981,6 +2016,7 @@ export class ModularEditorApp {
 
   private disposePreview() {
     this.placementPreview = this.sceneCore.disposePreview(this.placementPreview);
+    this.previewAssetLibraryId = null;
     this.previewAssetId = null;
   }
 
@@ -2015,22 +2051,23 @@ export class ModularEditorApp {
     saveUserSettings(this.settings);
   }
 
-  async activateAsset(assetId: string) {
-    if (this.activeAssetId === assetId && this.mode === "place") {
-      await this.ensurePreviewForAsset(assetId);
+  async activateAsset(libraryId: string, assetId: string) {
+    if (this.activeAssetLibraryId === libraryId && this.activeAssetId === assetId && this.mode === "place") {
+      await this.ensurePreviewForAsset(libraryId, assetId);
       this.emitViewState();
       return;
     }
 
-    const asset = ASSETS.find((entry) => entry.id === assetId);
+    const asset = findAssetByRef({ libraryId, assetId });
     if (!asset) {
       return;
     }
 
+    this.activeAssetLibraryId = libraryId;
     this.activeAssetId = asset.id;
     this.mode = "place";
     this.previewRotation.setAll(0);
-    await this.ensurePreviewForAsset(asset.id);
+    await this.ensurePreviewForAsset(libraryId, asset.id);
     this.emitViewState();
   }
 
@@ -2154,12 +2191,12 @@ export class ModularEditorApp {
   }
 
   async enterPlacementMode() {
-    if (!this.activeAssetId) {
+    if (!this.activeAssetId || !this.activeAssetLibraryId) {
       return;
     }
 
     this.mode = "place";
-    await this.ensurePreviewForAsset(this.activeAssetId);
+    await this.ensurePreviewForAsset(this.activeAssetLibraryId, this.activeAssetId);
     this.emitViewState();
   }
 
@@ -2985,7 +3022,7 @@ export class ModularEditorApp {
     }
 
     this.sceneCore.frameSelection(this.camera, object.root);
-    this.setStatusNotice(`Framed ${ASSETS.find((asset) => asset.id === object.assetId)?.name ?? "selection"}.`);
+    this.setStatusNotice(`Framed ${findAssetByRef({ libraryId: object.libraryId, assetId: object.assetId })?.name ?? "selection"}.`);
   }
 
   clearSceneContents() {
@@ -3248,7 +3285,7 @@ export class ModularEditorApp {
       if (!exportNodes.has(object.root)) {
         return;
       }
-      const asset = ASSETS.find((entry) => entry.id === object.assetId);
+      const asset = findAssetByRef({ libraryId: object.libraryId, assetId: object.assetId });
       const normalizedName = normalizeSceneObjectName(object.name, asset?.name ?? object.assetId);
       const uniqueName = usedNames.has(normalizedName.toLowerCase())
         ? createSequentialSceneObjectName(

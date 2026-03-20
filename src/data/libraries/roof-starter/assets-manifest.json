@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "window-roof-wide",
+      "name": "Window Roof Wide",
+      "category": "Windows",
+      "fileName": "Window_Roof_Wide.gltf",
+      "tags": ["windows", "window", "roof", "wide"],
+      "placeholder": {
+        "shape": "box",
+        "size": [2, 2.5, 0.25],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Window_Roof_Wide.png"
+    },
+    {
+      "id": "overhang-plaster-long",
+      "name": "Overhang Plaster Long",
+      "category": "Roofs",
+      "fileName": "Overhang_Plaster_Long.gltf",
+      "tags": ["roofs", "overhang", "plaster", "long"],
+      "placeholder": {
+        "shape": "box",
+        "size": [2.2, 0.6, 2.2],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Plaster_Long.png"
+    },
+    {
+      "id": "overhang-roof-plaster",
+      "name": "Overhang Roof Plaster",
+      "category": "Roofs",
+      "fileName": "Overhang_Roof_Plaster.gltf",
+      "tags": ["roofs", "overhang", "roof", "plaster"],
+      "placeholder": {
+        "shape": "box",
+        "size": [2.2, 0.6, 2.2],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Roof_Plaster.png"
+    },
+    {
+      "id": "roof-round-tiles-6-x-8",
+      "name": "Roof Round Tiles 6 X 8",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_6x8.gltf",
+      "tags": ["roofs", "roof", "round", "tiles", "6", "x", "8"],
+      "placeholder": {
+        "shape": "box",
+        "size": [2.2, 0.6, 2.2],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_6x8.png"
+    },
+    {
+      "id": "roof-wooden-2-x-1",
+      "name": "Roof Wooden 2 X 1",
+      "category": "Roofs",
+      "fileName": "Roof_Wooden_2x1.gltf",
+      "tags": ["roofs", "roof", "wooden", "2", "x", "1"],
+      "placeholder": {
+        "shape": "box",
+        "size": [2.2, 0.6, 2.2],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Wooden_2x1.png"
+    }
+  ]
+}

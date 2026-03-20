@@ -2,23 +2,27 @@ import fs from "node:fs";
 import path from "node:path";
 
 const ROOT = process.cwd();
-const MANIFEST_PATH = path.join(ROOT, "src", "data", "assets-manifest.json");
+const MANIFEST_PATH = path.join(ROOT, "src", "data", "libraries", "built-in", "assets-manifest.json");
+const CATEGORIES_PATH = path.join(ROOT, "src", "data", "libraries", "built-in", "asset-categories.json");
 const ASSET_DIR = path.join(ROOT, "public", "assets", "glTF");
 const THUMBNAIL_DIR = path.join(ROOT, "public", "generated", "asset-previews");
 const SCREENSHOT_MANIFEST_PATH = path.join(ROOT, "public", "generated", "asset-screenshot-manifest.json");
 
-const ASSET_CATEGORIES = [
-  "Floors",
-  "Walls",
-  "Corners",
-  "Doors",
-  "Windows",
-  "Roofs",
-  "Stairs",
-  "Props",
-  "Balconies",
-  "Decorations",
-];
+function loadCategoryManifest() {
+  const manifest = JSON.parse(fs.readFileSync(CATEGORIES_PATH, "utf8"));
+  if (!manifest || typeof manifest !== "object" || manifest.version !== 1 || !Array.isArray(manifest.categories)) {
+    throw new Error("Category manifest must contain version 1 and a categories array.");
+  }
+
+  const categories = manifest.categories.filter((category) => typeof category === "string" && category.trim().length > 0);
+  if (categories.length === 0) {
+    throw new Error("Category manifest must contain at least one category.");
+  }
+
+  return categories;
+}
+
+const ASSET_CATEGORIES = loadCategoryManifest();
 
 const CATEGORY_ORDER = new Map(ASSET_CATEGORIES.map((category, index) => [category, index]));
 const TOKEN_SPLIT_PATTERN = /(?=[A-Z][a-z])|_|(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)/g;

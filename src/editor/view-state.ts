@@ -54,6 +54,7 @@ export interface SelectionViewState {
 
 export interface SceneItemViewState {
   id: string;
+  libraryId: string;
   assetId: string;
   assetName: string;
   placementKind: "clone" | "instance" | null;
@@ -68,7 +69,9 @@ export interface SceneItemViewState {
 }
 
 export interface EditorViewState {
+  activeAssetLibraryId: string | null;
   activeAssetId: string | null;
+  previewAssetLibraryId: string | null;
   previewAssetId: string | null;
   objectCount: number;
   selectionCount: number;
@@ -84,7 +87,9 @@ export interface EditorViewState {
 
 export function createInitialEditorViewState(): EditorViewState {
   return {
+    activeAssetLibraryId: null,
     activeAssetId: null,
+    previewAssetLibraryId: null,
     previewAssetId: null,
     objectCount: 0,
     selectionCount: 0,

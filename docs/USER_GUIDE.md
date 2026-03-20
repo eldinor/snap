@@ -12,19 +12,29 @@ The editor is divided into three main areas:
 - Center: 3D viewport
 - Right sidebar: Scene Tree and Selection panel
 
-The built-in asset library is defined by [`src/data/assets-manifest.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/assets-manifest.json), while the actual model files remain under `public/assets/glTF/`.
+The built-in asset library is defined by [`src/data/libraries/built-in/assets-manifest.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/assets-manifest.json), while the actual model files remain under `public/assets/glTF/`.
+
+The asset browser now has a library selector. At the moment it shows the built-in library, but it is ready for additional registered libraries later.
 
 ## Asset Library Maintenance
 
 Use [`asset-library-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-library-studio.html) to maintain the built-in asset library.
+
+Important:
+
+- open it through the Vite app server, for example with `npm run dev`
+- do not open the HTML file directly from disk
+
+Use the `Library` selector at the top of the studio to choose which registered library you are editing.
 
 ### Before You Start
 
 1. Run `npm run assets:validate`.
 2. Open [`asset-library-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-library-studio.html).
 3. Keep these two files in mind:
-   - [`src/data/assets-manifest.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/assets-manifest.json): assets, categories, tags, thumbnails, placeholders
-   - [`src/data/asset-tag-templates.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/asset-tag-templates.json): curated category tag templates
+   - [`src/data/libraries/built-in/assets-manifest.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/assets-manifest.json): assets, categories, tags, thumbnails, placeholders
+   - [`src/data/libraries/built-in/asset-categories.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/asset-categories.json): category list
+   - [`src/data/libraries/built-in/asset-tag-templates.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/asset-tag-templates.json): curated category tag templates
 
 ### Clean Up the Asset Manifest
 
@@ -42,6 +52,29 @@ Use `Filtered Assets` for bulk edits:
 
 - `Set Category`: apply one category to all currently shown assets
 - `Add Tag`: add one tag to all currently shown assets
+
+### Create and Remove Categories
+
+Use the `Categories` panel in the studio.
+
+To add a category:
+
+1. Enter the new name in `New Category`.
+2. Click `Add`.
+3. Save or download the categories JSON.
+
+To remove a category:
+
+1. Move or recategorize any assets that still use it.
+2. Choose it in `Existing Category`.
+3. Click `Remove Selected Category`.
+4. Save or download the categories JSON.
+
+Important:
+
+- a category can only be removed when no assets still use it
+- at least one category must remain
+- category changes are stored in [`src/data/libraries/built-in/asset-categories.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/asset-categories.json)
 
 Use the selected asset panel for precise edits:
 
@@ -94,6 +127,36 @@ Check `Template Validation`:
 - warns if other categories still have empty templates
 - warns when the current template overlaps too much with another category
 
+### Inspect A New GLTF Pack ZIP
+
+The `Pack Import` panel is the current first step for bringing in a new GLTF pack and preparing a draft imported library.
+
+1. Prepare one `.zip` that contains:
+   - `.gltf` files
+   - any referenced `.bin` files
+   - any referenced textures or images
+2. Drop the `.zip` onto `Pack Import`.
+3. Review the report for each `.gltf`.
+4. Fill in:
+   - `Draft Library ID`
+   - `Draft Library Name`
+   - `Default Category`
+5. Click `Download Draft Library ZIP`.
+
+The report shows:
+
+- `Missing Sidecars`: files referenced by the `.gltf` that are not present in the zip
+- `Parse Errors`: invalid or unreadable `.gltf` JSON
+- `External/data URIs`: non-local references that will not import like normal sidecars
+- `Name Collisions`: files whose names already exist in the built-in library
+
+Important:
+
+- the inspection step still does not copy files into the repo
+- `Download Draft Library ZIP` creates metadata only
+- the draft zip contains `library.json`, `assets-manifest.json`, `asset-categories.json`, `asset-tag-templates.json`, and `inspection-report.json`
+- only `.gltf` entries without parse errors, missing sidecars, external/data URIs, or file-name collisions are included
+
 ### Apply Category Templates Back to Assets
 
 When an asset is selected, the right-side `Category Template` block shows the current category’s template tags.
@@ -109,9 +172,10 @@ You can:
 When you finish:
 
 1. Save or download the asset manifest.
-2. Save or download the category templates.
-3. Run `npm run assets:validate` again.
-4. If thumbnails are missing or outdated, run `npm run assets:thumbnails`.
+2. Save or download the categories JSON.
+3. Save or download the category templates.
+4. Run `npm run assets:validate` again.
+5. If thumbnails are missing or outdated, run `npm run assets:thumbnails`.
 
 ## Asset Placement
 

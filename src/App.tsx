@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { AssetCategory } from "./assets";
+import { getAssetLibraryBundle, getAssetLibraryBundles, type AssetCategory } from "./assets";
 import { EditorShell, filterAssets, type SceneSortMode } from "./components/editor-shell";
 import { ModularEditorApp } from "./editor";
 import { createInitialEditorViewState } from "./editor/view-state";
@@ -8,7 +8,9 @@ export function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const importInputRef = useRef<HTMLInputElement | null>(null);
   const appRef = useRef<ModularEditorApp | null>(null);
+  const libraries = getAssetLibraryBundles();
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeLibraryId, setActiveLibraryId] = useState(libraries[0]?.library.id ?? "built-in");
   const [activeCategory, setActiveCategory] = useState<AssetCategory | "All">("All");
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
@@ -52,13 +54,23 @@ export function App() {
     };
   }, [exportMenuOpen, settingsMenuOpen]);
 
-  const filteredAssets = filterAssets(searchQuery, activeCategory);
+  const activeLibrary = getAssetLibraryBundle(activeLibraryId);
+  const filteredAssets = filterAssets(activeLibrary.assets, searchQuery, activeCategory);
+
+  useEffect(() => {
+    if (activeCategory !== "All" && !activeLibrary.categories.includes(activeCategory)) {
+      setActiveCategory("All");
+    }
+  }, [activeCategory, activeLibrary]);
 
   return (
     <EditorShell
       canvasRef={canvasRef}
       importInputRef={importInputRef}
       searchQuery={searchQuery}
+      availableLibraries={libraries}
+      activeLibraryId={activeLibrary.library.id}
+      availableCategories={activeLibrary.categories}
       activeCategory={activeCategory}
       filteredAssets={filteredAssets}
       exportMenuOpen={exportMenuOpen}
@@ -66,9 +78,10 @@ export function App() {
       sceneSortMode={sceneSortMode}
       viewState={viewState}
       onSearchQueryChange={setSearchQuery}
+      onActiveLibraryChange={setActiveLibraryId}
       onActiveCategoryChange={setActiveCategory}
-      onAssetClick={(assetId) => {
-        void appRef.current?.activateAsset(assetId);
+      onAssetClick={(libraryId, assetId) => {
+        void appRef.current?.activateAsset(libraryId, assetId);
       }}
       onSceneItemSelect={(selectionIds, primaryId) => {
         appRef.current?.setSceneItemSelection(selectionIds, primaryId);

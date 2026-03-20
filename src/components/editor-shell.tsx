@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type RefObject } from "react";
-import { ASSETS, ASSET_CATEGORIES, type AssetCategory, type AssetDefinition } from "../assets";
+import { getAssetThumbnailUrlForLibrary, type AssetCategory, type AssetDefinition, type AssetLibraryBundle } from "../assets";
 import type { EditorViewState } from "../editor/view-state";
 import { FilterBar } from "./filter-bar";
 import {
@@ -32,8 +32,8 @@ import {
 } from "./icons";
 import { TreeView } from "./tree-view";
 
-function getAssetThumbnailUrl(asset: AssetDefinition) {
-  return `/generated/asset-previews/${asset.thumbnailFileName}`;
+function getAssetThumbnailStyleUrl(libraryId: string, asset: AssetDefinition) {
+  return getAssetThumbnailUrlForLibrary(libraryId, asset.thumbnailFileName);
 }
 
 export type SceneSortMode = "manual" | "name" | "asset";
@@ -482,9 +482,11 @@ function EditorToolbar(props: EditorToolbarProps) {
 }
 
 interface AssetListProps {
+  libraryId: string;
   assets: AssetDefinition[];
   activeAssetId: string | null;
-  onAssetClick: (assetId: string) => void;
+  activeAssetLibraryId: string | null;
+  onAssetClick: (libraryId: string, assetId: string) => void;
 }
 
 function AssetList(props: AssetListProps) {
@@ -498,9 +500,9 @@ function AssetList(props: AssetListProps) {
         <button
           key={asset.id}
           type="button"
-          className={`asset-row${props.activeAssetId === asset.id ? " is-active" : ""}`}
+          className={`asset-row${props.activeAssetId === asset.id && props.activeAssetLibraryId === props.libraryId ? " is-active" : ""}`}
           onClick={() => {
-            props.onAssetClick(asset.id);
+            props.onAssetClick(props.libraryId, asset.id);
           }}
         >
           <span className="asset-swatch" style={{ background: asset.placeholder.color }}></span>
@@ -512,7 +514,7 @@ function AssetList(props: AssetListProps) {
             className="asset-thumb"
             alt=""
             loading="lazy"
-            src={getAssetThumbnailUrl(asset)}
+            src={getAssetThumbnailStyleUrl(props.libraryId, asset)}
             onError={(event) => {
               event.currentTarget.hidden = true;
             }}
@@ -1200,40 +1202,63 @@ function SceneList(props: SceneListProps) {
 
 interface AssetSidebarProps {
   searchQuery: string;
+  availableLibraries: AssetLibraryBundle[];
+  activeLibraryId: string;
+  availableCategories: string[];
   activeCategory: AssetCategory | "All";
   filteredAssets: AssetDefinition[];
   viewState: EditorViewState;
   onSearchQueryChange: (value: string) => void;
+  onActiveLibraryChange: (value: string) => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
-  onAssetClick: (assetId: string) => void;
+  onAssetClick: (libraryId: string, assetId: string) => void;
 }
 
 function AssetSidebar(props: AssetSidebarProps) {
   return (
-    <aside className="sidebar sidebar-left">
-      <div className="sidebar-section">
-        <label className="panel-label" htmlFor="asset-search">
-          Assets
-        </label>
-        <FilterBar
-          className="filter-bar-compact"
-          searchId="asset-search"
-          searchPlaceholder="Search assets"
-          searchValue={props.searchQuery}
-          onSearchChange={props.onSearchQueryChange}
-          chips={{
-            selectedValue: props.activeCategory,
-            options: [
-              { value: "All", label: "All" },
-              ...ASSET_CATEGORIES.map((category) => ({ value: category, label: category })),
-            ],
-            onChange: props.onActiveCategoryChange,
-          }}
+      <aside className="sidebar sidebar-left">
+        <div className="sidebar-section">
+          <label className="panel-label" htmlFor="asset-search">
+            Assets
+          </label>
+          <label className="panel-label" htmlFor="asset-library">
+            Library
+          </label>
+          <select
+            id="asset-library"
+            className="filter-select"
+            value={props.activeLibraryId}
+            onChange={(event) => {
+              props.onActiveLibraryChange(event.target.value);
+            }}
+          >
+            {props.availableLibraries.map((bundle) => (
+              <option key={bundle.library.id} value={bundle.library.id}>
+                {bundle.meta.name}
+              </option>
+            ))}
+          </select>
+          <FilterBar
+            className="filter-bar-compact"
+            searchId="asset-search"
+            searchPlaceholder="Search assets"
+            searchValue={props.searchQuery}
+            onSearchChange={props.onSearchQueryChange}
+            chips={{
+              selectedValue: props.activeCategory,
+              options: [
+                { value: "All", label: "All" },
+                ...props.availableCategories.map((category) => ({ value: category, label: category })),
+              ],
+              onChange: props.onActiveCategoryChange,
+            }}
         />
       </div>
       <AssetList
+        libraryId={props.activeLibraryId}
         assets={props.filteredAssets}
         activeAssetId={props.viewState.activeAssetId}
+        activeAssetLibraryId={props.viewState.activeAssetLibraryId}
         onAssetClick={props.onAssetClick}
       />
     </aside>
@@ -1475,6 +1500,9 @@ interface EditorShellProps {
   canvasRef: RefObject<HTMLCanvasElement | null>;
   importInputRef: RefObject<HTMLInputElement | null>;
   searchQuery: string;
+  availableLibraries: AssetLibraryBundle[];
+  activeLibraryId: string;
+  availableCategories: string[];
   activeCategory: AssetCategory | "All";
   filteredAssets: AssetDefinition[];
   exportMenuOpen: boolean;
@@ -1482,8 +1510,9 @@ interface EditorShellProps {
   sceneSortMode: SceneSortMode;
   viewState: EditorViewState;
   onSearchQueryChange: (value: string) => void;
+  onActiveLibraryChange: (value: string) => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
-  onAssetClick: (assetId: string) => void;
+  onAssetClick: (libraryId: string, assetId: string) => void;
   onSceneItemSelect: (selectionIds: string[], primaryId: string | null) => void;
   onSceneItemMove: (draggedId: string, targetId: string) => void;
   onSceneItemFrame: (objectId: string) => void;
@@ -1628,10 +1657,14 @@ export function EditorShell(props: EditorShellProps) {
       >
         <AssetSidebar
           searchQuery={props.searchQuery}
+          availableLibraries={props.availableLibraries}
+          activeLibraryId={props.activeLibraryId}
+          availableCategories={props.availableCategories}
           activeCategory={props.activeCategory}
           filteredAssets={props.filteredAssets}
           viewState={props.viewState}
           onSearchQueryChange={props.onSearchQueryChange}
+          onActiveLibraryChange={props.onActiveLibraryChange}
           onActiveCategoryChange={props.onActiveCategoryChange}
           onAssetClick={props.onAssetClick}
         />
@@ -1668,9 +1701,9 @@ export function EditorShell(props: EditorShellProps) {
   );
 }
 
-export function filterAssets(query: string, activeCategory: AssetCategory | "All") {
+export function filterAssets(assets: AssetDefinition[], query: string, activeCategory: AssetCategory | "All") {
   const normalized = query.trim().toLowerCase();
-  return ASSETS.filter((asset) => {
+  return assets.filter((asset) => {
     const matchesCategory = activeCategory === "All" || asset.category === activeCategory;
     const haystack = `${asset.name} ${asset.category} ${asset.tags.join(" ")}`.toLowerCase();
     const matchesQuery = !normalized || haystack.includes(normalized);

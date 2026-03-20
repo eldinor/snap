@@ -1,22 +1,175 @@
-import assetsManifest from "./data/assets-manifest.json";
+import librariesManifest from "./data/libraries.json";
+import builtInLibraryMeta from "./data/libraries/built-in/library.json";
+import assetCategoriesManifest from "./data/libraries/built-in/asset-categories.json";
+import assetsManifest from "./data/libraries/built-in/assets-manifest.json";
+import roofStarterLibraryMeta from "./data/libraries/roof-starter/library.json";
+import roofStarterCategoriesManifest from "./data/libraries/roof-starter/asset-categories.json";
+import roofStarterAssetsManifest from "./data/libraries/roof-starter/assets-manifest.json";
 
 export const GRID_SIZES = [2, 1, 0.5, 0.25, 0.125] as const;
 export const ROTATION_STEPS = [90, 45, 15] as const;
 
-export const ASSET_CATEGORIES = [
-  "Floors",
-  "Walls",
-  "Corners",
-  "Doors",
-  "Windows",
-  "Roofs",
-  "Stairs",
-  "Props",
-  "Balconies",
-  "Decorations",
-] as const;
+interface AssetCategoryManifest {
+  version: 1;
+  categories: string[];
+}
 
-export type AssetCategory = (typeof ASSET_CATEGORIES)[number];
+interface LibraryRegistryEntry {
+  id: string;
+  name: string;
+  mode: "built-in" | "imported";
+  metaPath: string;
+}
+
+interface LibraryRegistryManifest {
+  version: 1;
+  libraries: LibraryRegistryEntry[];
+}
+
+export interface AssetLibraryMeta {
+  version: 1;
+  id: string;
+  name: string;
+  mode: "built-in" | "imported";
+  description: string;
+  author: string;
+  createdAt: string;
+  assetManifest: string;
+  categories: string;
+  tagTemplates: string;
+  assetBasePath: string;
+  thumbnailBasePath: string;
+}
+
+export interface AssetLibraryBundle {
+  library: LibraryRegistryEntry;
+  meta: AssetLibraryMeta;
+  assets: AssetDefinition[];
+  categories: string[];
+}
+
+function parseAssetCategoryManifest(value: unknown): AssetCategoryManifest {
+  if (!value || typeof value !== "object") {
+    throw new Error("Asset category manifest must be an object.");
+  }
+
+  const candidate = value as Partial<AssetCategoryManifest>;
+  if (candidate.version !== 1 || !Array.isArray(candidate.categories)) {
+    throw new Error("Asset category manifest must include version 1 and a categories array.");
+  }
+
+  if (candidate.categories.length === 0 || candidate.categories.some((category) => typeof category !== "string" || category.trim().length === 0)) {
+    throw new Error("Asset category manifest contains an invalid category.");
+  }
+
+  const seenCategories = new Set<string>();
+  candidate.categories.forEach((category) => {
+    if (seenCategories.has(category)) {
+      throw new Error(`Asset category manifest contains a duplicate category: ${category}`);
+    }
+    seenCategories.add(category);
+  });
+
+  return {
+    version: 1,
+    categories: [...candidate.categories],
+  };
+}
+
+function parseLibraryRegistryManifest(value: unknown): LibraryRegistryManifest {
+  if (!value || typeof value !== "object") {
+    throw new Error("Library registry manifest must be an object.");
+  }
+
+  const candidate = value as Partial<LibraryRegistryManifest>;
+  if (candidate.version !== 1 || !Array.isArray(candidate.libraries)) {
+    throw new Error("Library registry manifest must include version 1 and a libraries array.");
+  }
+
+  const ids = new Set<string>();
+  candidate.libraries.forEach((library, index) => {
+    if (!library || typeof library !== "object") {
+      throw new Error(`Library registry entry ${index} is invalid.`);
+    }
+    if (typeof library.id !== "string" || !library.id) {
+      throw new Error(`Library registry entry ${index} must have a non-empty id.`);
+    }
+    if (typeof library.name !== "string" || !library.name) {
+      throw new Error(`Library registry entry ${index} must have a non-empty name.`);
+    }
+    if (library.mode !== "built-in" && library.mode !== "imported") {
+      throw new Error(`Library registry entry ${index} has an invalid mode.`);
+    }
+    if (typeof library.metaPath !== "string" || !library.metaPath) {
+      throw new Error(`Library registry entry ${index} must have a metaPath.`);
+    }
+    if (ids.has(library.id)) {
+      throw new Error(`Library registry contains a duplicate library id: ${library.id}`);
+    }
+    ids.add(library.id);
+  });
+
+  return {
+    version: 1,
+    libraries: candidate.libraries,
+  };
+}
+
+function parseAssetLibraryMeta(value: unknown): AssetLibraryMeta {
+  if (!value || typeof value !== "object") {
+    throw new Error("Asset library metadata must be an object.");
+  }
+
+  const candidate = value as Partial<AssetLibraryMeta>;
+  if (
+    candidate.version !== 1 ||
+    typeof candidate.id !== "string" ||
+    typeof candidate.name !== "string" ||
+    (candidate.mode !== "built-in" && candidate.mode !== "imported") ||
+    typeof candidate.description !== "string" ||
+    typeof candidate.author !== "string" ||
+    typeof candidate.createdAt !== "string" ||
+    typeof candidate.assetManifest !== "string" ||
+    typeof candidate.categories !== "string" ||
+    typeof candidate.tagTemplates !== "string" ||
+    typeof candidate.assetBasePath !== "string" ||
+    typeof candidate.thumbnailBasePath !== "string"
+  ) {
+    throw new Error("Asset library metadata is invalid.");
+  }
+
+  return {
+    version: 1,
+    id: candidate.id,
+    name: candidate.name,
+    mode: candidate.mode,
+    description: candidate.description,
+    author: candidate.author,
+    createdAt: candidate.createdAt,
+    assetManifest: candidate.assetManifest,
+    categories: candidate.categories,
+    tagTemplates: candidate.tagTemplates,
+    assetBasePath: candidate.assetBasePath,
+    thumbnailBasePath: candidate.thumbnailBasePath,
+  };
+}
+
+export const LIBRARIES = parseLibraryRegistryManifest(librariesManifest).libraries;
+export const BUILT_IN_LIBRARY = parseAssetLibraryMeta(builtInLibraryMeta);
+export const ROOF_STARTER_LIBRARY = parseAssetLibraryMeta(roofStarterLibraryMeta);
+export const ACTIVE_LIBRARY = (() => {
+  const builtInEntry = LIBRARIES.find((library) => library.id === BUILT_IN_LIBRARY.id);
+  if (!builtInEntry) {
+    throw new Error(`Library registry is missing the built-in library entry: ${BUILT_IN_LIBRARY.id}`);
+  }
+  if (builtInEntry.metaPath !== "./libraries/built-in/library.json") {
+    throw new Error(`Built-in library registry entry points to an unexpected metadata path: ${builtInEntry.metaPath}`);
+  }
+  return BUILT_IN_LIBRARY;
+})();
+export const ASSET_CATEGORIES = parseAssetCategoryManifest(assetCategoriesManifest).categories;
+export const ROOF_STARTER_CATEGORIES = parseAssetCategoryManifest(roofStarterCategoriesManifest).categories;
+export type AssetCategory = string;
 export type PlaceholderShape = "box" | "column";
 
 export interface AssetDefinition {
@@ -33,14 +186,17 @@ export interface AssetDefinition {
   };
 }
 
+export interface AssetRef {
+  libraryId: string;
+  assetId: string;
+}
+
 interface AssetLibraryManifest {
   version: 1;
   assets: AssetDefinition[];
 }
 
-const CATEGORY_SET = new Set<string>(ASSET_CATEGORIES);
-
-function isAssetDefinition(value: unknown): value is AssetDefinition {
+function isAssetDefinition(value: unknown, categorySet: Set<string>): value is AssetDefinition {
   if (!value || typeof value !== "object") {
     return false;
   }
@@ -50,7 +206,7 @@ function isAssetDefinition(value: unknown): value is AssetDefinition {
     typeof candidate.id === "string" &&
     typeof candidate.name === "string" &&
     typeof candidate.category === "string" &&
-    CATEGORY_SET.has(candidate.category) &&
+    categorySet.has(candidate.category) &&
     typeof candidate.fileName === "string" &&
     typeof candidate.thumbnailFileName === "string" &&
     Array.isArray(candidate.tags) &&
@@ -65,7 +221,7 @@ function isAssetDefinition(value: unknown): value is AssetDefinition {
   );
 }
 
-function parseAssetManifest(value: unknown): AssetLibraryManifest {
+function parseAssetManifest(value: unknown, categories: string[]): AssetLibraryManifest {
   if (!value || typeof value !== "object") {
     throw new Error("Asset manifest must be an object.");
   }
@@ -75,7 +231,8 @@ function parseAssetManifest(value: unknown): AssetLibraryManifest {
     throw new Error("Asset manifest must include version 1 and an assets array.");
   }
 
-  if (!candidate.assets.every(isAssetDefinition)) {
+  const categorySet = new Set<string>(categories);
+  if (!candidate.assets.every((asset) => isAssetDefinition(asset, categorySet))) {
     throw new Error("Asset manifest contains an invalid asset entry.");
   }
 
@@ -93,4 +250,87 @@ function parseAssetManifest(value: unknown): AssetLibraryManifest {
   };
 }
 
-export const ASSETS: AssetDefinition[] = parseAssetManifest(assetsManifest).assets;
+export const ASSETS: AssetDefinition[] = parseAssetManifest(assetsManifest, ASSET_CATEGORIES).assets;
+export const ROOF_STARTER_ASSETS: AssetDefinition[] = parseAssetManifest(
+  roofStarterAssetsManifest,
+  ROOF_STARTER_CATEGORIES,
+).assets;
+export const ASSET_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
+  {
+    library: LIBRARIES.find((library) => library.id === ACTIVE_LIBRARY.id)!,
+    meta: ACTIVE_LIBRARY,
+    assets: ASSETS,
+    categories: ASSET_CATEGORIES,
+  },
+  {
+    library: LIBRARIES.find((library) => library.id === ROOF_STARTER_LIBRARY.id)!,
+    meta: ROOF_STARTER_LIBRARY,
+    assets: ROOF_STARTER_ASSETS,
+    categories: ROOF_STARTER_CATEGORIES,
+  },
+];
+
+export function getAssetLibraryBundles() {
+  return ASSET_LIBRARY_BUNDLES;
+}
+
+export function getAssetLibraryBundle(libraryId: string) {
+  return ASSET_LIBRARY_BUNDLES.find((bundle) => bundle.library.id === libraryId) ?? ASSET_LIBRARY_BUNDLES[0];
+}
+
+export function createAssetRef(libraryId: string, assetId: string): AssetRef {
+  return { libraryId, assetId };
+}
+
+export function getAssetRefKey(asset: AssetRef) {
+  return `${asset.libraryId}:${asset.assetId}`;
+}
+
+export function parseAssetRefKey(value: string): AssetRef {
+  const separatorIndex = value.indexOf(":");
+  if (separatorIndex === -1) {
+    return { libraryId: ACTIVE_LIBRARY.id, assetId: value };
+  }
+
+  return {
+    libraryId: value.slice(0, separatorIndex),
+    assetId: value.slice(separatorIndex + 1),
+  };
+}
+
+export function findAssetByRef(assetRef: AssetRef) {
+  const bundle = getAssetLibraryBundle(assetRef.libraryId);
+  return bundle.assets.find((asset) => asset.id === assetRef.assetId) ?? null;
+}
+
+export function findAssetByKey(value: string) {
+  return findAssetByRef(parseAssetRefKey(value));
+}
+
+export function getAssetBasePath() {
+  return ACTIVE_LIBRARY.assetBasePath;
+}
+
+export function getAssetBasePathForLibrary(libraryId: string) {
+  return getAssetLibraryBundle(libraryId).meta.assetBasePath;
+}
+
+export function getAssetThumbnailBasePath() {
+  return ACTIVE_LIBRARY.thumbnailBasePath;
+}
+
+export function getAssetThumbnailBasePathForLibrary(libraryId: string) {
+  return getAssetLibraryBundle(libraryId).meta.thumbnailBasePath;
+}
+
+export function getAssetFileUrl(fileName: string) {
+  return `${getAssetBasePath()}${fileName}`;
+}
+
+export function getAssetThumbnailUrl(thumbnailFileName: string) {
+  return `${getAssetThumbnailBasePath()}${thumbnailFileName}`;
+}
+
+export function getAssetThumbnailUrlForLibrary(libraryId: string, thumbnailFileName: string) {
+  return `${getAssetThumbnailBasePathForLibrary(libraryId)}${thumbnailFileName}`;
+}

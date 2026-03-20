@@ -11,6 +11,7 @@ import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
+import { getAssetBasePath } from "./assets";
 
 export class AssetPreviewRenderer {
   readonly engine: Engine;
@@ -57,7 +58,7 @@ export class AssetPreviewRenderer {
     window.addEventListener("resize", this.handleWindowResize);
   }
 
-  async loadAsset(fileName: string, basePath = "/assets/glTF/") {
+  async loadAsset(fileName: string, basePath = getAssetBasePath()) {
     this.root?.dispose(false, false);
     const result = await SceneLoader.ImportMeshAsync("", basePath, fileName, this.scene);
     const root = new TransformNode("preview-root", this.scene);

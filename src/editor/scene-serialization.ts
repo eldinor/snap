@@ -1,5 +1,6 @@
 export interface AssetSceneSerializableObject {
   id?: string;
+  libraryId: string;
   assetId: string;
   placementKind?: "clone" | "instance";
   position: [number, number, number];
@@ -55,6 +56,7 @@ export function serializeAssetScene(
       : undefined,
     objects: Array.from(objects, (object) => ({
       id: object.id,
+      libraryId: object.libraryId,
       assetId: object.assetId,
       placementKind: object.placementKind,
       position: [...object.position] as [number, number, number],
@@ -131,6 +133,7 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
     const entry = object as Partial<AssetSceneSerializableObject>;
     return (
       (entry.id === undefined || typeof entry.id === "string") &&
+      typeof entry.libraryId === "string" &&
       (entry.placementKind === undefined || entry.placementKind === "clone" || entry.placementKind === "instance") &&
       typeof entry.assetId === "string" &&
       (entry.rotationYDegrees === undefined || typeof entry.rotationYDegrees === "number") &&

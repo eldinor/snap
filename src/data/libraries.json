@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "libraries": [
+    {
+      "id": "built-in",
+      "name": "Built-in",
+      "mode": "built-in",
+      "metaPath": "./libraries/built-in/library.json"
+    },
+    {
+      "id": "roof-starter",
+      "name": "Roof Starter",
+      "mode": "built-in",
+      "metaPath": "./libraries/roof-starter/library.json"
+    }
+  ]
+}
