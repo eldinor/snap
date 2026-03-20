@@ -17,6 +17,9 @@ export class AssetPreviewRenderer {
   readonly scene: Scene;
   readonly camera: ArcRotateCamera;
   private readonly framingBehavior: FramingBehavior;
+  private readonly handleWindowResize = () => {
+    this.engine.resize();
+  };
   private root: TransformNode | null = null;
 
   constructor(canvas: HTMLCanvasElement, background: "dark" | "transparent" = "transparent") {
@@ -51,9 +54,7 @@ export class AssetPreviewRenderer {
       this.scene.render();
     });
 
-    window.addEventListener("resize", () => {
-      this.engine.resize();
-    });
+    window.addEventListener("resize", this.handleWindowResize);
   }
 
   async loadAsset(fileName: string, basePath = "/assets/glTF/") {
@@ -98,5 +99,12 @@ export class AssetPreviewRenderer {
     return new Promise<void>((resolve) => {
       this.scene.executeWhenReady(() => resolve());
     });
+  }
+
+  destroy() {
+    window.removeEventListener("resize", this.handleWindowResize);
+    this.root?.dispose(false, false);
+    this.scene.dispose();
+    this.engine.dispose();
   }
 }

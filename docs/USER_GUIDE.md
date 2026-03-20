@@ -201,3 +201,33 @@ Current settings include:
 - Batch transforms are not yet fully exposed as shared numeric transform editing.
 - The primary selected item is still used for gizmo attachment.
 
+## Debugging Import Root Collapse
+
+If you want to check whether Babylon is creating a technical `__root__` wrapper during glTF import and whether Snap collapses it:
+
+1. Open the browser console.
+2. Enable the flag:
+
+```js
+localStorage.setItem("snap.debug.importRootCollapse", "1");
+location.reload();
+```
+
+Or for the current page only:
+
+```js
+window.__snapDebugImportRootCollapse = true;
+```
+
+3. Load one or more assets.
+4. Inspect:
+
+```js
+window.__snapImportRootCollapseStats
+```
+
+This debug object reports:
+
+- how many technical import roots were seen
+- how many were collapsed
+- how many were kept because flattening would change the final transform

@@ -2,6 +2,7 @@ import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
+import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
 import type { EnvironmentHelper } from "@babylonjs/core/Helpers/environmentHelper";
 import type { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
@@ -18,6 +19,7 @@ import type { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
 import { GLTF2Export } from "@babylonjs/serializers/glTF/2.0/glTFSerializer";
+import JSZip from "jszip";
 import { ASSETS, type AssetDefinition } from "./assets";
 import { instantiateAsset, loadAssetTemplate, type AssetTemplate } from "./editor/asset-runtime";
 import { SceneCoreController } from "./editor/scene-core-controller";
@@ -44,6 +46,11 @@ import {
   snapVectorForSize,
 } from "./editor/placement";
 import {
+  createSequentialSceneObjectName,
+  deriveSceneObjectNameBase,
+  normalizeSceneObjectName,
+} from "./editor/object-naming";
+import {
   clearSceneObjects,
   clearSelection as clearSceneSelection,
   deleteSelectedObject as deleteSceneObject,
@@ -53,6 +60,7 @@ import { DEFAULT_USER_SETTINGS, loadUserSettings, saveUserSettings, type UserSet
 import {
   createInitialEditorViewState,
   type EditorViewState,
+  type RotationAxis,
   type SceneItemViewState,
   type SelectionViewState,
   type StatusViewState,
@@ -213,7 +221,8 @@ export class ModularEditorApp {
   private ySnapEnabled = false;
   private gridSize = 1;
   private rotationStepDegrees = 90;
-  private previewRotationDegrees = 0;
+  private rotationAxis: RotationAxis = "y";
+  private previewRotation = Vector3.Zero();
   private objectSequence = 0;
   private groupSequence = 0;
   private sceneRootOrder: string[] = [];
@@ -272,6 +281,8 @@ export class ModularEditorApp {
     this.groundMaterial.specularColor = Color3.Black();
     this.ground.material = this.groundMaterial;
     this.ground.isPickable = true;
+    this.ground.freezeWorldMatrix();
+    this.groundMaterial.freeze();
 
     this.gizmoManager = new GizmoManager(this.scene);
     this.gizmoManager.usePointerToAttachGizmos = false;
@@ -307,14 +318,18 @@ export class ModularEditorApp {
 
     if (this.gizmoManager.gizmos.rotationGizmo) {
       this.gizmoManager.gizmos.rotationGizmo.updateGizmoRotationToMatchAttachedMesh = false;
-      this.gizmoManager.gizmos.rotationGizmo.xGizmo.isEnabled = false;
-      this.gizmoManager.gizmos.rotationGizmo.zGizmo.isEnabled = false;
-      this.gizmoManager.gizmos.rotationGizmo.yGizmo.dragBehavior.onDragStartObservable.add(() => {
-        this.beginHistoryGesture();
-      });
-      this.gizmoManager.gizmos.rotationGizmo.yGizmo.dragBehavior.onDragEndObservable.add(() => {
-        this.snapSelectedObject();
-        this.completeHistoryGesture();
+      [
+        this.gizmoManager.gizmos.rotationGizmo.xGizmo,
+        this.gizmoManager.gizmos.rotationGizmo.yGizmo,
+        this.gizmoManager.gizmos.rotationGizmo.zGizmo,
+      ].forEach((gizmo) => {
+        gizmo.dragBehavior.onDragStartObservable.add(() => {
+          this.beginHistoryGesture();
+        });
+        gizmo.dragBehavior.onDragEndObservable.add(() => {
+          this.snapSelectedObject();
+          this.completeHistoryGesture();
+        });
       });
     }
 
@@ -325,6 +340,7 @@ export class ModularEditorApp {
     this.bindSceneInteractions();
     this.bindShortcuts();
     this.applySnapSettings();
+    this.applyRotationAxis();
     this.emitViewState();
     void this.initializePersistence();
 
@@ -372,8 +388,6 @@ export class ModularEditorApp {
 
     this.persistenceReady = true;
     this.sessionController.resetHistory();
-    this.persistLiveAutosave();
-    this.scheduleTimedAutosave();
     this.emitViewState();
   }
 
@@ -396,32 +410,66 @@ export class ModularEditorApp {
           return;
         }
 
-        const hits = this.scene.multiPick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh !== this.ground) ?? [];
-        for (const hit of hits) {
-          const pickedMesh = hit.pickedMesh;
-          if (!pickedMesh) {
-            continue;
-          }
-
-          const objectId = this.findObjectId(pickedMesh);
-          if (objectId) {
-            const object = this.objects.get(objectId);
-            if (object) {
-              this.selectObjectByRoot(object.root);
-              return;
-            }
-          }
-
-          const groupId = pickedMesh.metadata?.groupId as string | undefined;
-          if (groupId) {
-            this.selectSceneItem(groupId);
-            return;
-          }
+        const nearestSceneItemId = this.findNearestPickedSceneItemId(
+          this.scene.multiPick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh !== this.ground) ?? [],
+        );
+        if (nearestSceneItemId) {
+          this.selectSceneItem(nearestSceneItemId);
+          return;
         }
 
         this.clearSelection();
       }
     });
+  }
+
+  private findNearestPickedSceneItemId(hits: PickingInfo[]) {
+    const closestHitByItemId = new Map<string, number>();
+
+    hits.forEach((hit) => {
+      const pickedMesh = hit.pickedMesh;
+      if (!pickedMesh || !hit.hit) {
+        return;
+      }
+
+      const objectId = this.findObjectId(pickedMesh);
+      if (objectId) {
+        const object = this.objects.get(objectId);
+        if (!object || this.isObjectHidden(object) || this.isObjectLocked(object)) {
+          return;
+        }
+        const currentDistance = closestHitByItemId.get(objectId);
+        if (currentDistance === undefined || hit.distance < currentDistance) {
+          closestHitByItemId.set(objectId, hit.distance);
+        }
+        return;
+      }
+
+      const groupId = pickedMesh.metadata?.groupId as string | undefined;
+      if (!groupId) {
+        return;
+      }
+
+      const group = this.groups.get(groupId);
+      if (!group || this.isGroupHidden(group.id) || this.isGroupLocked(group.id)) {
+        return;
+      }
+      const currentDistance = closestHitByItemId.get(groupId);
+      if (currentDistance === undefined || hit.distance < currentDistance) {
+        closestHitByItemId.set(groupId, hit.distance);
+      }
+    });
+
+    let nearestItemId: string | null = null;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+    closestHitByItemId.forEach((distance, itemId) => {
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestItemId = itemId;
+      }
+    });
+
+    return nearestItemId;
   }
 
   private bindShortcuts() {
@@ -610,6 +658,7 @@ export class ModularEditorApp {
       hasObjects: this.objects.size > 0,
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
+      rotationAxis: this.rotationAxis,
       environmentEnabled: this.settings.environmentEnabled,
       environmentIntensity: this.settings.environmentIntensity,
       lightIntensity: this.settings.lightIntensity,
@@ -628,6 +677,7 @@ export class ModularEditorApp {
       ySnapEnabled: this.ySnapEnabled,
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
+      rotationAxis: this.rotationAxis,
       hint:
         this.statusNotice ??
         (this.mode === "place"
@@ -754,6 +804,11 @@ export class ModularEditorApp {
       id: object.id,
       assetId: object.assetId,
       position: [object.root.position.x, object.root.position.y, object.root.position.z],
+      rotationDegrees: [
+        this.toDegrees(object.root.rotation.x),
+        this.toDegrees(object.root.rotation.y),
+        this.toDegrees(object.root.rotation.z),
+      ],
       rotationYDegrees: this.toDegrees(object.root.rotation.y),
       name: object.name,
       hidden: object.hidden,
@@ -795,14 +850,21 @@ export class ModularEditorApp {
       }
 
       root.position.set(entry.position[0], entry.position[1], entry.position[2]);
-      root.rotation.y = this.toRadians(entry.rotationYDegrees);
+      const rotationDegrees = Array.isArray(entry.rotationDegrees)
+        ? entry.rotationDegrees
+        : [0, entry.rotationYDegrees ?? 0, 0];
+      root.rotation.set(
+        this.toRadians(rotationDegrees[0] ?? 0),
+        this.toRadians(rotationDegrees[1] ?? 0),
+        this.toRadians(rotationDegrees[2] ?? 0),
+      );
 
       const id = typeof entry.id === "string" && entry.id ? entry.id : `object-${++this.objectSequence}`;
       const numericObjectId = Number(id.replace("object-", ""));
       if (Number.isFinite(numericObjectId)) {
         this.objectSequence = Math.max(this.objectSequence, numericObjectId);
       }
-      const defaultName = `${asset.name} ${String(this.objectSequence).padStart(2, "0")}`;
+      const defaultName = this.createNextSceneObjectName(asset.name);
       root.metadata = {
         objectId: id,
         assetId: asset.id,
@@ -1446,6 +1508,7 @@ export class ModularEditorApp {
         return;
       }
       this.gizmoManager.attachToNode(group.root);
+      this.applyRotationAxis();
       return;
     }
 
@@ -1461,6 +1524,7 @@ export class ModularEditorApp {
     }
 
     this.gizmoManager.attachToNode(object.root);
+    this.applyRotationAxis();
   }
 
   private getSelectedRoot() {
@@ -1530,10 +1594,10 @@ export class ModularEditorApp {
     }
 
     root.position.copyFrom(this.placementPreview?.position ?? Vector3.Zero());
-    root.rotation.y = this.placementPreview?.rotation.y ?? 0;
+    root.rotation.copyFrom(this.placementPreview?.rotation ?? Vector3.Zero());
 
     const id = `object-${++this.objectSequence}`;
-    const defaultName = `${asset.name} ${String(this.objectSequence).padStart(2, "0")}`;
+    const defaultName = this.createNextSceneObjectName(asset.name);
     root.metadata = {
       objectId: id,
       assetId: asset.id,
@@ -1595,7 +1659,11 @@ export class ModularEditorApp {
       this.previewTemplateSize,
       this.snapEnabled,
       this.gridSize,
-      this.toRadians(this.previewRotationDegrees),
+      new Vector3(
+        this.toRadians(this.previewRotation.x),
+        this.toRadians(this.previewRotation.y),
+        this.toRadians(this.previewRotation.z),
+      ),
     );
   }
 
@@ -1613,7 +1681,7 @@ export class ModularEditorApp {
         if (this.ySnapEnabled) {
           group.root.position.y = snapScalar(group.root.position.y, this.gridSize);
         }
-        group.root.rotation.y = this.snapAngle(group.root.rotation.y);
+        group.root.rotation[this.rotationAxis] = this.snapAngle(group.root.rotation[this.rotationAxis]);
       }
 
       this.emitViewState();
@@ -1639,7 +1707,7 @@ export class ModularEditorApp {
       if (this.ySnapEnabled) {
         object.root.position.y = snapScalar(object.root.position.y, this.gridSize);
       }
-      object.root.rotation.y = this.snapAngle(object.root.rotation.y);
+      object.root.rotation[this.rotationAxis] = this.snapAngle(object.root.rotation[this.rotationAxis]);
     }
 
     this.emitViewState();
@@ -1651,7 +1719,8 @@ export class ModularEditorApp {
 
   private rotateActiveTarget() {
     if (this.mode === "place" && this.placementPreview) {
-      this.previewRotationDegrees = (this.previewRotationDegrees + this.rotationStepDegrees) % 360;
+      this.previewRotation[this.rotationAxis] =
+        (this.previewRotation[this.rotationAxis] + this.rotationStepDegrees) % 360;
       this.updatePreviewTransform();
       return;
     }
@@ -1662,7 +1731,9 @@ export class ModularEditorApp {
         return;
       }
 
-      group.root.rotation.y = this.snapAngle(group.root.rotation.y + this.toRadians(this.rotationStepDegrees));
+      group.root.rotation[this.rotationAxis] = this.snapAngle(
+        group.root.rotation[this.rotationAxis] + this.toRadians(this.rotationStepDegrees),
+      );
       this.pushHistoryCheckpoint();
       this.emitViewState();
       return;
@@ -1677,7 +1748,9 @@ export class ModularEditorApp {
       return;
     }
 
-    object.root.rotation.y = this.snapAngle(object.root.rotation.y + this.toRadians(this.rotationStepDegrees));
+    object.root.rotation[this.rotationAxis] = this.snapAngle(
+      object.root.rotation[this.rotationAxis] + this.toRadians(this.rotationStepDegrees),
+    );
     this.pushHistoryCheckpoint();
     this.emitViewState();
   }
@@ -1712,16 +1785,17 @@ export class ModularEditorApp {
       : template.size.clone();
     root.position.copyFrom(source.root.position);
     root.position.x += Math.max(this.gridSize, templateSize.x || this.gridSize);
-    root.rotation.y = source.root.rotation.y;
+    root.rotation.copyFrom(source.root.rotation);
 
     if (this.snapEnabled) {
       const snapped = snapVectorForSize(root.position, templateSize, this.snapEnabled, this.gridSize);
       root.position.x = snapped.x;
       root.position.z = snapped.z;
-      root.rotation.y = this.snapAngle(root.rotation.y);
+      root.rotation[this.rotationAxis] = this.snapAngle(root.rotation[this.rotationAxis]);
     }
 
     const id = `object-${++this.objectSequence}`;
+    const nextName = this.createDuplicateSceneObjectName(source, asset);
     root.metadata = {
       objectId: id,
       assetId: asset.id,
@@ -1733,13 +1807,13 @@ export class ModularEditorApp {
       assetId: asset.id,
       placementKind: this.settings.newObjectPlacementKind,
       root,
-      name: `${source.name} Copy`,
+      name: nextName,
       hidden: false,
       locked: source.locked,
       type: "object",
       parentId: source.parentId,
     });
-    root.name = `${source.name} Copy`;
+    root.name = nextName;
     if (source.parentId) {
       const group = this.groups.get(source.parentId);
       if (group) {
@@ -1857,6 +1931,10 @@ export class ModularEditorApp {
     this.sceneCore.applySnapSettings(this.snapEnabled, this.gridSize, this.toRadians(this.rotationStepDegrees));
   }
 
+  private applyRotationAxis() {
+    this.sceneCore.applyRotationAxis(this.rotationAxis);
+  }
+
   private applyEnvironmentSetting() {
     this.sceneCore.applyEnvironmentSetting(
       this.defaultEnvironmentTexture ?? null,
@@ -1871,7 +1949,9 @@ export class ModularEditorApp {
   }
 
   private applyGroundColor() {
+    this.groundMaterial.unfreeze();
     this.groundMaterial.diffuseColor = Color3.FromHexString(this.settings.groundColor);
+    this.groundMaterial.freeze();
   }
 
   private saveUserSettings() {
@@ -1892,7 +1972,7 @@ export class ModularEditorApp {
 
     this.activeAssetId = asset.id;
     this.mode = "place";
-    this.previewRotationDegrees = 0;
+    this.previewRotation.setAll(0);
     await this.ensurePreviewForAsset(asset.id);
     this.emitViewState();
   }
@@ -2072,11 +2152,52 @@ export class ModularEditorApp {
       return;
     }
 
-    const glb = await GLTF2Export.GLBAsync(this.scene, "asset-scene", {
-      shouldExportNode: (node) => exportNodes.has(node),
-    });
-    glb.downloadFiles();
-    this.setStatusNotice("Scene exported as asset-scene.glb");
+    const restoreNames = this.applyCleanExportNodeNames(exportNodes);
+    try {
+      const glb = await GLTF2Export.GLBAsync(this.scene, "asset-scene", {
+        shouldExportNode: (node) => exportNodes.has(node),
+      });
+      glb.downloadFiles();
+      this.setStatusNotice("Scene exported as asset-scene.glb");
+    } finally {
+      restoreNames();
+    }
+  }
+
+  async exportToGltf() {
+    const exportNodes = this.collectVisibleExportNodes();
+    if (exportNodes.size === 0) {
+      this.setStatusNotice("No visible scene objects to export.");
+      return;
+    }
+
+    const restoreNames = this.applyCleanExportNodeNames(exportNodes);
+    try {
+      const gltf = await GLTF2Export.GLTFAsync(this.scene, "asset-scene", {
+        shouldExportNode: (node) => exportNodes.has(node),
+      });
+
+      const zip = new JSZip();
+      const addedFileNames = new Set<string>();
+      Object.entries(gltf.files).forEach(([fileName, fileData]) => {
+        if (addedFileNames.has(fileName)) {
+          return;
+        }
+        addedFileNames.add(fileName);
+        zip.file(fileName, fileData);
+      });
+
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "asset-scene.gltf.zip";
+      anchor.click();
+      URL.revokeObjectURL(url);
+      this.setStatusNotice("Scene exported as asset-scene.gltf.zip");
+    } finally {
+      restoreNames();
+    }
   }
 
   exportToFile() {
@@ -2837,6 +2958,16 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
+  setRotationAxis(value: RotationAxis) {
+    if (this.rotationAxis === value) {
+      return;
+    }
+
+    this.rotationAxis = value;
+    this.applyRotationAxis();
+    this.emitViewState();
+  }
+
   setGridVisible(visible: boolean) {
     if (this.settings.gridVisible === visible) {
       return;
@@ -2994,6 +3125,59 @@ export class ModularEditorApp {
     this.settings.heightLabelMode = value;
     this.saveUserSettings();
     this.emitViewState();
+  }
+
+  private createNextSceneObjectName(baseName: string) {
+    return createSequentialSceneObjectName(
+      baseName,
+      Array.from(this.objects.values(), (object) => object.name),
+    );
+  }
+
+  private createDuplicateSceneObjectName(source: EditorObject, asset: AssetDefinition) {
+    return createSequentialSceneObjectName(
+      deriveSceneObjectNameBase(source.name, asset.name),
+      Array.from(this.objects.values(), (object) => object.name),
+    );
+  }
+
+  private applyCleanExportNodeNames(exportNodes: Set<Node>) {
+    const previousNames = new Map<Node, string>();
+    const usedNames = new Set<string>();
+
+    const assignName = (node: Node, nextName: string) => {
+      previousNames.set(node, node.name);
+      node.name = nextName;
+      usedNames.add(nextName.toLowerCase());
+    };
+
+    this.groups.forEach((group) => {
+      if (!exportNodes.has(group.root)) {
+        return;
+      }
+      assignName(group.root, group.name);
+    });
+
+    this.objects.forEach((object) => {
+      if (!exportNodes.has(object.root)) {
+        return;
+      }
+      const asset = ASSETS.find((entry) => entry.id === object.assetId);
+      const normalizedName = normalizeSceneObjectName(object.name, asset?.name ?? object.assetId);
+      const uniqueName = usedNames.has(normalizedName.toLowerCase())
+        ? createSequentialSceneObjectName(
+            deriveSceneObjectNameBase(normalizedName, asset?.name ?? object.assetId),
+            Array.from(usedNames.values()),
+          )
+        : normalizedName;
+      assignName(object.root, uniqueName);
+    });
+
+    return () => {
+      previousNames.forEach((name, node) => {
+        node.name = name;
+      });
+    };
   }
 
   private findObjectId(mesh: Nullable<AbstractMesh>) {

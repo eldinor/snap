@@ -27,6 +27,7 @@ It is built with:
 - [`src/editor/scene-core-controller.ts`](/c:/Users/Fiolent23/newrepos/snap/src/editor/scene-core-controller.ts): scene helpers, grid, helper visuals
 - [`src/assets.ts`](/c:/Users/Fiolent23/newrepos/snap/src/assets.ts): asset catalog and categories
 - [`docs/USER_GUIDE.md`](/c:/Users/Fiolent23/newrepos/snap/docs/USER_GUIDE.md): end-user workflow guide
+- [`docs/PREFAB_AND_SOURCE_OF_TRUTH.md`](/c:/Users/Fiolent23/newrepos/snap/docs/PREFAB_AND_SOURCE_OF_TRUTH.md): architecture notes for assets, groups, prefabs, and clone/instance rules
 
 ## Getting Started
 
@@ -96,3 +97,25 @@ npm run preview
 - The editor currently validates cleanly with `npm run typecheck`.
 - The user guide focuses on actual implemented behavior, including current shortcuts and selection rules.
 
+## Debug Flags
+
+To inspect Babylon import-root cleanup for glTF assets, enable the import-root debug flag before loading assets:
+
+```js
+localStorage.setItem("snap.debug.importRootCollapse", "1");
+location.reload();
+```
+
+Or for the current page session only:
+
+```js
+window.__snapDebugImportRootCollapse = true;
+```
+
+Then inspect:
+
+```js
+window.__snapImportRootCollapseStats
+```
+
+This shows how many Babylon technical roots like `__root__` were seen, collapsed, or intentionally kept.

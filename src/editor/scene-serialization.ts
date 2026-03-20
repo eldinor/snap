@@ -3,6 +3,7 @@ export interface AssetSceneSerializableObject {
   assetId: string;
   placementKind?: "clone" | "instance";
   position: [number, number, number];
+  rotationDegrees?: [number, number, number];
   rotationYDegrees: number;
   name?: string;
   hidden?: boolean;
@@ -57,6 +58,7 @@ export function serializeAssetScene(
       assetId: object.assetId,
       placementKind: object.placementKind,
       position: [...object.position] as [number, number, number],
+      rotationDegrees: object.rotationDegrees ? [...object.rotationDegrees] as [number, number, number] : undefined,
       rotationYDegrees: object.rotationYDegrees,
       name: object.name,
       hidden: object.hidden,
@@ -131,7 +133,11 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
       (entry.id === undefined || typeof entry.id === "string") &&
       (entry.placementKind === undefined || entry.placementKind === "clone" || entry.placementKind === "instance") &&
       typeof entry.assetId === "string" &&
-      typeof entry.rotationYDegrees === "number" &&
+      (entry.rotationYDegrees === undefined || typeof entry.rotationYDegrees === "number") &&
+      (entry.rotationDegrees === undefined ||
+        (Array.isArray(entry.rotationDegrees) &&
+          entry.rotationDegrees.length === 3 &&
+          entry.rotationDegrees.every((component) => typeof component === "number"))) &&
       (entry.name === undefined || typeof entry.name === "string") &&
       (entry.hidden === undefined || typeof entry.hidden === "boolean") &&
       (entry.locked === undefined || typeof entry.locked === "boolean") &&

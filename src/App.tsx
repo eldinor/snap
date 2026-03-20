@@ -141,6 +141,10 @@ export function App() {
         void appRef.current?.exportToGlb();
         setExportMenuOpen(false);
       }}
+      onExportGltf={() => {
+        void appRef.current?.exportToGltf();
+        setExportMenuOpen(false);
+      }}
       onImportJson={() => {
         importInputRef.current?.click();
         setExportMenuOpen(false);
@@ -168,6 +172,9 @@ export function App() {
       }}
       onRotationStepChange={(value) => {
         appRef.current?.setRotationStepDegrees(value);
+      }}
+      onRotationAxisChange={(value) => {
+        appRef.current?.setRotationAxis(value);
       }}
       onToggleSettingsMenu={() => {
         setExportMenuOpen(false);

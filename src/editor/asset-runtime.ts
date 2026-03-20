@@ -5,12 +5,45 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
+import type { Node } from "@babylonjs/core/node";
 import type { AssetDefinition } from "../assets";
+import { collapseRedundantImportRoot } from "./import-root-collapse";
+import { isTechnicalImportRootName } from "./import-root-collapse";
 import { clonePreviewMaterial } from "./placement";
 
 export interface AssetTemplate {
   root: TransformNode;
   size: Vector3;
+}
+
+interface ImportRootCollapseStats {
+  technicalRootsSeen: number;
+  collapsed: number;
+  kept: number;
+  byAsset: Record<
+    string,
+    {
+      seen: number;
+      collapsed: number;
+      kept: number;
+    }
+  >;
+}
+
+const importRootCollapseStats: ImportRootCollapseStats = {
+  technicalRootsSeen: 0,
+  collapsed: 0,
+  kept: 0,
+  byAsset: {},
+};
+
+if (typeof globalThis === "object") {
+  (
+    globalThis as {
+      __snapImportRootCollapseStats?: ImportRootCollapseStats;
+      __snapDebugImportRootCollapse?: boolean;
+    }
+  ).__snapImportRootCollapseStats = importRootCollapseStats;
 }
 
 export async function instantiateAsset(
@@ -58,9 +91,18 @@ export async function loadAssetTemplate(asset: AssetDefinition, scene: Scene): P
     const importResult = await SceneLoader.ImportMeshAsync("", "/assets/glTF/", asset.fileName, scene);
     const root = new TransformNode(`template-${asset.id}`, scene);
 
-    [...importResult.transformNodes, ...importResult.meshes].forEach((node) => {
-      if (!node.parent && node !== root) {
-        node.parent = root;
+    const importedRootNodes = [...importResult.transformNodes, ...importResult.meshes].filter((node) => !node.parent);
+    importedRootNodes.forEach((node) => {
+      const technicalRoot = node instanceof TransformNode && isTechnicalImportRootName(node.name);
+      const nextNode =
+        node instanceof TransformNode
+          ? (collapseRedundantImportRoot(node, root) ?? node)
+          : node;
+      if (technicalRoot && isImportRootCollapseDebugEnabled()) {
+        recordImportRootCollapse(asset.id, node, nextNode !== node);
+      }
+      if (!nextNode.parent && nextNode !== root) {
+        nextNode.parent = root;
       }
     });
 
@@ -118,4 +160,55 @@ function normalizeTemplateRoot(root: TransformNode) {
 
   const normalizedBounds = root.getHierarchyBoundingVectors();
   return normalizedBounds.max.subtract(normalizedBounds.min);
+}
+
+function recordImportRootCollapse(assetId: string, root: TransformNode, collapsed: boolean) {
+  importRootCollapseStats.technicalRootsSeen += 1;
+  if (collapsed) {
+    importRootCollapseStats.collapsed += 1;
+  } else {
+    importRootCollapseStats.kept += 1;
+  }
+
+  const nextAssetStats = importRootCollapseStats.byAsset[assetId] ?? {
+    seen: 0,
+    collapsed: 0,
+    kept: 0,
+  };
+  nextAssetStats.seen += 1;
+  if (collapsed) {
+    nextAssetStats.collapsed += 1;
+  } else {
+    nextAssetStats.kept += 1;
+  }
+  importRootCollapseStats.byAsset[assetId] = nextAssetStats;
+
+  console.info(
+    `[snap] import root ${collapsed ? "collapsed" : "kept"} for asset "${assetId}" (${root.name})`,
+  );
+}
+
+function isImportRootCollapseDebugEnabled() {
+  if (typeof globalThis !== "object") {
+    return false;
+  }
+
+  const globalFlag = (
+    globalThis as {
+      __snapDebugImportRootCollapse?: boolean;
+    }
+  ).__snapDebugImportRootCollapse;
+  if (globalFlag === true) {
+    return true;
+  }
+
+  if (typeof localStorage === "undefined") {
+    return false;
+  }
+
+  try {
+    return localStorage.getItem("snap.debug.importRootCollapse") === "1";
+  } catch {
+    return false;
+  }
 }

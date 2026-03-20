@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, RefObject } from "react";
 
 interface TreeViewProps<T> {
   items: T[];
@@ -6,6 +6,7 @@ interface TreeViewProps<T> {
   getKey: (item: T) => string;
   renderItem: (item: T) => ReactNode;
   className?: string;
+  containerRef?: RefObject<HTMLDivElement | null>;
 }
 
 export function TreeView<T>(props: TreeViewProps<T>) {
@@ -13,5 +14,9 @@ export function TreeView<T>(props: TreeViewProps<T>) {
     return <div className="properties-empty">{props.emptyMessage}</div>;
   }
 
-  return <div className={props.className ?? "tree-view"}>{props.items.map((item) => props.renderItem(item))}</div>;
+  return (
+    <div ref={props.containerRef} className={props.className ?? "tree-view"}>
+      {props.items.map((item) => props.renderItem(item))}
+    </div>
+  );
 }

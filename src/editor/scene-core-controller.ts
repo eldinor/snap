@@ -10,6 +10,7 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
+import type { RotationAxis } from "./view-state";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { snapVectorForSize } from "./placement";
 
@@ -47,6 +48,7 @@ export class SceneCoreController {
     nextGrid.color = Color3.FromHexString(colorHex);
     nextGrid.alpha = 0.45;
     nextGrid.isPickable = false;
+    nextGrid.freezeWorldMatrix();
     return nextGrid;
   }
 
@@ -78,6 +80,8 @@ export class SceneCoreController {
     markerMaterial.alpha = 0.92;
     markerMaterial.specularColor = Color3.Black();
     nextMarker.material = markerMaterial;
+    markerMaterial.freeze();
+    nextMarker.freezeWorldMatrix();
     return nextMarker;
   }
 
@@ -261,8 +265,20 @@ export class SceneCoreController {
       this.gizmoManager.gizmos.positionGizmo.snapDistance = snapEnabled ? gridSize : 0;
     }
     if (this.gizmoManager.gizmos.rotationGizmo) {
+      this.gizmoManager.gizmos.rotationGizmo.xGizmo.snapDistance = snapEnabled ? rotationStepRadians : 0;
       this.gizmoManager.gizmos.rotationGizmo.yGizmo.snapDistance = snapEnabled ? rotationStepRadians : 0;
+      this.gizmoManager.gizmos.rotationGizmo.zGizmo.snapDistance = snapEnabled ? rotationStepRadians : 0;
     }
+  }
+
+  applyRotationAxis(rotationAxis: RotationAxis) {
+    if (!this.gizmoManager.gizmos.rotationGizmo) {
+      return;
+    }
+
+    this.gizmoManager.gizmos.rotationGizmo.xGizmo.isEnabled = rotationAxis === "x";
+    this.gizmoManager.gizmos.rotationGizmo.yGizmo.isEnabled = rotationAxis === "y";
+    this.gizmoManager.gizmos.rotationGizmo.zGizmo.isEnabled = rotationAxis === "z";
   }
 
   applyEnvironmentSetting(
@@ -282,7 +298,7 @@ export class SceneCoreController {
     previewTemplateSize: Vector3,
     snapEnabled: boolean,
     gridSize: number,
-    previewRotationRadians: number,
+    previewRotationRadians: Vector3,
   ) {
     if (!placementPreview) {
       return;
@@ -293,7 +309,7 @@ export class SceneCoreController {
       : lastPointerPoint.clone();
     placementPreview.position.set(point.x, 0, point.z);
     placementPreview.rotationQuaternion = null;
-    placementPreview.rotation.set(0, previewRotationRadians, 0);
+    placementPreview.rotation.copyFrom(previewRotationRadians);
   }
 
   disposePreview(placementPreview: TransformNode | null) {

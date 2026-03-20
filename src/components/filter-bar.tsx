@@ -46,17 +46,31 @@ export function FilterBar<TChip extends string = never, TSelect extends string =
         <div className="filter-bar-search-row">
           {props.hideSearch ? <div className="filter-bar-search-spacer" aria-hidden="true"></div> : null}
           {!props.hideSearch ? (
-            <input
-              id={props.searchId}
-              className="editor-input filter-bar-search"
-              type="text"
-              title=""
-              placeholder={props.searchPlaceholder}
-              value={props.searchValue}
-              onChange={(event) => {
-                props.onSearchChange(event.target.value);
-              }}
-            />
+            <div className="filter-bar-search-field">
+              <input
+                id={props.searchId}
+                className="editor-input filter-bar-search"
+                type="text"
+                title=""
+                placeholder={props.searchPlaceholder}
+                value={props.searchValue}
+                onChange={(event) => {
+                  props.onSearchChange(event.target.value);
+                }}
+              />
+              {props.searchValue ? (
+                <button
+                  type="button"
+                  className="filter-bar-clear"
+                  aria-label="Clear search"
+                  onClick={() => {
+                    props.onSearchChange("");
+                  }}
+                >
+                  x
+                </button>
+              ) : null}
+            </div>
           ) : null}
           {props.searchActions ? <div className="filter-bar-actions">{props.searchActions}</div> : null}
         </div>

@@ -181,9 +181,40 @@ select:focus-visible {
   min-width: 0;
 }
 
+.filter-bar-search-field {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.filter-bar-search-field .filter-bar-search {
+  padding-right: 26px;
+}
+
 .filter-bar-search-spacer {
   flex: 1 1 auto;
   min-width: 0;
+}
+
+.filter-bar-clear {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #8fa0ad;
+  font-size: 11px;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.filter-bar-clear:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #eef2f6;
 }
 
 .filter-bar-actions {
@@ -312,6 +343,25 @@ select:focus-visible {
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);
   min-height: 0;
+}
+
+.scene-filter-panel {
+  grid-row: 2;
+  min-height: 0;
+  align-self: start;
+}
+
+.scene-list-panel {
+  grid-row: 3;
+  min-height: 0;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+.scene-list-panel > .scene-list,
+.scene-list-panel > .properties-empty {
+  min-height: 0;
+  height: 100%;
 }
 
 .panel-label {
@@ -624,6 +674,7 @@ select:focus-visible {
   border: 1px solid #242c33;
   border-radius: 6px;
   background: #0f1418;
+  scroll-margin-block: 6px;
   transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
 }
 

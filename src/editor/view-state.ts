@@ -1,4 +1,5 @@
 export type EditorMode = "select" | "place";
+export type RotationAxis = "x" | "y" | "z";
 
 export interface ToolbarViewState {
   snapEnabled: boolean;
@@ -15,6 +16,7 @@ export interface ToolbarViewState {
   hasObjects: boolean;
   gridSize: number;
   rotationStepDegrees: number;
+  rotationAxis: RotationAxis;
   environmentEnabled: boolean;
   environmentIntensity: number;
   lightIntensity: number;
@@ -30,6 +32,7 @@ export interface StatusViewState {
   ySnapEnabled: boolean;
   gridSize: number;
   rotationStepDegrees: number;
+  rotationAxis: RotationAxis;
   hint: string;
 }
 
@@ -100,6 +103,7 @@ export function createInitialEditorViewState(): EditorViewState {
       hasObjects: false,
       gridSize: 1,
       rotationStepDegrees: 90,
+      rotationAxis: "y",
       environmentEnabled: true,
       environmentIntensity: 0.1,
       lightIntensity: 1.1,
@@ -117,6 +121,7 @@ export function createInitialEditorViewState(): EditorViewState {
       ySnapEnabled: false,
       gridSize: 1,
       rotationStepDegrees: 90,
+      rotationAxis: "y",
       hint: "Click object select | Delete remove | R rotate",
     },
     selection: {
