@@ -14,14 +14,18 @@ import { LinesMesh } from "@babylonjs/core/Meshes/linesMesh";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import type { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
+import { GLTF2Export } from "@babylonjs/serializers/glTF/2.0/glTFSerializer";
 import { ASSETS, type AssetDefinition } from "./assets";
 import { instantiateAsset, loadAssetTemplate, type AssetTemplate } from "./editor/asset-runtime";
 import { SceneCoreController } from "./editor/scene-core-controller";
 import {
   loadAutosavedScene,
+  loadLatestAutosaveVersion,
   loadManualSavedScene,
+  saveAutosaveVersion,
   saveAutosavedScene,
   saveManualSavedScene,
 } from "./editor/scene-persistence";
@@ -218,6 +222,10 @@ export class ModularEditorApp {
   private statusNotice: string | null = null;
   private viewState: EditorViewState = createInitialEditorViewState();
   private lastAutosavedSnapshotText: string | null = null;
+  private lastTimedAutosaveSnapshotText: string | null = null;
+  private pendingTimedAutosaveSnapshotText: string | null = null;
+  private autosaveTimeoutId: number | null = null;
+  private lastAutosaveAt: string | null = null;
   private lastManualSaveAt: string | null = null;
   private lastRecoveredAutosaveAt: string | null = null;
   private persistenceReady = false;
@@ -353,16 +361,19 @@ export class ModularEditorApp {
     const manualSaved = loadManualSavedScene();
     this.lastManualSaveAt = manualSaved?.savedAt ?? null;
 
-    const autosaved = loadAutosavedScene();
-    if (autosaved) {
-      await this.restoreSerializedScene(autosaved.scene);
-      this.lastRecoveredAutosaveAt = autosaved.savedAt;
-      this.statusNotice = `Recovered autosaved scene (${autosaved.scene.objects.length} objects).`;
+    const liveAutosaved = loadAutosavedScene();
+    const timedAutosaved = loadLatestAutosaveVersion();
+    this.lastAutosaveAt = timedAutosaved?.savedAt ?? null;
+    if (liveAutosaved) {
+      await this.restoreSerializedScene(liveAutosaved.scene);
+      this.lastRecoveredAutosaveAt = liveAutosaved.savedAt;
+      this.statusNotice = `Recovered autosaved scene (${liveAutosaved.scene.objects.length} objects).`;
     }
 
     this.persistenceReady = true;
     this.sessionController.resetHistory();
-    this.persistAutosavedScene();
+    this.persistLiveAutosave();
+    this.scheduleTimedAutosave();
     this.emitViewState();
   }
 
@@ -589,6 +600,9 @@ export class ModularEditorApp {
       ySnapEnabled: this.ySnapEnabled,
       newObjectPlacementKind: this.settings.newObjectPlacementKind,
       heightLabelMode: this.settings.heightLabelMode,
+      saveOnEveryUiUpdate: this.settings.saveOnEveryUiUpdate,
+      autosaveEnabled: this.settings.autosaveEnabled,
+      autosaveIntervalSeconds: this.settings.autosaveIntervalSeconds,
       mode: this.mode,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
@@ -630,6 +644,7 @@ export class ModularEditorApp {
       selectionCount: this.selectedSceneItemIds.size,
       noticeMessage: this.statusNotice,
       lastManualSaveAt: this.lastManualSaveAt,
+      lastAutosaveAt: this.lastAutosaveAt,
       lastRecoveredAutosaveAt: this.lastRecoveredAutosaveAt,
       sceneItems: this.buildSceneItemsViewState(),
       toolbar: this.buildToolbarViewState(),
@@ -640,12 +655,17 @@ export class ModularEditorApp {
 
   private emitViewState() {
     this.viewState = this.buildViewState();
-    this.persistAutosavedScene();
+    this.persistLiveAutosave();
+    this.scheduleTimedAutosave();
     this.onViewStateChange?.(this.viewState);
   }
 
-  private persistAutosavedScene() {
+  private persistLiveAutosave() {
     if (!this.persistenceReady) {
+      return;
+    }
+
+    if (!this.settings.saveOnEveryUiUpdate) {
       return;
     }
 
@@ -656,6 +676,53 @@ export class ModularEditorApp {
 
     this.lastAutosavedSnapshotText = snapshotText;
     saveAutosavedScene(JSON.parse(snapshotText) as SerializedAssetScene);
+  }
+
+  private scheduleTimedAutosave() {
+    if (!this.persistenceReady) {
+      return;
+    }
+
+    if (!this.settings.autosaveEnabled) {
+      this.clearPendingTimedAutosave();
+      return;
+    }
+
+    const snapshotText = this.getSerializedSceneText();
+    if (snapshotText === this.lastTimedAutosaveSnapshotText || snapshotText === this.pendingTimedAutosaveSnapshotText) {
+      return;
+    }
+
+    this.pendingTimedAutosaveSnapshotText = snapshotText;
+    this.clearPendingAutosaveTimer();
+    this.autosaveTimeoutId = window.setTimeout(() => {
+      this.flushTimedAutosave();
+    }, this.settings.autosaveIntervalSeconds * 1000);
+  }
+
+  private flushTimedAutosave() {
+    if (!this.persistenceReady || !this.settings.autosaveEnabled || !this.pendingTimedAutosaveSnapshotText) {
+      return;
+    }
+
+    this.lastTimedAutosaveSnapshotText = this.pendingTimedAutosaveSnapshotText;
+    this.lastAutosaveAt = saveAutosaveVersion(JSON.parse(this.pendingTimedAutosaveSnapshotText) as SerializedAssetScene);
+    this.pendingTimedAutosaveSnapshotText = null;
+    this.clearPendingAutosaveTimer();
+    this.viewState = this.buildViewState();
+    this.onViewStateChange?.(this.viewState);
+  }
+
+  private clearPendingAutosaveTimer() {
+    if (this.autosaveTimeoutId !== null) {
+      window.clearTimeout(this.autosaveTimeoutId);
+      this.autosaveTimeoutId = null;
+    }
+  }
+
+  private clearPendingTimedAutosave() {
+    this.pendingTimedAutosaveSnapshotText = null;
+    this.clearPendingAutosaveTimer();
   }
 
   private buildSceneMetadata(): SerializedAssetSceneMetadata {
@@ -753,6 +820,7 @@ export class ModularEditorApp {
         type: "object",
         parentId: entry.parentId ?? null,
       });
+      root.name = entry.name?.trim() || defaultName;
       this.applyObjectVisibility(id);
       if (!entry.parentId && !this.sceneRootOrder.includes(id)) {
         this.sceneRootOrder.push(id);
@@ -930,14 +998,7 @@ export class ModularEditorApp {
       }
     });
 
-    if (this.selectedObjectId) {
-      const selectedObject = this.objects.get(this.selectedObjectId);
-      if (selectedObject) {
-        selectSceneObject(selectedObject.root, this.gizmoManager);
-      }
-    } else {
-      this.gizmoManager.attachToNode(null);
-    }
+    this.refreshSelectionAttachment();
 
     if (emit) {
       this.emitViewState();
@@ -1285,6 +1346,24 @@ export class ModularEditorApp {
     return parentInsertIndex >= 0 ? parentInsertIndex + 1 : undefined;
   }
 
+  private getPreviousSiblingGroupId(itemId: string) {
+    const parentId = this.getSceneItemParentId(itemId);
+    const siblings = parentId ? this.groups.get(parentId)?.childIds ?? [] : this.sceneRootOrder;
+    const itemIndex = siblings.indexOf(itemId);
+    if (itemIndex <= 0) {
+      return null;
+    }
+
+    for (let index = itemIndex - 1; index >= 0; index -= 1) {
+      const siblingId = siblings[index];
+      if (this.groups.has(siblingId)) {
+        return siblingId;
+      }
+    }
+
+    return null;
+  }
+
   private recenterGroupRoot(groupId: string) {
     const group = this.groups.get(groupId);
     if (!group) {
@@ -1472,6 +1551,7 @@ export class ModularEditorApp {
       type: "object",
       parentId: null,
     });
+    root.name = defaultName;
     this.sceneRootOrder.push(id);
     this.selectObjectByRoot(root);
     this.pushHistoryCheckpoint();
@@ -1659,6 +1739,7 @@ export class ModularEditorApp {
       type: "object",
       parentId: source.parentId,
     });
+    root.name = `${source.name} Copy`;
     if (source.parentId) {
       const group = this.groups.get(source.parentId);
       if (group) {
@@ -1953,6 +2034,51 @@ export class ModularEditorApp {
     await this.sessionController.redo();
   }
 
+  private collectVisibleExportNodes() {
+    const exportNodes = new Set<Node>();
+
+    const addNodeHierarchy = (node: TransformNode) => {
+      exportNodes.add(node);
+      node.getDescendants(false).forEach((descendant) => {
+        exportNodes.add(descendant);
+      });
+    };
+
+    this.objects.forEach((object) => {
+      if (this.isObjectHidden(object)) {
+        return;
+      }
+
+      addNodeHierarchy(object.root);
+
+      let parentId = object.parentId;
+      while (parentId) {
+        const group = this.groups.get(parentId);
+        if (!group) {
+          break;
+        }
+        exportNodes.add(group.root);
+        parentId = group.parentId;
+      }
+    });
+
+    return exportNodes;
+  }
+
+  async exportToGlb() {
+    const exportNodes = this.collectVisibleExportNodes();
+    if (exportNodes.size === 0) {
+      this.setStatusNotice("No visible scene objects to export.");
+      return;
+    }
+
+    const glb = await GLTF2Export.GLBAsync(this.scene, "asset-scene", {
+      shouldExportNode: (node) => exportNodes.has(node),
+    });
+    glb.downloadFiles();
+    this.setStatusNotice("Scene exported as asset-scene.glb");
+  }
+
   exportToFile() {
     this.sessionController.exportToFile();
   }
@@ -1961,6 +2087,7 @@ export class ModularEditorApp {
     const scene = this.getSerializedScene();
     this.lastManualSaveAt = saveManualSavedScene(scene);
     this.setStatusNotice(`Scene saved to local storage (${scene.objects.length} objects).`);
+    this.emitViewState();
   }
 
   async importFromFile(file: File) {
@@ -1977,6 +2104,21 @@ export class ModularEditorApp {
     await this.restoreSerializedScene(saved.scene);
     this.lastManualSaveAt = saved.savedAt;
     this.statusNotice = `Loaded last saved scene (${saved.scene.objects.length} objects).`;
+    this.sessionController.resetHistory();
+    this.emitViewState();
+  }
+
+  async loadAutosavedScene() {
+    const autosaved = loadLatestAutosaveVersion();
+    if (!autosaved) {
+      this.setStatusNotice("No autosaved scene found.");
+      return;
+    }
+
+    await this.restoreSerializedScene(autosaved.scene);
+    this.lastAutosaveAt = autosaved.savedAt;
+    this.lastRecoveredAutosaveAt = autosaved.savedAt;
+    this.statusNotice = `Loaded autosaved scene (${autosaved.scene.objects.length} objects).`;
     this.sessionController.resetHistory();
     this.emitViewState();
   }
@@ -2070,6 +2212,7 @@ export class ModularEditorApp {
         return;
       }
       group.name = trimmed;
+      group.root.name = trimmed;
       this.pushHistoryCheckpoint();
       this.setStatusNotice(`Renamed to ${trimmed}.`);
       return;
@@ -2081,6 +2224,7 @@ export class ModularEditorApp {
     }
 
     object.name = trimmed;
+    object.root.name = trimmed;
     this.pushHistoryCheckpoint();
     this.setStatusNotice(`Renamed to ${trimmed}.`);
   }
@@ -2257,6 +2401,7 @@ export class ModularEditorApp {
     const groupId = `group-${++this.groupSequence}`;
     const groupName = `Group ${String(this.groupSequence).padStart(2, "0")}`;
     const groupRoot = this.createGroupRoot(groupId);
+    groupRoot.name = groupName;
     groupRoot.position.set(0, 0, 0);
         this.groups.set(groupId, {
           id: groupId,
@@ -2311,6 +2456,7 @@ export class ModularEditorApp {
     const groupId = `group-${++this.groupSequence}`;
     const groupName = `Group ${String(this.groupSequence).padStart(2, "0")}`;
     const groupRoot = this.createGroupRoot(groupId);
+    groupRoot.name = groupName;
     groupRoot.position.copyFrom(center);
     this.groups.set(groupId, {
       id: groupId,
@@ -2539,6 +2685,59 @@ export class ModularEditorApp {
     this.setStatusNotice(`Removed ${group.name} from its parent group.`);
   }
 
+  promoteSceneItem(itemId: string) {
+    const group = this.groups.get(itemId);
+    if (group) {
+      this.unchildGroup(group.id);
+      return;
+    }
+
+    const object = this.objects.get(itemId);
+    if (object) {
+      this.ungroupSceneItem(object.id);
+    }
+  }
+
+  demoteSceneItem(itemId: string) {
+    const targetGroupId = this.getPreviousSiblingGroupId(itemId);
+    if (!targetGroupId) {
+      return;
+    }
+
+    const targetGroup = this.groups.get(targetGroupId);
+    if (!targetGroup) {
+      return;
+    }
+
+    const group = this.groups.get(itemId);
+    if (group) {
+      if (this.isGroupWithinGroup(targetGroup.id, group.id)) {
+        return;
+      }
+      this.removeGroupFromParentContainer(group);
+      if (!this.insertGroupIntoGroup(group, targetGroup.id)) {
+        return;
+      }
+      this.refreshSelectionAttachment();
+      this.pushHistoryCheckpoint();
+      this.setStatusNotice(`Moved ${group.name} into ${targetGroup.name}.`);
+      return;
+    }
+
+    const object = this.objects.get(itemId);
+    if (!object) {
+      return;
+    }
+
+    this.removeObjectFromParentContainer(object);
+    if (!this.insertObjectIntoGroup(object, targetGroup.id)) {
+      return;
+    }
+    this.refreshSelectionAttachment();
+    this.pushHistoryCheckpoint();
+    this.setStatusNotice(`Moved ${object.name} into ${targetGroup.name}.`);
+  }
+
   toggleSceneItemHidden(objectId: string) {
     const group = this.groups.get(objectId);
     if (group) {
@@ -2672,6 +2871,9 @@ export class ModularEditorApp {
   }
 
   restoreDefaultUserSettings() {
+    this.settings.saveOnEveryUiUpdate = DEFAULT_USER_SETTINGS.saveOnEveryUiUpdate;
+    this.settings.autosaveEnabled = DEFAULT_USER_SETTINGS.autosaveEnabled;
+    this.settings.autosaveIntervalSeconds = DEFAULT_USER_SETTINGS.autosaveIntervalSeconds;
     this.settings.environmentEnabled = DEFAULT_USER_SETTINGS.environmentEnabled;
     this.settings.environmentIntensity = DEFAULT_USER_SETTINGS.environmentIntensity;
     this.settings.lightIntensity = DEFAULT_USER_SETTINGS.lightIntensity;
@@ -2685,6 +2887,12 @@ export class ModularEditorApp {
     this.applyEnvironmentSetting();
     this.applyLightIntensity();
     this.applyGroundColor();
+    if (!this.settings.autosaveEnabled) {
+      this.clearPendingTimedAutosave();
+    } else {
+      this.scheduleTimedAutosave();
+    }
+    this.persistLiveAutosave();
     this.saveUserSettings();
     this.setStatusNotice("User settings restored to defaults.");
   }
@@ -2734,6 +2942,50 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
+  setSaveOnEveryUiUpdate(value: boolean) {
+    if (this.settings.saveOnEveryUiUpdate === value) {
+      return;
+    }
+
+    this.settings.saveOnEveryUiUpdate = value;
+    if (value) {
+      this.persistLiveAutosave();
+    }
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setAutosaveEnabled(value: boolean) {
+    if (this.settings.autosaveEnabled === value) {
+      return;
+    }
+
+    this.settings.autosaveEnabled = value;
+    if (!value) {
+      this.clearPendingTimedAutosave();
+    } else {
+      this.scheduleTimedAutosave();
+    }
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setAutosaveIntervalSeconds(value: number) {
+    if (![15, 30, 60, 120, 300].includes(value) || this.settings.autosaveIntervalSeconds === value) {
+      return;
+    }
+
+    this.settings.autosaveIntervalSeconds = value;
+    if (this.settings.autosaveEnabled && this.pendingTimedAutosaveSnapshotText) {
+      this.clearPendingAutosaveTimer();
+      this.autosaveTimeoutId = window.setTimeout(() => {
+        this.flushTimedAutosave();
+      }, this.settings.autosaveIntervalSeconds * 1000);
+    }
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
   setHeightLabelMode(value: "transform" | "geometry") {
     if (this.settings.heightLabelMode === value) {
       return;
@@ -2761,6 +3013,8 @@ export class ModularEditorApp {
   }
 
   destroy() {
+    this.flushTimedAutosave();
+    this.clearPendingAutosaveTimer();
     this.resizeObserver.disconnect();
     window.removeEventListener("resize", this.handleWindowResize);
     window.removeEventListener("keydown", this.handleWindowKeyDown);

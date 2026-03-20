@@ -14,6 +14,7 @@ import {
   HideIcon,
   ImportIcon,
   LockIcon,
+  PromoteIcon,
   PlaceIcon,
   RedoIcon,
   RenameIcon,
@@ -25,6 +26,7 @@ import {
   SnapIcon,
   TrashIcon,
   UndoIcon,
+  DemoteIcon,
   UngroupIcon,
   UnlockIcon,
 } from "./icons";
@@ -53,9 +55,11 @@ interface EditorToolbarProps {
   onRedo: () => void;
   onSaveScene: () => void;
   onExportJson: () => void;
+  onExportGlb: () => void;
   onImportJson: () => void;
   onImportFile: (file: File) => void;
   onLoadLastSaved: () => void;
+  onLoadAutosave: () => void;
   onDeleteSelected: () => void;
   onClearScene: () => void;
   onGridSizeChange: (value: number) => void;
@@ -70,6 +74,9 @@ interface EditorToolbarProps {
   onGroundColorChange: (value: string) => void;
   onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
   onHeightLabelModeChange: (value: "transform" | "geometry") => void;
+  onSaveOnEveryUiUpdateChange: (value: boolean) => void;
+  onAutosaveEnabledChange: (value: boolean) => void;
+  onAutosaveIntervalChange: (value: number) => void;
   onRestoreDefaults: () => void;
 }
 
@@ -234,6 +241,10 @@ function EditorToolbar(props: EditorToolbarProps) {
                   <ExportIcon className="tool-icon" />
                   <span>Export JSON</span>
                 </button>
+                <button type="button" className="toolbar-menu-button" onClick={props.onExportGlb}>
+                  <ExportIcon className="tool-icon" />
+                  <span>Export GLB</span>
+                </button>
                 <button type="button" className="toolbar-menu-button" onClick={props.onImportJson}>
                   <ImportIcon className="tool-icon" />
                   <span>Import JSON</span>
@@ -242,10 +253,18 @@ function EditorToolbar(props: EditorToolbarProps) {
                   <SaveLoadIcon className="tool-icon" />
                   <span>Load Last Saved</span>
                 </button>
+                <button type="button" className="toolbar-menu-button" onClick={props.onLoadAutosave}>
+                  <SaveLoadIcon className="tool-icon" />
+                  <span>Load Autosave</span>
+                </button>
               </div>
               <div className="toolbar-menu-meta">
                 <span>Last Saved</span>
                 <strong>{formatSavedAt(props.viewState.lastManualSaveAt)}</strong>
+              </div>
+              <div className="toolbar-menu-meta">
+                <span>Last Timed Autosave</span>
+                <strong>{formatSavedAt(props.viewState.lastAutosaveAt)}</strong>
               </div>
               <div className="toolbar-menu-meta">
                 <span>Autosave Recovered</span>
@@ -268,6 +287,49 @@ function EditorToolbar(props: EditorToolbarProps) {
           </button>
           <div className="toolbar-menu settings-menu" hidden={!props.settingsMenuOpen}>
             <div className="panel-label settings-menu-label">User Settings</div>
+            <label className="setting-row">
+              <span className="setting-copy">Save On UI Update</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.saveOnEveryUiUpdate}
+                  onChange={(event) => {
+                    props.onSaveOnEveryUiUpdateChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
+              </span>
+            </label>
+            <label className="setting-row">
+              <span className="setting-copy">Autosave</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.autosaveEnabled}
+                  onChange={(event) => {
+                    props.onAutosaveEnabledChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
+              </span>
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Autosave Every</span>
+              <select
+                className="editor-input"
+                value={String(toolbar.autosaveIntervalSeconds)}
+                disabled={!toolbar.autosaveEnabled}
+                onChange={(event) => {
+                  props.onAutosaveIntervalChange(Number(event.target.value));
+                }}
+              >
+                <option value="15">15 sec</option>
+                <option value="30">30 sec</option>
+                <option value="60">1 min</option>
+                <option value="120">2 min</option>
+                <option value="300">5 min</option>
+              </select>
+            </label>
             <label className="setting-row">
               <span className="setting-copy">Environment Lighting</span>
               <span className="setting-switch">
@@ -620,6 +682,8 @@ interface SceneListProps {
   onSceneItemRename: (objectId: string, nextName: string) => void;
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
+  onSceneItemPromote: (objectId: string) => void;
+  onSceneItemDemote: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
   onSceneItemUnchildGroup: (groupId: string) => void;
 }
@@ -671,6 +735,7 @@ function SceneList(props: SceneListProps) {
   };
 
   const itemsById = new Map(sortedItems.map((item) => [item.id, item]));
+  const actualItemsById = new Map(props.sceneItems.map((item) => [item.id, item]));
   const normalizedQuery = props.searchQuery.trim().toLowerCase();
   const hasActiveFilter =
     !!normalizedQuery ||
@@ -728,6 +793,30 @@ function SceneList(props: SceneListProps) {
 
   const selectedIds = props.sceneItems.filter((item) => item.selected).map((item) => item.id);
   const selectedIdSet = new Set(selectedIds);
+
+  const canPromote = (itemId: string) => {
+    return (actualItemsById.get(itemId)?.parentId ?? null) !== null;
+  };
+
+  const canDemote = (itemId: string) => {
+    const item = actualItemsById.get(itemId);
+    if (!item) {
+      return false;
+    }
+    const siblings = props.sceneItems.filter((candidate) => candidate.parentId === item.parentId);
+    const itemIndex = siblings.findIndex((candidate) => candidate.id === item.id);
+    if (itemIndex <= 0) {
+      return false;
+    }
+
+    for (let index = itemIndex - 1; index >= 0; index -= 1) {
+      if (siblings[index]?.type === "group") {
+        return true;
+      }
+    }
+
+    return false;
+  };
 
   const applyTreeSelection = (
     itemId: string,
@@ -901,6 +990,30 @@ function SceneList(props: SceneListProps) {
             >
               <DuplicateIcon className="tool-icon" />
             </button> : null}
+            <button
+              type="button"
+              className="scene-row-action"
+              aria-label={`Promote ${item.label}`}
+              title="Promote"
+              disabled={!canPromote(item.id)}
+              onClick={() => {
+                props.onSceneItemPromote(item.id);
+              }}
+            >
+              <PromoteIcon className="tool-icon" />
+            </button>
+            <button
+              type="button"
+              className="scene-row-action"
+              aria-label={`Demote ${item.label}`}
+              title="Demote"
+              disabled={!canDemote(item.id)}
+              onClick={() => {
+                props.onSceneItemDemote(item.id);
+              }}
+            >
+              <DemoteIcon className="tool-icon" />
+            </button>
             {item.type === "object" && item.parentId ? <button
               type="button"
               className="scene-row-action"
@@ -1050,6 +1163,8 @@ interface RightSidebarProps {
   onSceneItemRename: (objectId: string, nextName: string) => void;
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
+  onSceneItemPromote: (objectId: string) => void;
+  onSceneItemDemote: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
   onSceneItemUnchildGroup: (groupId: string) => void;
   onCreateGroupFromSelected: () => void;
@@ -1196,6 +1311,8 @@ function RightSidebar(props: RightSidebarProps) {
           onSceneItemRename={props.onSceneItemRename}
           onSceneItemToggleHidden={props.onSceneItemToggleHidden}
           onSceneItemToggleLocked={props.onSceneItemToggleLocked}
+          onSceneItemPromote={props.onSceneItemPromote}
+          onSceneItemDemote={props.onSceneItemDemote}
           onSceneItemUngroup={props.onSceneItemUngroup}
           onSceneItemUnchildGroup={props.onSceneItemUnchildGroup}
         />
@@ -1275,6 +1392,8 @@ interface EditorShellProps {
   onSceneItemRename: (objectId: string) => void;
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
+  onSceneItemPromote: (objectId: string) => void;
+  onSceneItemDemote: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
   onSceneItemUnchildGroup: (groupId: string) => void;
   onToggleSelectedHidden: () => void;
@@ -1287,9 +1406,11 @@ interface EditorShellProps {
   onRedo: () => void;
   onSaveScene: () => void;
   onExportJson: () => void;
+  onExportGlb: () => void;
   onImportJson: () => void;
   onImportFile: (file: File) => void;
   onLoadLastSaved: () => void;
+  onLoadAutosave: () => void;
   onDeleteSelected: () => void;
   onClearScene: () => void;
   onGridSizeChange: (value: number) => void;
@@ -1304,6 +1425,9 @@ interface EditorShellProps {
   onGroundColorChange: (value: string) => void;
   onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
   onHeightLabelModeChange: (value: "transform" | "geometry") => void;
+  onSaveOnEveryUiUpdateChange: (value: boolean) => void;
+  onAutosaveEnabledChange: (value: boolean) => void;
+  onAutosaveIntervalChange: (value: number) => void;
   onRestoreDefaults: () => void;
   onSceneSortModeChange: (mode: SceneSortMode) => void;
   onCreateEmptyGroup: () => void;
@@ -1368,9 +1492,11 @@ export function EditorShell(props: EditorShellProps) {
         onRedo={props.onRedo}
         onSaveScene={props.onSaveScene}
         onExportJson={props.onExportJson}
+        onExportGlb={props.onExportGlb}
         onImportJson={props.onImportJson}
         onImportFile={props.onImportFile}
         onLoadLastSaved={props.onLoadLastSaved}
+        onLoadAutosave={props.onLoadAutosave}
         onDeleteSelected={props.onDeleteSelected}
         onClearScene={props.onClearScene}
         onGridSizeChange={props.onGridSizeChange}
@@ -1385,6 +1511,9 @@ export function EditorShell(props: EditorShellProps) {
         onGroundColorChange={props.onGroundColorChange}
         onNewObjectPlacementKindChange={props.onNewObjectPlacementKindChange}
         onHeightLabelModeChange={props.onHeightLabelModeChange}
+        onSaveOnEveryUiUpdateChange={props.onSaveOnEveryUiUpdateChange}
+        onAutosaveEnabledChange={props.onAutosaveEnabledChange}
+        onAutosaveIntervalChange={props.onAutosaveIntervalChange}
         onRestoreDefaults={props.onRestoreDefaults}
       />
       <div
@@ -1417,6 +1546,8 @@ export function EditorShell(props: EditorShellProps) {
           onSceneItemRename={props.onSceneItemRename}
           onSceneItemToggleHidden={props.onSceneItemToggleHidden}
           onSceneItemToggleLocked={props.onSceneItemToggleLocked}
+          onSceneItemPromote={props.onSceneItemPromote}
+          onSceneItemDemote={props.onSceneItemDemote}
           onSceneItemUngroup={props.onSceneItemUngroup}
           onSceneItemUnchildGroup={props.onSceneItemUnchildGroup}
           onToggleSelectedHidden={props.onToggleSelectedHidden}

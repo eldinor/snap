@@ -5,6 +5,9 @@ export interface ToolbarViewState {
   ySnapEnabled: boolean;
   newObjectPlacementKind: "clone" | "instance";
   heightLabelMode: "transform" | "geometry";
+  saveOnEveryUiUpdate: boolean;
+  autosaveEnabled: boolean;
+  autosaveIntervalSeconds: number;
   mode: EditorMode;
   canUndo: boolean;
   canRedo: boolean;
@@ -66,6 +69,7 @@ export interface EditorViewState {
   selectionCount: number;
   noticeMessage: string | null;
   lastManualSaveAt: string | null;
+  lastAutosaveAt: string | null;
   lastRecoveredAutosaveAt: string | null;
   sceneItems: SceneItemViewState[];
   toolbar: ToolbarViewState;
@@ -86,6 +90,9 @@ export function createInitialEditorViewState(): EditorViewState {
       ySnapEnabled: false,
       newObjectPlacementKind: "instance",
       heightLabelMode: "transform",
+      saveOnEveryUiUpdate: true,
+      autosaveEnabled: true,
+      autosaveIntervalSeconds: 30,
       mode: "select",
       canUndo: false,
       canRedo: false,
@@ -101,6 +108,7 @@ export function createInitialEditorViewState(): EditorViewState {
       groundColor: "#1f2326",
     },
     lastManualSaveAt: null,
+    lastAutosaveAt: null,
     lastRecoveredAutosaveAt: null,
     status: {
       mode: "select",

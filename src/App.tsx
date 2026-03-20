@@ -94,6 +94,12 @@ export function App() {
       onSceneItemToggleLocked={(objectId) => {
         appRef.current?.toggleSceneItemLocked(objectId);
       }}
+      onSceneItemPromote={(objectId) => {
+        appRef.current?.promoteSceneItem(objectId);
+      }}
+      onSceneItemDemote={(objectId) => {
+        appRef.current?.demoteSceneItem(objectId);
+      }}
       onSceneItemUngroup={(objectId) => {
         appRef.current?.ungroupSceneItem(objectId);
       }}
@@ -131,6 +137,10 @@ export function App() {
         appRef.current?.exportToFile();
         setExportMenuOpen(false);
       }}
+      onExportGlb={() => {
+        void appRef.current?.exportToGlb();
+        setExportMenuOpen(false);
+      }}
       onImportJson={() => {
         importInputRef.current?.click();
         setExportMenuOpen(false);
@@ -141,6 +151,10 @@ export function App() {
       }}
       onLoadLastSaved={() => {
         void appRef.current?.loadLastSavedScene();
+        setExportMenuOpen(false);
+      }}
+      onLoadAutosave={() => {
+        void appRef.current?.loadAutosavedScene();
         setExportMenuOpen(false);
       }}
       onDeleteSelected={() => {
@@ -186,6 +200,15 @@ export function App() {
       }}
       onHeightLabelModeChange={(value) => {
         appRef.current?.setHeightLabelMode(value);
+      }}
+      onSaveOnEveryUiUpdateChange={(value) => {
+        appRef.current?.setSaveOnEveryUiUpdate(value);
+      }}
+      onAutosaveEnabledChange={(value) => {
+        appRef.current?.setAutosaveEnabled(value);
+      }}
+      onAutosaveIntervalChange={(value) => {
+        appRef.current?.setAutosaveIntervalSeconds(value);
       }}
       onRestoreDefaults={() => {
         appRef.current?.restoreDefaultUserSettings();

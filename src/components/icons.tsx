@@ -270,3 +270,23 @@ export function ChevronRightIcon(props: IconProps) {
     </IconBase>
   );
 }
+
+export function PromoteIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M5 6.5h6" />
+      <path d="m9 4.5 2.5 2-2.5 2" />
+      <path d="M4.5 13.5h11" />
+    </IconBase>
+  );
+}
+
+export function DemoteIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M4.5 6.5h11" />
+      <path d="M5 13.5h6" />
+      <path d="m9 11.5 2.5 2-2.5 2" />
+    </IconBase>
+  );
+}
