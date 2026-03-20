@@ -74,6 +74,7 @@ interface EditorToolbarProps {
   onGridVisibleChange: (visible: boolean) => void;
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
+  onFreezeModelMaterialsChange: (value: boolean) => void;
   onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
   onHeightLabelModeChange: (value: "transform" | "geometry") => void;
   onSaveOnEveryUiUpdateChange: (value: boolean) => void;
@@ -430,6 +431,19 @@ function EditorToolbar(props: EditorToolbarProps) {
                   props.onGroundColorChange(event.target.value);
                 }}
               />
+            </label>
+            <label className="setting-row">
+              <span className="setting-copy">Freeze Model Materials</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.freezeModelMaterials}
+                  onChange={(event) => {
+                    props.onFreezeModelMaterialsChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
+              </span>
             </label>
             <label className="setting-stack">
               <span className="setting-copy">New Objects</span>
@@ -1449,6 +1463,9 @@ function StatusBar({ viewState }: { viewState: EditorViewState }) {
       <span>
         <strong>Objects</strong> <span>{viewState.objectCount}</span>
       </span>
+      <span>
+        <strong>Draw Calls</strong> <span>{status.drawCalls}</span>
+      </span>
       <span className="statusbar-hint">{status.hint}</span>
     </footer>
   );
@@ -1508,6 +1525,7 @@ interface EditorShellProps {
   onGridVisibleChange: (visible: boolean) => void;
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
+  onFreezeModelMaterialsChange: (value: boolean) => void;
   onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
   onHeightLabelModeChange: (value: "transform" | "geometry") => void;
   onSaveOnEveryUiUpdateChange: (value: boolean) => void;
@@ -1596,6 +1614,7 @@ export function EditorShell(props: EditorShellProps) {
         onGridVisibleChange={props.onGridVisibleChange}
         onGridColorChange={props.onGridColorChange}
         onGroundColorChange={props.onGroundColorChange}
+        onFreezeModelMaterialsChange={props.onFreezeModelMaterialsChange}
         onNewObjectPlacementKindChange={props.onNewObjectPlacementKindChange}
         onHeightLabelModeChange={props.onHeightLabelModeChange}
         onSaveOnEveryUiUpdateChange={props.onSaveOnEveryUiUpdateChange}

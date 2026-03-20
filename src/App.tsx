@@ -202,6 +202,9 @@ export function App() {
       onGroundColorChange={(value) => {
         appRef.current?.setGroundColor(value);
       }}
+      onFreezeModelMaterialsChange={(value) => {
+        appRef.current?.setFreezeModelMaterials(value);
+      }}
       onNewObjectPlacementKindChange={(value) => {
         appRef.current?.setNewObjectPlacementKind(value);
       }}

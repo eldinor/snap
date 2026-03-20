@@ -17,11 +17,12 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
+import type { Observer } from "@babylonjs/core/Misc/observable";
 import type { Nullable } from "@babylonjs/core/types";
 import { GLTF2Export } from "@babylonjs/serializers/glTF/2.0/glTFSerializer";
 import JSZip from "jszip";
 import { ASSETS, type AssetDefinition } from "./assets";
-import { instantiateAsset, loadAssetTemplate, type AssetTemplate } from "./editor/asset-runtime";
+import { instantiateAsset, loadAssetTemplate, setRootMaterialsFrozen, type AssetTemplate } from "./editor/asset-runtime";
 import { SceneCoreController } from "./editor/scene-core-controller";
 import {
   loadAutosavedScene,
@@ -238,6 +239,10 @@ export class ModularEditorApp {
   private lastManualSaveAt: string | null = null;
   private lastRecoveredAutosaveAt: string | null = null;
   private persistenceReady = false;
+  private drawCalls = 0;
+  private lastDrawCallSampleAt = 0;
+  private beforeAnimationsObserver: Observer<Scene> | null = null;
+  private afterRenderObserver: Observer<Scene> | null = null;
 
   constructor(options: ModularEditorAppOptions) {
     this.onViewStateChange = options.onViewStateChange;
@@ -339,6 +344,7 @@ export class ModularEditorApp {
 
     this.bindSceneInteractions();
     this.bindShortcuts();
+    this.bindDrawCallCounter();
     this.applySnapSettings();
     this.applyRotationAxis();
     this.emitViewState();
@@ -665,6 +671,7 @@ export class ModularEditorApp {
       gridVisible: this.settings.gridVisible,
       gridColor: this.settings.gridColor,
       groundColor: this.settings.groundColor,
+      freezeModelMaterials: this.settings.freezeModelMaterials,
     };
   }
 
@@ -678,6 +685,7 @@ export class ModularEditorApp {
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
       rotationAxis: this.rotationAxis,
+      drawCalls: this.drawCalls,
       hint:
         this.statusNotice ??
         (this.mode === "place"
@@ -708,6 +716,55 @@ export class ModularEditorApp {
     this.persistLiveAutosave();
     this.scheduleTimedAutosave();
     this.onViewStateChange?.(this.viewState);
+  }
+
+  private sampleDrawCalls() {
+    const now = performance.now();
+    if (now - this.lastDrawCallSampleAt < 500) {
+      return;
+    }
+    this.lastDrawCallSampleAt = now;
+
+    const nextDrawCalls = this.getCurrentDrawCalls();
+    if (nextDrawCalls === this.drawCalls) {
+      return;
+    }
+
+    this.drawCalls = nextDrawCalls;
+    this.viewState = {
+      ...this.viewState,
+      status: {
+        ...this.viewState.status,
+        drawCalls: nextDrawCalls,
+      },
+    };
+    this.onViewStateChange?.(this.viewState);
+  }
+
+  private getCurrentDrawCalls() {
+    const engineWithCounter = this.engine as Engine & {
+      _drawCalls?: {
+        current?: number;
+        fetchNewFrame?: () => void;
+      };
+    };
+    return engineWithCounter._drawCalls?.current ?? 0;
+  }
+
+  private bindDrawCallCounter() {
+    const engineWithCounter = this.engine as Engine & {
+      _drawCalls?: {
+        fetchNewFrame?: () => void;
+      };
+    };
+
+    this.beforeAnimationsObserver = this.scene.onBeforeAnimationsObservable.add(() => {
+      engineWithCounter._drawCalls?.fetchNewFrame?.();
+    });
+
+    this.afterRenderObserver = this.scene.onAfterRenderObservable.add(() => {
+      this.sampleDrawCalls();
+    });
   }
 
   private persistLiveAutosave() {
@@ -1635,7 +1692,7 @@ export class ModularEditorApp {
   }
 
   private async loadAssetTemplate(asset: AssetDefinition): Promise<AssetTemplate> {
-    return loadAssetTemplate(asset, this.scene);
+    return loadAssetTemplate(asset, this.scene, this.settings.freezeModelMaterials);
   }
 
   private renderGrid() {
@@ -3011,6 +3068,7 @@ export class ModularEditorApp {
     this.settings.gridVisible = DEFAULT_USER_SETTINGS.gridVisible;
     this.settings.gridColor = DEFAULT_USER_SETTINGS.gridColor;
     this.settings.groundColor = DEFAULT_USER_SETTINGS.groundColor;
+    this.settings.freezeModelMaterials = DEFAULT_USER_SETTINGS.freezeModelMaterials;
     this.settings.newObjectPlacementKind = DEFAULT_USER_SETTINGS.newObjectPlacementKind;
     this.settings.heightLabelMode = DEFAULT_USER_SETTINGS.heightLabelMode;
 
@@ -3018,6 +3076,7 @@ export class ModularEditorApp {
     this.applyEnvironmentSetting();
     this.applyLightIntensity();
     this.applyGroundColor();
+    this.applyModelMaterialFreezeSetting();
     if (!this.settings.autosaveEnabled) {
       this.clearPendingTimedAutosave();
     } else {
@@ -3059,6 +3118,17 @@ export class ModularEditorApp {
 
     this.settings.lightIntensity = nextIntensity;
     this.applyLightIntensity();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setFreezeModelMaterials(value: boolean) {
+    if (this.settings.freezeModelMaterials === value) {
+      return;
+    }
+
+    this.settings.freezeModelMaterials = value;
+    this.applyModelMaterialFreezeSetting();
     this.saveUserSettings();
     this.emitViewState();
   }
@@ -3141,6 +3211,22 @@ export class ModularEditorApp {
     );
   }
 
+  private applyModelMaterialFreezeSetting() {
+    this.assetTemplates.forEach((templatePromise) => {
+      void templatePromise.then((template) => {
+        setRootMaterialsFrozen(template.root, this.settings.freezeModelMaterials);
+      });
+    });
+
+    this.objects.forEach((object) => {
+      setRootMaterialsFrozen(object.root, this.settings.freezeModelMaterials);
+    });
+
+    if (this.placementPreview) {
+      setRootMaterialsFrozen(this.placementPreview, this.settings.freezeModelMaterials);
+    }
+  }
+
   private applyCleanExportNodeNames(exportNodes: Set<Node>) {
     const previousNames = new Map<Node, string>();
     const usedNames = new Set<string>();
@@ -3200,6 +3286,14 @@ export class ModularEditorApp {
     this.flushTimedAutosave();
     this.clearPendingAutosaveTimer();
     this.resizeObserver.disconnect();
+    if (this.beforeAnimationsObserver) {
+      this.scene.onBeforeAnimationsObservable.remove(this.beforeAnimationsObserver);
+      this.beforeAnimationsObserver = null;
+    }
+    if (this.afterRenderObserver) {
+      this.scene.onAfterRenderObservable.remove(this.afterRenderObserver);
+      this.afterRenderObserver = null;
+    }
     window.removeEventListener("resize", this.handleWindowResize);
     window.removeEventListener("keydown", this.handleWindowKeyDown);
     this.originMarker?.dispose();

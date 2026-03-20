@@ -10,6 +10,7 @@ export interface UserSettings {
   gridVisible: boolean;
   gridColor: string;
   groundColor: string;
+  freezeModelMaterials: boolean;
   newObjectPlacementKind: "clone" | "instance";
   heightLabelMode: "transform" | "geometry";
 }
@@ -24,6 +25,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   gridVisible: true,
   gridColor: "#292f38",
   groundColor: "#1f2326",
+  freezeModelMaterials: true,
   newObjectPlacementKind: "instance",
   heightLabelMode: "transform",
 };
@@ -53,6 +55,7 @@ export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSe
       gridVisible: parsed.gridVisible ?? DEFAULT_USER_SETTINGS.gridVisible,
       gridColor: typeof parsed.gridColor === "string" ? parsed.gridColor : DEFAULT_USER_SETTINGS.gridColor,
       groundColor: typeof parsed.groundColor === "string" ? parsed.groundColor : DEFAULT_USER_SETTINGS.groundColor,
+      freezeModelMaterials: parsed.freezeModelMaterials ?? DEFAULT_USER_SETTINGS.freezeModelMaterials,
       newObjectPlacementKind:
         parsed.newObjectPlacementKind === "clone" || parsed.newObjectPlacementKind === "instance"
           ? parsed.newObjectPlacementKind

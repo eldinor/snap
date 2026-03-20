@@ -1,3 +1,4 @@
+import { Material } from "@babylonjs/core/Materials/material";
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
@@ -14,6 +15,23 @@ import { clonePreviewMaterial } from "./placement";
 export interface AssetTemplate {
   root: TransformNode;
   size: Vector3;
+}
+
+export function setRootMaterialsFrozen(root: TransformNode, frozen: boolean) {
+  const materials = new Set<Material>();
+  root.getChildMeshes().forEach((mesh) => {
+    if (mesh.material instanceof Material) {
+      materials.add(mesh.material);
+    }
+  });
+
+  materials.forEach((material) => {
+    if (frozen) {
+      material.freeze();
+    } else {
+      material.unfreeze();
+    }
+  });
 }
 
 interface ImportRootCollapseStats {
@@ -86,7 +104,11 @@ export async function instantiateAsset(
   return root;
 }
 
-export async function loadAssetTemplate(asset: AssetDefinition, scene: Scene): Promise<AssetTemplate> {
+export async function loadAssetTemplate(
+  asset: AssetDefinition,
+  scene: Scene,
+  freezeModelMaterials = true,
+): Promise<AssetTemplate> {
   try {
     const importResult = await SceneLoader.ImportMeshAsync("", "/assets/glTF/", asset.fileName, scene);
     const root = new TransformNode(`template-${asset.id}`, scene);
@@ -107,11 +129,13 @@ export async function loadAssetTemplate(asset: AssetDefinition, scene: Scene): P
     });
 
     const size = normalizeTemplateRoot(root);
+    setRootMaterialsFrozen(root, freezeModelMaterials);
     root.setEnabled(false);
     return { root, size };
   } catch {
     const root = createPlaceholderTemplate(asset, scene);
     const size = normalizeTemplateRoot(root);
+    setRootMaterialsFrozen(root, freezeModelMaterials);
     root.setEnabled(false);
     return { root, size };
   }

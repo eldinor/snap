@@ -23,6 +23,7 @@ export interface ToolbarViewState {
   gridVisible: boolean;
   gridColor: string;
   groundColor: string;
+  freezeModelMaterials: boolean;
 }
 
 export interface StatusViewState {
@@ -33,6 +34,7 @@ export interface StatusViewState {
   gridSize: number;
   rotationStepDegrees: number;
   rotationAxis: RotationAxis;
+  drawCalls: number;
   hint: string;
 }
 
@@ -110,6 +112,7 @@ export function createInitialEditorViewState(): EditorViewState {
       gridVisible: true,
       gridColor: "#292f38",
       groundColor: "#1f2326",
+      freezeModelMaterials: true,
     },
     lastManualSaveAt: null,
     lastAutosaveAt: null,
@@ -122,6 +125,7 @@ export function createInitialEditorViewState(): EditorViewState {
       gridSize: 1,
       rotationStepDegrees: 90,
       rotationAxis: "y",
+      drawCalls: 0,
       hint: "Click object select | Delete remove | R rotate",
     },
     selection: {
