@@ -1,6 +1,7 @@
 import { useEffect, useState, type KeyboardEvent, type MouseEvent, type RefObject } from "react";
 import { ASSETS, ASSET_CATEGORIES, type AssetCategory, type AssetDefinition } from "../assets";
 import type { EditorViewState } from "../editor/view-state";
+import { FilterBar } from "./filter-bar";
 import {
   ClearIcon,
   ChevronRightIcon,
@@ -27,6 +28,7 @@ import {
   UngroupIcon,
   UnlockIcon,
 } from "./icons";
+import { TreeView } from "./tree-view";
 
 function getAssetThumbnailUrl(asset: AssetDefinition) {
   return `/generated/asset-previews/${asset.fileName.replace(/\.[^.]+$/u, ".png")}`;
@@ -391,13 +393,13 @@ interface AssetListProps {
 }
 
 function AssetList(props: AssetListProps) {
-  if (props.assets.length === 0) {
-    return <div className="asset-empty">No assets match the current filter.</div>;
-  }
-
   return (
-    <div className="asset-list">
-      {props.assets.map((asset) => (
+    <TreeView
+      items={props.assets}
+      emptyMessage="No assets match the current filter."
+      className="asset-list"
+      getKey={(asset) => asset.id}
+      renderItem={(asset) => (
         <button
           key={asset.id}
           type="button"
@@ -421,8 +423,8 @@ function AssetList(props: AssetListProps) {
             }}
           />
         </button>
-      ))}
-    </div>
+      )}
+    />
   );
 }
 
@@ -604,8 +606,12 @@ function SelectionPanel(props: SelectionPanelProps) {
 }
 
 interface SceneListProps {
-  viewState: EditorViewState;
+  sceneItems: EditorViewState["sceneItems"];
   sceneSortMode: SceneSortMode;
+  searchQuery: string;
+  itemTypeFilter: "all" | "object" | "group";
+  visibilityFilter: "all" | "visible" | "hidden";
+  lockFilter: "all" | "unlocked" | "locked";
   onSceneItemMove: (draggedId: string, targetId: string) => void;
   onSceneItemSelect: (selectionIds: string[], primaryId: string | null) => void;
   onSceneItemFrame: (objectId: string) => void;
@@ -626,11 +632,11 @@ function SceneList(props: SceneListProps) {
   const [collapsedGroupIds, setCollapsedGroupIds] = useState<string[]>([]);
   const [selectionAnchorId, setSelectionAnchorId] = useState<string | null>(null);
 
-  if (props.viewState.sceneItems.length === 0) {
+  if (props.sceneItems.length === 0) {
     return <div className="properties-empty">No placed objects yet.</div>;
   }
 
-  const sortedItems = [...props.viewState.sceneItems];
+  const sortedItems = [...props.sceneItems];
   if (props.sceneSortMode === "name") {
     sortedItems.sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }));
   } else if (props.sceneSortMode === "asset") {
@@ -665,7 +671,50 @@ function SceneList(props: SceneListProps) {
   };
 
   const itemsById = new Map(sortedItems.map((item) => [item.id, item]));
+  const normalizedQuery = props.searchQuery.trim().toLowerCase();
+  const hasActiveFilter =
+    !!normalizedQuery ||
+    props.itemTypeFilter !== "all" ||
+    props.visibilityFilter !== "all" ||
+    props.lockFilter !== "all";
+
+  const matchesFilters = (item: EditorViewState["sceneItems"][number]) => {
+    const matchesQuery =
+      !normalizedQuery ||
+      item.label.toLowerCase().includes(normalizedQuery) ||
+      item.assetName.toLowerCase().includes(normalizedQuery);
+    const matchesType = props.itemTypeFilter === "all" || item.type === props.itemTypeFilter;
+    const matchesVisibility =
+      props.visibilityFilter === "all" ||
+      (props.visibilityFilter === "hidden" ? item.hidden : !item.hidden);
+    const matchesLock =
+      props.lockFilter === "all" ||
+      (props.lockFilter === "locked" ? item.locked : !item.locked);
+    return matchesQuery && matchesType && matchesVisibility && matchesLock;
+  };
+
+  const includedIds = new Set<string>();
+  if (hasActiveFilter) {
+    sortedItems.forEach((item) => {
+      if (!matchesFilters(item)) {
+        return;
+      }
+      let currentId: string | null = item.id;
+      while (currentId) {
+        includedIds.add(currentId);
+        currentId = itemsById.get(currentId)?.parentId ?? null;
+      }
+    });
+  }
+
   const visibleItems = sortedItems.filter((item) => {
+    if (hasActiveFilter && !includedIds.has(item.id)) {
+      return false;
+    }
+    if (hasActiveFilter) {
+      return true;
+    }
+
     let currentParentId = item.parentId;
     while (currentParentId) {
       if (collapsedGroupIds.includes(currentParentId)) {
@@ -677,7 +726,7 @@ function SceneList(props: SceneListProps) {
     return true;
   });
 
-  const selectedIds = props.viewState.sceneItems.filter((item) => item.selected).map((item) => item.id);
+  const selectedIds = props.sceneItems.filter((item) => item.selected).map((item) => item.id);
   const selectedIdSet = new Set(selectedIds);
 
   const applyTreeSelection = (
@@ -713,8 +762,12 @@ function SceneList(props: SceneListProps) {
   };
 
   return (
-    <div className="scene-list">
-      {visibleItems.map((item) => (
+    <TreeView
+      items={visibleItems}
+      emptyMessage="No scene items match the current filter."
+      className="scene-list"
+      getKey={(item) => item.id}
+      renderItem={(item) => (
         <div
           key={item.id}
           className={`scene-row${item.selected ? " is-active" : ""}${item.hidden ? " is-hidden" : ""}${dragTarget?.id === item.id ? " is-drag-over" : ""}${dragTarget?.id === item.id && dragTarget.mode === "into" ? " is-drag-into" : ""}${dragTarget?.id === item.id && dragTarget.mode === "before" ? " is-drag-before" : ""}`}
@@ -934,8 +987,8 @@ function SceneList(props: SceneListProps) {
             ) : null}
           </div>
         </div>
-      ))}
-    </div>
+      )}
+    />
   );
 }
 
@@ -956,41 +1009,21 @@ function AssetSidebar(props: AssetSidebarProps) {
         <label className="panel-label" htmlFor="asset-search">
           Assets
         </label>
-        <input
-          id="asset-search"
-          className="editor-input"
-          type="text"
-          placeholder="Search assets"
-          value={props.searchQuery}
-          onChange={(event) => {
-            props.onSearchQueryChange(event.target.value);
+        <FilterBar
+          className="filter-bar-compact"
+          searchId="asset-search"
+          searchPlaceholder="Search assets"
+          searchValue={props.searchQuery}
+          onSearchChange={props.onSearchQueryChange}
+          chips={{
+            selectedValue: props.activeCategory,
+            options: [
+              { value: "All", label: "All" },
+              ...ASSET_CATEGORIES.map((category) => ({ value: category, label: category })),
+            ],
+            onChange: props.onActiveCategoryChange,
           }}
         />
-      </div>
-      <div className="sidebar-section">
-        <div className="chip-row">
-          <button
-            type="button"
-            className={`chip${props.activeCategory === "All" ? " is-active" : ""}`}
-            onClick={() => {
-              props.onActiveCategoryChange("All");
-            }}
-          >
-            All
-          </button>
-          {ASSET_CATEGORIES.map((category) => (
-            <button
-              key={category}
-              type="button"
-              className={`chip${props.activeCategory === category ? " is-active" : ""}`}
-              onClick={() => {
-                props.onActiveCategoryChange(category);
-              }}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
       </div>
       <AssetList
         assets={props.filteredAssets}
@@ -1028,6 +1061,13 @@ interface RightSidebarProps {
 }
 
 function RightSidebar(props: RightSidebarProps) {
+  const [sceneSearchQuery, setSceneSearchQuery] = useState("");
+  const [sceneItemTypeFilter, setSceneItemTypeFilter] = useState<"all" | "object" | "group">("all");
+  const [sceneVisibilityFilter, setSceneVisibilityFilter] = useState<"all" | "visible" | "hidden">("all");
+  const [sceneLockFilter, setSceneLockFilter] = useState<"all" | "unlocked" | "locked">("all");
+  const [showSceneSearch, setShowSceneSearch] = useState(true);
+  const [showSceneFilters, setShowSceneFilters] = useState(true);
+
   return (
     <aside className="sidebar sidebar-right" style={{ width: `${props.width}px` }}>
       <button
@@ -1062,9 +1102,92 @@ function RightSidebar(props: RightSidebarProps) {
             </select>
           </div>
         </div>
+        <FilterBar
+          className="filter-bar-compact"
+          hideSearch={!showSceneSearch}
+          searchId="scene-search"
+          searchPlaceholder="Search scene items"
+          searchValue={sceneSearchQuery}
+          onSearchChange={setSceneSearchQuery}
+          searchActions={
+            <>
+              <button
+                type="button"
+                className={`scene-filter-toggle${showSceneFilters ? " is-active" : ""}`}
+                disabled={!showSceneSearch}
+                onClick={() => {
+                  if (showSceneFilters) {
+                    setSceneItemTypeFilter("all");
+                    setSceneVisibilityFilter("all");
+                    setSceneLockFilter("all");
+                  }
+                  setShowSceneFilters((value) => !value);
+                }}
+              >
+                {showSceneFilters ? "Hide Filters" : "Show Filters"}
+              </button>
+              <button
+                type="button"
+                className={`scene-filter-toggle${showSceneSearch ? " is-active" : ""}`}
+                onClick={() => {
+                  if (showSceneSearch) {
+                    setSceneSearchQuery("");
+                    setShowSceneFilters(false);
+                    setSceneItemTypeFilter("all");
+                    setSceneVisibilityFilter("all");
+                    setSceneLockFilter("all");
+                  }
+                  setShowSceneSearch((value) => !value);
+                }}
+              >
+                {showSceneSearch ? "Hide Search" : "Show Search"}
+              </button>
+            </>
+          }
+          selects={
+            showSceneSearch && showSceneFilters
+              ? [
+                  {
+                    label: "Item",
+                    value: sceneItemTypeFilter,
+                    options: [
+                      { value: "all", label: "All" },
+                      { value: "object", label: "Objects" },
+                      { value: "group", label: "Groups" },
+                    ],
+                    onChange: setSceneItemTypeFilter,
+                  },
+                  {
+                    label: "Visible",
+                    value: sceneVisibilityFilter,
+                    options: [
+                      { value: "all", label: "All" },
+                      { value: "visible", label: "Visible" },
+                      { value: "hidden", label: "Hidden" },
+                    ],
+                    onChange: setSceneVisibilityFilter,
+                  },
+                  {
+                    label: "Lock",
+                    value: sceneLockFilter,
+                    options: [
+                      { value: "all", label: "All" },
+                      { value: "unlocked", label: "Unlocked" },
+                      { value: "locked", label: "Locked" },
+                    ],
+                    onChange: setSceneLockFilter,
+                  },
+                ]
+              : undefined
+          }
+        />
         <SceneList
-          viewState={props.viewState}
+          sceneItems={props.viewState.sceneItems}
           sceneSortMode={props.sceneSortMode}
+          searchQuery={sceneSearchQuery}
+          itemTypeFilter={sceneItemTypeFilter}
+          visibilityFilter={sceneVisibilityFilter}
+          lockFilter={sceneLockFilter}
           onSceneItemMove={props.onSceneItemMove}
           onSceneItemSelect={props.onSceneItemSelect}
           onSceneItemFrame={props.onSceneItemFrame}
