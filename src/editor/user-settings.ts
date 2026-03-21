@@ -12,6 +12,7 @@ export interface UserSettings {
   lightIntensity: number;
   gridVisible: boolean;
   gridPlaneSize: number;
+  gridRenderMode: "material" | "lines";
   gridColor: string;
   groundColor: string;
   freezeModelMaterials: boolean;
@@ -28,6 +29,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   lightIntensity: 1.1,
   gridVisible: true,
   gridPlaneSize: 64,
+  gridRenderMode: "material",
   gridColor: "#292f38",
   groundColor: "#1f2326",
   freezeModelMaterials: true,
@@ -61,6 +63,10 @@ export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSe
       gridPlaneSize: GRID_PLANE_SIZE_OPTIONS.includes(parsed.gridPlaneSize as (typeof GRID_PLANE_SIZE_OPTIONS)[number])
         ? (parsed.gridPlaneSize as number)
         : DEFAULT_USER_SETTINGS.gridPlaneSize,
+      gridRenderMode:
+        parsed.gridRenderMode === "material" || parsed.gridRenderMode === "lines"
+          ? parsed.gridRenderMode
+          : DEFAULT_USER_SETTINGS.gridRenderMode,
       gridColor: typeof parsed.gridColor === "string" ? parsed.gridColor : DEFAULT_USER_SETTINGS.gridColor,
       groundColor: typeof parsed.groundColor === "string" ? parsed.groundColor : DEFAULT_USER_SETTINGS.groundColor,
       freezeModelMaterials: parsed.freezeModelMaterials ?? DEFAULT_USER_SETTINGS.freezeModelMaterials,

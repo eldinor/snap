@@ -22,6 +22,7 @@ export interface ToolbarViewState {
   environmentIntensity: number;
   lightIntensity: number;
   gridVisible: boolean;
+  gridRenderMode: "material" | "lines";
   gridColor: string;
   groundColor: string;
   freezeModelMaterials: boolean;
@@ -120,6 +121,7 @@ export function createInitialEditorViewState(): EditorViewState {
       environmentIntensity: 0.1,
       lightIntensity: 1.1,
       gridVisible: true,
+      gridRenderMode: "material",
       gridColor: "#292f38",
       groundColor: "#1f2326",
       freezeModelMaterials: true,

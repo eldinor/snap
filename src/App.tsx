@@ -246,6 +246,9 @@ export function App() {
       onGridVisibleChange={(visible) => {
         appRef.current?.setGridVisible(visible);
       }}
+      onGridRenderModeChange={(value) => {
+        appRef.current?.setGridRenderMode(value);
+      }}
       onGridColorChange={(value) => {
         appRef.current?.setGridColor(value);
       }}

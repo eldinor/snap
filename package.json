@@ -20,6 +20,7 @@
   "dependencies": {
     "@babylonjs/core": "^8.55.3",
     "@babylonjs/loaders": "^8.55.3",
+    "@babylonjs/materials": "^8.56.1",
     "@babylonjs/serializers": "^8.56.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

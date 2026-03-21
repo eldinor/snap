@@ -73,6 +73,7 @@ interface EditorToolbarProps {
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
   onGridVisibleChange: (visible: boolean) => void;
+  onGridRenderModeChange: (value: "material" | "lines") => void;
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
   onFreezeModelMaterialsChange: (value: boolean) => void;
@@ -412,6 +413,19 @@ function EditorToolbar(props: EditorToolbarProps) {
                 />
                 <span className="setting-slider" aria-hidden="true"></span>
               </span>
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Grid Renderer</span>
+              <select
+                className="editor-input"
+                value={toolbar.gridRenderMode}
+                onChange={(event) => {
+                  props.onGridRenderModeChange(event.target.value as "material" | "lines");
+                }}
+              >
+                <option value="material">Babylon GridMaterial</option>
+                <option value="lines">Procedural LineSystem</option>
+              </select>
             </label>
             <label className="setting-stack">
               <span className="setting-copy">Grid Plane Size</span>
@@ -1596,6 +1610,7 @@ interface EditorShellProps {
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
   onGridVisibleChange: (visible: boolean) => void;
+  onGridRenderModeChange: (value: "material" | "lines") => void;
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
   onFreezeModelMaterialsChange: (value: boolean) => void;
@@ -1687,6 +1702,7 @@ export function EditorShell(props: EditorShellProps) {
         onEnvironmentIntensityChange={props.onEnvironmentIntensityChange}
         onLightIntensityChange={props.onLightIntensityChange}
         onGridVisibleChange={props.onGridVisibleChange}
+        onGridRenderModeChange={props.onGridRenderModeChange}
         onGridColorChange={props.onGridColorChange}
         onGroundColorChange={props.onGroundColorChange}
         onFreezeModelMaterialsChange={props.onFreezeModelMaterialsChange}

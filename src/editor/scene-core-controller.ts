@@ -35,7 +35,7 @@ export class SceneCoreController {
     private readonly gizmoManager: GizmoManager,
   ) {}
 
-  renderGrid(
+  renderProceduralGrid(
     gridMesh: Nullable<LinesMesh>,
     gridSize: number,
     gridPlaneSize: number,

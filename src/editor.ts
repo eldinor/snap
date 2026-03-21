@@ -7,6 +7,7 @@ import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
 import type { EnvironmentHelper } from "@babylonjs/core/Helpers/environmentHelper";
 import type { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { HemisphericLight as BabylonHemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
+import { Material } from "@babylonjs/core/Materials/material";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -20,9 +21,21 @@ import { Scene } from "@babylonjs/core/scene";
 import type { Observer } from "@babylonjs/core/Misc/observable";
 import type { Nullable } from "@babylonjs/core/types";
 import { GLTF2Export } from "@babylonjs/serializers/glTF/2.0/glTFSerializer";
+import { GridMaterial } from "@babylonjs/materials/grid";
 import JSZip from "jszip";
-import { ACTIVE_LIBRARY, findAssetByRef, getAssetBasePathForLibrary, getAssetRefKey, type AssetDefinition } from "./assets";
-import { instantiateAsset, loadAssetTemplate, setRootMaterialsFrozen, type AssetTemplate } from "./editor/asset-runtime";
+import {
+  ACTIVE_LIBRARY,
+  findAssetByRef,
+  getAssetBasePathForLibrary,
+  getAssetRefKey,
+  type AssetDefinition,
+} from "./assets";
+import {
+  instantiateAsset,
+  loadAssetTemplate,
+  setRootMaterialsFrozen,
+  type AssetTemplate,
+} from "./editor/asset-runtime";
 import { SceneCoreController } from "./editor/scene-core-controller";
 import {
   loadAutosavedScene,
@@ -41,11 +54,7 @@ import {
   type SerializedAssetSceneMetadata,
   type SerializedAssetScene,
 } from "./editor/scene-serialization";
-import {
-  snapAngle as snapPlacementAngle,
-  snapScalar,
-  snapVectorForSize,
-} from "./editor/placement";
+import { snapAngle as snapPlacementAngle, snapScalar, snapVectorForSize } from "./editor/placement";
 import {
   createSequentialSceneObjectName,
   deriveSceneObjectNameBase,
@@ -108,15 +117,15 @@ export class ModularEditorApp {
   private static readonly CAMERA_BASE_LOWER_RADIUS_LIMIT = 6;
   private static readonly CAMERA_BASE_UPPER_RADIUS_LIMIT = 48;
   private static readonly CAMERA_BASE_WHEEL_DELTA_PERCENTAGE = 0.02;
-  private static readonly CAMERA_BASE_PANNING_SENSIBILITY = 4000;
+  private static readonly CAMERA_BASE_PANNING_SENSIBILITY = 1000;
   private static readonly CAMERA_BASE_GRID_PLANE_SIZE = DEFAULT_USER_SETTINGS.gridPlaneSize;
 
   private readonly engine: Engine;
   private readonly scene: Scene;
   private readonly camera: ArcRotateCamera;
   private readonly gizmoManager: GizmoManager;
-  private readonly ground: Mesh;
-  private readonly groundMaterial: StandardMaterial;
+  private ground!: Mesh;
+  private groundMaterial: Material;
   private readonly mainLight: HemisphericLight;
   private readonly onViewStateChange;
   private readonly defaultEnvironment: EnvironmentHelper | null;
@@ -332,14 +341,9 @@ export class ModularEditorApp {
     this.mainLight.intensity = this.settings.lightIntensity;
     this.mainLight.groundColor = new Color3(0.06, 0.07, 0.08);
 
-    this.ground = MeshBuilder.CreateGround("ground", { width: 1, height: 1 }, this.scene);
     this.groundMaterial = new StandardMaterial("ground-material", this.scene);
-    this.groundMaterial.diffuseColor = Color3.FromHexString(this.settings.groundColor);
-    this.groundMaterial.specularColor = Color3.Black();
-    this.ground.material = this.groundMaterial;
-    this.ground.isPickable = true;
-    this.groundMaterial.freeze();
-    this.applyGridPlaneSize();
+    this.recreateGround();
+    this.applyGroundAppearance();
 
     this.gizmoManager = new GizmoManager(this.scene);
     this.gizmoManager.usePointerToAttachGizmos = false;
@@ -550,11 +554,11 @@ export class ModularEditorApp {
         multiSelected: true,
         activeAssetName:
           this.activeAssetId && this.activeAssetLibraryId
-            ? findAssetByRef({ libraryId: this.activeAssetLibraryId, assetId: this.activeAssetId })?.name ?? null
+            ? (findAssetByRef({ libraryId: this.activeAssetLibraryId, assetId: this.activeAssetId })?.name ?? null)
             : null,
         previewAssetName:
           this.previewAssetId && this.previewAssetLibraryId
-            ? findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })?.name ?? null
+            ? (findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })?.name ?? null)
             : null,
         objectPlacementKind: null,
         position: null,
@@ -567,7 +571,9 @@ export class ModularEditorApp {
 
     const selected = this.selectedObjectId ? this.objects.get(this.selectedObjectId) : null;
     const selectedGroup = this.selectedGroupId ? this.groups.get(this.selectedGroupId) : null;
-    const selectedAsset = selected ? findAssetByRef({ libraryId: selected.libraryId, assetId: selected.assetId }) : null;
+    const selectedAsset = selected
+      ? findAssetByRef({ libraryId: selected.libraryId, assetId: selected.assetId })
+      : null;
     const activeAsset =
       this.activeAssetId && this.activeAssetLibraryId
         ? findAssetByRef({ libraryId: this.activeAssetLibraryId, assetId: this.activeAssetId })
@@ -576,7 +582,7 @@ export class ModularEditorApp {
       this.previewAssetId && this.previewAssetLibraryId
         ? findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })
         : null;
-    const position = selected ? selected.root.position : selectedGroup?.root.position ?? null;
+    const position = selected ? selected.root.position : (selectedGroup?.root.position ?? null);
     const rotationDegrees = selected
       ? Math.round(this.toDegrees(selected.root.rotation.y))
       : selectedGroup
@@ -628,11 +634,11 @@ export class ModularEditorApp {
         return;
       }
       visitedIds.add(group.id);
-        items.push({
-          id: group.id,
-          libraryId: ACTIVE_LIBRARY.id,
-          assetId: "",
-          assetName: "Group",
+      items.push({
+        id: group.id,
+        libraryId: ACTIVE_LIBRARY.id,
+        assetId: "",
+        assetName: "Group",
         placementKind: null,
         childCount: group.childIds.length,
         label: group.name,
@@ -733,16 +739,17 @@ export class ModularEditorApp {
       mode: this.mode,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
-        hasSelection: this.selectedSceneItemIds.size > 0,
-        hasObjects: this.objects.size > 0,
-        gridSize: this.gridSize,
-        gridPlaneSize: this.gridPlaneSize,
-        rotationStepDegrees: this.rotationStepDegrees,
+      hasSelection: this.selectedSceneItemIds.size > 0,
+      hasObjects: this.objects.size > 0,
+      gridSize: this.gridSize,
+      gridPlaneSize: this.gridPlaneSize,
+      rotationStepDegrees: this.rotationStepDegrees,
       rotationAxis: this.rotationAxis,
       environmentEnabled: this.settings.environmentEnabled,
       environmentIntensity: this.settings.environmentIntensity,
       lightIntensity: this.settings.lightIntensity,
       gridVisible: this.settings.gridVisible,
+      gridRenderMode: this.settings.gridRenderMode,
       gridColor: this.settings.gridColor,
       groundColor: this.settings.groundColor,
       freezeModelMaterials: this.settings.freezeModelMaterials,
@@ -775,11 +782,11 @@ export class ModularEditorApp {
   }
 
   private buildViewState(): EditorViewState {
-      return {
-        activeAssetLibraryId: this.activeAssetLibraryId,
-        activeAssetId: this.activeAssetId,
-        previewAssetLibraryId: this.previewAssetLibraryId,
-        previewAssetId: this.previewAssetId,
+    return {
+      activeAssetLibraryId: this.activeAssetLibraryId,
+      activeAssetId: this.activeAssetId,
+      previewAssetLibraryId: this.previewAssetLibraryId,
+      previewAssetId: this.previewAssetId,
       objectCount: this.objects.size,
       selectionCount: this.selectedSceneItemIds.size,
       noticeMessage: this.statusNotice,
@@ -921,7 +928,9 @@ export class ModularEditorApp {
     }
 
     this.lastTimedAutosaveSnapshotText = this.pendingTimedAutosaveSnapshotText;
-    this.lastAutosaveAt = saveAutosaveVersion(JSON.parse(this.pendingTimedAutosaveSnapshotText) as SerializedAssetScene);
+    this.lastAutosaveAt = saveAutosaveVersion(
+      JSON.parse(this.pendingTimedAutosaveSnapshotText) as SerializedAssetScene,
+    );
     this.pendingTimedAutosaveSnapshotText = null;
     this.clearPendingAutosaveTimer();
     this.viewState = this.buildViewState();
@@ -952,14 +961,17 @@ export class ModularEditorApp {
       gridVisible: this.settings.gridVisible,
       gridColor: this.settings.gridColor,
       groundColor: this.settings.groundColor,
-      sceneGroups: Array.from(this.groups.values(), (group): SerializedSceneGroup => ({
-        id: group.id,
-        name: group.name,
-        childIds: [...group.childIds],
-        hidden: group.hidden,
-        locked: group.locked,
-        parentId: group.parentId,
-      })),
+      sceneGroups: Array.from(
+        this.groups.values(),
+        (group): SerializedSceneGroup => ({
+          id: group.id,
+          name: group.name,
+          childIds: [...group.childIds],
+          hidden: group.hidden,
+          locked: group.locked,
+          parentId: group.parentId,
+        }),
+      ),
       sceneRootOrder: [...this.sceneRootOrder],
     };
   }
@@ -1043,7 +1055,8 @@ export class ModularEditorApp {
         id,
         libraryId: objectLibraryId,
         assetId: asset.id,
-        placementKind: entry.placementKind === "clone" || entry.placementKind === "instance" ? entry.placementKind : "instance",
+        placementKind:
+          entry.placementKind === "clone" || entry.placementKind === "instance" ? entry.placementKind : "instance",
         root,
         name: entry.name?.trim() || defaultName,
         hidden: !!entry.hidden,
@@ -1196,16 +1209,14 @@ export class ModularEditorApp {
     this.clearSelectionVisuals();
 
     const nextSelectedIds = Array.from(
-      new Set(
-        Array.from(selectionIds).filter((id) => this.objects.has(id) || this.groups.has(id)),
-      ),
+      new Set(Array.from(selectionIds).filter((id) => this.objects.has(id) || this.groups.has(id))),
     );
     this.selectedSceneItemIds = new Set(nextSelectedIds);
 
     const nextPrimaryId =
       primaryId && this.selectedSceneItemIds.has(primaryId)
         ? primaryId
-        : nextSelectedIds[nextSelectedIds.length - 1] ?? null;
+        : (nextSelectedIds[nextSelectedIds.length - 1] ?? null);
 
     this.selectedObjectId = null;
     this.selectedGroupId = null;
@@ -1279,7 +1290,7 @@ export class ModularEditorApp {
       if (current.hidden) {
         return true;
       }
-      current = current.parentId ? this.groups.get(current.parentId) ?? null : null;
+      current = current.parentId ? (this.groups.get(current.parentId) ?? null) : null;
     }
     return false;
   }
@@ -1290,7 +1301,7 @@ export class ModularEditorApp {
       if (current.locked) {
         return true;
       }
-      current = current.parentId ? this.groups.get(current.parentId) ?? null : null;
+      current = current.parentId ? (this.groups.get(current.parentId) ?? null) : null;
     }
     return false;
   }
@@ -1346,13 +1357,19 @@ export class ModularEditorApp {
       .filter((itemId) => selectedIds.has(itemId))
       .filter((itemId) => {
         const object = this.objects.get(itemId);
-        if (object?.parentId && Array.from(selectedIds).some((selectedId) => this.groups.has(selectedId) && this.isObjectInGroup(object, selectedId))) {
+        if (
+          object?.parentId &&
+          Array.from(selectedIds).some(
+            (selectedId) => this.groups.has(selectedId) && this.isObjectInGroup(object, selectedId),
+          )
+        ) {
           return false;
         }
 
         const group = this.groups.get(itemId);
         return !Array.from(selectedIds).some(
-          (selectedId) => selectedId !== itemId && this.groups.has(selectedId) && this.isGroupInGroup(itemId, selectedId),
+          (selectedId) =>
+            selectedId !== itemId && this.groups.has(selectedId) && this.isGroupInGroup(itemId, selectedId),
         );
       });
   }
@@ -1393,7 +1410,9 @@ export class ModularEditorApp {
   }
 
   private moveSelectedByCameraAxes(forwardAmount: number, rightAmount: number, emit = true) {
-    const selectionIds = this.getOrderedSelectedTopLevelSceneItemIds().filter((itemId) => this.canMoveSceneItem(itemId));
+    const selectionIds = this.getOrderedSelectedTopLevelSceneItemIds().filter((itemId) =>
+      this.canMoveSceneItem(itemId),
+    );
     if (selectionIds.length === 0) {
       return;
     }
@@ -1523,7 +1542,10 @@ export class ModularEditorApp {
       return false;
     }
 
-    this.applySceneItemSelection(remainingSelectionIds, remainingSelectionIds[remainingSelectionIds.length - 1] ?? null);
+    this.applySceneItemSelection(
+      remainingSelectionIds,
+      remainingSelectionIds[remainingSelectionIds.length - 1] ?? null,
+    );
     return true;
   }
 
@@ -1545,7 +1567,7 @@ export class ModularEditorApp {
   }
 
   private getContainerInsertIndex(containerId: string | null, targetId: string) {
-    const children = containerId ? this.groups.get(containerId)?.childIds ?? [] : this.sceneRootOrder;
+    const children = containerId ? (this.groups.get(containerId)?.childIds ?? []) : this.sceneRootOrder;
     return children.indexOf(targetId);
   }
 
@@ -1572,9 +1594,7 @@ export class ModularEditorApp {
   private insertRootId(itemId: string, insertIndex?: number) {
     const nextRootOrder = this.sceneRootOrder.filter((id) => id !== itemId);
     const safeIndex =
-      insertIndex === undefined
-        ? nextRootOrder.length
-        : Math.min(nextRootOrder.length, Math.max(0, insertIndex));
+      insertIndex === undefined ? nextRootOrder.length : Math.min(nextRootOrder.length, Math.max(0, insertIndex));
     nextRootOrder.splice(safeIndex, 0, itemId);
     this.sceneRootOrder = nextRootOrder;
   }
@@ -1615,9 +1635,7 @@ export class ModularEditorApp {
     group.parentId = parentGroup.id;
     const nextChildIds = parentGroup.childIds.filter((id) => id !== group.id);
     const safeIndex =
-      insertIndex === undefined
-        ? nextChildIds.length
-        : Math.min(nextChildIds.length, Math.max(0, insertIndex));
+      insertIndex === undefined ? nextChildIds.length : Math.min(nextChildIds.length, Math.max(0, insertIndex));
     nextChildIds.splice(safeIndex, 0, group.id);
     parentGroup.childIds = nextChildIds;
     this.recenterGroupRoot(parentGroup.id);
@@ -1646,7 +1664,7 @@ export class ModularEditorApp {
 
   private getPreviousSiblingGroupId(itemId: string) {
     const parentId = this.getSceneItemParentId(itemId);
-    const siblings = parentId ? this.groups.get(parentId)?.childIds ?? [] : this.sceneRootOrder;
+    const siblings = parentId ? (this.groups.get(parentId)?.childIds ?? []) : this.sceneRootOrder;
     const itemIndex = siblings.indexOf(itemId);
     if (itemIndex <= 0) {
       return null;
@@ -1783,12 +1801,7 @@ export class ModularEditorApp {
 
     const absolutePosition = root.getAbsolutePosition();
     const rotation = root.rotationQuaternion
-      ? [
-          root.rotationQuaternion.x,
-          root.rotationQuaternion.y,
-          root.rotationQuaternion.z,
-          root.rotationQuaternion.w,
-        ]
+      ? [root.rotationQuaternion.x, root.rotationQuaternion.y, root.rotationQuaternion.z, root.rotationQuaternion.w]
       : [root.rotation.x, root.rotation.y, root.rotation.z, 0];
 
     return [
@@ -1841,7 +1854,7 @@ export class ModularEditorApp {
       return;
     }
 
-      const template = await this.getAssetTemplate(asset, libraryId);
+    const template = await this.getAssetTemplate(asset, libraryId);
     const preview = await instantiateAsset(asset, true, template, this.scene, "clone");
     if (!preview) {
       return;
@@ -1859,15 +1872,14 @@ export class ModularEditorApp {
       return;
     }
 
-      const asset =
-        this.previewAssetLibraryId
-          ? findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })
-          : null;
+    const asset = this.previewAssetLibraryId
+      ? findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })
+      : null;
     if (!asset) {
       return;
     }
 
-      const template = await this.getAssetTemplate(asset, this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id);
+    const template = await this.getAssetTemplate(asset, this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id);
     const placementKind = this.getDefaultPlacementKindForAsset(asset);
     const root = await instantiateAsset(asset, false, template, this.scene, placementKind);
     if (!root) {
@@ -1879,19 +1891,19 @@ export class ModularEditorApp {
 
     const id = `object-${++this.objectSequence}`;
     const defaultName = this.createNextSceneObjectName(asset.name);
-      root.metadata = {
-        objectId: id,
-        libraryId: this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id,
-        assetId: asset.id,
-        templateSize: this.previewTemplateSize.asArray(),
-      };
+    root.metadata = {
+      objectId: id,
+      libraryId: this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id,
+      assetId: asset.id,
+      templateSize: this.previewTemplateSize.asArray(),
+    };
     this.tagHierarchy(root, id);
-      this.objects.set(id, {
-        id,
-        libraryId: this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id,
-        assetId: asset.id,
-        placementKind,
-        root,
+    this.objects.set(id, {
+      id,
+      libraryId: this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id,
+      assetId: asset.id,
+      placementKind,
+      root,
       name: defaultName,
       hidden: false,
       locked: false,
@@ -1919,15 +1931,21 @@ export class ModularEditorApp {
   }
 
   private async loadAssetTemplate(asset: AssetDefinition, libraryId: string): Promise<AssetTemplate> {
-    return loadAssetTemplate(asset, this.scene, getAssetBasePathForLibrary(libraryId), this.settings.freezeModelMaterials);
+    return loadAssetTemplate(
+      asset,
+      this.scene,
+      getAssetBasePathForLibrary(libraryId),
+      this.settings.freezeModelMaterials,
+    );
   }
 
   private renderGrid() {
-    this.gridMesh = this.sceneCore.renderGrid(
+    this.applyGroundAppearance();
+    this.gridMesh = this.sceneCore.renderProceduralGrid(
       this.gridMesh,
       this.gridSize,
       this.gridPlaneSize,
-      this.settings.gridVisible,
+      this.settings.gridVisible && this.settings.gridRenderMode === "lines",
       this.settings.gridColor,
     );
     this.originMarker = this.sceneCore.renderOriginMarker(
@@ -2158,7 +2176,9 @@ export class ModularEditorApp {
     }
 
     this.sceneCore.frameSelection(this.camera, selected.root);
-    this.setStatusNotice(`Framed ${findAssetByRef({ libraryId: selected.libraryId, assetId: selected.assetId })?.name ?? "selection"}.`);
+    this.setStatusNotice(
+      `Framed ${findAssetByRef({ libraryId: selected.libraryId, assetId: selected.assetId })?.name ?? "selection"}.`,
+    );
   }
 
   private deleteSelectedObject() {
@@ -2257,13 +2277,66 @@ export class ModularEditorApp {
   }
 
   private applyGroundColor() {
-    this.groundMaterial.unfreeze();
-    this.groundMaterial.diffuseColor = Color3.FromHexString(this.settings.groundColor);
-    this.groundMaterial.freeze();
+    this.applyGroundAppearance();
   }
 
   private saveUserSettings() {
     saveUserSettings(this.settings);
+  }
+
+  private recreateGround() {
+    const previousGround = this.ground;
+    this.ground = MeshBuilder.CreateGround(
+      "ground",
+      { width: this.gridPlaneSize, height: this.gridPlaneSize },
+      this.scene,
+    );
+    this.ground.material = this.groundMaterial;
+    this.ground.isPickable = true;
+    previousGround?.dispose(false, false);
+  }
+
+  private applyGroundAppearance() {
+    const nextMaterial =
+      this.settings.gridVisible && this.settings.gridRenderMode === "material"
+        ? this.createGridGroundMaterial()
+        : this.createPlainGroundMaterial();
+
+    const previousMaterial = this.ground.material;
+    this.ground.material = nextMaterial;
+    this.groundMaterial = nextMaterial;
+    if (previousMaterial && previousMaterial !== nextMaterial) {
+      previousMaterial.dispose(false, false);
+    }
+  }
+
+  private createPlainGroundMaterial() {
+    const material = new StandardMaterial("ground-material", this.scene);
+    material.diffuseColor = Color3.FromHexString(this.settings.groundColor);
+    material.specularColor = Color3.Black();
+    material.freeze();
+    return material;
+  }
+
+  private createGridGroundMaterial() {
+    const material = new GridMaterial("ground-grid-material", this.scene);
+    const majorUnitFrequency = this.gridSize < 1 ? Math.max(1, Math.round(1 / this.gridSize)) : 1;
+    const minorUnitVisibility = this.gridSize <= 0.125 ? 0.56 : this.gridSize < 1 ? 0.48 : 0.35;
+    const gridLineBaseColor = Color3.FromHexString(this.settings.gridColor);
+    const brightenedLineColor = Color3.Lerp(
+      gridLineBaseColor,
+      Color3.Gray(),
+      this.gridSize <= 0.125 ? 0.42 : this.gridSize < 1 ? 0.24 : 0.12,
+    );
+    material.mainColor = Color3.FromHexString(this.settings.groundColor);
+    material.lineColor = brightenedLineColor;
+    material.gridRatio = this.gridSize;
+    material.majorUnitFrequency = majorUnitFrequency;
+    material.minorUnitVisibility = minorUnitVisibility;
+    material.opacity = 1;
+    material.backFaceCulling = false;
+    material.freeze();
+    return material;
   }
 
   async activateAsset(libraryId: string, assetId: string) {
@@ -2723,7 +2796,11 @@ export class ModularEditorApp {
           childGroup.root.setParent(null);
           childGroup.parentId = null;
           if (parentContainerId) {
-            this.insertGroupIntoGroup(childGroup, parentContainerId, insertIndex === undefined ? undefined : insertIndex + index);
+            this.insertGroupIntoGroup(
+              childGroup,
+              parentContainerId,
+              insertIndex === undefined ? undefined : insertIndex + index,
+            );
           } else {
             this.insertGroupIntoRoot(childGroup, insertIndex === undefined ? undefined : insertIndex + index);
           }
@@ -2737,7 +2814,11 @@ export class ModularEditorApp {
         childObject.root.setParent(null);
         childObject.parentId = null;
         if (parentContainerId) {
-          this.insertObjectIntoGroup(childObject, parentContainerId, insertIndex === undefined ? undefined : insertIndex + index);
+          this.insertObjectIntoGroup(
+            childObject,
+            parentContainerId,
+            insertIndex === undefined ? undefined : insertIndex + index,
+          );
         } else {
           this.insertObjectIntoRoot(childObject, insertIndex === undefined ? undefined : insertIndex + index);
         }
@@ -2816,9 +2897,7 @@ export class ModularEditorApp {
     object.parentId = groupId;
     const nextChildIds = group.childIds.filter((id) => id !== object.id);
     const safeIndex =
-      insertIndex === undefined
-        ? nextChildIds.length
-        : Math.min(nextChildIds.length, Math.max(0, insertIndex));
+      insertIndex === undefined ? nextChildIds.length : Math.min(nextChildIds.length, Math.max(0, insertIndex));
     nextChildIds.splice(safeIndex, 0, object.id);
     group.childIds = nextChildIds;
     this.recenterGroupRoot(groupId);
@@ -2831,16 +2910,16 @@ export class ModularEditorApp {
     const groupRoot = this.createGroupRoot(groupId);
     groupRoot.name = groupName;
     groupRoot.position.set(0, 0, 0);
-        this.groups.set(groupId, {
-          id: groupId,
-          name: groupName,
-          type: "group",
-          childIds: [],
-          hidden: false,
-          locked: false,
-          parentId: null,
-          root: groupRoot,
-        });
+    this.groups.set(groupId, {
+      id: groupId,
+      name: groupName,
+      type: "group",
+      childIds: [],
+      hidden: false,
+      locked: false,
+      parentId: null,
+      root: groupRoot,
+    });
     this.sceneRootOrder.push(groupId);
     this.applySceneItemSelection([groupId], groupId, false);
     this.refreshSelectionAttachment();
@@ -2855,7 +2934,7 @@ export class ModularEditorApp {
     }
 
     const parentIds = selectedIds.map((itemId) => this.getSceneItemParentId(itemId));
-    const commonParentId = parentIds.every((parentId) => parentId === parentIds[0]) ? parentIds[0] ?? null : null;
+    const commonParentId = parentIds.every((parentId) => parentId === parentIds[0]) ? (parentIds[0] ?? null) : null;
     const commonInsertIndex =
       parentIds.every((parentId) => parentId === parentIds[0]) && selectedIds.length > 0
         ? Math.min(
@@ -2942,7 +3021,11 @@ export class ModularEditorApp {
     const draggedLabel = draggedGroup?.name ?? draggedObject?.name;
     const destinationGroupId = targetGroup?.id ?? targetObject?.parentId ?? null;
 
-    if (draggedGroup && destinationGroupId && (destinationGroupId === draggedGroup.id || this.isGroupWithinGroup(destinationGroupId, draggedGroup.id))) {
+    if (
+      draggedGroup &&
+      destinationGroupId &&
+      (destinationGroupId === draggedGroup.id || this.isGroupWithinGroup(destinationGroupId, draggedGroup.id))
+    ) {
       return;
     }
 
@@ -3235,7 +3318,9 @@ export class ModularEditorApp {
     }
 
     this.sceneCore.frameSelection(this.camera, object.root);
-    this.setStatusNotice(`Framed ${findAssetByRef({ libraryId: object.libraryId, assetId: object.assetId })?.name ?? "selection"}.`);
+    this.setStatusNotice(
+      `Framed ${findAssetByRef({ libraryId: object.libraryId, assetId: object.assetId })?.name ?? "selection"}.`,
+    );
   }
 
   clearSceneContents() {
@@ -3264,7 +3349,7 @@ export class ModularEditorApp {
 
     this.gridPlaneSize = value;
     this.settings.gridPlaneSize = value;
-    this.applyGridPlaneSize();
+    this.recreateGround();
     this.renderGrid();
     this.saveUserSettings();
     this.emitViewState();
@@ -3306,6 +3391,17 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
+  setGridRenderMode(value: "material" | "lines") {
+    if (this.settings.gridRenderMode === value) {
+      return;
+    }
+
+    this.settings.gridRenderMode = value;
+    this.renderGrid();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
   setGridColor(colorHex: string) {
     if (!/^#[0-9a-f]{6}$/iu.test(colorHex) || this.settings.gridColor === colorHex) {
       return;
@@ -3337,6 +3433,7 @@ export class ModularEditorApp {
     this.settings.lightIntensity = DEFAULT_USER_SETTINGS.lightIntensity;
     this.settings.gridVisible = DEFAULT_USER_SETTINGS.gridVisible;
     this.settings.gridPlaneSize = DEFAULT_USER_SETTINGS.gridPlaneSize;
+    this.settings.gridRenderMode = DEFAULT_USER_SETTINGS.gridRenderMode;
     this.settings.gridColor = DEFAULT_USER_SETTINGS.gridColor;
     this.settings.groundColor = DEFAULT_USER_SETTINGS.groundColor;
     this.settings.freezeModelMaterials = DEFAULT_USER_SETTINGS.freezeModelMaterials;
@@ -3344,7 +3441,7 @@ export class ModularEditorApp {
     this.settings.heightLabelMode = DEFAULT_USER_SETTINGS.heightLabelMode;
 
     this.gridPlaneSize = this.settings.gridPlaneSize;
-    this.applyGridPlaneSize();
+    this.recreateGround();
     this.renderGrid();
     this.applyEnvironmentSetting();
     this.applyLightIntensity();
@@ -3379,11 +3476,8 @@ export class ModularEditorApp {
       Number((ModularEditorApp.CAMERA_BASE_WHEEL_DELTA_PERCENTAGE * Math.sqrt(safeScale)).toFixed(4)),
     );
     const panningSensibility = Math.min(
-      24000,
-      Math.max(
-        1200,
-        Math.round(ModularEditorApp.CAMERA_BASE_PANNING_SENSIBILITY / safeScale),
-      ),
+      6000,
+      Math.max(300, Math.round(ModularEditorApp.CAMERA_BASE_PANNING_SENSIBILITY * Math.sqrt(safeScale))),
     );
 
     this.camera.lowerRadiusLimit = lowerRadiusLimit;
@@ -3409,7 +3503,9 @@ export class ModularEditorApp {
   }
 
   setEnvironmentIntensity(intensity: number) {
-    const nextIntensity = Number.isFinite(intensity) ? Math.min(4, Math.max(0, intensity)) : this.settings.environmentIntensity;
+    const nextIntensity = Number.isFinite(intensity)
+      ? Math.min(4, Math.max(0, intensity))
+      : this.settings.environmentIntensity;
     if (this.settings.environmentIntensity === nextIntensity) {
       return;
     }
@@ -3421,7 +3517,9 @@ export class ModularEditorApp {
   }
 
   setLightIntensity(intensity: number) {
-    const nextIntensity = Number.isFinite(intensity) ? Math.min(4, Math.max(0, intensity)) : this.settings.lightIntensity;
+    const nextIntensity = Number.isFinite(intensity)
+      ? Math.min(4, Math.max(0, intensity))
+      : this.settings.lightIntensity;
     if (this.settings.lightIntensity === nextIntensity) {
       return;
     }
@@ -3590,12 +3688,6 @@ export class ModularEditorApp {
 
   private toDegrees(valueRadians: number) {
     return (valueRadians * 180) / Math.PI;
-  }
-
-  private applyGridPlaneSize() {
-    this.ground.unfreezeWorldMatrix();
-    this.ground.scaling.set(this.gridPlaneSize, 1, this.gridPlaneSize);
-    this.ground.freezeWorldMatrix();
   }
 
   destroy() {
