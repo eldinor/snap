@@ -599,14 +599,14 @@ interface SelectionPanelProps {
   onToggleSelectedHidden: () => void;
   onToggleSelectedLocked: () => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
-  onSelectionRotationChange: (value: number) => void;
+  onSelectionRotationChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionDropToGround: () => void;
 }
 
 function SelectionPanel(props: SelectionPanelProps) {
   const { selection } = props.viewState;
   const [draftPosition, setDraftPosition] = useState({ x: "", y: "", z: "" });
-  const [draftRotation, setDraftRotation] = useState("");
+  const [draftRotation, setDraftRotation] = useState({ x: "", y: "", z: "" });
 
   useEffect(() => {
     const [x, y, z] = selection.position ?? [null, null, null];
@@ -615,8 +615,13 @@ function SelectionPanel(props: SelectionPanelProps) {
       y: y === null ? "" : y.toFixed(3),
       z: z === null ? "" : z.toFixed(3),
     });
-    setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
-  }, [selection.position, selection.rotationYDegrees, selection.selectedObjectId]);
+    const [rotX, rotY, rotZ] = selection.rotationDegrees ?? [null, null, null];
+    setDraftRotation({
+      x: rotX === null ? "" : rotX.toFixed(0),
+      y: rotY === null ? "" : rotY.toFixed(0),
+      z: rotZ === null ? "" : rotZ.toFixed(0),
+    });
+  }, [selection.position, selection.rotationDegrees, selection.selectedObjectId]);
 
   const commitPosition = (axis: "x" | "y" | "z") => {
     const raw = draftPosition[axis].trim();
@@ -632,8 +637,8 @@ function SelectionPanel(props: SelectionPanelProps) {
     props.onSelectionPositionChange(axis, nextValue);
   };
 
-  const commitRotation = () => {
-    const raw = draftRotation.trim();
+  const commitRotation = (axis: "x" | "y" | "z") => {
+    const raw = draftRotation[axis].trim();
     if (!raw) {
       return;
     }
@@ -643,7 +648,7 @@ function SelectionPanel(props: SelectionPanelProps) {
       return;
     }
 
-    props.onSelectionRotationChange(nextValue);
+    props.onSelectionRotationChange(axis, nextValue);
   };
 
   const resetDrafts = () => {
@@ -653,7 +658,12 @@ function SelectionPanel(props: SelectionPanelProps) {
       y: y === null ? "" : y.toFixed(3),
       z: z === null ? "" : z.toFixed(3),
     });
-    setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
+    const [rotX, rotY, rotZ] = selection.rotationDegrees ?? [null, null, null];
+    setDraftRotation({
+      x: rotX === null ? "" : rotX.toFixed(0),
+      y: rotY === null ? "" : rotY.toFixed(0),
+      z: rotZ === null ? "" : rotZ.toFixed(0),
+    });
   };
 
   const handleTransformFieldKeyDown = (event: KeyboardEvent<HTMLInputElement>, commit: () => void) => {
@@ -740,23 +750,32 @@ function SelectionPanel(props: SelectionPanelProps) {
         ))}
       </div>
       <span className="properties-label">Rotation</span>
-      <div className="transform-fields transform-fields-single">
-        <label className="transform-field">
-          <span>Y</span>
-          <input
-            className="transform-input"
-            type="number"
-            step="15"
-            value={draftRotation}
-            onChange={(event) => {
-              setDraftRotation(event.target.value);
-            }}
-            onBlur={commitRotation}
-            onKeyDown={(event) => {
-              handleTransformFieldKeyDown(event, commitRotation);
-            }}
-          />
-        </label>
+      <div className="transform-fields">
+        {(["x", "y", "z"] as const).map((axis) => (
+          <label key={axis} className="transform-field">
+            <span>{axis.toUpperCase()}</span>
+            <input
+              className="transform-input"
+              type="number"
+              step="15"
+              value={draftRotation[axis]}
+              onChange={(event) => {
+                setDraftRotation((current) => ({
+                  ...current,
+                  [axis]: event.target.value,
+                }));
+              }}
+              onBlur={() => {
+                commitRotation(axis);
+              }}
+              onKeyDown={(event) => {
+                handleTransformFieldKeyDown(event, () => {
+                  commitRotation(axis);
+                });
+              }}
+            />
+          </label>
+        ))}
       </div>
       <span className="properties-label">Snap</span>
       <span>{selection.snapText ?? "-"}</span>
@@ -1369,7 +1388,7 @@ interface RightSidebarProps {
   onToggleSelectedHidden: () => void;
   onToggleSelectedLocked: () => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
-  onSelectionRotationChange: (value: number) => void;
+  onSelectionRotationChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionDropToGround: () => void;
 }
 
@@ -1659,7 +1678,7 @@ interface EditorShellProps {
   onCreateEmptyGroup: () => void;
   onCreateGroupFromSelected: () => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
-  onSelectionRotationChange: (value: number) => void;
+  onSelectionRotationChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionDropToGround: () => void;
 }
 

@@ -298,8 +298,8 @@ export function App() {
       onSelectionPositionChange={(axis, value) => {
         appRef.current?.setSelectionPosition(axis, value);
       }}
-      onSelectionRotationChange={(value) => {
-        appRef.current?.setSelectionRotationDegrees(value);
+      onSelectionRotationChange={(axis, value) => {
+        appRef.current?.setSelectionRotationDegrees(axis, value);
       }}
       onSelectionDropToGround={() => {
         appRef.current?.dropSelectionToGround();

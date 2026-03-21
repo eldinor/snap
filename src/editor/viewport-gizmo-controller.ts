@@ -90,6 +90,7 @@ const DEFAULT_OPTIONS: Required<Omit<ViewportGizmoOptions, "axisColors" | "onSna
 
 export class ViewportGizmoController {
   private static readonly BETA_EPSILON = 0.05;
+  private static readonly MATRIX_EPSILON = 0.0001;
   private readonly scene: Scene;
   private readonly canvas: HTMLCanvasElement;
   private readonly context: CanvasRenderingContext2D;
@@ -107,17 +108,25 @@ export class ViewportGizmoController {
   private hoveredAxis: Bubble | null = null;
   private flashAxisSet = new Set<BubbleAxisTarget>();
   private flashAxisTimeoutId: number | null = null;
+  private needsRedraw = true;
+  private readonly lastViewMatrix = Matrix.Identity();
+  private hasLastViewMatrix = false;
   private readonly handleMouseMove = (event: MouseEvent) => {
     if (!this.enabled) {
       return;
     }
     const pointer = this.getLocalPointerPosition(event);
-    this.hoveredAxis = this.pickBubble(pointer);
-    this.draw();
+    const nextHoveredAxis = this.pickBubble(pointer);
+    if (this.hoveredAxis !== nextHoveredAxis) {
+      this.hoveredAxis = nextHoveredAxis;
+      this.requestDraw();
+    }
   };
   private readonly handleMouseLeave = () => {
-    this.hoveredAxis = null;
-    this.draw();
+    if (this.hoveredAxis !== null) {
+      this.hoveredAxis = null;
+      this.requestDraw();
+    }
   };
   private readonly handleClick = (event: MouseEvent) => {
     if (!this.enabled) {
@@ -168,15 +177,16 @@ export class ViewportGizmoController {
 
     this.beforeRenderObserver = this.scene.onBeforeRenderObservable.add(() => {
       this.syncCamera();
-      this.draw();
+      this.drawIfNeeded();
     });
     this.resizeObserver = this.scene.getEngine().onResizeObservable.add(() => {
       this.positionCanvas();
-      this.draw();
+      this.requestDraw();
     });
 
     this.applyEnabledState();
-    this.draw();
+    this.requestDraw();
+    this.drawIfNeeded();
   }
 
   dispose() {
@@ -195,6 +205,7 @@ export class ViewportGizmoController {
   setEnabled(enabled: boolean) {
     this.enabled = enabled;
     this.applyEnabledState();
+    this.requestDraw();
   }
 
   updateOptions(options: Partial<ViewportGizmoOptions>) {
@@ -204,12 +215,14 @@ export class ViewportGizmoController {
     this.canvas.height = this.options.size;
     this.positionCanvas();
     this.applyEnabledState();
-    this.draw();
+    this.requestDraw();
+    this.drawIfNeeded();
   }
 
   refreshCamera() {
     this.activeCamera = this.resolveCamera();
-    this.draw();
+    this.requestDraw();
+    this.drawIfNeeded();
   }
 
   private mergeOptions(options?: ViewportGizmoOptions) {
@@ -265,6 +278,9 @@ export class ViewportGizmoController {
 
   private applyEnabledState() {
     this.canvas.style.display = this.enabled ? "block" : "none";
+    if (!this.enabled) {
+      this.hasLastViewMatrix = false;
+    }
   }
 
   private createBubbles(): Bubble[] {
@@ -303,7 +319,33 @@ export class ViewportGizmoController {
   }
 
   private syncCamera() {
-    this.activeCamera = this.resolveCamera();
+    const nextCamera = this.resolveCamera();
+    if (this.activeCamera !== nextCamera) {
+      this.activeCamera = nextCamera;
+      this.hasLastViewMatrix = false;
+      this.requestDraw();
+    }
+  }
+
+  private requestDraw() {
+    this.needsRedraw = true;
+  }
+
+  private drawIfNeeded() {
+    if (!this.enabled) {
+      return;
+    }
+
+    if (this.activeCamera && this.hasCameraViewChanged(this.activeCamera)) {
+      this.requestDraw();
+    }
+
+    if (!this.needsRedraw) {
+      return;
+    }
+
+    this.draw();
+    this.needsRedraw = false;
   }
 
   private draw() {
@@ -469,7 +511,8 @@ export class ViewportGizmoController {
       activeCamera.beta = nextBeta;
     }
     this.syncCamera();
-    this.draw();
+    this.requestDraw();
+    this.drawIfNeeded();
     onComplete?.();
   }
 
@@ -546,12 +589,31 @@ export class ViewportGizmoController {
     if (this.flashAxisTimeoutId !== null) {
       window.clearTimeout(this.flashAxisTimeoutId);
     }
-    this.draw();
+    this.requestDraw();
+    this.drawIfNeeded();
     this.flashAxisTimeoutId = window.setTimeout(() => {
       this.flashAxisSet.clear();
       this.flashAxisTimeoutId = null;
-      this.draw();
+      this.requestDraw();
     }, 220);
+  }
+
+  private hasCameraViewChanged(camera: Camera) {
+    const nextMatrix = camera.getViewMatrix();
+    if (!this.hasLastViewMatrix) {
+      nextMatrix.copyToArray(this.lastViewMatrix.m);
+      this.hasLastViewMatrix = true;
+      return true;
+    }
+
+    for (let index = 0; index < 16; index += 1) {
+      if (Math.abs(this.lastViewMatrix.m[index] - nextMatrix.m[index]) > ViewportGizmoController.MATRIX_EPSILON) {
+        nextMatrix.copyToArray(this.lastViewMatrix.m);
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private toColor3(color: Color3Like) {

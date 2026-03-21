@@ -577,7 +577,7 @@ export class ModularEditorApp {
             : null,
         objectPlacementKind: null,
         position: null,
-        rotationYDegrees: null,
+        rotationDegrees: null,
         positionText: null,
         rotationText: null,
         snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
@@ -598,11 +598,14 @@ export class ModularEditorApp {
         ? findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })
         : null;
     const position = selected ? selected.root.position : (selectedGroup?.root.position ?? null);
-    const rotationDegrees = selected
-      ? Math.round(this.toDegrees(selected.root.rotation.y))
-      : selectedGroup
-        ? Math.round(this.toDegrees(selectedGroup.root.rotation.y))
-        : null;
+    const rotation = selected ? selected.root.rotation : (selectedGroup?.root.rotation ?? null);
+    const rotationDegrees = rotation
+      ? ([
+          this.normalizeDisplayDegrees(Math.round(this.toDegrees(rotation.x))),
+          this.normalizeDisplayDegrees(Math.round(this.toDegrees(rotation.y))),
+          this.normalizeDisplayDegrees(Math.round(this.toDegrees(rotation.z))),
+        ] as [number, number, number])
+      : null;
 
     return {
       selectedObjectId: this.selectedObjectId ?? this.selectedGroupId,
@@ -612,9 +615,9 @@ export class ModularEditorApp {
       previewAssetName: previewAsset?.name ?? null,
       objectPlacementKind: selected?.placementKind ?? null,
       position: position ? [position.x, position.y, position.z] : null,
-      rotationYDegrees: rotationDegrees,
+      rotationDegrees,
       positionText: position ? `${position.x.toFixed(3)}, ${position.y.toFixed(3)}, ${position.z.toFixed(3)}` : null,
-      rotationText: rotationDegrees !== null ? `${rotationDegrees}deg` : null,
+      rotationText: rotationDegrees ? `${rotationDegrees[0]}deg, ${rotationDegrees[1]}deg, ${rotationDegrees[2]}deg` : null,
       snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
     };
   }
@@ -2060,7 +2063,9 @@ export class ModularEditorApp {
   }
 
   private snapAngle(valueRadians: number) {
-    return snapPlacementAngle(valueRadians, this.snapEnabled, this.toRadians(this.rotationStepDegrees));
+    return this.normalizeRadians(
+      snapPlacementAngle(valueRadians, this.snapEnabled, this.toRadians(this.rotationStepDegrees)),
+    );
   }
 
   private rotateActiveTarget() {
@@ -2429,19 +2434,19 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
-  setSelectionRotationDegrees(value: number) {
+  setSelectionRotationDegrees(axis: "x" | "y" | "z", value: number) {
     if (!Number.isFinite(value)) {
       return;
     }
 
-    const nextRadians = this.toRadians(value);
+    const nextRadians = this.normalizeRadians(this.toRadians(value));
     if (this.selectedGroupId) {
       const group = this.groups.get(this.selectedGroupId);
-      if (!group || group.root.rotation.y === nextRadians) {
+      if (!group || group.root.rotation[axis] === nextRadians) {
         return;
       }
 
-      group.root.rotation.y = nextRadians;
+      group.root.rotation[axis] = nextRadians;
       this.pushHistoryCheckpoint();
       this.emitViewState();
       return;
@@ -2452,14 +2457,31 @@ export class ModularEditorApp {
     }
 
     const object = this.objects.get(this.selectedObjectId);
-    if (!object || object.root.rotation.y === nextRadians) {
+    if (!object || object.root.rotation[axis] === nextRadians) {
       return;
     }
 
-    object.root.rotation.y = nextRadians;
+    object.root.rotation[axis] = nextRadians;
     this.refreshSelectionAttachment();
     this.pushHistoryCheckpoint();
     this.emitViewState();
+  }
+
+  private normalizeRadians(valueRadians: number) {
+    const fullTurn = Math.PI * 2;
+    let normalized = valueRadians % fullTurn;
+    if (normalized < 0) {
+      normalized += fullTurn;
+    }
+    if (Math.abs(normalized - fullTurn) < 0.000001 || Math.abs(normalized) < 0.000001) {
+      return 0;
+    }
+    return normalized;
+  }
+
+  private normalizeDisplayDegrees(valueDegrees: number) {
+    const normalized = ((valueDegrees % 360) + 360) % 360;
+    return normalized === 360 ? 0 : normalized;
   }
 
   dropSelectionToGround() {

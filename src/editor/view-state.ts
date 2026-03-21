@@ -53,7 +53,7 @@ export interface SelectionViewState {
   previewAssetName: string | null;
   objectPlacementKind: "clone" | "instance" | null;
   position: [number, number, number] | null;
-  rotationYDegrees: number | null;
+  rotationDegrees: [number, number, number] | null;
   positionText: string | null;
   rotationText: string | null;
   snapText: string | null;
@@ -155,7 +155,7 @@ export function createInitialEditorViewState(): EditorViewState {
       previewAssetName: null,
       objectPlacementKind: null,
       position: null,
-      rotationYDegrees: null,
+      rotationDegrees: null,
       positionText: null,
       rotationText: null,
       snapText: "Grid 1",
