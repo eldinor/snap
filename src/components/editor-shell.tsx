@@ -42,6 +42,7 @@ const RIGHT_SIDEBAR_WIDTH_STORAGE_KEY = "snap:right-sidebar-width";
 const RIGHT_SIDEBAR_MIN_WIDTH = 240;
 const RIGHT_SIDEBAR_MAX_WIDTH = 520;
 const GRID_PLANE_SIZE_OPTIONS = [16, 32, 64, 128, 256] as const;
+const CAMERA_CLOSE_LIMIT_OPTIONS = [0.01, 0.05, 0.1, 0.25, 0.5, 1] as const;
 
 interface EditorToolbarProps {
   viewState: EditorViewState;
@@ -72,6 +73,8 @@ interface EditorToolbarProps {
   onEnvironmentToggle: (enabled: boolean) => void;
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
+  onCameraCloseLimitChange: (value: number) => void;
+  onViewportGizmoEnabledChange: (value: boolean) => void;
   onGridVisibleChange: (visible: boolean) => void;
   onGridRenderModeChange: (value: "material" | "lines") => void;
   onGridColorChange: (value: string) => void;
@@ -399,6 +402,35 @@ function EditorToolbar(props: EditorToolbarProps) {
                   }}
                 />
                 <span className="setting-value">{toolbar.lightIntensity.toFixed(2)}</span>
+              </span>
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Camera Close Limit</span>
+              <select
+                className="editor-input"
+                value={String(toolbar.cameraCloseLimit)}
+                onChange={(event) => {
+                  props.onCameraCloseLimitChange(Number(event.target.value));
+                }}
+              >
+                {CAMERA_CLOSE_LIMIT_OPTIONS.map((value) => (
+                  <option key={value} value={String(value)}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="setting-row setting-row-spaced">
+              <span className="setting-copy">Viewport Gizmo</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.viewportGizmoEnabled}
+                  onChange={(event) => {
+                    props.onViewportGizmoEnabledChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
               </span>
             </label>
             <label className="setting-row setting-row-spaced">
@@ -1609,6 +1641,7 @@ interface EditorShellProps {
   onEnvironmentToggle: (enabled: boolean) => void;
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
+  onCameraCloseLimitChange: (value: number) => void;
   onGridVisibleChange: (visible: boolean) => void;
   onGridRenderModeChange: (value: "material" | "lines") => void;
   onGridColorChange: (value: string) => void;
@@ -1701,6 +1734,7 @@ export function EditorShell(props: EditorShellProps) {
         onEnvironmentToggle={props.onEnvironmentToggle}
         onEnvironmentIntensityChange={props.onEnvironmentIntensityChange}
         onLightIntensityChange={props.onLightIntensityChange}
+        onCameraCloseLimitChange={props.onCameraCloseLimitChange}
         onGridVisibleChange={props.onGridVisibleChange}
         onGridRenderModeChange={props.onGridRenderModeChange}
         onGridColorChange={props.onGridColorChange}

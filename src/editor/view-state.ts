@@ -21,6 +21,8 @@ export interface ToolbarViewState {
   environmentEnabled: boolean;
   environmentIntensity: number;
   lightIntensity: number;
+  cameraCloseLimit: number;
+  viewportGizmoEnabled: boolean;
   gridVisible: boolean;
   gridRenderMode: "material" | "lines";
   gridColor: string;
@@ -120,6 +122,8 @@ export function createInitialEditorViewState(): EditorViewState {
       environmentEnabled: true,
       environmentIntensity: 0.1,
       lightIntensity: 1.1,
+      cameraCloseLimit: 0.05,
+      viewportGizmoEnabled: true,
       gridVisible: true,
       gridRenderMode: "material",
       gridColor: "#292f38",

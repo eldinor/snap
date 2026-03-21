@@ -67,6 +67,7 @@ import {
   selectObject as selectSceneObject,
 } from "./editor/scene-actions";
 import {
+  CAMERA_CLOSE_LIMIT_OPTIONS,
   DEFAULT_USER_SETTINGS,
   GRID_PLANE_SIZE_OPTIONS,
   GRID_SIZE_OPTIONS,
@@ -83,6 +84,7 @@ import {
   type StatusViewState,
   type ToolbarViewState,
 } from "./editor/view-state";
+import { ViewportGizmoController } from "./editor/viewport-gizmo-controller";
 
 interface EditorObject {
   id: string;
@@ -138,6 +140,7 @@ export class ModularEditorApp {
   private readonly settings: UserSettings;
   private readonly history = new SnapshotHistory();
   private readonly sceneCore: SceneCoreController;
+  private readonly viewportGizmo: ViewportGizmoController;
   private readonly sessionController: SceneSessionController;
   private readonly resizeObserver: ResizeObserver;
   private readonly handleWindowResize = () => {
@@ -400,6 +403,15 @@ export class ModularEditorApp {
     this.sceneCore = new SceneCoreController(this.scene, this.gizmoManager);
     this.renderGrid();
     this.applyEnvironmentSetting();
+    this.viewportGizmo = new ViewportGizmoController(this.scene, {
+      enabled: this.settings.viewportGizmoEnabled,
+      anchor: "top-right",
+      size: 108,
+      margin: 14,
+      showAxisLabels: true,
+      showNegativeAxes: true,
+      showCenter: true,
+    });
 
     this.bindSceneInteractions();
     this.bindShortcuts();
@@ -751,6 +763,8 @@ export class ModularEditorApp {
       environmentEnabled: this.settings.environmentEnabled,
       environmentIntensity: this.settings.environmentIntensity,
       lightIntensity: this.settings.lightIntensity,
+      cameraCloseLimit: this.settings.cameraCloseLimit,
+      viewportGizmoEnabled: this.settings.viewportGizmoEnabled,
       gridVisible: this.settings.gridVisible,
       gridRenderMode: this.settings.gridRenderMode,
       gridColor: this.settings.gridColor,
@@ -3401,6 +3415,31 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
+  setCameraCloseLimit(value: number) {
+    if (
+      !CAMERA_CLOSE_LIMIT_OPTIONS.includes(value as (typeof CAMERA_CLOSE_LIMIT_OPTIONS)[number]) ||
+      this.settings.cameraCloseLimit === value
+    ) {
+      return;
+    }
+
+    this.settings.cameraCloseLimit = value;
+    this.retuneCameraForGridPlaneSize(false);
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setViewportGizmoEnabled(value: boolean) {
+    if (this.settings.viewportGizmoEnabled === value) {
+      return;
+    }
+
+    this.settings.viewportGizmoEnabled = value;
+    this.viewportGizmo.setEnabled(value);
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
   setGridRenderMode(value: "material" | "lines") {
     if (this.settings.gridRenderMode === value) {
       return;
@@ -3441,6 +3480,8 @@ export class ModularEditorApp {
     this.settings.environmentEnabled = DEFAULT_USER_SETTINGS.environmentEnabled;
     this.settings.environmentIntensity = DEFAULT_USER_SETTINGS.environmentIntensity;
     this.settings.lightIntensity = DEFAULT_USER_SETTINGS.lightIntensity;
+    this.settings.cameraCloseLimit = DEFAULT_USER_SETTINGS.cameraCloseLimit;
+    this.settings.viewportGizmoEnabled = DEFAULT_USER_SETTINGS.viewportGizmoEnabled;
     this.settings.gridVisible = DEFAULT_USER_SETTINGS.gridVisible;
     this.settings.gridPlaneSize = DEFAULT_USER_SETTINGS.gridPlaneSize;
     this.settings.gridRenderMode = DEFAULT_USER_SETTINGS.gridRenderMode;
@@ -3456,6 +3497,7 @@ export class ModularEditorApp {
     this.applyEnvironmentSetting();
     this.applyLightIntensity();
     this.applyGroundColor();
+    this.viewportGizmo.setEnabled(this.settings.viewportGizmoEnabled);
     this.applyModelMaterialFreezeSetting();
     this.applySnapSettings();
     this.updatePreviewTransform();
@@ -3474,7 +3516,7 @@ export class ModularEditorApp {
     const normalizedGridPlaneSize = this.gridPlaneSize / ModularEditorApp.CAMERA_BASE_GRID_PLANE_SIZE;
     const safeScale = Math.max(0.25, normalizedGridPlaneSize);
     const lowerRadiusLimit = Math.max(
-      0.75,
+      this.settings.cameraCloseLimit,
       Number((ModularEditorApp.CAMERA_BASE_LOWER_RADIUS_LIMIT * safeScale).toFixed(3)),
     );
     const upperRadiusLimit = Math.max(
@@ -3721,6 +3763,7 @@ export class ModularEditorApp {
     this.selectionHeightLabel?.dispose(false, false);
     this.selectionVerticalHelperMarker?.dispose(false, false);
     this.disposePreview();
+    this.viewportGizmo.dispose();
     this.scene.dispose();
     this.engine.dispose();
   }

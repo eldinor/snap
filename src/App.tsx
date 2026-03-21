@@ -243,6 +243,12 @@ export function App() {
       onLightIntensityChange={(value) => {
         appRef.current?.setLightIntensity(value);
       }}
+      onCameraCloseLimitChange={(value) => {
+        appRef.current?.setCameraCloseLimit(value);
+      }}
+      onViewportGizmoEnabledChange={(value) => {
+        appRef.current?.setViewportGizmoEnabled(value);
+      }}
       onGridVisibleChange={(visible) => {
         appRef.current?.setGridVisible(visible);
       }}

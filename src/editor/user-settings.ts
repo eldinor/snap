@@ -2,6 +2,7 @@ export const USER_SETTINGS_STORAGE_KEY = "snap:user-settings";
 
 export const GRID_SIZE_OPTIONS = [2, 1, 0.5, 0.25, 0.125] as const;
 export const GRID_PLANE_SIZE_OPTIONS = [16, 32, 64, 128, 256] as const;
+export const CAMERA_CLOSE_LIMIT_OPTIONS = [0.01, 0.05, 0.1, 0.25, 0.5, 1] as const;
 
 export interface UserSettings {
   saveOnEveryUiUpdate: boolean;
@@ -10,6 +11,8 @@ export interface UserSettings {
   environmentEnabled: boolean;
   environmentIntensity: number;
   lightIntensity: number;
+  cameraCloseLimit: number;
+  viewportGizmoEnabled: boolean;
   gridVisible: boolean;
   gridPlaneSize: number;
   gridRenderMode: "material" | "lines";
@@ -27,6 +30,8 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   environmentEnabled: true,
   environmentIntensity: 0.1,
   lightIntensity: 1.1,
+  cameraCloseLimit: 0.05,
+  viewportGizmoEnabled: true,
   gridVisible: true,
   gridPlaneSize: 64,
   gridRenderMode: "material",
@@ -59,6 +64,10 @@ export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSe
       environmentEnabled: parsed.environmentEnabled ?? DEFAULT_USER_SETTINGS.environmentEnabled,
       environmentIntensity: parsed.environmentIntensity ?? DEFAULT_USER_SETTINGS.environmentIntensity,
       lightIntensity: parsed.lightIntensity ?? DEFAULT_USER_SETTINGS.lightIntensity,
+      cameraCloseLimit: CAMERA_CLOSE_LIMIT_OPTIONS.includes(parsed.cameraCloseLimit as (typeof CAMERA_CLOSE_LIMIT_OPTIONS)[number])
+        ? (parsed.cameraCloseLimit as number)
+        : DEFAULT_USER_SETTINGS.cameraCloseLimit,
+      viewportGizmoEnabled: parsed.viewportGizmoEnabled ?? DEFAULT_USER_SETTINGS.viewportGizmoEnabled,
       gridVisible: parsed.gridVisible ?? DEFAULT_USER_SETTINGS.gridVisible,
       gridPlaneSize: GRID_PLANE_SIZE_OPTIONS.includes(parsed.gridPlaneSize as (typeof GRID_PLANE_SIZE_OPTIONS)[number])
         ? (parsed.gridPlaneSize as number)
