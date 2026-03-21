@@ -11,12 +11,16 @@ import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
+import { getAssetBasePath, splitAssetFileReference } from "./assets";
 
 export class AssetPreviewRenderer {
   readonly engine: Engine;
   readonly scene: Scene;
   readonly camera: ArcRotateCamera;
   private readonly framingBehavior: FramingBehavior;
+  private readonly handleWindowResize = () => {
+    this.engine.resize();
+  };
   private root: TransformNode | null = null;
 
   constructor(canvas: HTMLCanvasElement, background: "dark" | "transparent" = "transparent") {
@@ -51,14 +55,18 @@ export class AssetPreviewRenderer {
       this.scene.render();
     });
 
-    window.addEventListener("resize", () => {
-      this.engine.resize();
-    });
+    window.addEventListener("resize", this.handleWindowResize);
   }
 
-  async loadAsset(fileName: string, basePath = "/assets/glTF/") {
+  async loadAsset(fileName: string, basePath = getAssetBasePath()) {
     this.root?.dispose(false, false);
-    const result = await SceneLoader.ImportMeshAsync("", basePath, fileName, this.scene);
+    const assetReference = splitAssetFileReference(fileName);
+    const result = await SceneLoader.ImportMeshAsync(
+      "",
+      `${basePath}${assetReference.directory}`,
+      assetReference.fileName,
+      this.scene,
+    );
     const root = new TransformNode("preview-root", this.scene);
 
     [...result.transformNodes, ...result.meshes].forEach((node) => {
@@ -98,5 +106,12 @@ export class AssetPreviewRenderer {
     return new Promise<void>((resolve) => {
       this.scene.executeWhenReady(() => resolve());
     });
+  }
+
+  destroy() {
+    window.removeEventListener("resize", this.handleWindowResize);
+    this.root?.dispose(false, false);
+    this.scene.dispose();
+    this.engine.dispose();
   }
 }

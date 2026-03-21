@@ -1,21 +1,176 @@
+import librariesManifest from "./data/libraries.json";
+import builtInLibraryMeta from "./data/libraries/built-in/library.json";
+import assetCategoriesManifest from "./data/libraries/built-in/asset-categories.json";
+import assetsManifest from "./data/libraries/built-in/assets-manifest.json";
+import roofStarterLibraryMeta from "./data/libraries/roof-starter/library.json";
+import roofStarterCategoriesManifest from "./data/libraries/roof-starter/asset-categories.json";
+import roofStarterAssetsManifest from "./data/libraries/roof-starter/assets-manifest.json";
+
 export const GRID_SIZES = [2, 1, 0.5, 0.25, 0.125] as const;
 export const ROTATION_STEPS = [90, 45, 15] as const;
 
-export const ASSET_CATEGORIES = [
-  "Floors",
-  "Walls",
-  "Corners",
-  "Doors",
-  "Windows",
-  "Roofs",
-  "Stairs",
-  "Props",
-  "Balconies",
-  "Decorations",
-] as const;
+interface AssetCategoryManifest {
+  version: 1;
+  categories: string[];
+}
 
-export type AssetCategory = (typeof ASSET_CATEGORIES)[number];
+export interface LibraryRegistryEntry {
+  id: string;
+  name: string;
+  mode: "built-in" | "imported";
+  metaPath: string;
+}
 
+interface LibraryRegistryManifest {
+  version: 1;
+  libraries: LibraryRegistryEntry[];
+}
+
+export interface AssetLibraryMeta {
+  version: 1;
+  id: string;
+  name: string;
+  mode: "built-in" | "imported";
+  description: string;
+  author: string;
+  createdAt: string;
+  assetManifest: string;
+  categories: string;
+  tagTemplates: string;
+  assetBasePath: string;
+  thumbnailBasePath: string;
+}
+
+export interface AssetLibraryBundle {
+  library: LibraryRegistryEntry;
+  meta: AssetLibraryMeta;
+  assets: AssetDefinition[];
+  categories: string[];
+  metaUrl?: string;
+}
+
+function parseAssetCategoryManifest(value: unknown): AssetCategoryManifest {
+  if (!value || typeof value !== "object") {
+    throw new Error("Asset category manifest must be an object.");
+  }
+
+  const candidate = value as Partial<AssetCategoryManifest>;
+  if (candidate.version !== 1 || !Array.isArray(candidate.categories)) {
+    throw new Error("Asset category manifest must include version 1 and a categories array.");
+  }
+
+  if (candidate.categories.length === 0 || candidate.categories.some((category) => typeof category !== "string" || category.trim().length === 0)) {
+    throw new Error("Asset category manifest contains an invalid category.");
+  }
+
+  const seenCategories = new Set<string>();
+  candidate.categories.forEach((category) => {
+    if (seenCategories.has(category)) {
+      throw new Error(`Asset category manifest contains a duplicate category: ${category}`);
+    }
+    seenCategories.add(category);
+  });
+
+  return {
+    version: 1,
+    categories: [...candidate.categories],
+  };
+}
+
+function parseLibraryRegistryManifest(value: unknown): LibraryRegistryManifest {
+  if (!value || typeof value !== "object") {
+    throw new Error("Library registry manifest must be an object.");
+  }
+
+  const candidate = value as Partial<LibraryRegistryManifest>;
+  if (candidate.version !== 1 || !Array.isArray(candidate.libraries)) {
+    throw new Error("Library registry manifest must include version 1 and a libraries array.");
+  }
+
+  const ids = new Set<string>();
+  candidate.libraries.forEach((library, index) => {
+    if (!library || typeof library !== "object") {
+      throw new Error(`Library registry entry ${index} is invalid.`);
+    }
+    if (typeof library.id !== "string" || !library.id) {
+      throw new Error(`Library registry entry ${index} must have a non-empty id.`);
+    }
+    if (typeof library.name !== "string" || !library.name) {
+      throw new Error(`Library registry entry ${index} must have a non-empty name.`);
+    }
+    if (library.mode !== "built-in" && library.mode !== "imported") {
+      throw new Error(`Library registry entry ${index} has an invalid mode.`);
+    }
+    if (typeof library.metaPath !== "string" || !library.metaPath) {
+      throw new Error(`Library registry entry ${index} must have a metaPath.`);
+    }
+    if (ids.has(library.id)) {
+      throw new Error(`Library registry contains a duplicate library id: ${library.id}`);
+    }
+    ids.add(library.id);
+  });
+
+  return {
+    version: 1,
+    libraries: candidate.libraries,
+  };
+}
+
+function parseAssetLibraryMeta(value: unknown): AssetLibraryMeta {
+  if (!value || typeof value !== "object") {
+    throw new Error("Asset library metadata must be an object.");
+  }
+
+  const candidate = value as Partial<AssetLibraryMeta>;
+  if (
+    candidate.version !== 1 ||
+    typeof candidate.id !== "string" ||
+    typeof candidate.name !== "string" ||
+    (candidate.mode !== "built-in" && candidate.mode !== "imported") ||
+    typeof candidate.description !== "string" ||
+    typeof candidate.author !== "string" ||
+    typeof candidate.createdAt !== "string" ||
+    typeof candidate.assetManifest !== "string" ||
+    typeof candidate.categories !== "string" ||
+    typeof candidate.tagTemplates !== "string" ||
+    typeof candidate.assetBasePath !== "string" ||
+    typeof candidate.thumbnailBasePath !== "string"
+  ) {
+    throw new Error("Asset library metadata is invalid.");
+  }
+
+  return {
+    version: 1,
+    id: candidate.id,
+    name: candidate.name,
+    mode: candidate.mode,
+    description: candidate.description,
+    author: candidate.author,
+    createdAt: candidate.createdAt,
+    assetManifest: candidate.assetManifest,
+    categories: candidate.categories,
+    tagTemplates: candidate.tagTemplates,
+    assetBasePath: candidate.assetBasePath,
+    thumbnailBasePath: candidate.thumbnailBasePath,
+  };
+}
+
+export const LIBRARIES = parseLibraryRegistryManifest(librariesManifest).libraries;
+export const BUILT_IN_LIBRARY = parseAssetLibraryMeta(builtInLibraryMeta);
+export const ROOF_STARTER_LIBRARY = parseAssetLibraryMeta(roofStarterLibraryMeta);
+export const ACTIVE_LIBRARY = (() => {
+  const builtInEntry = LIBRARIES.find((library) => library.id === BUILT_IN_LIBRARY.id);
+  if (!builtInEntry) {
+    throw new Error(`Library registry is missing the built-in library entry: ${BUILT_IN_LIBRARY.id}`);
+  }
+  if (builtInEntry.metaPath !== "./libraries/built-in/library.json") {
+    throw new Error(`Built-in library registry entry points to an unexpected metadata path: ${builtInEntry.metaPath}`);
+  }
+  return BUILT_IN_LIBRARY;
+})();
+export const ASSET_CATEGORIES = parseAssetCategoryManifest(assetCategoriesManifest).categories;
+export const ROOF_STARTER_CATEGORIES = parseAssetCategoryManifest(roofStarterCategoriesManifest).categories;
+export type AssetCategory = string;
 export type PlaceholderShape = "box" | "column";
 
 export interface AssetDefinition {
@@ -23,6 +178,8 @@ export interface AssetDefinition {
   name: string;
   category: AssetCategory;
   fileName: string;
+  thumbnailFileName: string;
+  defaultPlacementKind?: "clone" | "instance";
   tags: string[];
   placeholder: {
     shape: PlaceholderShape;
@@ -31,362 +188,227 @@ export interface AssetDefinition {
   };
 }
 
-const ASSET_FILES = [
-  "Balcony_Cross_Corner",
-  "Balcony_Cross_Straight",
-  "Balcony_Simple_Corner",
-  "Balcony_Simple_Straight",
-  "Corner_ExteriorWide_Brick",
-  "Corner_ExteriorWide_Wood",
-  "Corner_Exterior_Brick",
-  "Corner_Exterior_TopDown",
-  "Corner_Exterior_TopOnly",
-  "Corner_Exterior_Wood",
-  "Corner_Interior_Big",
-  "Corner_Interior_Small",
-  "DoorFrame_Flat_Brick",
-  "DoorFrame_Flat_WoodDark",
-  "DoorFrame_Round_Brick",
-  "DoorFrame_Round_WoodDark",
-  "Door_1_Flat",
-  "Door_1_Round",
-  "Door_2_Flat",
-  "Door_2_Round",
-  "Door_4_Flat",
-  "Door_4_Round",
-  "Door_8_Flat",
-  "Door_8_Round",
-  "Floor_Brick",
-  "Floor_RedBrick",
-  "Floor_UnevenBrick",
-  "Floor_WoodDark",
-  "Floor_WoodDark_Half1",
-  "Floor_WoodDark_Half2",
-  "Floor_WoodDark_Half3",
-  "Floor_WoodDark_OverhangCorner",
-  "Floor_WoodDark_OverhangCorner2",
-  "Floor_WoodLight",
-  "Floor_WoodLight_OverhangCorner",
-  "Floor_WoodLight_OverhangCorner2",
-  "HoleCover_90Angle",
-  "HoleCover_90Half",
-  "HoleCover_90Stairs",
-  "HoleCover_Straight",
-  "HoleCover_StraightHalf",
-  "Overhang_Plaster_Corner",
-  "Overhang_Plaster_Corner_Front",
-  "Overhang_Plaster_Long",
-  "Overhang_Plaster_Short",
-  "Overhang_RoofIncline_Plaster",
-  "Overhang_RoofIncline_UnevenBricks",
-  "Overhang_Roof_Plaster",
-  "Overhang_Roof_UnevenBricks",
-  "Overhang_Side_Plaster_Long_L",
-  "Overhang_Side_Plaster_Long_R",
-  "Overhang_Side_Plaster_Short_L",
-  "Overhang_Side_Plaster_Short_R",
-  "Overhang_Side_UnevenBrick_Long_L",
-  "Overhang_Side_UnevenBrick_Long_R",
-  "Overhang_Side_UnevenBrick_Short_L",
-  "Overhang_Side_UnevenBrick_Short_R",
-  "Overhang_UnevenBrick_Corner",
-  "Overhang_UnevenBrick_Corner_Front",
-  "Overhang_UnevenBrick_Long",
-  "Overhang_UnevenBrick_Short",
-  "Prop_Brick1",
-  "Prop_Brick2",
-  "Prop_Brick3",
-  "Prop_Brick4",
-  "Prop_Chimney",
-  "Prop_Chimney2",
-  "Prop_Crate",
-  "Prop_ExteriorBorder_Corner",
-  "Prop_ExteriorBorder_Straight1",
-  "Prop_ExteriorBorder_Straight2",
-  "Prop_MetalFence_Ornament",
-  "Prop_MetalFence_Simple",
-  "Prop_Support",
-  "Prop_Vine1",
-  "Prop_Vine2",
-  "Prop_Vine4",
-  "Prop_Vine5",
-  "Prop_Vine6",
-  "Prop_Vine9",
-  "Prop_Wagon",
-  "Prop_WoodenFence_Extension1",
-  "Prop_WoodenFence_Extension2",
-  "Prop_WoodenFence_Single",
-  "Roof_2x4_RoundTile",
-  "Roof_Dormer_RoundTile",
-  "Roof_FrontSupports",
-  "Roof_Front_Brick2",
-  "Roof_Front_Brick4",
-  "Roof_Front_Brick4_Half_L",
-  "Roof_Front_Brick4_Half_R",
-  "Roof_Front_Brick6",
-  "Roof_Front_Brick6_Half_L",
-  "Roof_Front_Brick6_Half_R",
-  "Roof_Front_Brick8",
-  "Roof_Front_Brick8_Half_L",
-  "Roof_Front_Brick8_Half_R",
-  "Roof_Log",
-  "Roof_Modular_RoundTiles",
-  "Roof_RoundTiles_4x4",
-  "Roof_RoundTiles_4x6",
-  "Roof_RoundTiles_4x8",
-  "Roof_RoundTiles_6x10",
-  "Roof_RoundTiles_6x12",
-  "Roof_RoundTiles_6x14",
-  "Roof_RoundTiles_6x4",
-  "Roof_RoundTiles_6x6",
-  "Roof_RoundTiles_6x8",
-  "Roof_RoundTiles_8x10",
-  "Roof_RoundTiles_8x12",
-  "Roof_RoundTiles_8x14",
-  "Roof_RoundTiles_8x8",
-  "Roof_RoundTile_2x1",
-  "Roof_RoundTile_2x1_Long",
-  "Roof_Support2",
-  "Roof_Tower_RoundTiles",
-  "Roof_Wooden_2x1",
-  "Roof_Wooden_2x1_Center",
-  "Roof_Wooden_2x1_Center_Mirror",
-  "Roof_Wooden_2x1_Corner",
-  "Roof_Wooden_2x1_L",
-  "Roof_Wooden_2x1_Middle",
-  "Roof_Wooden_2x1_R",
-  "Stairs_Exterior_NoFirstStep",
-  "Stairs_Exterior_Platform",
-  "Stairs_Exterior_Platform45",
-  "Stairs_Exterior_Platform45Clean",
-  "Stairs_Exterior_PlatformU",
-  "Stairs_Exterior_SidePlatform",
-  "Stairs_Exterior_Sides",
-  "Stairs_Exterior_Sides45",
-  "Stairs_Exterior_SidesU",
-  "Stairs_Exterior_SingleSide",
-  "Stairs_Exterior_SingleSideThick",
-  "Stairs_Exterior_Straight",
-  "Stairs_Exterior_Straight_Center",
-  "Stairs_Exterior_Straight_L",
-  "Stairs_Exterior_Straight_R",
-  "Stair_Interior_Rails",
-  "Stair_Interior_Simple",
-  "Stair_Interior_Solid",
-  "Stair_Interior_SolidExtended",
-  "Wall_Arch",
-  "Wall_BottomCover",
-  "Wall_Plaster_Door_Flat",
-  "Wall_Plaster_Door_Round",
-  "Wall_Plaster_Door_RoundInset",
-  "Wall_Plaster_Straight",
-  "Wall_Plaster_Straight_Base",
-  "Wall_Plaster_Straight_L",
-  "Wall_Plaster_Straight_R",
-  "Wall_Plaster_Window_Thin_Round",
-  "Wall_Plaster_Window_Wide_Flat",
-  "Wall_Plaster_Window_Wide_Flat2",
-  "Wall_Plaster_Window_Wide_Round",
-  "Wall_Plaster_WoodGrid",
-  "Wall_UnevenBrick_Door_Flat",
-  "Wall_UnevenBrick_Door_Round",
-  "Wall_UnevenBrick_Straight",
-  "Wall_UnevenBrick_Window_Thin_Round",
-  "Wall_UnevenBrick_Window_Wide_Flat",
-  "Wall_UnevenBrick_Window_Wide_Round",
-  "WindowShutters_Thin_Flat_Closed",
-  "WindowShutters_Thin_Flat_Open",
-  "WindowShutters_Thin_Round_Closed",
-  "WindowShutters_Thin_Round_Open",
-  "WindowShutters_Wide_Flat_Closed",
-  "WindowShutters_Wide_Flat_Open",
-  "WindowShutters_Wide_Round_Closed",
-  "WindowShutters_Wide_Round_Open",
-  "Window_Roof_Thin",
-  "Window_Roof_Wide",
-  "Window_Thin_Flat1",
-  "Window_Thin_Round1",
-  "Window_Wide_Flat1",
-  "Window_Wide_Round1",
-] as const;
-
-const CATEGORY_ORDER = new Map<AssetCategory, number>(
-  ASSET_CATEGORIES.map((category, index) => [category, index]),
-);
-
-const TOKEN_SPLIT_PATTERN = /(?=[A-Z][a-z])|_|(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)/g;
-
-function detectCategory(file: string): AssetCategory {
-  if (file.startsWith("Floor_") || file.startsWith("HoleCover_")) {
-    return "Floors";
-  }
-  if (file.startsWith("Wall_")) {
-    return "Walls";
-  }
-  if (file.startsWith("Corner_")) {
-    return "Corners";
-  }
-  if (file.startsWith("Door") || file.startsWith("DoorFrame_")) {
-    return "Doors";
-  }
-  if (file.startsWith("Window") || file.startsWith("WindowShutters_")) {
-    return "Windows";
-  }
-  if (file.startsWith("Roof_") || file.startsWith("Overhang_")) {
-    return "Roofs";
-  }
-  if (file.startsWith("Stair_") || file.startsWith("Stairs_")) {
-    return "Stairs";
-  }
-  if (file.startsWith("Prop_")) {
-    return "Props";
-  }
-  if (file.startsWith("Balcony_")) {
-    return "Balconies";
-  }
-  return "Decorations";
+export interface AssetRef {
+  libraryId: string;
+  assetId: string;
 }
 
-function splitFileTokens(file: string) {
-  return file
-    .split(TOKEN_SPLIT_PATTERN)
-    .map((token) => token.trim())
-    .filter(Boolean);
+interface AssetLibraryManifest {
+  version: 1;
+  assets: AssetDefinition[];
 }
 
-function toLabel(file: string) {
-  return splitFileTokens(file)
-    .map((token) => {
-      if (/^\d+x\d+$/i.test(token)) {
-        return token.toLowerCase();
-      }
-      if (/^\d+$/.test(token)) {
-        return token;
-      }
-      return token.charAt(0).toUpperCase() + token.slice(1).toLowerCase();
-    })
-    .join(" ");
+function isAssetDefinition(value: unknown, categorySet: Set<string>): value is AssetDefinition {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const candidate = value as Partial<AssetDefinition>;
+  return (
+    typeof candidate.id === "string" &&
+    typeof candidate.name === "string" &&
+    typeof candidate.category === "string" &&
+    categorySet.has(candidate.category) &&
+    typeof candidate.fileName === "string" &&
+    typeof candidate.thumbnailFileName === "string" &&
+    (candidate.defaultPlacementKind === undefined ||
+      candidate.defaultPlacementKind === "clone" ||
+      candidate.defaultPlacementKind === "instance") &&
+    Array.isArray(candidate.tags) &&
+    candidate.tags.every((tag) => typeof tag === "string") &&
+    !!candidate.placeholder &&
+    typeof candidate.placeholder === "object" &&
+    (candidate.placeholder.shape === "box" || candidate.placeholder.shape === "column") &&
+    Array.isArray(candidate.placeholder.size) &&
+    candidate.placeholder.size.length === 3 &&
+    candidate.placeholder.size.every((component) => typeof component === "number") &&
+    typeof candidate.placeholder.color === "string"
+  );
 }
 
-function toSlug(file: string) {
-  return splitFileTokens(file)
-    .map((token) => token.toLowerCase())
-    .join("-");
-}
+function parseAssetManifest(value: unknown, categories: string[]): AssetLibraryManifest {
+  if (!value || typeof value !== "object") {
+    throw new Error("Asset manifest must be an object.");
+  }
 
-function dedupe(values: string[]) {
-  return [...new Set(values)];
-}
+  const candidate = value as Partial<AssetLibraryManifest>;
+  if (candidate.version !== 1 || !Array.isArray(candidate.assets)) {
+    throw new Error("Asset manifest must include version 1 and an assets array.");
+  }
 
-function toTags(file: string, category: AssetCategory) {
-  const parts = splitFileTokens(file).map((token) => token.toLowerCase());
-  const expanded = parts.flatMap((token) => {
-    if (token === "wooddark") {
-      return ["wood", "dark"];
+  const categorySet = new Set<string>(categories);
+  if (!candidate.assets.every((asset) => isAssetDefinition(asset, categorySet))) {
+    throw new Error("Asset manifest contains an invalid asset entry.");
+  }
+
+  const ids = new Set<string>();
+  candidate.assets.forEach((asset) => {
+    if (ids.has(asset.id)) {
+      throw new Error(`Asset manifest contains a duplicate asset id: ${asset.id}`);
     }
-    if (token === "woodlight") {
-      return ["wood", "light"];
-    }
-    if (token === "redbrick") {
-      return ["red", "brick"];
-    }
-    if (token === "unevenbrick" || token === "unevenbricks") {
-      return ["uneven", "brick"];
-    }
-    if (token === "roundtiles") {
-      return ["round", "tiles"];
-    }
-    if (token === "roundtile") {
-      return ["round", "tile"];
-    }
-    if (token === "wide" || token === "thin" || token === "flat" || token === "round") {
-      return [token];
-    }
-    if (token === "l" || token === "r" || token === "u") {
-      return [token];
-    }
-    if (token === "doorframe") {
-      return ["door", "frame"];
-    }
-    if (token === "windowshutters") {
-      return ["window", "shutters"];
-    }
-    if (token === "exteriorwide") {
-      return ["exterior", "wide"];
-    }
-    if (token === "singleside") {
-      return ["single", "side"];
-    }
-    if (token === "sideplatform") {
-      return ["side", "platform"];
-    }
-    if (token === "nofirststep") {
-      return ["no", "first", "step"];
-    }
-    if (token === "solidextended") {
-      return ["solid", "extended"];
-    }
-    if (token === "roundinset") {
-      return ["round", "inset"];
-    }
-    return [token];
+    ids.add(asset.id);
   });
 
-  return dedupe([category.toLowerCase(), ...expanded]);
+  return {
+    version: 1,
+    assets: candidate.assets,
+  };
 }
 
-function placeholderFor(category: AssetCategory, tags: string[]): AssetDefinition["placeholder"] {
-  if (category === "Walls" || category === "Doors" || category === "Windows") {
+export const ASSETS: AssetDefinition[] = parseAssetManifest(assetsManifest, ASSET_CATEGORIES).assets;
+export const ROOF_STARTER_ASSETS: AssetDefinition[] = parseAssetManifest(
+  roofStarterAssetsManifest,
+  ROOF_STARTER_CATEGORIES,
+).assets;
+const BUILT_IN_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
+  {
+    library: LIBRARIES.find((library) => library.id === ACTIVE_LIBRARY.id)!,
+    meta: ACTIVE_LIBRARY,
+    assets: ASSETS,
+    categories: ASSET_CATEGORIES,
+  },
+  {
+    library: LIBRARIES.find((library) => library.id === ROOF_STARTER_LIBRARY.id)!,
+    meta: ROOF_STARTER_LIBRARY,
+    assets: ROOF_STARTER_ASSETS,
+    categories: ROOF_STARTER_CATEGORIES,
+  },
+];
+
+let importedLibraryBundles: AssetLibraryBundle[] = [];
+
+export function getAssetLibraryBundles() {
+  return [...BUILT_IN_LIBRARY_BUNDLES, ...importedLibraryBundles];
+}
+
+export function getAssetLibraryBundle(libraryId: string) {
+  return getAssetLibraryBundles().find((bundle) => bundle.library.id === libraryId) ?? BUILT_IN_LIBRARY_BUNDLES[0];
+}
+
+export function createAssetRef(libraryId: string, assetId: string): AssetRef {
+  return { libraryId, assetId };
+}
+
+export function getAssetRefKey(asset: AssetRef) {
+  return `${asset.libraryId}:${asset.assetId}`;
+}
+
+export function parseAssetRefKey(value: string): AssetRef {
+  const separatorIndex = value.indexOf(":");
+  if (separatorIndex === -1) {
+    return { libraryId: ACTIVE_LIBRARY.id, assetId: value };
+  }
+
+  return {
+    libraryId: value.slice(0, separatorIndex),
+    assetId: value.slice(separatorIndex + 1),
+  };
+}
+
+export function findAssetByRef(assetRef: AssetRef) {
+  const bundle = getAssetLibraryBundle(assetRef.libraryId);
+  return bundle.assets.find((asset) => asset.id === assetRef.assetId) ?? null;
+}
+
+export function findAssetByKey(value: string) {
+  return findAssetByRef(parseAssetRefKey(value));
+}
+
+export function getAssetBasePath() {
+  return ACTIVE_LIBRARY.assetBasePath;
+}
+
+export function getAssetBasePathForLibrary(libraryId: string) {
+  return getAssetLibraryBundle(libraryId).meta.assetBasePath;
+}
+
+export function getAssetThumbnailBasePath() {
+  return ACTIVE_LIBRARY.thumbnailBasePath;
+}
+
+export function getAssetThumbnailBasePathForLibrary(libraryId: string) {
+  return getAssetLibraryBundle(libraryId).meta.thumbnailBasePath;
+}
+
+export function getAssetFileUrl(fileName: string) {
+  return `${getAssetBasePath()}${fileName}`;
+}
+
+export function getAssetThumbnailUrl(thumbnailFileName: string) {
+  return `${getAssetThumbnailBasePath()}${thumbnailFileName}`;
+}
+
+export function getAssetThumbnailUrlForLibrary(libraryId: string, thumbnailFileName: string) {
+  return `${getAssetThumbnailBasePathForLibrary(libraryId)}${thumbnailFileName}`;
+}
+
+export function splitAssetFileReference(fileName: string) {
+  const normalized = fileName.replace(/\\/g, "/");
+  const slashIndex = normalized.lastIndexOf("/");
+  if (slashIndex === -1) {
     return {
-      shape: "box",
-      size: [2, 2.5, 0.25],
-      color: category === "Doors" ? "#a1887f" : "#8d6e63",
+      directory: "",
+      fileName: normalized,
     };
   }
 
-  if (category === "Floors") {
-    return { shape: "box", size: [2, 0.2, 2], color: "#546e7a" };
-  }
-
-  if (category === "Corners") {
-    return { shape: "box", size: [1.4, 2.4, 1.4], color: "#795548" };
-  }
-
-  if (category === "Roofs") {
-    return { shape: "box", size: [2.2, 0.6, 2.2], color: "#5d4037" };
-  }
-
-  if (category === "Stairs") {
-    return { shape: "box", size: [2, 1.4, 2], color: "#7b8d93" };
-  }
-
-  if (category === "Balconies") {
-    return { shape: "box", size: [2, 1.2, 1], color: "#607d8b" };
-  }
-
-  if (tags.includes("vine")) {
-    return { shape: "column", size: [0.5, 1.8, 0.5], color: "#689f38" };
-  }
-
-  return { shape: "box", size: [1, 1, 1], color: "#8bc34a" };
+  return {
+    directory: normalized.slice(0, slashIndex + 1),
+    fileName: normalized.slice(slashIndex + 1),
+  };
 }
 
-export const ASSETS: AssetDefinition[] = ASSET_FILES.map((file) => {
-  const category = detectCategory(file);
-  const tags = toTags(file, category);
+function resolveUrl(baseUrl: string, relativeOrAbsoluteUrl: string) {
+  const absoluteBaseUrl = /^[a-z]+:/iu.test(baseUrl)
+    ? baseUrl
+    : new URL(baseUrl, typeof document !== "undefined" ? document.baseURI : "http://localhost/").toString();
+  return new URL(relativeOrAbsoluteUrl, absoluteBaseUrl).toString();
+}
+
+async function fetchJson(url: string) {
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: ${response.status}`);
+  }
+  return response.json();
+}
+
+async function loadImportedLibraryBundle(entry: LibraryRegistryEntry, registryUrl: string) {
+  const metaUrl = resolveUrl(registryUrl, entry.metaPath);
+  const meta = parseAssetLibraryMeta(await fetchJson(metaUrl));
+  const categories = parseAssetCategoryManifest(await fetchJson(resolveUrl(metaUrl, meta.categories))).categories;
+  const assets = parseAssetManifest(await fetchJson(resolveUrl(metaUrl, meta.assetManifest)), categories).assets;
 
   return {
-    id: toSlug(file),
-    name: toLabel(file),
-    category,
-    fileName: `${file}.gltf`,
-    tags,
-    placeholder: placeholderFor(category, tags),
-  };
-}).sort((left, right) => {
-  const categoryDelta = (CATEGORY_ORDER.get(left.category) ?? 0) - (CATEGORY_ORDER.get(right.category) ?? 0);
-  if (categoryDelta !== 0) {
-    return categoryDelta;
+    library: entry,
+    meta: {
+      ...meta,
+      assetBasePath: resolveUrl(metaUrl, meta.assetBasePath),
+      thumbnailBasePath: resolveUrl(metaUrl, meta.thumbnailBasePath),
+    },
+    assets,
+    categories,
+    metaUrl,
+  } satisfies AssetLibraryBundle;
+}
+
+export async function loadImportedLibraryBundles() {
+  const registryUrl = "/libraries/libraries.json";
+  let manifest: LibraryRegistryManifest;
+
+  try {
+    manifest = parseLibraryRegistryManifest(await fetchJson(registryUrl));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes("404")) {
+      importedLibraryBundles = [];
+      return getAssetLibraryBundles();
+    }
+    throw error;
   }
-  return left.name.localeCompare(right.name);
-});
+
+  const builtInIds = new Set(BUILT_IN_LIBRARY_BUNDLES.map((bundle) => bundle.library.id));
+  const externalEntries = manifest.libraries.filter((library) => !builtInIds.has(library.id));
+  importedLibraryBundles = await Promise.all(externalEntries.map((entry) => loadImportedLibraryBundle(entry, registryUrl)));
+  return getAssetLibraryBundles();
+}

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "id": "built-in",
+  "name": "Built-in",
+  "mode": "built-in",
+  "description": "Core bundled Snap asset library.",
+  "author": "",
+  "createdAt": "2026-03-20T00:00:00.000Z",
+  "assetManifest": "./assets-manifest.json",
+  "categories": "./asset-categories.json",
+  "tagTemplates": "./asset-tag-templates.json",
+  "assetBasePath": "/assets/glTF/",
+  "thumbnailBasePath": "/generated/asset-previews/"
+}

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "categories": [
+    "Floors",
+    "Walls",
+    "Corners",
+    "Doors",
+    "Windows",
+    "Roofs",
+    "Stairs",
+    "Props",
+    "Balconies",
+    "Decorations"
+  ]
+}

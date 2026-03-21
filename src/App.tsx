@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { AssetCategory } from "./assets";
+import { getAssetLibraryBundle, getAssetLibraryBundles, loadImportedLibraryBundles, type AssetCategory, type AssetLibraryBundle } from "./assets";
 import { EditorShell, filterAssets, type SceneSortMode } from "./components/editor-shell";
 import { ModularEditorApp } from "./editor";
 import { createInitialEditorViewState } from "./editor/view-state";
@@ -8,12 +8,24 @@ export function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const importInputRef = useRef<HTMLInputElement | null>(null);
   const appRef = useRef<ModularEditorApp | null>(null);
+  const [libraries, setLibraries] = useState<AssetLibraryBundle[]>(() => getAssetLibraryBundles());
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeLibraryId, setActiveLibraryId] = useState(libraries[0]?.library.id ?? "built-in");
   const [activeCategory, setActiveCategory] = useState<AssetCategory | "All">("All");
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [sceneSortMode, setSceneSortMode] = useState<SceneSortMode>("manual");
   const [viewState, setViewState] = useState(createInitialEditorViewState);
+
+  const refreshLibraries = () => {
+    void loadImportedLibraryBundles()
+      .then((nextLibraries) => {
+        setLibraries(nextLibraries);
+      })
+      .catch(() => {
+        // Imported libraries are optional in local/dev mode.
+      });
+  };
 
   useEffect(() => {
     if (appRef.current || !canvasRef.current) {
@@ -28,6 +40,25 @@ export function App() {
     return () => {
       appRef.current?.destroy();
       appRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void loadImportedLibraryBundles()
+      .then((nextLibraries) => {
+        if (cancelled) {
+          return;
+        }
+        setLibraries(nextLibraries);
+      })
+      .catch(() => {
+        // Imported libraries are optional in local/dev mode.
+      });
+
+    return () => {
+      cancelled = true;
     };
   }, []);
 
@@ -52,13 +83,30 @@ export function App() {
     };
   }, [exportMenuOpen, settingsMenuOpen]);
 
-  const filteredAssets = filterAssets(searchQuery, activeCategory);
+  const activeLibrary = getAssetLibraryBundle(activeLibraryId);
+  const filteredAssets = filterAssets(activeLibrary.assets, searchQuery, activeCategory);
+
+  useEffect(() => {
+    if (activeCategory !== "All" && !activeLibrary.categories.includes(activeCategory)) {
+      setActiveCategory("All");
+    }
+  }, [activeCategory, activeLibrary]);
+
+  useEffect(() => {
+    if (libraries.some((library) => library.library.id === activeLibraryId)) {
+      return;
+    }
+    setActiveLibraryId(libraries[0]?.library.id ?? "built-in");
+  }, [activeLibraryId, libraries]);
 
   return (
     <EditorShell
       canvasRef={canvasRef}
       importInputRef={importInputRef}
       searchQuery={searchQuery}
+      availableLibraries={libraries}
+      activeLibraryId={activeLibrary.library.id}
+      availableCategories={activeLibrary.categories}
       activeCategory={activeCategory}
       filteredAssets={filteredAssets}
       exportMenuOpen={exportMenuOpen}
@@ -66,9 +114,11 @@ export function App() {
       sceneSortMode={sceneSortMode}
       viewState={viewState}
       onSearchQueryChange={setSearchQuery}
+      onActiveLibraryChange={setActiveLibraryId}
+      onRefreshLibraries={refreshLibraries}
       onActiveCategoryChange={setActiveCategory}
-      onAssetClick={(assetId) => {
-        void appRef.current?.activateAsset(assetId);
+      onAssetClick={(libraryId, assetId) => {
+        void appRef.current?.activateAsset(libraryId, assetId);
       }}
       onSceneItemSelect={(selectionIds, primaryId) => {
         appRef.current?.setSceneItemSelection(selectionIds, primaryId);
@@ -93,6 +143,12 @@ export function App() {
       }}
       onSceneItemToggleLocked={(objectId) => {
         appRef.current?.toggleSceneItemLocked(objectId);
+      }}
+      onSceneItemPromote={(objectId) => {
+        appRef.current?.promoteSceneItem(objectId);
+      }}
+      onSceneItemDemote={(objectId) => {
+        appRef.current?.demoteSceneItem(objectId);
       }}
       onSceneItemUngroup={(objectId) => {
         appRef.current?.ungroupSceneItem(objectId);
@@ -131,6 +187,14 @@ export function App() {
         appRef.current?.exportToFile();
         setExportMenuOpen(false);
       }}
+      onExportGlb={() => {
+        void appRef.current?.exportToGlb();
+        setExportMenuOpen(false);
+      }}
+      onExportGltf={() => {
+        void appRef.current?.exportToGltf();
+        setExportMenuOpen(false);
+      }}
       onImportJson={() => {
         importInputRef.current?.click();
         setExportMenuOpen(false);
@@ -141,6 +205,10 @@ export function App() {
       }}
       onLoadLastSaved={() => {
         void appRef.current?.loadLastSavedScene();
+        setExportMenuOpen(false);
+      }}
+      onLoadAutosave={() => {
+        void appRef.current?.loadAutosavedScene();
         setExportMenuOpen(false);
       }}
       onDeleteSelected={() => {
@@ -154,6 +222,9 @@ export function App() {
       }}
       onRotationStepChange={(value) => {
         appRef.current?.setRotationStepDegrees(value);
+      }}
+      onRotationAxisChange={(value) => {
+        appRef.current?.setRotationAxis(value);
       }}
       onToggleSettingsMenu={() => {
         setExportMenuOpen(false);
@@ -175,17 +246,38 @@ export function App() {
       onGridVisibleChange={(visible) => {
         appRef.current?.setGridVisible(visible);
       }}
+      onGridRenderModeChange={(value) => {
+        appRef.current?.setGridRenderMode(value);
+      }}
       onGridColorChange={(value) => {
         appRef.current?.setGridColor(value);
       }}
       onGroundColorChange={(value) => {
         appRef.current?.setGroundColor(value);
       }}
+      onFreezeModelMaterialsChange={(value) => {
+        appRef.current?.setFreezeModelMaterials(value);
+      }}
       onNewObjectPlacementKindChange={(value) => {
         appRef.current?.setNewObjectPlacementKind(value);
       }}
       onHeightLabelModeChange={(value) => {
         appRef.current?.setHeightLabelMode(value);
+      }}
+      onSaveOnEveryUiUpdateChange={(value) => {
+        appRef.current?.setSaveOnEveryUiUpdate(value);
+      }}
+      onAutosaveEnabledChange={(value) => {
+        appRef.current?.setAutosaveEnabled(value);
+      }}
+      onAutosaveIntervalChange={(value) => {
+        appRef.current?.setAutosaveIntervalSeconds(value);
+      }}
+      onGridPlaneSizeChange={(value) => {
+        appRef.current?.setGridPlaneSize(value);
+      }}
+      onRetuneCamera={() => {
+        appRef.current?.retuneCamera();
       }}
       onRestoreDefaults={() => {
         appRef.current?.restoreDefaultUserSettings();

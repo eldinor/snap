@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "id": "roof-starter",
+  "name": "Roof Starter",
+  "mode": "built-in",
+  "description": "Small built-in roof and overhang subset for multi-library testing.",
+  "author": "",
+  "createdAt": "2026-03-20T00:00:00.000Z",
+  "assetManifest": "./assets-manifest.json",
+  "categories": "./asset-categories.json",
+  "tagTemplates": "./asset-tag-templates.json",
+  "assetBasePath": "/assets/glTF/",
+  "thumbnailBasePath": "/generated/asset-previews/"
+}

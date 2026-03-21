@@ -1,0 +1,4084 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "floor-brick",
+      "name": "Floor Brick",
+      "category": "Floors",
+      "fileName": "Floor_Brick.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "brick"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_Brick.png"
+    },
+    {
+      "id": "floor-red-brick",
+      "name": "Floor Red Brick",
+      "category": "Floors",
+      "fileName": "Floor_RedBrick.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "red",
+        "brick"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_RedBrick.png"
+    },
+    {
+      "id": "floor-uneven-brick",
+      "name": "Floor Uneven Brick",
+      "category": "Floors",
+      "fileName": "Floor_UnevenBrick.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "uneven",
+        "brick"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_UnevenBrick.png"
+    },
+    {
+      "id": "floor-wood-dark",
+      "name": "Floor Wood Dark",
+      "category": "Floors",
+      "fileName": "Floor_WoodDark.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "wood",
+        "dark"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_WoodDark.png"
+    },
+    {
+      "id": "floor-wood-dark-half-1",
+      "name": "Floor Wood Dark Half 1",
+      "category": "Floors",
+      "fileName": "Floor_WoodDark_Half1.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "wood",
+        "dark",
+        "half",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_WoodDark_Half1.png"
+    },
+    {
+      "id": "floor-wood-dark-half-2",
+      "name": "Floor Wood Dark Half 2",
+      "category": "Floors",
+      "fileName": "Floor_WoodDark_Half2.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "wood",
+        "dark",
+        "half",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_WoodDark_Half2.png"
+    },
+    {
+      "id": "floor-wood-dark-half-3",
+      "name": "Floor Wood Dark Half 3",
+      "category": "Floors",
+      "fileName": "Floor_WoodDark_Half3.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "wood",
+        "dark",
+        "half",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_WoodDark_Half3.png"
+    },
+    {
+      "id": "floor-wood-dark-overhang-corner",
+      "name": "Floor Wood Dark Overhang Corner",
+      "category": "Floors",
+      "fileName": "Floor_WoodDark_OverhangCorner.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "wood",
+        "dark",
+        "overhang",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_WoodDark_OverhangCorner.png"
+    },
+    {
+      "id": "floor-wood-dark-overhang-corner-2",
+      "name": "Floor Wood Dark Overhang Corner 2",
+      "category": "Floors",
+      "fileName": "Floor_WoodDark_OverhangCorner2.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "wood",
+        "dark",
+        "overhang",
+        "corner",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_WoodDark_OverhangCorner2.png"
+    },
+    {
+      "id": "floor-wood-light",
+      "name": "Floor Wood Light",
+      "category": "Floors",
+      "fileName": "Floor_WoodLight.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "wood",
+        "light"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_WoodLight.png"
+    },
+    {
+      "id": "floor-wood-light-overhang-corner",
+      "name": "Floor Wood Light Overhang Corner",
+      "category": "Floors",
+      "fileName": "Floor_WoodLight_OverhangCorner.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "wood",
+        "light",
+        "overhang",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_WoodLight_OverhangCorner.png"
+    },
+    {
+      "id": "floor-wood-light-overhang-corner-2",
+      "name": "Floor Wood Light Overhang Corner 2",
+      "category": "Floors",
+      "fileName": "Floor_WoodLight_OverhangCorner2.gltf",
+      "tags": [
+        "floors",
+        "floor",
+        "wood",
+        "light",
+        "overhang",
+        "corner",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "Floor_WoodLight_OverhangCorner2.png"
+    },
+    {
+      "id": "hole-cover-90-angle",
+      "name": "Hole Cover 90 Angle",
+      "category": "Floors",
+      "fileName": "HoleCover_90Angle.gltf",
+      "tags": [
+        "floors",
+        "hole",
+        "cover",
+        "90",
+        "angle"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "HoleCover_90Angle.png"
+    },
+    {
+      "id": "hole-cover-90-half",
+      "name": "Hole Cover 90 Half",
+      "category": "Floors",
+      "fileName": "HoleCover_90Half.gltf",
+      "tags": [
+        "floors",
+        "hole",
+        "cover",
+        "90",
+        "half"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "HoleCover_90Half.png"
+    },
+    {
+      "id": "hole-cover-90-stairs",
+      "name": "Hole Cover 90 Stairs",
+      "category": "Floors",
+      "fileName": "HoleCover_90Stairs.gltf",
+      "tags": [
+        "floors",
+        "hole",
+        "cover",
+        "90",
+        "stairs"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "HoleCover_90Stairs.png"
+    },
+    {
+      "id": "hole-cover-straight",
+      "name": "Hole Cover Straight",
+      "category": "Floors",
+      "fileName": "HoleCover_Straight.gltf",
+      "tags": [
+        "floors",
+        "hole",
+        "cover",
+        "straight"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "HoleCover_Straight.png"
+    },
+    {
+      "id": "hole-cover-straight-half",
+      "name": "Hole Cover Straight Half",
+      "category": "Floors",
+      "fileName": "HoleCover_StraightHalf.gltf",
+      "tags": [
+        "floors",
+        "hole",
+        "cover",
+        "straight",
+        "half"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      },
+      "thumbnailFileName": "HoleCover_StraightHalf.png"
+    },
+    {
+      "id": "wall-arch",
+      "name": "Wall Arch",
+      "category": "Walls",
+      "fileName": "Wall_Arch.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "arch"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Arch.png"
+    },
+    {
+      "id": "wall-bottom-cover",
+      "name": "Wall Bottom Cover",
+      "category": "Walls",
+      "fileName": "Wall_BottomCover.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "bottom",
+        "cover"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_BottomCover.png"
+    },
+    {
+      "id": "wall-plaster-door-flat",
+      "name": "Wall Plaster Door Flat",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Door_Flat.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "door",
+        "flat"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Door_Flat.png"
+    },
+    {
+      "id": "wall-plaster-door-round",
+      "name": "Wall Plaster Door Round",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Door_Round.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "door",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Door_Round.png"
+    },
+    {
+      "id": "wall-plaster-door-round-inset",
+      "name": "Wall Plaster Door Round Inset",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Door_RoundInset.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "door",
+        "round",
+        "inset"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Door_RoundInset.png"
+    },
+    {
+      "id": "wall-plaster-straight",
+      "name": "Wall Plaster Straight",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Straight.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "straight"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Straight.png"
+    },
+    {
+      "id": "wall-plaster-straight-base",
+      "name": "Wall Plaster Straight Base",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Straight_Base.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "straight",
+        "base"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Straight_Base.png"
+    },
+    {
+      "id": "wall-plaster-straight-l",
+      "name": "Wall Plaster Straight L",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Straight_L.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "straight",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Straight_L.png"
+    },
+    {
+      "id": "wall-plaster-straight-r",
+      "name": "Wall Plaster Straight R",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Straight_R.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "straight",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Straight_R.png"
+    },
+    {
+      "id": "wall-plaster-window-thin-round",
+      "name": "Wall Plaster Window Thin Round",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Window_Thin_Round.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "window",
+        "thin",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Window_Thin_Round.png"
+    },
+    {
+      "id": "wall-plaster-window-wide-flat",
+      "name": "Wall Plaster Window Wide Flat",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Window_Wide_Flat.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "window",
+        "wide",
+        "flat"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Window_Wide_Flat.png"
+    },
+    {
+      "id": "wall-plaster-window-wide-flat-2",
+      "name": "Wall Plaster Window Wide Flat 2",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Window_Wide_Flat2.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "window",
+        "wide",
+        "flat",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Window_Wide_Flat2.png"
+    },
+    {
+      "id": "wall-plaster-window-wide-round",
+      "name": "Wall Plaster Window Wide Round",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_Window_Wide_Round.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "window",
+        "wide",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_Window_Wide_Round.png"
+    },
+    {
+      "id": "wall-plaster-wood-grid",
+      "name": "Wall Plaster Wood Grid",
+      "category": "Walls",
+      "fileName": "Wall_Plaster_WoodGrid.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "plaster",
+        "wood",
+        "grid"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_Plaster_WoodGrid.png"
+    },
+    {
+      "id": "wall-uneven-brick-door-flat",
+      "name": "Wall Uneven Brick Door Flat",
+      "category": "Walls",
+      "fileName": "Wall_UnevenBrick_Door_Flat.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "uneven",
+        "brick",
+        "door",
+        "flat"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_UnevenBrick_Door_Flat.png"
+    },
+    {
+      "id": "wall-uneven-brick-door-round",
+      "name": "Wall Uneven Brick Door Round",
+      "category": "Walls",
+      "fileName": "Wall_UnevenBrick_Door_Round.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "uneven",
+        "brick",
+        "door",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_UnevenBrick_Door_Round.png"
+    },
+    {
+      "id": "wall-uneven-brick-straight",
+      "name": "Wall Uneven Brick Straight",
+      "category": "Walls",
+      "fileName": "Wall_UnevenBrick_Straight.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "uneven",
+        "brick",
+        "straight"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_UnevenBrick_Straight.png"
+    },
+    {
+      "id": "wall-uneven-brick-window-thin-round",
+      "name": "Wall Uneven Brick Window Thin Round",
+      "category": "Walls",
+      "fileName": "Wall_UnevenBrick_Window_Thin_Round.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "uneven",
+        "brick",
+        "window",
+        "thin",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_UnevenBrick_Window_Thin_Round.png"
+    },
+    {
+      "id": "wall-uneven-brick-window-wide-flat",
+      "name": "Wall Uneven Brick Window Wide Flat",
+      "category": "Walls",
+      "fileName": "Wall_UnevenBrick_Window_Wide_Flat.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "uneven",
+        "brick",
+        "window",
+        "wide",
+        "flat"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_UnevenBrick_Window_Wide_Flat.png"
+    },
+    {
+      "id": "wall-uneven-brick-window-wide-round",
+      "name": "Wall Uneven Brick Window Wide Round",
+      "category": "Walls",
+      "fileName": "Wall_UnevenBrick_Window_Wide_Round.gltf",
+      "tags": [
+        "walls",
+        "wall",
+        "uneven",
+        "brick",
+        "window",
+        "wide",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Wall_UnevenBrick_Window_Wide_Round.png"
+    },
+    {
+      "id": "corner-exterior-brick",
+      "name": "Corner Exterior Brick",
+      "category": "Corners",
+      "fileName": "Corner_Exterior_Brick.gltf",
+      "tags": [
+        "corners",
+        "corner",
+        "exterior",
+        "brick"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1.4,
+          2.4,
+          1.4
+        ],
+        "color": "#795548"
+      },
+      "thumbnailFileName": "Corner_Exterior_Brick.png"
+    },
+    {
+      "id": "corner-exterior-top-down",
+      "name": "Corner Exterior Top Down",
+      "category": "Corners",
+      "fileName": "Corner_Exterior_TopDown.gltf",
+      "tags": [
+        "corners",
+        "corner",
+        "exterior",
+        "top",
+        "down"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1.4,
+          2.4,
+          1.4
+        ],
+        "color": "#795548"
+      },
+      "thumbnailFileName": "Corner_Exterior_TopDown.png"
+    },
+    {
+      "id": "corner-exterior-top-only",
+      "name": "Corner Exterior Top Only",
+      "category": "Corners",
+      "fileName": "Corner_Exterior_TopOnly.gltf",
+      "tags": [
+        "corners",
+        "corner",
+        "exterior",
+        "top",
+        "only"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1.4,
+          2.4,
+          1.4
+        ],
+        "color": "#795548"
+      },
+      "thumbnailFileName": "Corner_Exterior_TopOnly.png"
+    },
+    {
+      "id": "corner-exterior-wide-brick",
+      "name": "Corner Exterior Wide Brick",
+      "category": "Corners",
+      "fileName": "Corner_ExteriorWide_Brick.gltf",
+      "tags": [
+        "corners",
+        "corner",
+        "exterior",
+        "wide",
+        "brick"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1.4,
+          2.4,
+          1.4
+        ],
+        "color": "#795548"
+      },
+      "thumbnailFileName": "Corner_ExteriorWide_Brick.png"
+    },
+    {
+      "id": "corner-exterior-wide-wood",
+      "name": "Corner Exterior Wide Wood",
+      "category": "Corners",
+      "fileName": "Corner_ExteriorWide_Wood.gltf",
+      "tags": [
+        "corners",
+        "corner",
+        "exterior",
+        "wide",
+        "wood"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1.4,
+          2.4,
+          1.4
+        ],
+        "color": "#795548"
+      },
+      "thumbnailFileName": "Corner_ExteriorWide_Wood.png"
+    },
+    {
+      "id": "corner-exterior-wood",
+      "name": "Corner Exterior Wood",
+      "category": "Corners",
+      "fileName": "Corner_Exterior_Wood.gltf",
+      "tags": [
+        "corners",
+        "corner",
+        "exterior",
+        "wood"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1.4,
+          2.4,
+          1.4
+        ],
+        "color": "#795548"
+      },
+      "thumbnailFileName": "Corner_Exterior_Wood.png"
+    },
+    {
+      "id": "corner-interior-big",
+      "name": "Corner Interior Big",
+      "category": "Corners",
+      "fileName": "Corner_Interior_Big.gltf",
+      "tags": [
+        "corners",
+        "corner",
+        "interior",
+        "big"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1.4,
+          2.4,
+          1.4
+        ],
+        "color": "#795548"
+      },
+      "thumbnailFileName": "Corner_Interior_Big.png"
+    },
+    {
+      "id": "corner-interior-small",
+      "name": "Corner Interior Small",
+      "category": "Corners",
+      "fileName": "Corner_Interior_Small.gltf",
+      "tags": [
+        "corners",
+        "corner",
+        "interior",
+        "small"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1.4,
+          2.4,
+          1.4
+        ],
+        "color": "#795548"
+      },
+      "thumbnailFileName": "Corner_Interior_Small.png"
+    },
+    {
+      "id": "door-1-flat",
+      "name": "Door 1 Flat",
+      "category": "Doors",
+      "fileName": "Door_1_Flat.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "1",
+        "flat"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "Door_1_Flat.png"
+    },
+    {
+      "id": "door-1-round",
+      "name": "Door 1 Round",
+      "category": "Doors",
+      "fileName": "Door_1_Round.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "1",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "Door_1_Round.png"
+    },
+    {
+      "id": "door-2-flat",
+      "name": "Door 2 Flat",
+      "category": "Doors",
+      "fileName": "Door_2_Flat.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "2",
+        "flat"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "Door_2_Flat.png"
+    },
+    {
+      "id": "door-2-round",
+      "name": "Door 2 Round",
+      "category": "Doors",
+      "fileName": "Door_2_Round.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "2",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "Door_2_Round.png"
+    },
+    {
+      "id": "door-4-flat",
+      "name": "Door 4 Flat",
+      "category": "Doors",
+      "fileName": "Door_4_Flat.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "4",
+        "flat"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "Door_4_Flat.png"
+    },
+    {
+      "id": "door-4-round",
+      "name": "Door 4 Round",
+      "category": "Doors",
+      "fileName": "Door_4_Round.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "4",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "Door_4_Round.png"
+    },
+    {
+      "id": "door-8-flat",
+      "name": "Door 8 Flat",
+      "category": "Doors",
+      "fileName": "Door_8_Flat.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "8",
+        "flat"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "Door_8_Flat.png"
+    },
+    {
+      "id": "door-8-round",
+      "name": "Door 8 Round",
+      "category": "Doors",
+      "fileName": "Door_8_Round.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "8",
+        "round"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "Door_8_Round.png"
+    },
+    {
+      "id": "door-frame-flat-brick",
+      "name": "Door Frame Flat Brick",
+      "category": "Doors",
+      "fileName": "DoorFrame_Flat_Brick.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "frame",
+        "flat",
+        "brick"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "DoorFrame_Flat_Brick.png"
+    },
+    {
+      "id": "door-frame-flat-wood-dark",
+      "name": "Door Frame Flat Wood Dark",
+      "category": "Doors",
+      "fileName": "DoorFrame_Flat_WoodDark.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "frame",
+        "flat",
+        "wood",
+        "dark"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "DoorFrame_Flat_WoodDark.png"
+    },
+    {
+      "id": "door-frame-round-brick",
+      "name": "Door Frame Round Brick",
+      "category": "Doors",
+      "fileName": "DoorFrame_Round_Brick.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "frame",
+        "round",
+        "brick"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "DoorFrame_Round_Brick.png"
+    },
+    {
+      "id": "door-frame-round-wood-dark",
+      "name": "Door Frame Round Wood Dark",
+      "category": "Doors",
+      "fileName": "DoorFrame_Round_WoodDark.gltf",
+      "tags": [
+        "doors",
+        "door",
+        "frame",
+        "round",
+        "wood",
+        "dark"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#a1887f"
+      },
+      "thumbnailFileName": "DoorFrame_Round_WoodDark.png"
+    },
+    {
+      "id": "window-roof-thin",
+      "name": "Window Roof Thin",
+      "category": "Windows",
+      "fileName": "Window_Roof_Thin.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "roof",
+        "thin"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Window_Roof_Thin.png"
+    },
+    {
+      "id": "window-roof-wide",
+      "name": "Window Roof Wide",
+      "category": "Windows",
+      "fileName": "Window_Roof_Wide.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "roof",
+        "wide"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Window_Roof_Wide.png"
+    },
+    {
+      "id": "window-shutters-thin-flat-closed",
+      "name": "Window Shutters Thin Flat Closed",
+      "category": "Windows",
+      "fileName": "WindowShutters_Thin_Flat_Closed.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "shutters",
+        "thin",
+        "flat",
+        "closed"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "WindowShutters_Thin_Flat_Closed.png"
+    },
+    {
+      "id": "window-shutters-thin-flat-open",
+      "name": "Window Shutters Thin Flat Open",
+      "category": "Windows",
+      "fileName": "WindowShutters_Thin_Flat_Open.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "shutters",
+        "thin",
+        "flat",
+        "open"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "WindowShutters_Thin_Flat_Open.png"
+    },
+    {
+      "id": "window-shutters-thin-round-closed",
+      "name": "Window Shutters Thin Round Closed",
+      "category": "Windows",
+      "fileName": "WindowShutters_Thin_Round_Closed.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "shutters",
+        "thin",
+        "round",
+        "closed"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "WindowShutters_Thin_Round_Closed.png"
+    },
+    {
+      "id": "window-shutters-thin-round-open",
+      "name": "Window Shutters Thin Round Open",
+      "category": "Windows",
+      "fileName": "WindowShutters_Thin_Round_Open.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "shutters",
+        "thin",
+        "round",
+        "open"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "WindowShutters_Thin_Round_Open.png"
+    },
+    {
+      "id": "window-shutters-wide-flat-closed",
+      "name": "Window Shutters Wide Flat Closed",
+      "category": "Windows",
+      "fileName": "WindowShutters_Wide_Flat_Closed.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "shutters",
+        "wide",
+        "flat",
+        "closed"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "WindowShutters_Wide_Flat_Closed.png"
+    },
+    {
+      "id": "window-shutters-wide-flat-open",
+      "name": "Window Shutters Wide Flat Open",
+      "category": "Windows",
+      "fileName": "WindowShutters_Wide_Flat_Open.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "shutters",
+        "wide",
+        "flat",
+        "open"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "WindowShutters_Wide_Flat_Open.png"
+    },
+    {
+      "id": "window-shutters-wide-round-closed",
+      "name": "Window Shutters Wide Round Closed",
+      "category": "Windows",
+      "fileName": "WindowShutters_Wide_Round_Closed.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "shutters",
+        "wide",
+        "round",
+        "closed"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "WindowShutters_Wide_Round_Closed.png"
+    },
+    {
+      "id": "window-shutters-wide-round-open",
+      "name": "Window Shutters Wide Round Open",
+      "category": "Windows",
+      "fileName": "WindowShutters_Wide_Round_Open.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "shutters",
+        "wide",
+        "round",
+        "open"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "WindowShutters_Wide_Round_Open.png"
+    },
+    {
+      "id": "window-thin-flat-1",
+      "name": "Window Thin Flat 1",
+      "category": "Windows",
+      "fileName": "Window_Thin_Flat1.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "thin",
+        "flat",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Window_Thin_Flat1.png"
+    },
+    {
+      "id": "window-thin-round-1",
+      "name": "Window Thin Round 1",
+      "category": "Windows",
+      "fileName": "Window_Thin_Round1.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "thin",
+        "round",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Window_Thin_Round1.png"
+    },
+    {
+      "id": "window-wide-flat-1",
+      "name": "Window Wide Flat 1",
+      "category": "Windows",
+      "fileName": "Window_Wide_Flat1.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "wide",
+        "flat",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Window_Wide_Flat1.png"
+    },
+    {
+      "id": "window-wide-round-1",
+      "name": "Window Wide Round 1",
+      "category": "Windows",
+      "fileName": "Window_Wide_Round1.gltf",
+      "tags": [
+        "windows",
+        "window",
+        "wide",
+        "round",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          2.5,
+          0.25
+        ],
+        "color": "#8d6e63"
+      },
+      "thumbnailFileName": "Window_Wide_Round1.png"
+    },
+    {
+      "id": "overhang-plaster-corner",
+      "name": "Overhang Plaster Corner",
+      "category": "Roofs",
+      "fileName": "Overhang_Plaster_Corner.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "plaster",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Plaster_Corner.png"
+    },
+    {
+      "id": "overhang-plaster-corner-front",
+      "name": "Overhang Plaster Corner Front",
+      "category": "Roofs",
+      "fileName": "Overhang_Plaster_Corner_Front.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "plaster",
+        "corner",
+        "front"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Plaster_Corner_Front.png"
+    },
+    {
+      "id": "overhang-plaster-long",
+      "name": "Overhang Plaster Long",
+      "category": "Roofs",
+      "fileName": "Overhang_Plaster_Long.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "plaster",
+        "long"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Plaster_Long.png"
+    },
+    {
+      "id": "overhang-plaster-short",
+      "name": "Overhang Plaster Short",
+      "category": "Roofs",
+      "fileName": "Overhang_Plaster_Short.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "plaster",
+        "short"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Plaster_Short.png"
+    },
+    {
+      "id": "overhang-roof-incline-plaster",
+      "name": "Overhang Roof Incline Plaster",
+      "category": "Roofs",
+      "fileName": "Overhang_RoofIncline_Plaster.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "roof",
+        "incline",
+        "plaster"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_RoofIncline_Plaster.png"
+    },
+    {
+      "id": "overhang-roof-incline-uneven-bricks",
+      "name": "Overhang Roof Incline Uneven Bricks",
+      "category": "Roofs",
+      "fileName": "Overhang_RoofIncline_UnevenBricks.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "roof",
+        "incline",
+        "uneven",
+        "bricks"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_RoofIncline_UnevenBricks.png"
+    },
+    {
+      "id": "overhang-roof-plaster",
+      "name": "Overhang Roof Plaster",
+      "category": "Roofs",
+      "fileName": "Overhang_Roof_Plaster.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "roof",
+        "plaster"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Roof_Plaster.png"
+    },
+    {
+      "id": "overhang-roof-uneven-bricks",
+      "name": "Overhang Roof Uneven Bricks",
+      "category": "Roofs",
+      "fileName": "Overhang_Roof_UnevenBricks.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "roof",
+        "uneven",
+        "bricks"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Roof_UnevenBricks.png"
+    },
+    {
+      "id": "overhang-side-plaster-long-l",
+      "name": "Overhang Side Plaster Long L",
+      "category": "Roofs",
+      "fileName": "Overhang_Side_Plaster_Long_L.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "side",
+        "plaster",
+        "long",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Side_Plaster_Long_L.png"
+    },
+    {
+      "id": "overhang-side-plaster-long-r",
+      "name": "Overhang Side Plaster Long R",
+      "category": "Roofs",
+      "fileName": "Overhang_Side_Plaster_Long_R.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "side",
+        "plaster",
+        "long",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Side_Plaster_Long_R.png"
+    },
+    {
+      "id": "overhang-side-plaster-short-l",
+      "name": "Overhang Side Plaster Short L",
+      "category": "Roofs",
+      "fileName": "Overhang_Side_Plaster_Short_L.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "side",
+        "plaster",
+        "short",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Side_Plaster_Short_L.png"
+    },
+    {
+      "id": "overhang-side-plaster-short-r",
+      "name": "Overhang Side Plaster Short R",
+      "category": "Roofs",
+      "fileName": "Overhang_Side_Plaster_Short_R.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "side",
+        "plaster",
+        "short",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Side_Plaster_Short_R.png"
+    },
+    {
+      "id": "overhang-side-uneven-brick-long-l",
+      "name": "Overhang Side Uneven Brick Long L",
+      "category": "Roofs",
+      "fileName": "Overhang_Side_UnevenBrick_Long_L.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "side",
+        "uneven",
+        "brick",
+        "long",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Side_UnevenBrick_Long_L.png"
+    },
+    {
+      "id": "overhang-side-uneven-brick-long-r",
+      "name": "Overhang Side Uneven Brick Long R",
+      "category": "Roofs",
+      "fileName": "Overhang_Side_UnevenBrick_Long_R.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "side",
+        "uneven",
+        "brick",
+        "long",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Side_UnevenBrick_Long_R.png"
+    },
+    {
+      "id": "overhang-side-uneven-brick-short-l",
+      "name": "Overhang Side Uneven Brick Short L",
+      "category": "Roofs",
+      "fileName": "Overhang_Side_UnevenBrick_Short_L.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "side",
+        "uneven",
+        "brick",
+        "short",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Side_UnevenBrick_Short_L.png"
+    },
+    {
+      "id": "overhang-side-uneven-brick-short-r",
+      "name": "Overhang Side Uneven Brick Short R",
+      "category": "Roofs",
+      "fileName": "Overhang_Side_UnevenBrick_Short_R.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "side",
+        "uneven",
+        "brick",
+        "short",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_Side_UnevenBrick_Short_R.png"
+    },
+    {
+      "id": "overhang-uneven-brick-corner",
+      "name": "Overhang Uneven Brick Corner",
+      "category": "Roofs",
+      "fileName": "Overhang_UnevenBrick_Corner.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "uneven",
+        "brick",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_UnevenBrick_Corner.png"
+    },
+    {
+      "id": "overhang-uneven-brick-corner-front",
+      "name": "Overhang Uneven Brick Corner Front",
+      "category": "Roofs",
+      "fileName": "Overhang_UnevenBrick_Corner_Front.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "uneven",
+        "brick",
+        "corner",
+        "front"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_UnevenBrick_Corner_Front.png"
+    },
+    {
+      "id": "overhang-uneven-brick-long",
+      "name": "Overhang Uneven Brick Long",
+      "category": "Roofs",
+      "fileName": "Overhang_UnevenBrick_Long.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "uneven",
+        "brick",
+        "long"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_UnevenBrick_Long.png"
+    },
+    {
+      "id": "overhang-uneven-brick-short",
+      "name": "Overhang Uneven Brick Short",
+      "category": "Roofs",
+      "fileName": "Overhang_UnevenBrick_Short.gltf",
+      "tags": [
+        "roofs",
+        "overhang",
+        "uneven",
+        "brick",
+        "short"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Overhang_UnevenBrick_Short.png"
+    },
+    {
+      "id": "roof-2-x-4-round-tile",
+      "name": "Roof 2 X 4 Round Tile",
+      "category": "Roofs",
+      "fileName": "Roof_2x4_RoundTile.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "2",
+        "x",
+        "4",
+        "round",
+        "tile"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_2x4_RoundTile.png"
+    },
+    {
+      "id": "roof-dormer-round-tile",
+      "name": "Roof Dormer Round Tile",
+      "category": "Roofs",
+      "fileName": "Roof_Dormer_RoundTile.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "dormer",
+        "round",
+        "tile"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Dormer_RoundTile.png"
+    },
+    {
+      "id": "roof-front-brick-2",
+      "name": "Roof Front Brick 2",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick2.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick2.png"
+    },
+    {
+      "id": "roof-front-brick-4",
+      "name": "Roof Front Brick 4",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick4.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "4"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick4.png"
+    },
+    {
+      "id": "roof-front-brick-4-half-l",
+      "name": "Roof Front Brick 4 Half L",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick4_Half_L.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "4",
+        "half",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick4_Half_L.png"
+    },
+    {
+      "id": "roof-front-brick-4-half-r",
+      "name": "Roof Front Brick 4 Half R",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick4_Half_R.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "4",
+        "half",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick4_Half_R.png"
+    },
+    {
+      "id": "roof-front-brick-6",
+      "name": "Roof Front Brick 6",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick6.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "6"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick6.png"
+    },
+    {
+      "id": "roof-front-brick-6-half-l",
+      "name": "Roof Front Brick 6 Half L",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick6_Half_L.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "6",
+        "half",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick6_Half_L.png"
+    },
+    {
+      "id": "roof-front-brick-6-half-r",
+      "name": "Roof Front Brick 6 Half R",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick6_Half_R.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "6",
+        "half",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick6_Half_R.png"
+    },
+    {
+      "id": "roof-front-brick-8",
+      "name": "Roof Front Brick 8",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick8.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "8"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick8.png"
+    },
+    {
+      "id": "roof-front-brick-8-half-l",
+      "name": "Roof Front Brick 8 Half L",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick8_Half_L.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "8",
+        "half",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick8_Half_L.png"
+    },
+    {
+      "id": "roof-front-brick-8-half-r",
+      "name": "Roof Front Brick 8 Half R",
+      "category": "Roofs",
+      "fileName": "Roof_Front_Brick8_Half_R.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "brick",
+        "8",
+        "half",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Front_Brick8_Half_R.png"
+    },
+    {
+      "id": "roof-front-supports",
+      "name": "Roof Front Supports",
+      "category": "Roofs",
+      "fileName": "Roof_FrontSupports.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "front",
+        "supports"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_FrontSupports.png"
+    },
+    {
+      "id": "roof-log",
+      "name": "Roof Log",
+      "category": "Roofs",
+      "fileName": "Roof_Log.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "log"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Log.png"
+    },
+    {
+      "id": "roof-modular-round-tiles",
+      "name": "Roof Modular Round Tiles",
+      "category": "Roofs",
+      "fileName": "Roof_Modular_RoundTiles.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "modular",
+        "round",
+        "tiles"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Modular_RoundTiles.png"
+    },
+    {
+      "id": "roof-round-tile-2-x-1",
+      "name": "Roof Round Tile 2 X 1",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTile_2x1.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tile",
+        "2",
+        "x",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTile_2x1.png"
+    },
+    {
+      "id": "roof-round-tile-2-x-1-long",
+      "name": "Roof Round Tile 2 X 1 Long",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTile_2x1_Long.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tile",
+        "2",
+        "x",
+        "1",
+        "long"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTile_2x1_Long.png"
+    },
+    {
+      "id": "roof-round-tiles-4-x-4",
+      "name": "Roof Round Tiles 4 X 4",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_4x4.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "4",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_4x4.png"
+    },
+    {
+      "id": "roof-round-tiles-4-x-6",
+      "name": "Roof Round Tiles 4 X 6",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_4x6.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "4",
+        "x",
+        "6"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_4x6.png"
+    },
+    {
+      "id": "roof-round-tiles-4-x-8",
+      "name": "Roof Round Tiles 4 X 8",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_4x8.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "4",
+        "x",
+        "8"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_4x8.png"
+    },
+    {
+      "id": "roof-round-tiles-6-x-10",
+      "name": "Roof Round Tiles 6 X 10",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_6x10.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "6",
+        "x",
+        "10"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_6x10.png"
+    },
+    {
+      "id": "roof-round-tiles-6-x-12",
+      "name": "Roof Round Tiles 6 X 12",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_6x12.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "6",
+        "x",
+        "12"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_6x12.png"
+    },
+    {
+      "id": "roof-round-tiles-6-x-14",
+      "name": "Roof Round Tiles 6 X 14",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_6x14.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "6",
+        "x",
+        "14"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_6x14.png"
+    },
+    {
+      "id": "roof-round-tiles-6-x-4",
+      "name": "Roof Round Tiles 6 X 4",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_6x4.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "6",
+        "x",
+        "4"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_6x4.png"
+    },
+    {
+      "id": "roof-round-tiles-6-x-6",
+      "name": "Roof Round Tiles 6 X 6",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_6x6.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "6",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_6x6.png"
+    },
+    {
+      "id": "roof-round-tiles-6-x-8",
+      "name": "Roof Round Tiles 6 X 8",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_6x8.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "6",
+        "x",
+        "8"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_6x8.png"
+    },
+    {
+      "id": "roof-round-tiles-8-x-10",
+      "name": "Roof Round Tiles 8 X 10",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_8x10.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "8",
+        "x",
+        "10"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_8x10.png"
+    },
+    {
+      "id": "roof-round-tiles-8-x-12",
+      "name": "Roof Round Tiles 8 X 12",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_8x12.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "8",
+        "x",
+        "12"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_8x12.png"
+    },
+    {
+      "id": "roof-round-tiles-8-x-14",
+      "name": "Roof Round Tiles 8 X 14",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_8x14.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "8",
+        "x",
+        "14"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_8x14.png"
+    },
+    {
+      "id": "roof-round-tiles-8-x-8",
+      "name": "Roof Round Tiles 8 X 8",
+      "category": "Roofs",
+      "fileName": "Roof_RoundTiles_8x8.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "round",
+        "tiles",
+        "8",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_RoundTiles_8x8.png"
+    },
+    {
+      "id": "roof-support-2",
+      "name": "Roof Support 2",
+      "category": "Roofs",
+      "fileName": "Roof_Support2.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "support",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Support2.png"
+    },
+    {
+      "id": "roof-tower-round-tiles",
+      "name": "Roof Tower Round Tiles",
+      "category": "Roofs",
+      "fileName": "Roof_Tower_RoundTiles.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "tower",
+        "round",
+        "tiles"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Tower_RoundTiles.png"
+    },
+    {
+      "id": "roof-wooden-2-x-1",
+      "name": "Roof Wooden 2 X 1",
+      "category": "Roofs",
+      "fileName": "Roof_Wooden_2x1.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "wooden",
+        "2",
+        "x",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Wooden_2x1.png"
+    },
+    {
+      "id": "roof-wooden-2-x-1-center",
+      "name": "Roof Wooden 2 X 1 Center",
+      "category": "Roofs",
+      "fileName": "Roof_Wooden_2x1_Center.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "wooden",
+        "2",
+        "x",
+        "1",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Wooden_2x1_Center.png"
+    },
+    {
+      "id": "roof-wooden-2-x-1-center-mirror",
+      "name": "Roof Wooden 2 X 1 Center Mirror",
+      "category": "Roofs",
+      "fileName": "Roof_Wooden_2x1_Center_Mirror.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "wooden",
+        "2",
+        "x",
+        "1",
+        "center",
+        "mirror"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Wooden_2x1_Center_Mirror.png"
+    },
+    {
+      "id": "roof-wooden-2-x-1-corner",
+      "name": "Roof Wooden 2 X 1 Corner",
+      "category": "Roofs",
+      "fileName": "Roof_Wooden_2x1_Corner.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "wooden",
+        "2",
+        "x",
+        "1",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Wooden_2x1_Corner.png"
+    },
+    {
+      "id": "roof-wooden-2-x-1-l",
+      "name": "Roof Wooden 2 X 1 L",
+      "category": "Roofs",
+      "fileName": "Roof_Wooden_2x1_L.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "wooden",
+        "2",
+        "x",
+        "1",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Wooden_2x1_L.png"
+    },
+    {
+      "id": "roof-wooden-2-x-1-middle",
+      "name": "Roof Wooden 2 X 1 Middle",
+      "category": "Roofs",
+      "fileName": "Roof_Wooden_2x1_Middle.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "wooden",
+        "2",
+        "x",
+        "1",
+        "middle"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Wooden_2x1_Middle.png"
+    },
+    {
+      "id": "roof-wooden-2-x-1-r",
+      "name": "Roof Wooden 2 X 1 R",
+      "category": "Roofs",
+      "fileName": "Roof_Wooden_2x1_R.gltf",
+      "tags": [
+        "roofs",
+        "roof",
+        "wooden",
+        "2",
+        "x",
+        "1",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2.2,
+          0.6,
+          2.2
+        ],
+        "color": "#5d4037"
+      },
+      "thumbnailFileName": "Roof_Wooden_2x1_R.png"
+    },
+    {
+      "id": "stair-interior-rails",
+      "name": "Stair Interior Rails",
+      "category": "Stairs",
+      "fileName": "Stair_Interior_Rails.gltf",
+      "tags": [
+        "stairs",
+        "stair",
+        "interior",
+        "rails"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stair_Interior_Rails.png"
+    },
+    {
+      "id": "stair-interior-simple",
+      "name": "Stair Interior Simple",
+      "category": "Stairs",
+      "fileName": "Stair_Interior_Simple.gltf",
+      "tags": [
+        "stairs",
+        "stair",
+        "interior",
+        "simple"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stair_Interior_Simple.png"
+    },
+    {
+      "id": "stair-interior-solid",
+      "name": "Stair Interior Solid",
+      "category": "Stairs",
+      "fileName": "Stair_Interior_Solid.gltf",
+      "tags": [
+        "stairs",
+        "stair",
+        "interior",
+        "solid"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stair_Interior_Solid.png"
+    },
+    {
+      "id": "stair-interior-solid-extended",
+      "name": "Stair Interior Solid Extended",
+      "category": "Stairs",
+      "fileName": "Stair_Interior_SolidExtended.gltf",
+      "tags": [
+        "stairs",
+        "stair",
+        "interior",
+        "solid",
+        "extended"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stair_Interior_SolidExtended.png"
+    },
+    {
+      "id": "stairs-exterior-no-first-step",
+      "name": "Stairs Exterior No First Step",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_NoFirstStep.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "no",
+        "first",
+        "step"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_NoFirstStep.png"
+    },
+    {
+      "id": "stairs-exterior-platform",
+      "name": "Stairs Exterior Platform",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_Platform.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "platform"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_Platform.png"
+    },
+    {
+      "id": "stairs-exterior-platform-45",
+      "name": "Stairs Exterior Platform 45",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_Platform45.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "platform",
+        "45"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_Platform45.png"
+    },
+    {
+      "id": "stairs-exterior-platform-45-clean",
+      "name": "Stairs Exterior Platform 45 Clean",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_Platform45Clean.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "platform",
+        "45",
+        "clean"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_Platform45Clean.png"
+    },
+    {
+      "id": "stairs-exterior-platformu",
+      "name": "Stairs Exterior Platformu",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_PlatformU.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "platformu"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_PlatformU.png"
+    },
+    {
+      "id": "stairs-exterior-side-platform",
+      "name": "Stairs Exterior Side Platform",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_SidePlatform.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "side",
+        "platform"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_SidePlatform.png"
+    },
+    {
+      "id": "stairs-exterior-sides",
+      "name": "Stairs Exterior Sides",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_Sides.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "sides"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_Sides.png"
+    },
+    {
+      "id": "stairs-exterior-sides-45",
+      "name": "Stairs Exterior Sides 45",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_Sides45.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "sides",
+        "45"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_Sides45.png"
+    },
+    {
+      "id": "stairs-exterior-sidesu",
+      "name": "Stairs Exterior Sidesu",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_SidesU.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "sidesu"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_SidesU.png"
+    },
+    {
+      "id": "stairs-exterior-single-side",
+      "name": "Stairs Exterior Single Side",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_SingleSide.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "single",
+        "side"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_SingleSide.png"
+    },
+    {
+      "id": "stairs-exterior-single-side-thick",
+      "name": "Stairs Exterior Single Side Thick",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_SingleSideThick.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "single",
+        "side",
+        "thick"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_SingleSideThick.png"
+    },
+    {
+      "id": "stairs-exterior-straight",
+      "name": "Stairs Exterior Straight",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_Straight.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "straight"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_Straight.png"
+    },
+    {
+      "id": "stairs-exterior-straight-center",
+      "name": "Stairs Exterior Straight Center",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_Straight_Center.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "straight",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_Straight_Center.png"
+    },
+    {
+      "id": "stairs-exterior-straight-l",
+      "name": "Stairs Exterior Straight L",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_Straight_L.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "straight",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_Straight_L.png"
+    },
+    {
+      "id": "stairs-exterior-straight-r",
+      "name": "Stairs Exterior Straight R",
+      "category": "Stairs",
+      "fileName": "Stairs_Exterior_Straight_R.gltf",
+      "tags": [
+        "stairs",
+        "exterior",
+        "straight",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.4,
+          2
+        ],
+        "color": "#7b8d93"
+      },
+      "thumbnailFileName": "Stairs_Exterior_Straight_R.png"
+    },
+    {
+      "id": "prop-brick-1",
+      "name": "Prop Brick 1",
+      "category": "Props",
+      "fileName": "Prop_Brick1.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "brick",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_Brick1.png"
+    },
+    {
+      "id": "prop-brick-2",
+      "name": "Prop Brick 2",
+      "category": "Props",
+      "fileName": "Prop_Brick2.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "brick",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_Brick2.png"
+    },
+    {
+      "id": "prop-brick-3",
+      "name": "Prop Brick 3",
+      "category": "Props",
+      "fileName": "Prop_Brick3.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "brick",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_Brick3.png"
+    },
+    {
+      "id": "prop-brick-4",
+      "name": "Prop Brick 4",
+      "category": "Props",
+      "fileName": "Prop_Brick4.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "brick",
+        "4"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_Brick4.png"
+    },
+    {
+      "id": "prop-chimney",
+      "name": "Prop Chimney",
+      "category": "Props",
+      "fileName": "Prop_Chimney.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "chimney"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_Chimney.png"
+    },
+    {
+      "id": "prop-chimney-2",
+      "name": "Prop Chimney 2",
+      "category": "Props",
+      "fileName": "Prop_Chimney2.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "chimney",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_Chimney2.png"
+    },
+    {
+      "id": "prop-crate",
+      "name": "Prop Crate",
+      "category": "Props",
+      "fileName": "Prop_Crate.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "crate"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_Crate.png"
+    },
+    {
+      "id": "prop-exterior-border-corner",
+      "name": "Prop Exterior Border Corner",
+      "category": "Props",
+      "fileName": "Prop_ExteriorBorder_Corner.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "exterior",
+        "border",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_ExteriorBorder_Corner.png"
+    },
+    {
+      "id": "prop-exterior-border-straight-1",
+      "name": "Prop Exterior Border Straight 1",
+      "category": "Props",
+      "fileName": "Prop_ExteriorBorder_Straight1.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "exterior",
+        "border",
+        "straight",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_ExteriorBorder_Straight1.png"
+    },
+    {
+      "id": "prop-exterior-border-straight-2",
+      "name": "Prop Exterior Border Straight 2",
+      "category": "Props",
+      "fileName": "Prop_ExteriorBorder_Straight2.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "exterior",
+        "border",
+        "straight",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_ExteriorBorder_Straight2.png"
+    },
+    {
+      "id": "prop-metal-fence-ornament",
+      "name": "Prop Metal Fence Ornament",
+      "category": "Props",
+      "fileName": "Prop_MetalFence_Ornament.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "metal",
+        "fence",
+        "ornament"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_MetalFence_Ornament.png"
+    },
+    {
+      "id": "prop-metal-fence-simple",
+      "name": "Prop Metal Fence Simple",
+      "category": "Props",
+      "fileName": "Prop_MetalFence_Simple.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "metal",
+        "fence",
+        "simple"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_MetalFence_Simple.png"
+    },
+    {
+      "id": "prop-support",
+      "name": "Prop Support",
+      "category": "Props",
+      "fileName": "Prop_Support.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "support"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_Support.png"
+    },
+    {
+      "id": "prop-vine-1",
+      "name": "Prop Vine 1",
+      "category": "Props",
+      "fileName": "Prop_Vine1.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "vine",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "column",
+        "size": [
+          0.5,
+          1.8,
+          0.5
+        ],
+        "color": "#689f38"
+      },
+      "thumbnailFileName": "Prop_Vine1.png"
+    },
+    {
+      "id": "prop-vine-2",
+      "name": "Prop Vine 2",
+      "category": "Props",
+      "fileName": "Prop_Vine2.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "vine",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "column",
+        "size": [
+          0.5,
+          1.8,
+          0.5
+        ],
+        "color": "#689f38"
+      },
+      "thumbnailFileName": "Prop_Vine2.png"
+    },
+    {
+      "id": "prop-vine-4",
+      "name": "Prop Vine 4",
+      "category": "Props",
+      "fileName": "Prop_Vine4.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "vine",
+        "4"
+      ],
+      "placeholder": {
+        "shape": "column",
+        "size": [
+          0.5,
+          1.8,
+          0.5
+        ],
+        "color": "#689f38"
+      },
+      "thumbnailFileName": "Prop_Vine4.png"
+    },
+    {
+      "id": "prop-vine-5",
+      "name": "Prop Vine 5",
+      "category": "Props",
+      "fileName": "Prop_Vine5.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "vine",
+        "5"
+      ],
+      "placeholder": {
+        "shape": "column",
+        "size": [
+          0.5,
+          1.8,
+          0.5
+        ],
+        "color": "#689f38"
+      },
+      "thumbnailFileName": "Prop_Vine5.png"
+    },
+    {
+      "id": "prop-vine-6",
+      "name": "Prop Vine 6",
+      "category": "Props",
+      "fileName": "Prop_Vine6.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "vine",
+        "6"
+      ],
+      "placeholder": {
+        "shape": "column",
+        "size": [
+          0.5,
+          1.8,
+          0.5
+        ],
+        "color": "#689f38"
+      },
+      "thumbnailFileName": "Prop_Vine6.png"
+    },
+    {
+      "id": "prop-vine-9",
+      "name": "Prop Vine 9",
+      "category": "Props",
+      "fileName": "Prop_Vine9.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "vine",
+        "9"
+      ],
+      "placeholder": {
+        "shape": "column",
+        "size": [
+          0.5,
+          1.8,
+          0.5
+        ],
+        "color": "#689f38"
+      },
+      "thumbnailFileName": "Prop_Vine9.png"
+    },
+    {
+      "id": "prop-wagon",
+      "name": "Prop Wagon",
+      "category": "Props",
+      "fileName": "Prop_Wagon.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "wagon"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_Wagon.png"
+    },
+    {
+      "id": "prop-wooden-fence-extension-1",
+      "name": "Prop Wooden Fence Extension 1",
+      "category": "Props",
+      "fileName": "Prop_WoodenFence_Extension1.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "wooden",
+        "fence",
+        "extension",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_WoodenFence_Extension1.png"
+    },
+    {
+      "id": "prop-wooden-fence-extension-2",
+      "name": "Prop Wooden Fence Extension 2",
+      "category": "Props",
+      "fileName": "Prop_WoodenFence_Extension2.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "wooden",
+        "fence",
+        "extension",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_WoodenFence_Extension2.png"
+    },
+    {
+      "id": "prop-wooden-fence-single",
+      "name": "Prop Wooden Fence Single",
+      "category": "Props",
+      "fileName": "Prop_WoodenFence_Single.gltf",
+      "tags": [
+        "props",
+        "prop",
+        "wooden",
+        "fence",
+        "single"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "color": "#8bc34a"
+      },
+      "thumbnailFileName": "Prop_WoodenFence_Single.png"
+    },
+    {
+      "id": "balcony-cross-corner",
+      "name": "Balcony Cross Corner",
+      "category": "Balconies",
+      "fileName": "Balcony_Cross_Corner.gltf",
+      "tags": [
+        "balconies",
+        "balcony",
+        "cross",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.2,
+          1
+        ],
+        "color": "#607d8b"
+      },
+      "thumbnailFileName": "Balcony_Cross_Corner.png"
+    },
+    {
+      "id": "balcony-cross-straight",
+      "name": "Balcony Cross Straight",
+      "category": "Balconies",
+      "fileName": "Balcony_Cross_Straight.gltf",
+      "tags": [
+        "balconies",
+        "balcony",
+        "cross",
+        "straight"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.2,
+          1
+        ],
+        "color": "#607d8b"
+      },
+      "thumbnailFileName": "Balcony_Cross_Straight.png"
+    },
+    {
+      "id": "balcony-simple-corner",
+      "name": "Balcony Simple Corner",
+      "category": "Balconies",
+      "fileName": "Balcony_Simple_Corner.gltf",
+      "tags": [
+        "balconies",
+        "balcony",
+        "simple",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.2,
+          1
+        ],
+        "color": "#607d8b"
+      },
+      "thumbnailFileName": "Balcony_Simple_Corner.png"
+    },
+    {
+      "id": "balcony-simple-straight",
+      "name": "Balcony Simple Straight",
+      "category": "Balconies",
+      "fileName": "Balcony_Simple_Straight.gltf",
+      "tags": [
+        "balconies",
+        "balcony",
+        "simple",
+        "straight"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          1.2,
+          1
+        ],
+        "color": "#607d8b"
+      },
+      "thumbnailFileName": "Balcony_Simple_Straight.png"
+    }
+  ]
+}

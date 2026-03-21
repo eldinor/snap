@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "id": "fantasy-props-megakit-standard",
+  "name": "Fantasy Props Megakit[standard]",
+  "mode": "built-in",
+  "description": "Draft imported library from Fantasy Props MegaKit[Standard].zip.",
+  "author": "",
+  "createdAt": "2026-03-20T22:41:12.623Z",
+  "assetManifest": "./assets-manifest.json",
+  "categories": "./asset-categories.json",
+  "tagTemplates": "./asset-tag-templates.json",
+  "assetBasePath": "/assets/libraries/fantasy-props-megakit-standard/glTF/",
+  "thumbnailBasePath": "/generated/asset-previews/fantasy-props-megakit-standard/"
+}

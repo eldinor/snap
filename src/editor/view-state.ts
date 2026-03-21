@@ -1,23 +1,31 @@
 export type EditorMode = "select" | "place";
+export type RotationAxis = "x" | "y" | "z";
 
 export interface ToolbarViewState {
   snapEnabled: boolean;
   ySnapEnabled: boolean;
   newObjectPlacementKind: "clone" | "instance";
   heightLabelMode: "transform" | "geometry";
+  saveOnEveryUiUpdate: boolean;
+  autosaveEnabled: boolean;
+  autosaveIntervalSeconds: number;
   mode: EditorMode;
   canUndo: boolean;
   canRedo: boolean;
   hasSelection: boolean;
   hasObjects: boolean;
   gridSize: number;
+  gridPlaneSize: number;
   rotationStepDegrees: number;
+  rotationAxis: RotationAxis;
   environmentEnabled: boolean;
   environmentIntensity: number;
   lightIntensity: number;
   gridVisible: boolean;
+  gridRenderMode: "material" | "lines";
   gridColor: string;
   groundColor: string;
+  freezeModelMaterials: boolean;
 }
 
 export interface StatusViewState {
@@ -27,6 +35,11 @@ export interface StatusViewState {
   ySnapEnabled: boolean;
   gridSize: number;
   rotationStepDegrees: number;
+  rotationAxis: RotationAxis;
+  drawCalls: number;
+  materials: number;
+  textures: number;
+  totalVertices: number;
   hint: string;
 }
 
@@ -46,6 +59,7 @@ export interface SelectionViewState {
 
 export interface SceneItemViewState {
   id: string;
+  libraryId: string;
   assetId: string;
   assetName: string;
   placementKind: "clone" | "instance" | null;
@@ -60,12 +74,15 @@ export interface SceneItemViewState {
 }
 
 export interface EditorViewState {
+  activeAssetLibraryId: string | null;
   activeAssetId: string | null;
+  previewAssetLibraryId: string | null;
   previewAssetId: string | null;
   objectCount: number;
   selectionCount: number;
   noticeMessage: string | null;
   lastManualSaveAt: string | null;
+  lastAutosaveAt: string | null;
   lastRecoveredAutosaveAt: string | null;
   sceneItems: SceneItemViewState[];
   toolbar: ToolbarViewState;
@@ -75,7 +92,9 @@ export interface EditorViewState {
 
 export function createInitialEditorViewState(): EditorViewState {
   return {
+    activeAssetLibraryId: null,
     activeAssetId: null,
+    previewAssetLibraryId: null,
     previewAssetId: null,
     objectCount: 0,
     selectionCount: 0,
@@ -86,21 +105,29 @@ export function createInitialEditorViewState(): EditorViewState {
       ySnapEnabled: false,
       newObjectPlacementKind: "instance",
       heightLabelMode: "transform",
+      saveOnEveryUiUpdate: true,
+      autosaveEnabled: true,
+      autosaveIntervalSeconds: 30,
       mode: "select",
       canUndo: false,
       canRedo: false,
       hasSelection: false,
       hasObjects: false,
       gridSize: 1,
+      gridPlaneSize: 64,
       rotationStepDegrees: 90,
+      rotationAxis: "y",
       environmentEnabled: true,
       environmentIntensity: 0.1,
       lightIntensity: 1.1,
       gridVisible: true,
+      gridRenderMode: "material",
       gridColor: "#292f38",
       groundColor: "#1f2326",
+      freezeModelMaterials: true,
     },
     lastManualSaveAt: null,
+    lastAutosaveAt: null,
     lastRecoveredAutosaveAt: null,
     status: {
       mode: "select",
@@ -109,6 +136,11 @@ export function createInitialEditorViewState(): EditorViewState {
       ySnapEnabled: false,
       gridSize: 1,
       rotationStepDegrees: 90,
+      rotationAxis: "y",
+      drawCalls: 0,
+      materials: 0,
+      textures: 0,
+      totalVertices: 0,
       hint: "Click object select | Delete remove | R rotate",
     },
     selection: {

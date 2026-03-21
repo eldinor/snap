@@ -5,21 +5,33 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "assets:validate": "node scripts/asset-library.mjs validate",
+    "assets:regenerate": "node scripts/asset-library.mjs regenerate",
+    "assets:thumbnails": "node scripts/asset-library.mjs thumbnails",
+    "assets:import-library-zip": "node scripts/asset-import-library-zip.mjs",
+    "assets:promote-library": "node scripts/asset-promote-library.mjs",
+    "assets:remove-library": "node scripts/asset-remove-library.mjs",
+    "assets:validate-library": "node scripts/asset-validate-library.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@babylonjs/core": "^8.55.3",
     "@babylonjs/loaders": "^8.55.3",
+    "@babylonjs/materials": "^8.56.1",
+    "@babylonjs/serializers": "^8.56.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "jszip": "^3.10.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.2.0",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vitest": "^4.1.0"
   }
 }

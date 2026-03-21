@@ -19,9 +19,7 @@ body,
 
 body {
   min-height: 100vh;
-  background:
-    linear-gradient(180deg, rgba(52, 63, 72, 0.32), rgba(11, 14, 18, 0) 18%),
-    #0c0f12;
+  background: #0c0f12;
 }
 
 button,
@@ -164,6 +162,136 @@ select:focus-visible {
   color: #edf1f7;
 }
 
+.filter-bar {
+  display: grid;
+  gap: 8px;
+}
+
+.library-select-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px;
+  gap: 6px;
+  align-items: center;
+}
+
+.filter-bar-search-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.filter-bar-search {
+  width: 100%;
+  min-width: 0;
+}
+
+.filter-bar-search-field {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.filter-bar-search-field .filter-bar-search {
+  padding-right: 26px;
+}
+
+.filter-bar-search-spacer {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.filter-bar-clear {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #8fa0ad;
+  font-size: 11px;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.filter-bar-clear:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #eef2f6;
+}
+
+.filter-bar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.filter-select-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.filter-select {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  color: #9aa7b3;
+  font-size: 11px;
+}
+
+.filter-select .editor-input {
+  width: 100%;
+}
+
+.filter-bar-compact {
+  gap: 6px;
+}
+
+.filter-bar-compact .filter-select-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.filter-bar-compact .filter-select {
+  gap: 2px;
+  font-size: 10px;
+}
+
+.filter-bar-compact .filter-select .editor-input,
+.filter-bar-compact .filter-bar-search {
+  height: 24px;
+  padding: 0 6px;
+  font-size: 12px;
+}
+
+.scene-filter-toggle {
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid #303841;
+  border-radius: 4px;
+  background: #101419;
+  color: #c2ccd5;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.scene-filter-toggle.is-active {
+  border-color: #4a5661;
+  color: #edf1f7;
+}
+
+.scene-filter-toggle:disabled {
+  border-color: #273038;
+  background: #0d1115;
+  color: #64717c;
+  cursor: default;
+  opacity: 0.7;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr) 300px;
@@ -218,8 +346,27 @@ select:focus-visible {
 
 .sidebar-scene {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
   min-height: 0;
+}
+
+.scene-filter-panel {
+  grid-row: 2;
+  min-height: 0;
+  align-self: start;
+}
+
+.scene-list-panel {
+  grid-row: 3;
+  min-height: 0;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+.scene-list-panel > .scene-list,
+.scene-list-panel > .properties-empty {
+  min-height: 0;
+  height: 100%;
 }
 
 .panel-label {
@@ -274,10 +421,7 @@ select:focus-visible {
   padding: 10px;
   border: 1px solid #2b333b;
   border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
-    #151b20;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.34);
+  background: #151b20;
 }
 
 .settings-menu-label {
@@ -413,7 +557,6 @@ select:focus-visible {
   height: 16px;
   border-radius: 50%;
   background: #d7dfe6;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   transition: transform 120ms ease, background-color 120ms ease;
 }
 
@@ -502,9 +645,7 @@ select:focus-visible {
   justify-self: end;
   border: 1px solid #2b333b;
   border-radius: 4px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
-    #0f1418;
+  background: #0f1418;
   object-fit: contain;
   object-position: center;
 }
@@ -517,7 +658,7 @@ select:focus-visible {
   display: grid;
   align-content: start;
   grid-auto-rows: max-content;
-  gap: 6px;
+  gap: 3px;
   min-height: 0;
   overflow: auto;
   padding-top: 10px;
@@ -532,6 +673,7 @@ select:focus-visible {
   border: 1px solid #242c33;
   border-radius: 6px;
   background: #0f1418;
+  scroll-margin-block: 6px;
   transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
 }
 

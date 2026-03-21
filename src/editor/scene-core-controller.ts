@@ -10,10 +10,15 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
+import type { RotationAxis } from "./view-state";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { snapVectorForSize } from "./placement";
 
-const GRID_EXTENT = 32;
+interface HeightLabelRenderState {
+  text: string;
+  ySnapEnabled: boolean;
+}
+
 const HEIGHT_LABEL_TEXTURE_SIZE = 256;
 const HEIGHT_HELPER_FREE_HEX = "#8ac7ff";
 const HEIGHT_HELPER_SNAP_HEX = "#7ef0b8";
@@ -30,23 +35,31 @@ export class SceneCoreController {
     private readonly gizmoManager: GizmoManager,
   ) {}
 
-  renderGrid(gridMesh: Nullable<LinesMesh>, gridSize: number, visible: boolean, colorHex: string) {
+  renderProceduralGrid(
+    gridMesh: Nullable<LinesMesh>,
+    gridSize: number,
+    gridPlaneSize: number,
+    visible: boolean,
+    colorHex: string,
+  ) {
     gridMesh?.dispose();
     if (!visible) {
       return null;
     }
 
     const lines: Vector3[][] = [];
+    const gridExtent = gridPlaneSize * 0.5;
 
-    for (let offset = -GRID_EXTENT; offset <= GRID_EXTENT; offset += gridSize) {
-      lines.push([new Vector3(offset, 0.01, -GRID_EXTENT), new Vector3(offset, 0.01, GRID_EXTENT)]);
-      lines.push([new Vector3(-GRID_EXTENT, 0.01, offset), new Vector3(GRID_EXTENT, 0.01, offset)]);
+    for (let offset = -gridExtent; offset <= gridExtent + 0.0001; offset += gridSize) {
+      lines.push([new Vector3(offset, 0.01, -gridExtent), new Vector3(offset, 0.01, gridExtent)]);
+      lines.push([new Vector3(-gridExtent, 0.01, offset), new Vector3(gridExtent, 0.01, offset)]);
     }
 
     const nextGrid = MeshBuilder.CreateLineSystem("editor-grid", { lines }, this.scene);
     nextGrid.color = Color3.FromHexString(colorHex);
     nextGrid.alpha = 0.45;
     nextGrid.isPickable = false;
+    nextGrid.freezeWorldMatrix();
     return nextGrid;
   }
 
@@ -78,6 +91,8 @@ export class SceneCoreController {
     markerMaterial.alpha = 0.92;
     markerMaterial.specularColor = Color3.Black();
     nextMarker.material = markerMaterial;
+    markerMaterial.freeze();
+    nextMarker.freezeWorldMatrix();
     return nextMarker;
   }
 
@@ -142,7 +157,7 @@ export class SceneCoreController {
 
     const centerX = (bounds.min.x + bounds.max.x) * 0.5;
     const centerZ = (bounds.min.z + bounds.max.z) * 0.5;
-    const labelText = `${displayedHeight.toFixed(2)}u`;
+    const labelText = `${displayedHeight.toFixed(3)}u`;
 
     const nextLabel =
       heightLabel ??
@@ -182,21 +197,31 @@ export class SceneCoreController {
       nextLabel.material = labelMaterial;
     }
 
-    const context = labelTexture.getContext();
-    const textureWidth = labelTexture.getSize().width;
-    const textureHeight = labelTexture.getSize().height;
-    context.clearRect(0, 0, textureWidth, textureHeight);
-    context.fillStyle = ySnapEnabled ? HEIGHT_LABEL_BG_SNAP : HEIGHT_LABEL_BG_FREE;
-    context.fillRect(8, 8, textureWidth - 16, textureHeight - 16);
-    context.strokeStyle = ySnapEnabled ? "rgba(126, 240, 184, 0.95)" : "rgba(138, 199, 255, 0.95)";
-    context.lineWidth = 6;
-    context.strokeRect(8, 8, textureWidth - 16, textureHeight - 16);
-    context.fillStyle = HEIGHT_LABEL_TEXT_HEX;
-    context.font = "bold 54px Segoe UI";
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.fillText(labelText, textureWidth / 2, textureHeight / 2);
-    labelTexture.update();
+    const renderState = nextLabel.metadata?.heightLabelRenderState as HeightLabelRenderState | undefined;
+    if (!renderState || renderState.text !== labelText || renderState.ySnapEnabled !== ySnapEnabled) {
+      const context = labelTexture.getContext();
+      const textureWidth = labelTexture.getSize().width;
+      const textureHeight = labelTexture.getSize().height;
+      context.clearRect(0, 0, textureWidth, textureHeight);
+      context.fillStyle = ySnapEnabled ? HEIGHT_LABEL_BG_SNAP : HEIGHT_LABEL_BG_FREE;
+      context.fillRect(8, 8, textureWidth - 16, textureHeight - 16);
+      context.strokeStyle = ySnapEnabled ? "rgba(126, 240, 184, 0.95)" : "rgba(138, 199, 255, 0.95)";
+      context.lineWidth = 6;
+      context.strokeRect(8, 8, textureWidth - 16, textureHeight - 16);
+      context.fillStyle = HEIGHT_LABEL_TEXT_HEX;
+      context.font = "bold 54px Segoe UI";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.fillText(labelText, textureWidth / 2, textureHeight / 2);
+      labelTexture.update();
+      nextLabel.metadata = {
+        ...(nextLabel.metadata ?? {}),
+        heightLabelRenderState: {
+          text: labelText,
+          ySnapEnabled,
+        } satisfies HeightLabelRenderState,
+      };
+    }
 
     return nextLabel;
   }
@@ -261,8 +286,20 @@ export class SceneCoreController {
       this.gizmoManager.gizmos.positionGizmo.snapDistance = snapEnabled ? gridSize : 0;
     }
     if (this.gizmoManager.gizmos.rotationGizmo) {
+      this.gizmoManager.gizmos.rotationGizmo.xGizmo.snapDistance = snapEnabled ? rotationStepRadians : 0;
       this.gizmoManager.gizmos.rotationGizmo.yGizmo.snapDistance = snapEnabled ? rotationStepRadians : 0;
+      this.gizmoManager.gizmos.rotationGizmo.zGizmo.snapDistance = snapEnabled ? rotationStepRadians : 0;
     }
+  }
+
+  applyRotationAxis(rotationAxis: RotationAxis) {
+    if (!this.gizmoManager.gizmos.rotationGizmo) {
+      return;
+    }
+
+    this.gizmoManager.gizmos.rotationGizmo.xGizmo.isEnabled = rotationAxis === "x";
+    this.gizmoManager.gizmos.rotationGizmo.yGizmo.isEnabled = rotationAxis === "y";
+    this.gizmoManager.gizmos.rotationGizmo.zGizmo.isEnabled = rotationAxis === "z";
   }
 
   applyEnvironmentSetting(
@@ -282,7 +319,7 @@ export class SceneCoreController {
     previewTemplateSize: Vector3,
     snapEnabled: boolean,
     gridSize: number,
-    previewRotationRadians: number,
+    previewRotationRadians: Vector3,
   ) {
     if (!placementPreview) {
       return;
@@ -293,7 +330,7 @@ export class SceneCoreController {
       : lastPointerPoint.clone();
     placementPreview.position.set(point.x, 0, point.z);
     placementPreview.rotationQuaternion = null;
-    placementPreview.rotation.set(0, previewRotationRadians, 0);
+    placementPreview.rotation.copyFrom(previewRotationRadians);
   }
 
   disposePreview(placementPreview: TransformNode | null) {

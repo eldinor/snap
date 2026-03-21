@@ -1,0 +1,1995 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "anvil-log",
+      "name": "Anvil Log",
+      "category": "Floors",
+      "fileName": "Models/glTF/Anvil_Log.gltf",
+      "thumbnailFileName": "Anvil_Log.png",
+      "tags": [
+        "floors",
+        "anvil",
+        "log"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "anvil",
+      "name": "Anvil",
+      "category": "Floors",
+      "fileName": "Models/glTF/Anvil.gltf",
+      "thumbnailFileName": "Anvil.png",
+      "tags": [
+        "floors",
+        "anvil"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "axe-bronze",
+      "name": "Axe Bronze",
+      "category": "Floors",
+      "fileName": "Models/glTF/Axe_Bronze.gltf",
+      "thumbnailFileName": "Axe_Bronze.png",
+      "tags": [
+        "floors",
+        "axe",
+        "bronze"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "bag",
+      "name": "Bag",
+      "category": "Floors",
+      "fileName": "Models/glTF/Bag.gltf",
+      "thumbnailFileName": "Bag.png",
+      "tags": [
+        "floors",
+        "bag"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "banner-1-cloth",
+      "name": "Banner 1 Cloth",
+      "category": "Floors",
+      "fileName": "Models/glTF/Banner_1_Cloth.gltf",
+      "thumbnailFileName": "Banner_1_Cloth.png",
+      "tags": [
+        "floors",
+        "banner",
+        "1",
+        "cloth"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "banner-1",
+      "name": "Banner 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Banner_1.gltf",
+      "thumbnailFileName": "Banner_1.png",
+      "tags": [
+        "floors",
+        "banner",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "banner-2-cloth",
+      "name": "Banner 2 Cloth",
+      "category": "Floors",
+      "fileName": "Models/glTF/Banner_2_Cloth.gltf",
+      "thumbnailFileName": "Banner_2_Cloth.png",
+      "tags": [
+        "floors",
+        "banner",
+        "2",
+        "cloth"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "banner-2",
+      "name": "Banner 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Banner_2.gltf",
+      "thumbnailFileName": "Banner_2.png",
+      "tags": [
+        "floors",
+        "banner",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "barrel-apples",
+      "name": "Barrel Apples",
+      "category": "Floors",
+      "fileName": "Models/glTF/Barrel_Apples.gltf",
+      "thumbnailFileName": "Barrel_Apples.png",
+      "tags": [
+        "floors",
+        "barrel",
+        "apples"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "barrel-holder",
+      "name": "Barrel Holder",
+      "category": "Floors",
+      "fileName": "Models/glTF/Barrel_Holder.gltf",
+      "thumbnailFileName": "Barrel_Holder.png",
+      "tags": [
+        "floors",
+        "barrel",
+        "holder"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "barrel",
+      "name": "Barrel",
+      "category": "Floors",
+      "fileName": "Models/glTF/Barrel.gltf",
+      "thumbnailFileName": "Barrel.png",
+      "tags": [
+        "floors",
+        "barrel"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "bed-twin-1",
+      "name": "Bed Twin 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Bed_Twin1.gltf",
+      "thumbnailFileName": "Bed_Twin1.png",
+      "tags": [
+        "floors",
+        "bed",
+        "twin",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "bed-twin-2",
+      "name": "Bed Twin 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Bed_Twin2.gltf",
+      "thumbnailFileName": "Bed_Twin2.png",
+      "tags": [
+        "floors",
+        "bed",
+        "twin",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "bench",
+      "name": "Bench",
+      "category": "Floors",
+      "fileName": "Models/glTF/Bench.gltf",
+      "thumbnailFileName": "Bench.png",
+      "tags": [
+        "floors",
+        "bench"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-5",
+      "name": "Book 5",
+      "category": "Floors",
+      "fileName": "Models/glTF/Book_5.gltf",
+      "thumbnailFileName": "Book_5.png",
+      "tags": [
+        "floors",
+        "book",
+        "5"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-7",
+      "name": "Book 7",
+      "category": "Floors",
+      "fileName": "Models/glTF/Book_7.gltf",
+      "thumbnailFileName": "Book_7.png",
+      "tags": [
+        "floors",
+        "book",
+        "7"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-simplified-single",
+      "name": "Book Simplified Single",
+      "category": "Floors",
+      "fileName": "Models/glTF/Book_Simplified_Single.gltf",
+      "thumbnailFileName": "Book_Simplified_Single.png",
+      "tags": [
+        "floors",
+        "book",
+        "simplified",
+        "single"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-stack-1",
+      "name": "Book Stack 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Book_Stack_1.gltf",
+      "thumbnailFileName": "Book_Stack_1.png",
+      "tags": [
+        "floors",
+        "book",
+        "stack",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-stack-2",
+      "name": "Book Stack 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Book_Stack_2.gltf",
+      "thumbnailFileName": "Book_Stack_2.png",
+      "tags": [
+        "floors",
+        "book",
+        "stack",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "bookcase-2",
+      "name": "Bookcase 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Bookcase_2.gltf",
+      "thumbnailFileName": "Bookcase_2.png",
+      "tags": [
+        "floors",
+        "bookcase",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-group-medium-1",
+      "name": "Book Group Medium 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/BookGroup_Medium_1.gltf",
+      "thumbnailFileName": "BookGroup_Medium_1.png",
+      "tags": [
+        "floors",
+        "book",
+        "group",
+        "medium",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-group-medium-2",
+      "name": "Book Group Medium 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/BookGroup_Medium_2.gltf",
+      "thumbnailFileName": "BookGroup_Medium_2.png",
+      "tags": [
+        "floors",
+        "book",
+        "group",
+        "medium",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-group-medium-3",
+      "name": "Book Group Medium 3",
+      "category": "Floors",
+      "fileName": "Models/glTF/BookGroup_Medium_3.gltf",
+      "thumbnailFileName": "BookGroup_Medium_3.png",
+      "tags": [
+        "floors",
+        "book",
+        "group",
+        "medium",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-group-small-1",
+      "name": "Book Group Small 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/BookGroup_Small_1.gltf",
+      "thumbnailFileName": "BookGroup_Small_1.png",
+      "tags": [
+        "floors",
+        "book",
+        "group",
+        "small",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-group-small-2",
+      "name": "Book Group Small 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/BookGroup_Small_2.gltf",
+      "thumbnailFileName": "BookGroup_Small_2.png",
+      "tags": [
+        "floors",
+        "book",
+        "group",
+        "small",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-group-small-3",
+      "name": "Book Group Small 3",
+      "category": "Floors",
+      "fileName": "Models/glTF/BookGroup_Small_3.gltf",
+      "thumbnailFileName": "BookGroup_Small_3.png",
+      "tags": [
+        "floors",
+        "book",
+        "group",
+        "small",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "book-stand",
+      "name": "Book Stand",
+      "category": "Floors",
+      "fileName": "Models/glTF/BookStand.gltf",
+      "thumbnailFileName": "BookStand.png",
+      "tags": [
+        "floors",
+        "book",
+        "stand"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "bottle-1",
+      "name": "Bottle 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Bottle_1.gltf",
+      "thumbnailFileName": "Bottle_1.png",
+      "tags": [
+        "floors",
+        "bottle",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "bucket-metal",
+      "name": "Bucket Metal",
+      "category": "Floors",
+      "fileName": "Models/glTF/Bucket_Metal.gltf",
+      "thumbnailFileName": "Bucket_Metal.png",
+      "tags": [
+        "floors",
+        "bucket",
+        "metal"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "bucket-wooden-1",
+      "name": "Bucket Wooden 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Bucket_Wooden_1.gltf",
+      "thumbnailFileName": "Bucket_Wooden_1.png",
+      "tags": [
+        "floors",
+        "bucket",
+        "wooden",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cabinet",
+      "name": "Cabinet",
+      "category": "Floors",
+      "fileName": "Models/glTF/Cabinet.gltf",
+      "thumbnailFileName": "Cabinet.png",
+      "tags": [
+        "floors",
+        "cabinet"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cage-small",
+      "name": "Cage Small",
+      "category": "Floors",
+      "fileName": "Models/glTF/Cage_Small.gltf",
+      "thumbnailFileName": "Cage_Small.png",
+      "tags": [
+        "floors",
+        "cage",
+        "small"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "candle-1",
+      "name": "Candle 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Candle_1.gltf",
+      "thumbnailFileName": "Candle_1.png",
+      "tags": [
+        "floors",
+        "candle",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "candle-2",
+      "name": "Candle 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Candle_2.gltf",
+      "thumbnailFileName": "Candle_2.png",
+      "tags": [
+        "floors",
+        "candle",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "candle-stick-stand",
+      "name": "Candle Stick Stand",
+      "category": "Floors",
+      "fileName": "Models/glTF/CandleStick_Stand.gltf",
+      "thumbnailFileName": "CandleStick_Stand.png",
+      "tags": [
+        "floors",
+        "candle",
+        "stick",
+        "stand"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "candle-stick-triple",
+      "name": "Candle Stick Triple",
+      "category": "Floors",
+      "fileName": "Models/glTF/CandleStick_Triple.gltf",
+      "thumbnailFileName": "CandleStick_Triple.png",
+      "tags": [
+        "floors",
+        "candle",
+        "stick",
+        "triple"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "candle-stick",
+      "name": "Candle Stick",
+      "category": "Floors",
+      "fileName": "Models/glTF/CandleStick.gltf",
+      "thumbnailFileName": "CandleStick.png",
+      "tags": [
+        "floors",
+        "candle",
+        "stick"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "carrot",
+      "name": "Carrot",
+      "category": "Floors",
+      "fileName": "Models/glTF/Carrot.gltf",
+      "thumbnailFileName": "Carrot.png",
+      "tags": [
+        "floors",
+        "carrot"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cauldron",
+      "name": "Cauldron",
+      "category": "Floors",
+      "fileName": "Models/glTF/Cauldron.gltf",
+      "thumbnailFileName": "Cauldron.png",
+      "tags": [
+        "floors",
+        "cauldron"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "chain-coil",
+      "name": "Chain Coil",
+      "category": "Floors",
+      "fileName": "Models/glTF/Chain_Coil.gltf",
+      "thumbnailFileName": "Chain_Coil.png",
+      "tags": [
+        "floors",
+        "chain",
+        "coil"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "chair-1",
+      "name": "Chair 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Chair_1.gltf",
+      "thumbnailFileName": "Chair_1.png",
+      "tags": [
+        "floors",
+        "chair",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "chalice",
+      "name": "Chalice",
+      "category": "Floors",
+      "fileName": "Models/glTF/Chalice.gltf",
+      "thumbnailFileName": "Chalice.png",
+      "tags": [
+        "floors",
+        "chalice"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "chandelier",
+      "name": "Chandelier",
+      "category": "Floors",
+      "fileName": "Models/glTF/Chandelier.gltf",
+      "thumbnailFileName": "Chandelier.png",
+      "tags": [
+        "floors",
+        "chandelier"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "chest-wood",
+      "name": "Chest Wood",
+      "category": "Floors",
+      "fileName": "Models/glTF/Chest_Wood.gltf",
+      "thumbnailFileName": "Chest_Wood.png",
+      "tags": [
+        "floors",
+        "chest",
+        "wood"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "coin-pile-2",
+      "name": "Coin Pile 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Coin_Pile_2.gltf",
+      "thumbnailFileName": "Coin_Pile_2.png",
+      "tags": [
+        "floors",
+        "coin",
+        "pile",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "coin-pile",
+      "name": "Coin Pile",
+      "category": "Floors",
+      "fileName": "Models/glTF/Coin_Pile.gltf",
+      "thumbnailFileName": "Coin_Pile.png",
+      "tags": [
+        "floors",
+        "coin",
+        "pile"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "coin",
+      "name": "Coin",
+      "category": "Floors",
+      "fileName": "Models/glTF/Coin.gltf",
+      "thumbnailFileName": "Coin.png",
+      "tags": [
+        "floors",
+        "coin"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "crate-metal",
+      "name": "Crate Metal",
+      "category": "Floors",
+      "fileName": "Models/glTF/Crate_Metal.gltf",
+      "thumbnailFileName": "Crate_Metal.png",
+      "tags": [
+        "floors",
+        "crate",
+        "metal"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "crate-wooden",
+      "name": "Crate Wooden",
+      "category": "Floors",
+      "fileName": "Models/glTF/Crate_Wooden.gltf",
+      "thumbnailFileName": "Crate_Wooden.png",
+      "tags": [
+        "floors",
+        "crate",
+        "wooden"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "dummy",
+      "name": "Dummy",
+      "category": "Floors",
+      "fileName": "Models/glTF/Dummy.gltf",
+      "thumbnailFileName": "Dummy.png",
+      "tags": [
+        "floors",
+        "dummy"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "farm-crate-apple",
+      "name": "Farm Crate Apple",
+      "category": "Floors",
+      "fileName": "Models/glTF/FarmCrate_Apple.gltf",
+      "thumbnailFileName": "FarmCrate_Apple.png",
+      "tags": [
+        "floors",
+        "farm",
+        "crate",
+        "apple"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "farm-crate-carrot",
+      "name": "Farm Crate Carrot",
+      "category": "Floors",
+      "fileName": "Models/glTF/FarmCrate_Carrot.gltf",
+      "thumbnailFileName": "FarmCrate_Carrot.png",
+      "tags": [
+        "floors",
+        "farm",
+        "crate",
+        "carrot"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "farm-crate-empty",
+      "name": "Farm Crate Empty",
+      "category": "Floors",
+      "fileName": "Models/glTF/FarmCrate_Empty.gltf",
+      "thumbnailFileName": "FarmCrate_Empty.png",
+      "tags": [
+        "floors",
+        "farm",
+        "crate",
+        "empty"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "key-gold",
+      "name": "Key Gold",
+      "category": "Floors",
+      "fileName": "Models/glTF/Key_Gold.gltf",
+      "thumbnailFileName": "Key_Gold.png",
+      "tags": [
+        "floors",
+        "key",
+        "gold"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "key-metal",
+      "name": "Key Metal",
+      "category": "Floors",
+      "fileName": "Models/glTF/Key_Metal.gltf",
+      "thumbnailFileName": "Key_Metal.png",
+      "tags": [
+        "floors",
+        "key",
+        "metal"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "lantern-wall",
+      "name": "Lantern Wall",
+      "category": "Floors",
+      "fileName": "Models/glTF/Lantern_Wall.gltf",
+      "thumbnailFileName": "Lantern_Wall.png",
+      "tags": [
+        "floors",
+        "lantern",
+        "wall"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "mug",
+      "name": "Mug",
+      "category": "Floors",
+      "fileName": "Models/glTF/Mug.gltf",
+      "thumbnailFileName": "Mug.png",
+      "tags": [
+        "floors",
+        "mug"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "nightstand-shelf",
+      "name": "Nightstand Shelf",
+      "category": "Floors",
+      "fileName": "Models/glTF/Nightstand_Shelf.gltf",
+      "thumbnailFileName": "Nightstand_Shelf.png",
+      "tags": [
+        "floors",
+        "nightstand",
+        "shelf"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "peg-rack",
+      "name": "Peg Rack",
+      "category": "Floors",
+      "fileName": "Models/glTF/Peg_Rack.gltf",
+      "thumbnailFileName": "Peg_Rack.png",
+      "tags": [
+        "floors",
+        "peg",
+        "rack"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "pickaxe-bronze",
+      "name": "Pickaxe Bronze",
+      "category": "Floors",
+      "fileName": "Models/glTF/Pickaxe_Bronze.gltf",
+      "thumbnailFileName": "Pickaxe_Bronze.png",
+      "tags": [
+        "floors",
+        "pickaxe",
+        "bronze"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "pot-1-lid",
+      "name": "Pot 1 Lid",
+      "category": "Floors",
+      "fileName": "Models/glTF/Pot_1_Lid.gltf",
+      "thumbnailFileName": "Pot_1_Lid.png",
+      "tags": [
+        "floors",
+        "pot",
+        "1",
+        "lid"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "pot-1",
+      "name": "Pot 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Pot_1.gltf",
+      "thumbnailFileName": "Pot_1.png",
+      "tags": [
+        "floors",
+        "pot",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "potion-1",
+      "name": "Potion 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Potion_1.gltf",
+      "thumbnailFileName": "Potion_1.png",
+      "tags": [
+        "floors",
+        "potion",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "potion-2",
+      "name": "Potion 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Potion_2.gltf",
+      "thumbnailFileName": "Potion_2.png",
+      "tags": [
+        "floors",
+        "potion",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "potion-4",
+      "name": "Potion 4",
+      "category": "Floors",
+      "fileName": "Models/glTF/Potion_4.gltf",
+      "thumbnailFileName": "Potion_4.png",
+      "tags": [
+        "floors",
+        "potion",
+        "4"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "pouch-large",
+      "name": "Pouch Large",
+      "category": "Floors",
+      "fileName": "Models/glTF/Pouch_Large.gltf",
+      "thumbnailFileName": "Pouch_Large.png",
+      "tags": [
+        "floors",
+        "pouch",
+        "large"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "rope-1",
+      "name": "Rope 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Rope_1.gltf",
+      "thumbnailFileName": "Rope_1.png",
+      "tags": [
+        "floors",
+        "rope",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "rope-2",
+      "name": "Rope 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Rope_2.gltf",
+      "thumbnailFileName": "Rope_2.png",
+      "tags": [
+        "floors",
+        "rope",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "rope-3",
+      "name": "Rope 3",
+      "category": "Floors",
+      "fileName": "Models/glTF/Rope_3.gltf",
+      "thumbnailFileName": "Rope_3.png",
+      "tags": [
+        "floors",
+        "rope",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "scroll-1",
+      "name": "Scroll 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/Scroll_1.gltf",
+      "thumbnailFileName": "Scroll_1.png",
+      "tags": [
+        "floors",
+        "scroll",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "scroll-2",
+      "name": "Scroll 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Scroll_2.gltf",
+      "thumbnailFileName": "Scroll_2.png",
+      "tags": [
+        "floors",
+        "scroll",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "shelf-arch",
+      "name": "Shelf Arch",
+      "category": "Floors",
+      "fileName": "Models/glTF/Shelf_Arch.gltf",
+      "thumbnailFileName": "Shelf_Arch.png",
+      "tags": [
+        "floors",
+        "shelf",
+        "arch"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "shelf-simple",
+      "name": "Shelf Simple",
+      "category": "Floors",
+      "fileName": "Models/glTF/Shelf_Simple.gltf",
+      "thumbnailFileName": "Shelf_Simple.png",
+      "tags": [
+        "floors",
+        "shelf",
+        "simple"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "shelf-small-bottles",
+      "name": "Shelf Small Bottles",
+      "category": "Floors",
+      "fileName": "Models/glTF/Shelf_Small_Bottles.gltf",
+      "thumbnailFileName": "Shelf_Small_Bottles.png",
+      "tags": [
+        "floors",
+        "shelf",
+        "small",
+        "bottles"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "shield-wooden",
+      "name": "Shield Wooden",
+      "category": "Floors",
+      "fileName": "Models/glTF/Shield_Wooden.gltf",
+      "thumbnailFileName": "Shield_Wooden.png",
+      "tags": [
+        "floors",
+        "shield",
+        "wooden"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "small-bottle",
+      "name": "Small Bottle",
+      "category": "Floors",
+      "fileName": "Models/glTF/SmallBottle.gltf",
+      "thumbnailFileName": "SmallBottle.png",
+      "tags": [
+        "floors",
+        "small",
+        "bottle"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "small-bottles-1",
+      "name": "Small Bottles 1",
+      "category": "Floors",
+      "fileName": "Models/glTF/SmallBottles_1.gltf",
+      "thumbnailFileName": "SmallBottles_1.png",
+      "tags": [
+        "floors",
+        "small",
+        "bottles",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "stall-cart-empty",
+      "name": "Stall Cart Empty",
+      "category": "Floors",
+      "fileName": "Models/glTF/Stall_Cart_Empty.gltf",
+      "thumbnailFileName": "Stall_Cart_Empty.png",
+      "tags": [
+        "floors",
+        "stall",
+        "cart",
+        "empty"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "stall-empty",
+      "name": "Stall Empty",
+      "category": "Floors",
+      "fileName": "Models/glTF/Stall_Empty.gltf",
+      "thumbnailFileName": "Stall_Empty.png",
+      "tags": [
+        "floors",
+        "stall",
+        "empty"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "stool",
+      "name": "Stool",
+      "category": "Floors",
+      "fileName": "Models/glTF/Stool.gltf",
+      "thumbnailFileName": "Stool.png",
+      "tags": [
+        "floors",
+        "stool"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "sword-bronze",
+      "name": "Sword Bronze",
+      "category": "Floors",
+      "fileName": "Models/glTF/Sword_Bronze.gltf",
+      "thumbnailFileName": "Sword_Bronze.png",
+      "tags": [
+        "floors",
+        "sword",
+        "bronze"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "table-fork",
+      "name": "Table Fork",
+      "category": "Floors",
+      "fileName": "Models/glTF/Table_Fork.gltf",
+      "thumbnailFileName": "Table_Fork.png",
+      "tags": [
+        "floors",
+        "table",
+        "fork"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "table-knife",
+      "name": "Table Knife",
+      "category": "Floors",
+      "fileName": "Models/glTF/Table_Knife.gltf",
+      "thumbnailFileName": "Table_Knife.png",
+      "tags": [
+        "floors",
+        "table",
+        "knife"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "table-large",
+      "name": "Table Large",
+      "category": "Floors",
+      "fileName": "Models/glTF/Table_Large.gltf",
+      "thumbnailFileName": "Table_Large.png",
+      "tags": [
+        "floors",
+        "table",
+        "large"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "table-plate",
+      "name": "Table Plate",
+      "category": "Floors",
+      "fileName": "Models/glTF/Table_Plate.gltf",
+      "thumbnailFileName": "Table_Plate.png",
+      "tags": [
+        "floors",
+        "table",
+        "plate"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "table-spoon",
+      "name": "Table Spoon",
+      "category": "Floors",
+      "fileName": "Models/glTF/Table_Spoon.gltf",
+      "thumbnailFileName": "Table_Spoon.png",
+      "tags": [
+        "floors",
+        "table",
+        "spoon"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "torch-metal",
+      "name": "Torch Metal",
+      "category": "Floors",
+      "fileName": "Models/glTF/Torch_Metal.gltf",
+      "thumbnailFileName": "Torch_Metal.png",
+      "tags": [
+        "floors",
+        "torch",
+        "metal"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "vase-2",
+      "name": "Vase 2",
+      "category": "Floors",
+      "fileName": "Models/glTF/Vase_2.gltf",
+      "thumbnailFileName": "Vase_2.png",
+      "tags": [
+        "floors",
+        "vase",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "vase-4",
+      "name": "Vase 4",
+      "category": "Floors",
+      "fileName": "Models/glTF/Vase_4.gltf",
+      "thumbnailFileName": "Vase_4.png",
+      "tags": [
+        "floors",
+        "vase",
+        "4"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "vase-rubble-medium",
+      "name": "Vase Rubble Medium",
+      "category": "Floors",
+      "fileName": "Models/glTF/Vase_Rubble_Medium.gltf",
+      "thumbnailFileName": "Vase_Rubble_Medium.png",
+      "tags": [
+        "floors",
+        "vase",
+        "rubble",
+        "medium"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "weapon-stand",
+      "name": "Weapon Stand",
+      "category": "Floors",
+      "fileName": "Models/glTF/WeaponStand.gltf",
+      "thumbnailFileName": "WeaponStand.png",
+      "tags": [
+        "floors",
+        "weapon",
+        "stand"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "whetstone",
+      "name": "Whetstone",
+      "category": "Floors",
+      "fileName": "Models/glTF/Whetstone.gltf",
+      "thumbnailFileName": "Whetstone.png",
+      "tags": [
+        "floors",
+        "whetstone"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "workbench-drawers",
+      "name": "Workbench Drawers",
+      "category": "Floors",
+      "fileName": "Models/glTF/Workbench_Drawers.gltf",
+      "thumbnailFileName": "Workbench_Drawers.png",
+      "tags": [
+        "floors",
+        "workbench",
+        "drawers"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "workbench",
+      "name": "Workbench",
+      "category": "Floors",
+      "fileName": "Models/glTF/Workbench.gltf",
+      "thumbnailFileName": "Workbench.png",
+      "tags": [
+        "floors",
+        "workbench"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    }
+  ]
+}

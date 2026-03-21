@@ -1,0 +1,382 @@
+{
+  "generatedAt": "2026-03-21T07:21:26.112Z",
+  "basePath": "http://localhost:5173/libraries/fantasy-props-megakit-standard/glTF/",
+  "files": [
+    {
+      "gltf": "Models/glTF/Anvil_Log.gltf",
+      "png": "Anvil_Log.png"
+    },
+    {
+      "gltf": "Models/glTF/Anvil.gltf",
+      "png": "Anvil.png"
+    },
+    {
+      "gltf": "Models/glTF/Axe_Bronze.gltf",
+      "png": "Axe_Bronze.png"
+    },
+    {
+      "gltf": "Models/glTF/Bag.gltf",
+      "png": "Bag.png"
+    },
+    {
+      "gltf": "Models/glTF/Banner_1_Cloth.gltf",
+      "png": "Banner_1_Cloth.png"
+    },
+    {
+      "gltf": "Models/glTF/Banner_1.gltf",
+      "png": "Banner_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Banner_2_Cloth.gltf",
+      "png": "Banner_2_Cloth.png"
+    },
+    {
+      "gltf": "Models/glTF/Banner_2.gltf",
+      "png": "Banner_2.png"
+    },
+    {
+      "gltf": "Models/glTF/Barrel_Apples.gltf",
+      "png": "Barrel_Apples.png"
+    },
+    {
+      "gltf": "Models/glTF/Barrel_Holder.gltf",
+      "png": "Barrel_Holder.png"
+    },
+    {
+      "gltf": "Models/glTF/Barrel.gltf",
+      "png": "Barrel.png"
+    },
+    {
+      "gltf": "Models/glTF/Bed_Twin1.gltf",
+      "png": "Bed_Twin1.png"
+    },
+    {
+      "gltf": "Models/glTF/Bed_Twin2.gltf",
+      "png": "Bed_Twin2.png"
+    },
+    {
+      "gltf": "Models/glTF/Bench.gltf",
+      "png": "Bench.png"
+    },
+    {
+      "gltf": "Models/glTF/Book_5.gltf",
+      "png": "Book_5.png"
+    },
+    {
+      "gltf": "Models/glTF/Book_7.gltf",
+      "png": "Book_7.png"
+    },
+    {
+      "gltf": "Models/glTF/Book_Simplified_Single.gltf",
+      "png": "Book_Simplified_Single.png"
+    },
+    {
+      "gltf": "Models/glTF/Book_Stack_1.gltf",
+      "png": "Book_Stack_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Book_Stack_2.gltf",
+      "png": "Book_Stack_2.png"
+    },
+    {
+      "gltf": "Models/glTF/Bookcase_2.gltf",
+      "png": "Bookcase_2.png"
+    },
+    {
+      "gltf": "Models/glTF/BookGroup_Medium_1.gltf",
+      "png": "BookGroup_Medium_1.png"
+    },
+    {
+      "gltf": "Models/glTF/BookGroup_Medium_2.gltf",
+      "png": "BookGroup_Medium_2.png"
+    },
+    {
+      "gltf": "Models/glTF/BookGroup_Medium_3.gltf",
+      "png": "BookGroup_Medium_3.png"
+    },
+    {
+      "gltf": "Models/glTF/BookGroup_Small_1.gltf",
+      "png": "BookGroup_Small_1.png"
+    },
+    {
+      "gltf": "Models/glTF/BookGroup_Small_2.gltf",
+      "png": "BookGroup_Small_2.png"
+    },
+    {
+      "gltf": "Models/glTF/BookGroup_Small_3.gltf",
+      "png": "BookGroup_Small_3.png"
+    },
+    {
+      "gltf": "Models/glTF/BookStand.gltf",
+      "png": "BookStand.png"
+    },
+    {
+      "gltf": "Models/glTF/Bottle_1.gltf",
+      "png": "Bottle_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Bucket_Metal.gltf",
+      "png": "Bucket_Metal.png"
+    },
+    {
+      "gltf": "Models/glTF/Bucket_Wooden_1.gltf",
+      "png": "Bucket_Wooden_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Cabinet.gltf",
+      "png": "Cabinet.png"
+    },
+    {
+      "gltf": "Models/glTF/Cage_Small.gltf",
+      "png": "Cage_Small.png"
+    },
+    {
+      "gltf": "Models/glTF/Candle_1.gltf",
+      "png": "Candle_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Candle_2.gltf",
+      "png": "Candle_2.png"
+    },
+    {
+      "gltf": "Models/glTF/CandleStick_Stand.gltf",
+      "png": "CandleStick_Stand.png"
+    },
+    {
+      "gltf": "Models/glTF/CandleStick_Triple.gltf",
+      "png": "CandleStick_Triple.png"
+    },
+    {
+      "gltf": "Models/glTF/CandleStick.gltf",
+      "png": "CandleStick.png"
+    },
+    {
+      "gltf": "Models/glTF/Carrot.gltf",
+      "png": "Carrot.png"
+    },
+    {
+      "gltf": "Models/glTF/Cauldron.gltf",
+      "png": "Cauldron.png"
+    },
+    {
+      "gltf": "Models/glTF/Chain_Coil.gltf",
+      "png": "Chain_Coil.png"
+    },
+    {
+      "gltf": "Models/glTF/Chair_1.gltf",
+      "png": "Chair_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Chalice.gltf",
+      "png": "Chalice.png"
+    },
+    {
+      "gltf": "Models/glTF/Chandelier.gltf",
+      "png": "Chandelier.png"
+    },
+    {
+      "gltf": "Models/glTF/Chest_Wood.gltf",
+      "png": "Chest_Wood.png"
+    },
+    {
+      "gltf": "Models/glTF/Coin_Pile_2.gltf",
+      "png": "Coin_Pile_2.png"
+    },
+    {
+      "gltf": "Models/glTF/Coin_Pile.gltf",
+      "png": "Coin_Pile.png"
+    },
+    {
+      "gltf": "Models/glTF/Coin.gltf",
+      "png": "Coin.png"
+    },
+    {
+      "gltf": "Models/glTF/Crate_Metal.gltf",
+      "png": "Crate_Metal.png"
+    },
+    {
+      "gltf": "Models/glTF/Crate_Wooden.gltf",
+      "png": "Crate_Wooden.png"
+    },
+    {
+      "gltf": "Models/glTF/Dummy.gltf",
+      "png": "Dummy.png"
+    },
+    {
+      "gltf": "Models/glTF/FarmCrate_Apple.gltf",
+      "png": "FarmCrate_Apple.png"
+    },
+    {
+      "gltf": "Models/glTF/FarmCrate_Carrot.gltf",
+      "png": "FarmCrate_Carrot.png"
+    },
+    {
+      "gltf": "Models/glTF/FarmCrate_Empty.gltf",
+      "png": "FarmCrate_Empty.png"
+    },
+    {
+      "gltf": "Models/glTF/Key_Gold.gltf",
+      "png": "Key_Gold.png"
+    },
+    {
+      "gltf": "Models/glTF/Key_Metal.gltf",
+      "png": "Key_Metal.png"
+    },
+    {
+      "gltf": "Models/glTF/Lantern_Wall.gltf",
+      "png": "Lantern_Wall.png"
+    },
+    {
+      "gltf": "Models/glTF/Mug.gltf",
+      "png": "Mug.png"
+    },
+    {
+      "gltf": "Models/glTF/Nightstand_Shelf.gltf",
+      "png": "Nightstand_Shelf.png"
+    },
+    {
+      "gltf": "Models/glTF/Peg_Rack.gltf",
+      "png": "Peg_Rack.png"
+    },
+    {
+      "gltf": "Models/glTF/Pickaxe_Bronze.gltf",
+      "png": "Pickaxe_Bronze.png"
+    },
+    {
+      "gltf": "Models/glTF/Pot_1_Lid.gltf",
+      "png": "Pot_1_Lid.png"
+    },
+    {
+      "gltf": "Models/glTF/Pot_1.gltf",
+      "png": "Pot_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Potion_1.gltf",
+      "png": "Potion_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Potion_2.gltf",
+      "png": "Potion_2.png"
+    },
+    {
+      "gltf": "Models/glTF/Potion_4.gltf",
+      "png": "Potion_4.png"
+    },
+    {
+      "gltf": "Models/glTF/Pouch_Large.gltf",
+      "png": "Pouch_Large.png"
+    },
+    {
+      "gltf": "Models/glTF/Rope_1.gltf",
+      "png": "Rope_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Rope_2.gltf",
+      "png": "Rope_2.png"
+    },
+    {
+      "gltf": "Models/glTF/Rope_3.gltf",
+      "png": "Rope_3.png"
+    },
+    {
+      "gltf": "Models/glTF/Scroll_1.gltf",
+      "png": "Scroll_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Scroll_2.gltf",
+      "png": "Scroll_2.png"
+    },
+    {
+      "gltf": "Models/glTF/Shelf_Arch.gltf",
+      "png": "Shelf_Arch.png"
+    },
+    {
+      "gltf": "Models/glTF/Shelf_Simple.gltf",
+      "png": "Shelf_Simple.png"
+    },
+    {
+      "gltf": "Models/glTF/Shelf_Small_Bottles.gltf",
+      "png": "Shelf_Small_Bottles.png"
+    },
+    {
+      "gltf": "Models/glTF/Shield_Wooden.gltf",
+      "png": "Shield_Wooden.png"
+    },
+    {
+      "gltf": "Models/glTF/SmallBottle.gltf",
+      "png": "SmallBottle.png"
+    },
+    {
+      "gltf": "Models/glTF/SmallBottles_1.gltf",
+      "png": "SmallBottles_1.png"
+    },
+    {
+      "gltf": "Models/glTF/Stall_Cart_Empty.gltf",
+      "png": "Stall_Cart_Empty.png"
+    },
+    {
+      "gltf": "Models/glTF/Stall_Empty.gltf",
+      "png": "Stall_Empty.png"
+    },
+    {
+      "gltf": "Models/glTF/Stool.gltf",
+      "png": "Stool.png"
+    },
+    {
+      "gltf": "Models/glTF/Sword_Bronze.gltf",
+      "png": "Sword_Bronze.png"
+    },
+    {
+      "gltf": "Models/glTF/Table_Fork.gltf",
+      "png": "Table_Fork.png"
+    },
+    {
+      "gltf": "Models/glTF/Table_Knife.gltf",
+      "png": "Table_Knife.png"
+    },
+    {
+      "gltf": "Models/glTF/Table_Large.gltf",
+      "png": "Table_Large.png"
+    },
+    {
+      "gltf": "Models/glTF/Table_Plate.gltf",
+      "png": "Table_Plate.png"
+    },
+    {
+      "gltf": "Models/glTF/Table_Spoon.gltf",
+      "png": "Table_Spoon.png"
+    },
+    {
+      "gltf": "Models/glTF/Torch_Metal.gltf",
+      "png": "Torch_Metal.png"
+    },
+    {
+      "gltf": "Models/glTF/Vase_2.gltf",
+      "png": "Vase_2.png"
+    },
+    {
+      "gltf": "Models/glTF/Vase_4.gltf",
+      "png": "Vase_4.png"
+    },
+    {
+      "gltf": "Models/glTF/Vase_Rubble_Medium.gltf",
+      "png": "Vase_Rubble_Medium.png"
+    },
+    {
+      "gltf": "Models/glTF/WeaponStand.gltf",
+      "png": "WeaponStand.png"
+    },
+    {
+      "gltf": "Models/glTF/Whetstone.gltf",
+      "png": "Whetstone.png"
+    },
+    {
+      "gltf": "Models/glTF/Workbench_Drawers.gltf",
+      "png": "Workbench_Drawers.png"
+    },
+    {
+      "gltf": "Models/glTF/Workbench.gltf",
+      "png": "Workbench.png"
+    }
+  ]
+}

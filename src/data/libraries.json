@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "libraries": [
+    {
+      "id": "built-in",
+      "name": "Built-in",
+      "mode": "built-in",
+      "metaPath": "./libraries/built-in/library.json"
+    },
+    {
+      "id": "fantasy-props-megakit-standard",
+      "name": "Fantasy Props Megakit[standard]",
+      "mode": "built-in",
+      "metaPath": "./libraries/fantasy-props-megakit-standard/library.json"
+    },
+    {
+      "id": "roof-starter",
+      "name": "Roof Starter",
+      "mode": "built-in",
+      "metaPath": "./libraries/roof-starter/library.json"
+    }
+  ]
+}

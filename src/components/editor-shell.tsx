@@ -1,6 +1,7 @@
-import { useEffect, useState, type KeyboardEvent, type MouseEvent, type RefObject } from "react";
-import { ASSETS, ASSET_CATEGORIES, type AssetCategory, type AssetDefinition } from "../assets";
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type RefObject } from "react";
+import { getAssetThumbnailUrlForLibrary, type AssetCategory, type AssetDefinition, type AssetLibraryBundle } from "../assets";
 import type { EditorViewState } from "../editor/view-state";
+import { FilterBar } from "./filter-bar";
 import {
   ClearIcon,
   ChevronRightIcon,
@@ -13,6 +14,7 @@ import {
   HideIcon,
   ImportIcon,
   LockIcon,
+  PromoteIcon,
   PlaceIcon,
   RedoIcon,
   RenameIcon,
@@ -24,12 +26,14 @@ import {
   SnapIcon,
   TrashIcon,
   UndoIcon,
+  DemoteIcon,
   UngroupIcon,
   UnlockIcon,
 } from "./icons";
+import { TreeView } from "./tree-view";
 
-function getAssetThumbnailUrl(asset: AssetDefinition) {
-  return `/generated/asset-previews/${asset.fileName.replace(/\.[^.]+$/u, ".png")}`;
+function getAssetThumbnailStyleUrl(libraryId: string, asset: AssetDefinition) {
+  return getAssetThumbnailUrlForLibrary(libraryId, asset.thumbnailFileName);
 }
 
 export type SceneSortMode = "manual" | "name" | "asset";
@@ -37,6 +41,7 @@ export type SceneSortMode = "manual" | "name" | "asset";
 const RIGHT_SIDEBAR_WIDTH_STORAGE_KEY = "snap:right-sidebar-width";
 const RIGHT_SIDEBAR_MIN_WIDTH = 240;
 const RIGHT_SIDEBAR_MAX_WIDTH = 520;
+const GRID_PLANE_SIZE_OPTIONS = [16, 32, 64, 128, 256] as const;
 
 interface EditorToolbarProps {
   viewState: EditorViewState;
@@ -51,23 +56,34 @@ interface EditorToolbarProps {
   onRedo: () => void;
   onSaveScene: () => void;
   onExportJson: () => void;
+  onExportGlb: () => void;
+  onExportGltf: () => void;
   onImportJson: () => void;
   onImportFile: (file: File) => void;
   onLoadLastSaved: () => void;
+  onLoadAutosave: () => void;
   onDeleteSelected: () => void;
   onClearScene: () => void;
   onGridSizeChange: (value: number) => void;
   onRotationStepChange: (value: number) => void;
+  onRotationAxisChange: (value: "x" | "y" | "z") => void;
   onToggleExportMenu: () => void;
   onToggleSettingsMenu: () => void;
   onEnvironmentToggle: (enabled: boolean) => void;
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
   onGridVisibleChange: (visible: boolean) => void;
+  onGridRenderModeChange: (value: "material" | "lines") => void;
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
+  onFreezeModelMaterialsChange: (value: boolean) => void;
   onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
   onHeightLabelModeChange: (value: "transform" | "geometry") => void;
+  onSaveOnEveryUiUpdateChange: (value: boolean) => void;
+  onAutosaveEnabledChange: (value: boolean) => void;
+  onAutosaveIntervalChange: (value: number) => void;
+  onGridPlaneSizeChange: (value: number) => void;
+  onRetuneCamera: () => void;
   onRestoreDefaults: () => void;
 }
 
@@ -97,7 +113,7 @@ function EditorToolbar(props: EditorToolbarProps) {
         >
           <span className="tool-button-content">
             <SnapIcon className="tool-icon" />
-            <span>Snap</span>
+            <span>[Snap]</span>
           </span>
         </button>
         <button
@@ -136,6 +152,19 @@ function EditorToolbar(props: EditorToolbarProps) {
             <option value="90">90deg</option>
             <option value="45">45deg</option>
             <option value="15">15deg</option>
+          </select>
+        </label>
+        <label className="tool-field">
+          <span>Axis</span>
+          <select
+            value={toolbar.rotationAxis}
+            onChange={(event) => {
+              props.onRotationAxisChange(event.target.value as "x" | "y" | "z");
+            }}
+          >
+            <option value="x">X</option>
+            <option value="y">Y</option>
+            <option value="z">Z</option>
           </select>
         </label>
       </div>
@@ -232,6 +261,14 @@ function EditorToolbar(props: EditorToolbarProps) {
                   <ExportIcon className="tool-icon" />
                   <span>Export JSON</span>
                 </button>
+                <button type="button" className="toolbar-menu-button" onClick={props.onExportGlb}>
+                  <ExportIcon className="tool-icon" />
+                  <span>Export GLB</span>
+                </button>
+                <button type="button" className="toolbar-menu-button" onClick={props.onExportGltf}>
+                  <ExportIcon className="tool-icon" />
+                  <span>Export GLTF</span>
+                </button>
                 <button type="button" className="toolbar-menu-button" onClick={props.onImportJson}>
                   <ImportIcon className="tool-icon" />
                   <span>Import JSON</span>
@@ -240,10 +277,18 @@ function EditorToolbar(props: EditorToolbarProps) {
                   <SaveLoadIcon className="tool-icon" />
                   <span>Load Last Saved</span>
                 </button>
+                <button type="button" className="toolbar-menu-button" onClick={props.onLoadAutosave}>
+                  <SaveLoadIcon className="tool-icon" />
+                  <span>Load Autosave</span>
+                </button>
               </div>
               <div className="toolbar-menu-meta">
                 <span>Last Saved</span>
                 <strong>{formatSavedAt(props.viewState.lastManualSaveAt)}</strong>
+              </div>
+              <div className="toolbar-menu-meta">
+                <span>Last Timed Autosave</span>
+                <strong>{formatSavedAt(props.viewState.lastAutosaveAt)}</strong>
               </div>
               <div className="toolbar-menu-meta">
                 <span>Autosave Recovered</span>
@@ -266,6 +311,49 @@ function EditorToolbar(props: EditorToolbarProps) {
           </button>
           <div className="toolbar-menu settings-menu" hidden={!props.settingsMenuOpen}>
             <div className="panel-label settings-menu-label">User Settings</div>
+            <label className="setting-row">
+              <span className="setting-copy">Save On UI Update</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.saveOnEveryUiUpdate}
+                  onChange={(event) => {
+                    props.onSaveOnEveryUiUpdateChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
+              </span>
+            </label>
+            <label className="setting-row">
+              <span className="setting-copy">Autosave</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.autosaveEnabled}
+                  onChange={(event) => {
+                    props.onAutosaveEnabledChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
+              </span>
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Autosave Every</span>
+              <select
+                className="editor-input"
+                value={String(toolbar.autosaveIntervalSeconds)}
+                disabled={!toolbar.autosaveEnabled}
+                onChange={(event) => {
+                  props.onAutosaveIntervalChange(Number(event.target.value));
+                }}
+              >
+                <option value="15">15 sec</option>
+                <option value="30">30 sec</option>
+                <option value="60">1 min</option>
+                <option value="120">2 min</option>
+                <option value="300">5 min</option>
+              </select>
+            </label>
             <label className="setting-row">
               <span className="setting-copy">Environment Lighting</span>
               <span className="setting-switch">
@@ -327,6 +415,38 @@ function EditorToolbar(props: EditorToolbarProps) {
               </span>
             </label>
             <label className="setting-stack">
+              <span className="setting-copy">Grid Renderer</span>
+              <select
+                className="editor-input"
+                value={toolbar.gridRenderMode}
+                onChange={(event) => {
+                  props.onGridRenderModeChange(event.target.value as "material" | "lines");
+                }}
+              >
+                <option value="material">Babylon GridMaterial</option>
+                <option value="lines">Procedural LineSystem</option>
+              </select>
+            </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Grid Plane Size</span>
+              <select
+                className="editor-input"
+                value={String(toolbar.gridPlaneSize)}
+                onChange={(event) => {
+                  props.onGridPlaneSizeChange(Number(event.target.value));
+                }}
+              >
+                {GRID_PLANE_SIZE_OPTIONS.map((value) => (
+                  <option key={value} value={String(value)}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button type="button" className="toolbar-menu-button setting-action" onClick={props.onRetuneCamera}>
+              <span>Retune Camera</span>
+            </button>
+            <label className="setting-stack">
               <span className="setting-copy">Grid Color</span>
               <input
                 className="setting-color"
@@ -347,6 +467,19 @@ function EditorToolbar(props: EditorToolbarProps) {
                   props.onGroundColorChange(event.target.value);
                 }}
               />
+            </label>
+            <label className="setting-row">
+              <span className="setting-copy">Freeze Model Materials</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.freezeModelMaterials}
+                  onChange={(event) => {
+                    props.onFreezeModelMaterialsChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
+              </span>
             </label>
             <label className="setting-stack">
               <span className="setting-copy">New Objects</span>
@@ -385,25 +518,27 @@ function EditorToolbar(props: EditorToolbarProps) {
 }
 
 interface AssetListProps {
+  libraryId: string;
   assets: AssetDefinition[];
   activeAssetId: string | null;
-  onAssetClick: (assetId: string) => void;
+  activeAssetLibraryId: string | null;
+  onAssetClick: (libraryId: string, assetId: string) => void;
 }
 
 function AssetList(props: AssetListProps) {
-  if (props.assets.length === 0) {
-    return <div className="asset-empty">No assets match the current filter.</div>;
-  }
-
   return (
-    <div className="asset-list">
-      {props.assets.map((asset) => (
+    <TreeView
+      items={props.assets}
+      emptyMessage="No assets match the current filter."
+      className="asset-list"
+      getKey={(asset) => asset.id}
+      renderItem={(asset) => (
         <button
           key={asset.id}
           type="button"
-          className={`asset-row${props.activeAssetId === asset.id ? " is-active" : ""}`}
+          className={`asset-row${props.activeAssetId === asset.id && props.activeAssetLibraryId === props.libraryId ? " is-active" : ""}`}
           onClick={() => {
-            props.onAssetClick(asset.id);
+            props.onAssetClick(props.libraryId, asset.id);
           }}
         >
           <span className="asset-swatch" style={{ background: asset.placeholder.color }}></span>
@@ -415,14 +550,14 @@ function AssetList(props: AssetListProps) {
             className="asset-thumb"
             alt=""
             loading="lazy"
-            src={getAssetThumbnailUrl(asset)}
+            src={getAssetThumbnailStyleUrl(props.libraryId, asset)}
             onError={(event) => {
               event.currentTarget.hidden = true;
             }}
           />
         </button>
-      ))}
-    </div>
+      )}
+    />
   );
 }
 
@@ -444,9 +579,9 @@ function SelectionPanel(props: SelectionPanelProps) {
   useEffect(() => {
     const [x, y, z] = selection.position ?? [null, null, null];
     setDraftPosition({
-      x: x === null ? "" : x.toFixed(2),
-      y: y === null ? "" : y.toFixed(2),
-      z: z === null ? "" : z.toFixed(2),
+      x: x === null ? "" : x.toFixed(3),
+      y: y === null ? "" : y.toFixed(3),
+      z: z === null ? "" : z.toFixed(3),
     });
     setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
   }, [selection.position, selection.rotationYDegrees, selection.selectedObjectId]);
@@ -482,9 +617,9 @@ function SelectionPanel(props: SelectionPanelProps) {
   const resetDrafts = () => {
     const [x, y, z] = selection.position ?? [null, null, null];
     setDraftPosition({
-      x: x === null ? "" : x.toFixed(2),
-      y: y === null ? "" : y.toFixed(2),
-      z: z === null ? "" : z.toFixed(2),
+      x: x === null ? "" : x.toFixed(3),
+      y: y === null ? "" : y.toFixed(3),
+      z: z === null ? "" : z.toFixed(3),
     });
     setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
   };
@@ -552,11 +687,11 @@ function SelectionPanel(props: SelectionPanelProps) {
         {positionFields.map((field) => (
           <label key={field.axis} className="transform-field">
             <span>{field.label}</span>
-            <input
-              className="transform-input"
-              type="number"
-              step="0.25"
-              value={draftPosition[field.axis]}
+              <input
+                className="transform-input"
+                type="number"
+                step="0.001"
+                value={draftPosition[field.axis]}
               onChange={(event) => {
                 setDraftPosition((current) => ({ ...current, [field.axis]: event.target.value }));
               }}
@@ -604,8 +739,12 @@ function SelectionPanel(props: SelectionPanelProps) {
 }
 
 interface SceneListProps {
-  viewState: EditorViewState;
+  sceneItems: EditorViewState["sceneItems"];
   sceneSortMode: SceneSortMode;
+  searchQuery: string;
+  itemTypeFilter: "all" | "object" | "group";
+  visibilityFilter: "all" | "visible" | "hidden";
+  lockFilter: "all" | "unlocked" | "locked";
   onSceneItemMove: (draggedId: string, targetId: string) => void;
   onSceneItemSelect: (selectionIds: string[], primaryId: string | null) => void;
   onSceneItemFrame: (objectId: string) => void;
@@ -614,6 +753,8 @@ interface SceneListProps {
   onSceneItemRename: (objectId: string, nextName: string) => void;
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
+  onSceneItemPromote: (objectId: string) => void;
+  onSceneItemDemote: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
   onSceneItemUnchildGroup: (groupId: string) => void;
 }
@@ -625,12 +766,10 @@ function SceneList(props: SceneListProps) {
   const [dragTarget, setDragTarget] = useState<{ id: string; mode: "into" | "before" } | null>(null);
   const [collapsedGroupIds, setCollapsedGroupIds] = useState<string[]>([]);
   const [selectionAnchorId, setSelectionAnchorId] = useState<string | null>(null);
+  const listContainerRef = useRef<HTMLDivElement | null>(null);
+  const rowElementsRef = useRef(new Map<string, HTMLDivElement>());
 
-  if (props.viewState.sceneItems.length === 0) {
-    return <div className="properties-empty">No placed objects yet.</div>;
-  }
-
-  const sortedItems = [...props.viewState.sceneItems];
+  const sortedItems = [...props.sceneItems];
   if (props.sceneSortMode === "name") {
     sortedItems.sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }));
   } else if (props.sceneSortMode === "asset") {
@@ -665,7 +804,51 @@ function SceneList(props: SceneListProps) {
   };
 
   const itemsById = new Map(sortedItems.map((item) => [item.id, item]));
+  const actualItemsById = new Map(props.sceneItems.map((item) => [item.id, item]));
+  const normalizedQuery = props.searchQuery.trim().toLowerCase();
+  const hasActiveFilter =
+    !!normalizedQuery ||
+    props.itemTypeFilter !== "all" ||
+    props.visibilityFilter !== "all" ||
+    props.lockFilter !== "all";
+
+  const matchesFilters = (item: EditorViewState["sceneItems"][number]) => {
+    const matchesQuery =
+      !normalizedQuery ||
+      item.label.toLowerCase().includes(normalizedQuery) ||
+      item.assetName.toLowerCase().includes(normalizedQuery);
+    const matchesType = props.itemTypeFilter === "all" || item.type === props.itemTypeFilter;
+    const matchesVisibility =
+      props.visibilityFilter === "all" ||
+      (props.visibilityFilter === "hidden" ? item.hidden : !item.hidden);
+    const matchesLock =
+      props.lockFilter === "all" ||
+      (props.lockFilter === "locked" ? item.locked : !item.locked);
+    return matchesQuery && matchesType && matchesVisibility && matchesLock;
+  };
+
+  const includedIds = new Set<string>();
+  if (hasActiveFilter) {
+    sortedItems.forEach((item) => {
+      if (!matchesFilters(item)) {
+        return;
+      }
+      let currentId: string | null = item.id;
+      while (currentId) {
+        includedIds.add(currentId);
+        currentId = itemsById.get(currentId)?.parentId ?? null;
+      }
+    });
+  }
+
   const visibleItems = sortedItems.filter((item) => {
+    if (hasActiveFilter && !includedIds.has(item.id)) {
+      return false;
+    }
+    if (hasActiveFilter) {
+      return true;
+    }
+
     let currentParentId = item.parentId;
     while (currentParentId) {
       if (collapsedGroupIds.includes(currentParentId)) {
@@ -677,8 +860,86 @@ function SceneList(props: SceneListProps) {
     return true;
   });
 
-  const selectedIds = props.viewState.sceneItems.filter((item) => item.selected).map((item) => item.id);
+  const selectedIds = props.sceneItems.filter((item) => item.selected).map((item) => item.id);
   const selectedIdSet = new Set(selectedIds);
+  const primarySelectedId = selectedIds[selectedIds.length - 1] ?? null;
+
+  useEffect(() => {
+    if (!primarySelectedId) {
+      return;
+    }
+
+    const expandedAncestorIds: string[] = [];
+    let currentParentId = actualItemsById.get(primarySelectedId)?.parentId ?? null;
+    while (currentParentId) {
+      expandedAncestorIds.push(currentParentId);
+      currentParentId = actualItemsById.get(currentParentId)?.parentId ?? null;
+    }
+
+    if (expandedAncestorIds.length === 0) {
+      return;
+    }
+
+    setCollapsedGroupIds((current) => {
+      const next = current.filter((groupId) => !expandedAncestorIds.includes(groupId));
+      return next.length === current.length ? current : next;
+    });
+  }, [actualItemsById, primarySelectedId]);
+
+  useLayoutEffect(() => {
+    if (!primarySelectedId) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      const container = listContainerRef.current;
+      const row = rowElementsRef.current.get(primarySelectedId);
+      if (!container || !row) {
+        return;
+      }
+
+      const containerRect = container.getBoundingClientRect();
+      const rowRect = row.getBoundingClientRect();
+
+      if (rowRect.top < containerRect.top) {
+        container.scrollTop -= containerRect.top - rowRect.top + 6;
+      } else if (rowRect.bottom > containerRect.bottom) {
+        container.scrollTop += rowRect.bottom - containerRect.bottom + 6;
+      }
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [primarySelectedId, visibleItems]);
+
+  if (props.sceneItems.length === 0) {
+    return <div className="properties-empty">No placed objects yet.</div>;
+  }
+
+  const canPromote = (itemId: string) => {
+    return (actualItemsById.get(itemId)?.parentId ?? null) !== null;
+  };
+
+  const canDemote = (itemId: string) => {
+    const item = actualItemsById.get(itemId);
+    if (!item) {
+      return false;
+    }
+    const siblings = props.sceneItems.filter((candidate) => candidate.parentId === item.parentId);
+    const itemIndex = siblings.findIndex((candidate) => candidate.id === item.id);
+    if (itemIndex <= 0) {
+      return false;
+    }
+
+    for (let index = itemIndex - 1; index >= 0; index -= 1) {
+      if (siblings[index]?.type === "group") {
+        return true;
+      }
+    }
+
+    return false;
+  };
 
   const applyTreeSelection = (
     itemId: string,
@@ -713,10 +974,22 @@ function SceneList(props: SceneListProps) {
   };
 
   return (
-    <div className="scene-list">
-      {visibleItems.map((item) => (
+    <TreeView
+      items={visibleItems}
+      emptyMessage="No scene items match the current filter."
+      className="scene-list"
+      containerRef={listContainerRef}
+      getKey={(item) => item.id}
+      renderItem={(item) => (
         <div
           key={item.id}
+          ref={(element) => {
+            if (element) {
+              rowElementsRef.current.set(item.id, element);
+            } else {
+              rowElementsRef.current.delete(item.id);
+            }
+          }}
           className={`scene-row${item.selected ? " is-active" : ""}${item.hidden ? " is-hidden" : ""}${dragTarget?.id === item.id ? " is-drag-over" : ""}${dragTarget?.id === item.id && dragTarget.mode === "into" ? " is-drag-into" : ""}${dragTarget?.id === item.id && dragTarget.mode === "before" ? " is-drag-before" : ""}`}
           onDragOver={(event) => {
             if (props.sceneSortMode !== "manual" || !draggedId || draggedId === item.id) {
@@ -848,6 +1121,30 @@ function SceneList(props: SceneListProps) {
             >
               <DuplicateIcon className="tool-icon" />
             </button> : null}
+            <button
+              type="button"
+              className="scene-row-action"
+              aria-label={`Promote ${item.label}`}
+              title="Promote"
+              disabled={!canPromote(item.id)}
+              onClick={() => {
+                props.onSceneItemPromote(item.id);
+              }}
+            >
+              <PromoteIcon className="tool-icon" />
+            </button>
+            <button
+              type="button"
+              className="scene-row-action"
+              aria-label={`Demote ${item.label}`}
+              title="Demote"
+              disabled={!canDemote(item.id)}
+              onClick={() => {
+                props.onSceneItemDemote(item.id);
+              }}
+            >
+              <DemoteIcon className="tool-icon" />
+            </button>
             {item.type === "object" && item.parentId ? <button
               type="button"
               className="scene-row-action"
@@ -934,67 +1231,82 @@ function SceneList(props: SceneListProps) {
             ) : null}
           </div>
         </div>
-      ))}
-    </div>
+      )}
+    />
   );
 }
 
 interface AssetSidebarProps {
   searchQuery: string;
+  availableLibraries: AssetLibraryBundle[];
+  activeLibraryId: string;
+  availableCategories: string[];
   activeCategory: AssetCategory | "All";
   filteredAssets: AssetDefinition[];
   viewState: EditorViewState;
   onSearchQueryChange: (value: string) => void;
+  onActiveLibraryChange: (value: string) => void;
+  onRefreshLibraries: () => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
-  onAssetClick: (assetId: string) => void;
+  onAssetClick: (libraryId: string, assetId: string) => void;
 }
 
 function AssetSidebar(props: AssetSidebarProps) {
   return (
-    <aside className="sidebar sidebar-left">
-      <div className="sidebar-section">
-        <label className="panel-label" htmlFor="asset-search">
-          Assets
-        </label>
-        <input
-          id="asset-search"
-          className="editor-input"
-          type="text"
-          placeholder="Search assets"
-          value={props.searchQuery}
-          onChange={(event) => {
-            props.onSearchQueryChange(event.target.value);
-          }}
-        />
-      </div>
-      <div className="sidebar-section">
-        <div className="chip-row">
-          <button
-            type="button"
-            className={`chip${props.activeCategory === "All" ? " is-active" : ""}`}
-            onClick={() => {
-              props.onActiveCategoryChange("All");
-            }}
-          >
-            All
-          </button>
-          {ASSET_CATEGORIES.map((category) => (
-            <button
-              key={category}
-              type="button"
-              className={`chip${props.activeCategory === category ? " is-active" : ""}`}
-              onClick={() => {
-                props.onActiveCategoryChange(category);
+      <aside className="sidebar sidebar-left">
+        <div className="sidebar-section">
+          <label className="panel-label" htmlFor="asset-search">
+            Assets
+          </label>
+          <label className="panel-label" htmlFor="asset-library">
+            Library
+          </label>
+          <div className="library-select-row">
+            <select
+              id="asset-library"
+              className="filter-select"
+              value={props.activeLibraryId}
+              onChange={(event) => {
+                props.onActiveLibraryChange(event.target.value);
               }}
             >
-              {category}
+              {props.availableLibraries.map((bundle) => (
+                <option key={bundle.library.id} value={bundle.library.id}>
+                  {bundle.meta.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className="tool-button tool-button-icon-only"
+              aria-label="Refresh libraries"
+              title="Refresh libraries"
+              onClick={props.onRefreshLibraries}
+            >
+              <RedoIcon className="tool-icon" />
             </button>
-          ))}
-        </div>
+          </div>
+          <FilterBar
+            className="filter-bar-compact"
+            searchId="asset-search"
+            searchPlaceholder="Search assets"
+            searchValue={props.searchQuery}
+            onSearchChange={props.onSearchQueryChange}
+            chips={{
+              selectedValue: props.activeCategory,
+              options: [
+                { value: "All", label: "All" },
+                ...props.availableCategories.map((category) => ({ value: category, label: category })),
+              ],
+              onChange: props.onActiveCategoryChange,
+            }}
+        />
       </div>
       <AssetList
+        libraryId={props.activeLibraryId}
         assets={props.filteredAssets}
         activeAssetId={props.viewState.activeAssetId}
+        activeAssetLibraryId={props.viewState.activeAssetLibraryId}
         onAssetClick={props.onAssetClick}
       />
     </aside>
@@ -1017,6 +1329,8 @@ interface RightSidebarProps {
   onSceneItemRename: (objectId: string, nextName: string) => void;
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
+  onSceneItemPromote: (objectId: string) => void;
+  onSceneItemDemote: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
   onSceneItemUnchildGroup: (groupId: string) => void;
   onCreateGroupFromSelected: () => void;
@@ -1028,6 +1342,13 @@ interface RightSidebarProps {
 }
 
 function RightSidebar(props: RightSidebarProps) {
+  const [sceneSearchQuery, setSceneSearchQuery] = useState("");
+  const [sceneItemTypeFilter, setSceneItemTypeFilter] = useState<"all" | "object" | "group">("all");
+  const [sceneVisibilityFilter, setSceneVisibilityFilter] = useState<"all" | "visible" | "hidden">("all");
+  const [sceneLockFilter, setSceneLockFilter] = useState<"all" | "unlocked" | "locked">("all");
+  const [showSceneSearch, setShowSceneSearch] = useState(true);
+  const [showSceneFilters, setShowSceneFilters] = useState(true);
+
   return (
     <aside className="sidebar sidebar-right" style={{ width: `${props.width}px` }}>
       <button
@@ -1062,20 +1383,109 @@ function RightSidebar(props: RightSidebarProps) {
             </select>
           </div>
         </div>
-        <SceneList
-          viewState={props.viewState}
-          sceneSortMode={props.sceneSortMode}
-          onSceneItemMove={props.onSceneItemMove}
-          onSceneItemSelect={props.onSceneItemSelect}
-          onSceneItemFrame={props.onSceneItemFrame}
-          onSceneItemDelete={props.onSceneItemDelete}
-          onSceneItemDuplicate={props.onSceneItemDuplicate}
-          onSceneItemRename={props.onSceneItemRename}
-          onSceneItemToggleHidden={props.onSceneItemToggleHidden}
-          onSceneItemToggleLocked={props.onSceneItemToggleLocked}
-          onSceneItemUngroup={props.onSceneItemUngroup}
-          onSceneItemUnchildGroup={props.onSceneItemUnchildGroup}
-        />
+        <div className="scene-filter-panel">
+          <FilterBar
+            className="filter-bar-compact"
+            hideSearch={!showSceneSearch}
+            searchId="scene-search"
+            searchPlaceholder="Search scene items"
+            searchValue={sceneSearchQuery}
+            onSearchChange={setSceneSearchQuery}
+            searchActions={
+              <>
+                <button
+                  type="button"
+                  className={`scene-filter-toggle${showSceneFilters ? " is-active" : ""}`}
+                  disabled={!showSceneSearch}
+                  onClick={() => {
+                    if (showSceneFilters) {
+                      setSceneItemTypeFilter("all");
+                      setSceneVisibilityFilter("all");
+                      setSceneLockFilter("all");
+                    }
+                    setShowSceneFilters((value) => !value);
+                  }}
+                >
+                  {showSceneFilters ? "Hide Filters" : "Show Filters"}
+                </button>
+                <button
+                  type="button"
+                  className={`scene-filter-toggle${showSceneSearch ? " is-active" : ""}`}
+                  onClick={() => {
+                    if (showSceneSearch) {
+                      setSceneSearchQuery("");
+                      setShowSceneFilters(false);
+                      setSceneItemTypeFilter("all");
+                      setSceneVisibilityFilter("all");
+                      setSceneLockFilter("all");
+                    }
+                    setShowSceneSearch((value) => !value);
+                  }}
+                >
+                  {showSceneSearch ? "Hide Search" : "Show Search"}
+                </button>
+              </>
+            }
+            selects={
+              showSceneSearch && showSceneFilters
+                ? [
+                    {
+                      label: "Item",
+                      value: sceneItemTypeFilter,
+                      options: [
+                        { value: "all", label: "All" },
+                        { value: "object", label: "Objects" },
+                        { value: "group", label: "Groups" },
+                      ],
+                      onChange: setSceneItemTypeFilter,
+                    },
+                    {
+                      label: "Visible",
+                      value: sceneVisibilityFilter,
+                      options: [
+                        { value: "all", label: "All" },
+                        { value: "visible", label: "Visible" },
+                        { value: "hidden", label: "Hidden" },
+                      ],
+                      onChange: setSceneVisibilityFilter,
+                    },
+                    {
+                      label: "Lock",
+                      value: sceneLockFilter,
+                      options: [
+                        { value: "all", label: "All" },
+                        { value: "unlocked", label: "Unlocked" },
+                        { value: "locked", label: "Locked" },
+                      ],
+                      onChange: setSceneLockFilter,
+                    },
+                  ]
+                : undefined
+            }
+          />
+        </div>
+        <div className="scene-list-panel">
+          <SceneList
+            sceneItems={props.viewState.sceneItems}
+            sceneSortMode={props.sceneSortMode}
+            searchQuery={sceneSearchQuery}
+            itemTypeFilter={sceneItemTypeFilter}
+            visibilityFilter={sceneVisibilityFilter}
+            lockFilter={sceneLockFilter}
+            onSceneItemMove={props.onSceneItemMove}
+            onSceneItemSelect={props.onSceneItemSelect}
+            onSceneItemFrame={props.onSceneItemFrame}
+            onSceneItemDelete={props.onSceneItemDelete}
+            onSceneItemDuplicate={props.onSceneItemDuplicate}
+            onSceneItemRename={props.onSceneItemRename}
+            onSceneItemToggleHidden={props.onSceneItemToggleHidden}
+            onSceneItemToggleLocked={props.onSceneItemToggleLocked}
+            onSceneItemPromote={props.onSceneItemPromote}
+            onSceneItemDemote={props.onSceneItemDemote}
+            onSceneItemUngroup={props.onSceneItemUngroup}
+            onSceneItemUnchildGroup={props.onSceneItemUnchildGroup}
+          />
+        </div>
       </div>
       <div className="sidebar-section sidebar-properties">
         <div className="panel-label">
@@ -1119,12 +1529,24 @@ function StatusBar({ viewState }: { viewState: EditorViewState }) {
         <strong>Snap</strong>{" "}
         <span>
           {status.snapEnabled
-            ? `${status.gridSize}u${status.ySnapEnabled ? " +Y" : ""} | ${status.rotationStepDegrees}deg`
-            : `Free${status.ySnapEnabled ? " +Y" : ""} | ${status.rotationStepDegrees}deg`}
+            ? `${status.gridSize}u${status.ySnapEnabled ? " +Y" : ""} | ${status.rotationStepDegrees}deg ${status.rotationAxis.toUpperCase()}`
+            : `Free${status.ySnapEnabled ? " +Y" : ""} | ${status.rotationStepDegrees}deg ${status.rotationAxis.toUpperCase()}`}
         </span>
       </span>
       <span>
         <strong>Objects</strong> <span>{viewState.objectCount}</span>
+      </span>
+      <span>
+        <strong>Draw Calls</strong> <span>{status.drawCalls}</span>
+      </span>
+      <span>
+        <strong>Materials</strong> <span>{status.materials}</span>
+      </span>
+      <span>
+        <strong>Textures</strong> <span>{status.textures}</span>
+      </span>
+      <span>
+        <strong>Vertices</strong> <span>{status.totalVertices.toLocaleString()}</span>
       </span>
       <span className="statusbar-hint">{status.hint}</span>
     </footer>
@@ -1135,6 +1557,9 @@ interface EditorShellProps {
   canvasRef: RefObject<HTMLCanvasElement | null>;
   importInputRef: RefObject<HTMLInputElement | null>;
   searchQuery: string;
+  availableLibraries: AssetLibraryBundle[];
+  activeLibraryId: string;
+  availableCategories: string[];
   activeCategory: AssetCategory | "All";
   filteredAssets: AssetDefinition[];
   exportMenuOpen: boolean;
@@ -1142,8 +1567,10 @@ interface EditorShellProps {
   sceneSortMode: SceneSortMode;
   viewState: EditorViewState;
   onSearchQueryChange: (value: string) => void;
+  onActiveLibraryChange: (value: string) => void;
+  onRefreshLibraries: () => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
-  onAssetClick: (assetId: string) => void;
+  onAssetClick: (libraryId: string, assetId: string) => void;
   onSceneItemSelect: (selectionIds: string[], primaryId: string | null) => void;
   onSceneItemMove: (draggedId: string, targetId: string) => void;
   onSceneItemFrame: (objectId: string) => void;
@@ -1152,6 +1579,8 @@ interface EditorShellProps {
   onSceneItemRename: (objectId: string) => void;
   onSceneItemToggleHidden: (objectId: string) => void;
   onSceneItemToggleLocked: (objectId: string) => void;
+  onSceneItemPromote: (objectId: string) => void;
+  onSceneItemDemote: (objectId: string) => void;
   onSceneItemUngroup: (objectId: string) => void;
   onSceneItemUnchildGroup: (groupId: string) => void;
   onToggleSelectedHidden: () => void;
@@ -1164,23 +1593,34 @@ interface EditorShellProps {
   onRedo: () => void;
   onSaveScene: () => void;
   onExportJson: () => void;
+  onExportGlb: () => void;
+  onExportGltf: () => void;
   onImportJson: () => void;
   onImportFile: (file: File) => void;
   onLoadLastSaved: () => void;
+  onLoadAutosave: () => void;
   onDeleteSelected: () => void;
   onClearScene: () => void;
   onGridSizeChange: (value: number) => void;
   onRotationStepChange: (value: number) => void;
+  onRotationAxisChange: (value: "x" | "y" | "z") => void;
   onToggleExportMenu: () => void;
   onToggleSettingsMenu: () => void;
   onEnvironmentToggle: (enabled: boolean) => void;
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
   onGridVisibleChange: (visible: boolean) => void;
+  onGridRenderModeChange: (value: "material" | "lines") => void;
   onGridColorChange: (value: string) => void;
   onGroundColorChange: (value: string) => void;
+  onFreezeModelMaterialsChange: (value: boolean) => void;
   onNewObjectPlacementKindChange: (value: "clone" | "instance") => void;
   onHeightLabelModeChange: (value: "transform" | "geometry") => void;
+  onSaveOnEveryUiUpdateChange: (value: boolean) => void;
+  onAutosaveEnabledChange: (value: boolean) => void;
+  onAutosaveIntervalChange: (value: number) => void;
+  onGridPlaneSizeChange: (value: number) => void;
+  onRetuneCamera: () => void;
   onRestoreDefaults: () => void;
   onSceneSortModeChange: (mode: SceneSortMode) => void;
   onCreateEmptyGroup: () => void;
@@ -1245,23 +1685,34 @@ export function EditorShell(props: EditorShellProps) {
         onRedo={props.onRedo}
         onSaveScene={props.onSaveScene}
         onExportJson={props.onExportJson}
+        onExportGlb={props.onExportGlb}
+        onExportGltf={props.onExportGltf}
         onImportJson={props.onImportJson}
         onImportFile={props.onImportFile}
         onLoadLastSaved={props.onLoadLastSaved}
+        onLoadAutosave={props.onLoadAutosave}
         onDeleteSelected={props.onDeleteSelected}
         onClearScene={props.onClearScene}
         onGridSizeChange={props.onGridSizeChange}
         onRotationStepChange={props.onRotationStepChange}
+        onRotationAxisChange={props.onRotationAxisChange}
         onToggleExportMenu={props.onToggleExportMenu}
         onToggleSettingsMenu={props.onToggleSettingsMenu}
         onEnvironmentToggle={props.onEnvironmentToggle}
         onEnvironmentIntensityChange={props.onEnvironmentIntensityChange}
         onLightIntensityChange={props.onLightIntensityChange}
         onGridVisibleChange={props.onGridVisibleChange}
+        onGridRenderModeChange={props.onGridRenderModeChange}
         onGridColorChange={props.onGridColorChange}
         onGroundColorChange={props.onGroundColorChange}
+        onFreezeModelMaterialsChange={props.onFreezeModelMaterialsChange}
         onNewObjectPlacementKindChange={props.onNewObjectPlacementKindChange}
         onHeightLabelModeChange={props.onHeightLabelModeChange}
+        onSaveOnEveryUiUpdateChange={props.onSaveOnEveryUiUpdateChange}
+        onAutosaveEnabledChange={props.onAutosaveEnabledChange}
+        onAutosaveIntervalChange={props.onAutosaveIntervalChange}
+        onGridPlaneSizeChange={props.onGridPlaneSizeChange}
+        onRetuneCamera={props.onRetuneCamera}
         onRestoreDefaults={props.onRestoreDefaults}
       />
       <div
@@ -1270,10 +1721,15 @@ export function EditorShell(props: EditorShellProps) {
       >
         <AssetSidebar
           searchQuery={props.searchQuery}
+          availableLibraries={props.availableLibraries}
+          activeLibraryId={props.activeLibraryId}
+          availableCategories={props.availableCategories}
           activeCategory={props.activeCategory}
           filteredAssets={props.filteredAssets}
           viewState={props.viewState}
           onSearchQueryChange={props.onSearchQueryChange}
+          onActiveLibraryChange={props.onActiveLibraryChange}
+          onRefreshLibraries={props.onRefreshLibraries}
           onActiveCategoryChange={props.onActiveCategoryChange}
           onAssetClick={props.onAssetClick}
         />
@@ -1294,6 +1750,8 @@ export function EditorShell(props: EditorShellProps) {
           onSceneItemRename={props.onSceneItemRename}
           onSceneItemToggleHidden={props.onSceneItemToggleHidden}
           onSceneItemToggleLocked={props.onSceneItemToggleLocked}
+          onSceneItemPromote={props.onSceneItemPromote}
+          onSceneItemDemote={props.onSceneItemDemote}
           onSceneItemUngroup={props.onSceneItemUngroup}
           onSceneItemUnchildGroup={props.onSceneItemUnchildGroup}
           onToggleSelectedHidden={props.onToggleSelectedHidden}
@@ -1308,9 +1766,9 @@ export function EditorShell(props: EditorShellProps) {
   );
 }
 
-export function filterAssets(query: string, activeCategory: AssetCategory | "All") {
+export function filterAssets(assets: AssetDefinition[], query: string, activeCategory: AssetCategory | "All") {
   const normalized = query.trim().toLowerCase();
-  return ASSETS.filter((asset) => {
+  return assets.filter((asset) => {
     const matchesCategory = activeCategory === "All" || asset.category === activeCategory;
     const haystack = `${asset.name} ${asset.category} ${asset.tags.join(" ")}`.toLowerCase();
     const matchesQuery = !normalized || haystack.includes(normalized);
