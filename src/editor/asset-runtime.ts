@@ -7,7 +7,7 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
 import type { Node } from "@babylonjs/core/node";
-import type { AssetDefinition } from "../assets";
+import { splitAssetFileReference, type AssetDefinition } from "../assets";
 import { collapseRedundantImportRoot } from "./import-root-collapse";
 import { isTechnicalImportRootName } from "./import-root-collapse";
 import { clonePreviewMaterial } from "./placement";
@@ -111,7 +111,13 @@ export async function loadAssetTemplate(
   freezeModelMaterials = true,
 ): Promise<AssetTemplate> {
   try {
-    const importResult = await SceneLoader.ImportMeshAsync("", basePath, asset.fileName, scene);
+    const assetReference = splitAssetFileReference(asset.fileName);
+    const importResult = await SceneLoader.ImportMeshAsync(
+      "",
+      `${basePath}${assetReference.directory}`,
+      assetReference.fileName,
+      scene,
+    );
     const root = new TransformNode(`template-${asset.id}`, scene);
 
     const importedRootNodes = [...importResult.transformNodes, ...importResult.meshes].filter((node) => !node.parent);

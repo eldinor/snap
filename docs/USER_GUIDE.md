@@ -16,6 +16,8 @@ The built-in asset library is defined by [`src/data/libraries/built-in/assets-ma
 
 The asset browser now has a library selector. At the moment it shows the built-in library, but it is ready for additional registered libraries later.
 
+For the full library lifecycle, see [`docs/LIBRARIES.md`](/c:/Users/Fiolent23/newrepos/snap/docs/LIBRARIES.md).
+
 ## Asset Library Maintenance
 
 Use [`asset-library-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-library-studio.html) to maintain the built-in asset library.
@@ -26,6 +28,31 @@ Important:
 - do not open the HTML file directly from disk
 
 Use the `Library` selector at the top of the studio to choose which registered library you are editing.
+
+After a repo library import, reload the studio page. Imported libraries discovered through `libraries/libraries.json` should then appear in the same selector.
+
+Look at the `Info` panel in the studio when you are unsure what comes next. It now shows:
+
+- `Inspected`
+- `Imported`
+- `Thumbnails Ready`
+- `Promoted`
+- `Validation Errors`
+- `Validation Warnings`
+- `Next`
+
+The `Next` line is the shortest recommended next action for the selected library.
+
+You no longer need a full page reload every time:
+
+- in the main app, use the refresh button next to the `Library` selector
+- in the asset library studio, use `Refresh Libraries And Reports`
+
+Use those after import, validation, promotion, or removal commands to rescan library state.
+
+The studio `History` panel shows the latest logged actions for the selected library. After you run one of the repo commands, use refresh and check that the new history entry appears.
+
+Use [`asset-screenshot-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-screenshot-studio.html) to render thumbnails for the currently selected library.
 
 ### Before You Start
 
@@ -156,6 +183,156 @@ Important:
 - `Download Draft Library ZIP` creates metadata only
 - the draft zip contains `library.json`, `assets-manifest.json`, `asset-categories.json`, `asset-tag-templates.json`, and `inspection-report.json`
 - only `.gltf` entries without parse errors, missing sidecars, external/data URIs, or file-name collisions are included
+
+### Create The Repo Library Folder
+
+Use the `Repo Import` panel in the studio after you already have:
+
+- the original asset pack zip
+- the downloaded draft library zip
+
+Steps:
+
+1. Put the full path to the original asset pack zip into `Asset ZIP Path`.
+2. Put the full path to the draft library zip into `Draft ZIP Path`.
+3. Click `Copy Command`.
+4. Run the copied command from the repo root terminal.
+
+The command looks like:
+
+```powershell
+npm run assets:import-library-zip -- "C:\path\to\asset-pack.zip" "C:\path\to\draft-library.zip"
+```
+
+That command creates:
+
+- `libraries/<library-id>/library.json`
+- `libraries/<library-id>/assets-manifest.json`
+- `libraries/<library-id>/asset-categories.json`
+- `libraries/<library-id>/asset-tag-templates.json`
+- `libraries/<library-id>/inspection-report.json`
+- `libraries/<library-id>/glTF/...`
+- `libraries/<library-id>/thumbnails/.gitkeep`
+
+Important:
+
+- it imports only the valid assets that were included in the draft manifest
+- it preserves the relative glTF sidecar file layout inside `libraries/<library-id>/glTF/`
+- it updates `libraries/libraries.json` for imported-library discovery
+- reload the app after the import command finishes and the library should appear in the asset browser selector
+
+### Render Thumbnails For A Library
+
+Use [`asset-screenshot-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-screenshot-studio.html).
+
+User path:
+
+1. Reload the page after importing a library.
+2. Choose the target library in `Library`.
+3. Leave `Source` as `Current library catalog` for the clearest workflow.
+4. Click `Pick Project Preview Folder`.
+5. Choose the correct output folder:
+   - built-in libraries: `public/generated/asset-previews`
+   - imported libraries: `libraries/<library-id>/thumbnails`
+6. Click `Render Screenshots`.
+7. Reload the app or studio page to see the updated thumbnails.
+
+Notes:
+
+- the screenshot studio reads asset files from the selected library's own asset base path
+- it writes `.png` files and `asset-preview-relations.json` into the folder you picked
+- for imported libraries, the most understandable default is to render directly from the current library catalog
+
+### Promote An Imported Library To Built-In
+
+When an imported library is ready to become part of the built-in app content:
+
+1. Open [`asset-library-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-library-studio.html).
+2. Select the imported library in `Library`.
+3. In `Promote Library`, copy the generated command.
+4. Run it from the repo root terminal.
+5. Reload the app and the studio page.
+
+The command looks like:
+
+```powershell
+npm run assets:promote-library -- "<library-id>"
+```
+
+What it does:
+
+- copies metadata into `src/data/libraries/<library-id>/`
+- copies asset files into `public/assets/libraries/<library-id>/glTF/`
+- copies thumbnails into `public/generated/asset-previews/<library-id>/`
+- updates `src/data/libraries.json`
+- updates `libraries/libraries.json`
+
+Why this is useful:
+
+- the library is prepared for source control and future builds
+- after reload, the promoted library still remains discoverable in the current app workflow
+
+### Remove A Library
+
+When you want to clean up an imported or promoted library:
+
+1. Open [`asset-library-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-library-studio.html).
+2. Select the library in `Library`.
+3. In `Remove Library`, copy the generated command.
+4. Run it from the repo root terminal.
+5. Reload the app and the studio page.
+
+The command looks like:
+
+```powershell
+npm run assets:remove-library -- "<library-id>" --delete-files
+```
+
+What it removes:
+
+- imported registry entry in `libraries/libraries.json`, when present
+- built-in registry entry in `src/data/libraries.json`, when present
+- imported library folder `libraries/<library-id>/`
+- built-in data folder `src/data/libraries/<library-id>/`
+- built-in asset folder `public/assets/libraries/<library-id>/`
+- built-in thumbnail folder `public/generated/asset-previews/<library-id>/`
+
+Important:
+
+- the core `built-in` library is protected
+- the cleanup command is intentionally explicit and requires `--delete-files`
+
+### Validate A Library
+
+Use `Validate Library` in the studio.
+
+Steps:
+
+1. Select the library in `Library`.
+2. Copy the generated validation command.
+3. Run it from the repo root terminal.
+4. Reload the studio page.
+
+The command looks like:
+
+```powershell
+npm run assets:validate-library -- "<library-id>"
+```
+
+What it checks:
+
+- manifest structure
+- category references
+- duplicate ids and file names
+- missing `.gltf` files
+- missing glTF sidecars like `.bin` and textures
+- missing thumbnails
+
+What it writes:
+
+- `public/generated/library-validation/<library-id>.json`
+
+After reload, the studio `Info` panel reads that report and shows the current validation error and warning counts.
 
 ### Apply Category Templates Back to Assets
 

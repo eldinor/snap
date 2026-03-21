@@ -169,6 +169,13 @@ select:focus-visible {
   gap: 8px;
 }
 
+.library-select-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px;
+  gap: 6px;
+  align-items: center;
+}
+
 .filter-bar-search-row {
   display: flex;
   align-items: center;

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { getAssetLibraryBundle, getAssetLibraryBundles, type AssetCategory } from "./assets";
+import { getAssetLibraryBundle, getAssetLibraryBundles, loadImportedLibraryBundles, type AssetCategory, type AssetLibraryBundle } from "./assets";
 import { EditorShell, filterAssets, type SceneSortMode } from "./components/editor-shell";
 import { ModularEditorApp } from "./editor";
 import { createInitialEditorViewState } from "./editor/view-state";
@@ -8,7 +8,7 @@ export function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const importInputRef = useRef<HTMLInputElement | null>(null);
   const appRef = useRef<ModularEditorApp | null>(null);
-  const libraries = getAssetLibraryBundles();
+  const [libraries, setLibraries] = useState<AssetLibraryBundle[]>(() => getAssetLibraryBundles());
   const [searchQuery, setSearchQuery] = useState("");
   const [activeLibraryId, setActiveLibraryId] = useState(libraries[0]?.library.id ?? "built-in");
   const [activeCategory, setActiveCategory] = useState<AssetCategory | "All">("All");
@@ -16,6 +16,16 @@ export function App() {
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [sceneSortMode, setSceneSortMode] = useState<SceneSortMode>("manual");
   const [viewState, setViewState] = useState(createInitialEditorViewState);
+
+  const refreshLibraries = () => {
+    void loadImportedLibraryBundles()
+      .then((nextLibraries) => {
+        setLibraries(nextLibraries);
+      })
+      .catch(() => {
+        // Imported libraries are optional in local/dev mode.
+      });
+  };
 
   useEffect(() => {
     if (appRef.current || !canvasRef.current) {
@@ -30,6 +40,25 @@ export function App() {
     return () => {
       appRef.current?.destroy();
       appRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void loadImportedLibraryBundles()
+      .then((nextLibraries) => {
+        if (cancelled) {
+          return;
+        }
+        setLibraries(nextLibraries);
+      })
+      .catch(() => {
+        // Imported libraries are optional in local/dev mode.
+      });
+
+    return () => {
+      cancelled = true;
     };
   }, []);
 
@@ -63,6 +92,13 @@ export function App() {
     }
   }, [activeCategory, activeLibrary]);
 
+  useEffect(() => {
+    if (libraries.some((library) => library.library.id === activeLibraryId)) {
+      return;
+    }
+    setActiveLibraryId(libraries[0]?.library.id ?? "built-in");
+  }, [activeLibraryId, libraries]);
+
   return (
     <EditorShell
       canvasRef={canvasRef}
@@ -79,6 +115,7 @@ export function App() {
       viewState={viewState}
       onSearchQueryChange={setSearchQuery}
       onActiveLibraryChange={setActiveLibraryId}
+      onRefreshLibraries={refreshLibraries}
       onActiveCategoryChange={setActiveCategory}
       onAssetClick={(libraryId, assetId) => {
         void appRef.current?.activateAsset(libraryId, assetId);

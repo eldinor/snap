@@ -14,7 +14,7 @@ interface AssetCategoryManifest {
   categories: string[];
 }
 
-interface LibraryRegistryEntry {
+export interface LibraryRegistryEntry {
   id: string;
   name: string;
   mode: "built-in" | "imported";
@@ -46,6 +46,7 @@ export interface AssetLibraryBundle {
   meta: AssetLibraryMeta;
   assets: AssetDefinition[];
   categories: string[];
+  metaUrl?: string;
 }
 
 function parseAssetCategoryManifest(value: unknown): AssetCategoryManifest {
@@ -255,7 +256,7 @@ export const ROOF_STARTER_ASSETS: AssetDefinition[] = parseAssetManifest(
   roofStarterAssetsManifest,
   ROOF_STARTER_CATEGORIES,
 ).assets;
-export const ASSET_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
+const BUILT_IN_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
   {
     library: LIBRARIES.find((library) => library.id === ACTIVE_LIBRARY.id)!,
     meta: ACTIVE_LIBRARY,
@@ -270,12 +271,14 @@ export const ASSET_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
   },
 ];
 
+let importedLibraryBundles: AssetLibraryBundle[] = [];
+
 export function getAssetLibraryBundles() {
-  return ASSET_LIBRARY_BUNDLES;
+  return [...BUILT_IN_LIBRARY_BUNDLES, ...importedLibraryBundles];
 }
 
 export function getAssetLibraryBundle(libraryId: string) {
-  return ASSET_LIBRARY_BUNDLES.find((bundle) => bundle.library.id === libraryId) ?? ASSET_LIBRARY_BUNDLES[0];
+  return getAssetLibraryBundles().find((bundle) => bundle.library.id === libraryId) ?? BUILT_IN_LIBRARY_BUNDLES[0];
 }
 
 export function createAssetRef(libraryId: string, assetId: string): AssetRef {
@@ -333,4 +336,75 @@ export function getAssetThumbnailUrl(thumbnailFileName: string) {
 
 export function getAssetThumbnailUrlForLibrary(libraryId: string, thumbnailFileName: string) {
   return `${getAssetThumbnailBasePathForLibrary(libraryId)}${thumbnailFileName}`;
+}
+
+export function splitAssetFileReference(fileName: string) {
+  const normalized = fileName.replace(/\\/g, "/");
+  const slashIndex = normalized.lastIndexOf("/");
+  if (slashIndex === -1) {
+    return {
+      directory: "",
+      fileName: normalized,
+    };
+  }
+
+  return {
+    directory: normalized.slice(0, slashIndex + 1),
+    fileName: normalized.slice(slashIndex + 1),
+  };
+}
+
+function resolveUrl(baseUrl: string, relativeOrAbsoluteUrl: string) {
+  const absoluteBaseUrl = /^[a-z]+:/iu.test(baseUrl)
+    ? baseUrl
+    : new URL(baseUrl, typeof document !== "undefined" ? document.baseURI : "http://localhost/").toString();
+  return new URL(relativeOrAbsoluteUrl, absoluteBaseUrl).toString();
+}
+
+async function fetchJson(url: string) {
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: ${response.status}`);
+  }
+  return response.json();
+}
+
+async function loadImportedLibraryBundle(entry: LibraryRegistryEntry, registryUrl: string) {
+  const metaUrl = resolveUrl(registryUrl, entry.metaPath);
+  const meta = parseAssetLibraryMeta(await fetchJson(metaUrl));
+  const categories = parseAssetCategoryManifest(await fetchJson(resolveUrl(metaUrl, meta.categories))).categories;
+  const assets = parseAssetManifest(await fetchJson(resolveUrl(metaUrl, meta.assetManifest)), categories).assets;
+
+  return {
+    library: entry,
+    meta: {
+      ...meta,
+      assetBasePath: resolveUrl(metaUrl, meta.assetBasePath),
+      thumbnailBasePath: resolveUrl(metaUrl, meta.thumbnailBasePath),
+    },
+    assets,
+    categories,
+    metaUrl,
+  } satisfies AssetLibraryBundle;
+}
+
+export async function loadImportedLibraryBundles() {
+  const registryUrl = "/libraries/libraries.json";
+  let manifest: LibraryRegistryManifest;
+
+  try {
+    manifest = parseLibraryRegistryManifest(await fetchJson(registryUrl));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes("404")) {
+      importedLibraryBundles = [];
+      return getAssetLibraryBundles();
+    }
+    throw error;
+  }
+
+  const builtInIds = new Set(BUILT_IN_LIBRARY_BUNDLES.map((bundle) => bundle.library.id));
+  const externalEntries = manifest.libraries.filter((library) => !builtInIds.has(library.id));
+  importedLibraryBundles = await Promise.all(externalEntries.map((entry) => loadImportedLibraryBundle(entry, registryUrl)));
+  return getAssetLibraryBundles();
 }

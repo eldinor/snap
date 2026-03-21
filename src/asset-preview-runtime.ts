@@ -11,7 +11,7 @@ import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
-import { getAssetBasePath } from "./assets";
+import { getAssetBasePath, splitAssetFileReference } from "./assets";
 
 export class AssetPreviewRenderer {
   readonly engine: Engine;
@@ -60,7 +60,13 @@ export class AssetPreviewRenderer {
 
   async loadAsset(fileName: string, basePath = getAssetBasePath()) {
     this.root?.dispose(false, false);
-    const result = await SceneLoader.ImportMeshAsync("", basePath, fileName, this.scene);
+    const assetReference = splitAssetFileReference(fileName);
+    const result = await SceneLoader.ImportMeshAsync(
+      "",
+      `${basePath}${assetReference.directory}`,
+      assetReference.fileName,
+      this.scene,
+    );
     const root = new TransformNode("preview-root", this.scene);
 
     [...result.transformNodes, ...result.meshes].forEach((node) => {

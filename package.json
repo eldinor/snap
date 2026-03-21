@@ -10,6 +10,10 @@
     "assets:validate": "node scripts/asset-library.mjs validate",
     "assets:regenerate": "node scripts/asset-library.mjs regenerate",
     "assets:thumbnails": "node scripts/asset-library.mjs thumbnails",
+    "assets:import-library-zip": "node scripts/asset-import-library-zip.mjs",
+    "assets:promote-library": "node scripts/asset-promote-library.mjs",
+    "assets:remove-library": "node scripts/asset-remove-library.mjs",
+    "assets:validate-library": "node scripts/asset-validate-library.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

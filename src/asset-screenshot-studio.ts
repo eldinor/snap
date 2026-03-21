@@ -1,4 +1,9 @@
-import { ASSETS, BUILT_IN_LIBRARY, getAssetBasePath } from "./assets";
+import {
+  getAssetLibraryBundle,
+  getAssetLibraryBundles,
+  loadImportedLibraryBundles,
+  type AssetLibraryBundle,
+} from "./assets";
 import { AssetPreviewRenderer } from "./asset-preview-runtime";
 
 type DirectoryPickerWindow = Window &
@@ -122,17 +127,20 @@ app.innerHTML = `
               <option value="picked" selected>Project Preview Folder</option>
             </select>
           </label>
+          <label>Library
+            <select id="librarySelect"></select>
+          </label>
           <label>Source
             <select id="sourceMode">
-              <option value="catalog">Current catalog</option>
-              <option value="manifest" selected>Manifest URL</option>
+              <option value="catalog" selected>Current library catalog</option>
+              <option value="manifest">Manifest URL</option>
             </select>
           </label>
           <label>Manifest URL
             <input id="manifestUrl" value="/generated/asset-screenshot-manifest.json" />
           </label>
           <label>Asset base path
-            <input id="basePath" value="${getAssetBasePath()}" />
+            <input id="basePath" value="${getAssetLibraryBundle("built-in").meta.assetBasePath}" />
           </label>
           <label>Width
             <input id="width" type="number" min="128" step="64" value="1024" />
@@ -151,7 +159,7 @@ app.innerHTML = `
         <h2>Status</h2>
         <div class="status" id="statusText">
           <span>Output folder: not selected</span>
-          <span>Pick <code>public${BUILT_IN_LIBRARY.thumbnailBasePath}</code> to save app-ready screenshots.</span>
+          <span>Pick the target thumbnail folder for the selected library.</span>
         </div>
       </div>
       <div class="panel">
@@ -167,6 +175,7 @@ app.innerHTML = `
 
 const canvas = document.querySelector<HTMLCanvasElement>("#previewCanvas");
 const saveMode = document.querySelector<HTMLSelectElement>("#saveMode");
+const librarySelect = document.querySelector<HTMLSelectElement>("#librarySelect");
 const sourceMode = document.querySelector<HTMLSelectElement>("#sourceMode");
 const manifestUrl = document.querySelector<HTMLInputElement>("#manifestUrl");
 const basePathInput = document.querySelector<HTMLInputElement>("#basePath");
@@ -181,6 +190,7 @@ const queueLog = document.querySelector<HTMLDivElement>("#queueLog");
 if (
   !canvas ||
   !saveMode ||
+  !librarySelect ||
   !sourceMode ||
   !manifestUrl ||
   !basePathInput ||
@@ -197,9 +207,67 @@ if (
 
 const renderer = new AssetPreviewRenderer(canvas, "dark");
 let outputDirectory: FileSystemDirectoryHandle | null = null;
+let libraryBundles = getAssetLibraryBundles();
+let selectedLibraryId = libraryBundles[0]?.library.id ?? "built-in";
+
+function getSelectedLibrary() {
+  return getAssetLibraryBundle(selectedLibraryId);
+}
+
+function getThumbnailFolderHint(bundle: AssetLibraryBundle) {
+  if (bundle.library.mode === "imported") {
+    return `libraries/${bundle.library.id}/thumbnails`;
+  }
+
+  if (bundle.meta.thumbnailBasePath.startsWith("/")) {
+    return `public${bundle.meta.thumbnailBasePath}`;
+  }
+
+  return bundle.meta.thumbnailBasePath;
+}
+
+function getDefaultManifestUrl(bundle: AssetLibraryBundle) {
+  if (bundle.library.mode === "imported") {
+    return `/libraries/${bundle.library.id}/asset-screenshot-manifest.json`;
+  }
+
+  return "/generated/asset-screenshot-manifest.json";
+}
+
+function syncSelectedLibraryUi() {
+  const bundle = getSelectedLibrary();
+  basePathInput.value = bundle.meta.assetBasePath;
+  manifestUrl.value = getDefaultManifestUrl(bundle);
+  sourceMode.value = bundle.library.mode === "imported" ? "catalog" : sourceMode.value;
+  updateStatusForCurrentLibrary(outputDirectory ? `Output folder: ${outputDirectory.name}` : "Output folder: not selected");
+}
+
+function renderLibraryOptions() {
+  librarySelect.innerHTML = libraryBundles
+    .map((bundle) => `<option value="${bundle.library.id}">${bundle.meta.name}</option>`)
+    .join("");
+  librarySelect.value = selectedLibraryId;
+}
+
+function updateStatusForCurrentLibrary(firstLine: string, secondLine?: string) {
+  const bundle = getSelectedLibrary();
+  setStatus(
+    firstLine,
+    secondLine ?? `Pick ${getThumbnailFolderHint(bundle)} to save app-ready screenshots for ${bundle.meta.name}.`,
+  );
+}
 
 function setStatus(...lines: string[]) {
   statusText.innerHTML = lines.map((line) => `<span>${line}</span>`).join("");
+}
+
+function getOutputPngFileName(file: string, bundle: AssetLibraryBundle) {
+  const asset = bundle.assets.find((candidate) => candidate.fileName === file);
+  if (asset) {
+    return asset.thumbnailFileName;
+  }
+
+  return `${file.replace(/\.[^.]+$/, "").replace(/[\\/]+/g, "__")}.png`;
 }
 
 function logLine(line: string) {
@@ -222,7 +290,7 @@ async function getFiles() {
     return files as string[];
   }
 
-  return [...new Set(ASSETS.map((asset) => asset.fileName))];
+  return [...new Set(getSelectedLibrary().assets.map((asset) => asset.fileName))];
 }
 
 function dataUrlToBlob(dataUrl: string) {
@@ -243,34 +311,61 @@ function jsonBlob(value: unknown) {
 async function initializePreferredSourceMode() {
   try {
     const response = await fetch(manifestUrl.value, { method: "GET" });
-    sourceMode.value = response.ok ? "manifest" : "catalog";
+    const contentType = response.headers.get("content-type") ?? "";
+    if (!response.ok || !contentType.includes("application/json")) {
+      sourceMode.value = "catalog";
+      return;
+    }
+
+    const manifest = await response.json();
+    const files = Array.isArray(manifest) ? manifest : manifest?.files;
+    sourceMode.value = Array.isArray(files) ? "manifest" : "catalog";
   } catch {
     sourceMode.value = "catalog";
+  }
+}
+
+async function refreshImportedLibraries() {
+  try {
+    libraryBundles = await loadImportedLibraryBundles();
+    if (!libraryBundles.some((bundle) => bundle.library.id === selectedLibraryId)) {
+      selectedLibraryId = libraryBundles[0]?.library.id ?? "built-in";
+    }
+    renderLibraryOptions();
+    syncSelectedLibraryUi();
+  } catch {
+    // Imported libraries are optional.
   }
 }
 
 pickDirectoryButton.addEventListener("click", async () => {
   const targetWindow = window as DirectoryPickerWindow;
   if (!targetWindow.showDirectoryPicker) {
-    setStatus("Output folder: unsupported", "Use a Chromium browser with File System Access support.");
+    updateStatusForCurrentLibrary("Output folder: unsupported", "Use a Chromium browser with File System Access support.");
     return;
   }
 
   outputDirectory = await targetWindow.showDirectoryPicker();
-  setStatus(`Output folder: ${outputDirectory.name}`, "Ready.");
+  updateStatusForCurrentLibrary(`Output folder: ${outputDirectory.name}`, "Ready.");
 });
 
 saveMode.addEventListener("change", () => {
   pickDirectoryButton.disabled = saveMode.value !== "picked";
-  setStatus(
+  updateStatusForCurrentLibrary(
     outputDirectory ? `Output folder: ${outputDirectory.name}` : "Output folder: not selected",
-    outputDirectory ? "Ready." : `Pick public${BUILT_IN_LIBRARY.thumbnailBasePath} to save app-ready screenshots.`,
+    outputDirectory ? "Ready." : undefined,
   );
+});
+
+librarySelect.addEventListener("change", () => {
+  selectedLibraryId = librarySelect.value;
+  syncSelectedLibraryUi();
+  void initializePreferredSourceMode();
 });
 
 startBatchButton.addEventListener("click", async () => {
   if (saveMode.value === "picked" && !outputDirectory) {
-    setStatus("Output folder: not selected", "Pick an output folder first.");
+    updateStatusForCurrentLibrary("Output folder: not selected", "Pick an output folder first.");
     return;
   }
 
@@ -284,11 +379,12 @@ startBatchButton.addEventListener("click", async () => {
     const width = Number(widthInput.value || "1024");
     const height = Number(heightInput.value || "1024");
     const basePath = basePathInput.value;
+    const selectedLibrary = getSelectedLibrary();
     const relations: Array<{ gltf: string; png: string }> = [];
 
-    setStatus(
+    updateStatusForCurrentLibrary(
       outputDirectory ? `Output folder: ${outputDirectory.name}` : "Output folder: not selected",
-      `Rendering ${selectedFiles.length} asset screenshots...`,
+      `Rendering ${selectedFiles.length} asset screenshots for ${selectedLibrary.meta.name}...`,
     );
 
     for (let index = 0; index < selectedFiles.length; index += 1) {
@@ -297,7 +393,7 @@ startBatchButton.addEventListener("click", async () => {
       await renderer.loadAsset(file, basePath);
       const dataUrl = await renderer.capture(width, height, 4);
       const blob = dataUrlToBlob(dataUrl);
-      const pngFileName = `${file.replace(/\.[^.]+$/, "")}.png`;
+      const pngFileName = getOutputPngFileName(file, selectedLibrary);
       const fileHandle = await outputDirectory.getFileHandle(pngFileName, { create: true });
       const writable = await fileHandle.createWritable();
       await writable.write(blob);
@@ -316,12 +412,12 @@ startBatchButton.addEventListener("click", async () => {
     );
     await relationWritable.close();
 
-    setStatus(
+    updateStatusForCurrentLibrary(
       outputDirectory ? `Output folder: ${outputDirectory.name}` : "Output folder: not selected",
       `Completed ${selectedFiles.length} screenshots and wrote asset-preview-relations.json.`,
     );
   } catch (error) {
-    setStatus(
+    updateStatusForCurrentLibrary(
       outputDirectory ? `Output folder: ${outputDirectory.name}` : "Output folder: not selected",
       error instanceof Error ? error.message : String(error),
     );
@@ -331,5 +427,7 @@ startBatchButton.addEventListener("click", async () => {
 });
 
 pickDirectoryButton.disabled = saveMode.value !== "picked";
-setStatus("Output folder: not selected", `Pick public${BUILT_IN_LIBRARY.thumbnailBasePath} to save app-ready screenshots.`);
+renderLibraryOptions();
+syncSelectedLibraryUi();
 void initializePreferredSourceMode();
+void refreshImportedLibraries();

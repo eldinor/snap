@@ -1,8 +1,10 @@
 import {
   getAssetLibraryBundles,
   getAssetThumbnailUrlForLibrary,
+  loadImportedLibraryBundles,
   type AssetCategory,
   type AssetDefinition,
+  type AssetLibraryBundle,
   type AssetLibraryMeta,
 } from "./assets";
 import builtInTagTemplatesManifest from "./data/libraries/built-in/asset-tag-templates.json";
@@ -57,6 +59,21 @@ interface DraftLibraryPackage {
   tagTemplates: AssetTagTemplateManifest;
   manifest: AssetLibraryManifest;
   inspection: ZipInspectionResult;
+}
+
+interface LibraryLifecycleState {
+  inspectionAvailable: boolean;
+  thumbnailsReady: boolean;
+  validationErrors: number | null;
+  validationWarnings: number | null;
+}
+
+interface LibraryHistoryEntry {
+  timestamp: string;
+  action: string;
+  libraryId: string;
+  message: string;
+  details?: Record<string, unknown>;
 }
 
 interface StudioLibraryState {
@@ -370,6 +387,7 @@ app.innerHTML = `
           <label>Library
             <select id="librarySelect"></select>
           </label>
+          <button type="button" id="refreshStudioLibraries">Refresh Libraries And Reports</button>
           <label>Search
             <input id="assetSearch" placeholder="Search name, file, tags" />
           </label>
@@ -418,6 +436,69 @@ app.innerHTML = `
         </div>
         <input id="zipFileInput" type="file" accept=".zip,application/zip" hidden />
         <div class="status" id="zipReport">No zip inspected yet.</div>
+      </div>
+      <div class="panel batch-panel">
+        <h2>Repo Import</h2>
+        <label>Asset ZIP Path
+          <input id="importAssetZipPath" placeholder="C:\\path\\to\\asset-pack.zip" />
+        </label>
+        <label>Draft ZIP Path
+          <input id="importDraftZipPath" placeholder="C:\\path\\to\\draft-library.zip" />
+        </label>
+        <label>Command
+          <textarea id="importCommand" class="mono" readonly></textarea>
+        </label>
+        <div class="action-row">
+          <button type="button" id="copyImportCommand">Copy Command</button>
+        </div>
+        <div class="status" id="importHelp">
+          Put the two ZIP paths here, then run the generated command from the repo root.
+        </div>
+      </div>
+      <div class="panel batch-panel">
+        <h2>Promote Library</h2>
+        <label>Library To Promote
+          <input id="promoteLibraryId" readonly />
+        </label>
+        <label>Command
+          <textarea id="promoteCommand" class="mono" readonly></textarea>
+        </label>
+        <div class="action-row">
+          <button type="button" id="copyPromoteCommand">Copy Command</button>
+        </div>
+        <div class="status" id="promoteHelp">
+          Select an imported library to prepare the built-in promotion command.
+        </div>
+      </div>
+      <div class="panel batch-panel">
+        <h2>Remove Library</h2>
+        <label>Library To Remove
+          <input id="removeLibraryId" readonly />
+        </label>
+        <label>Command
+          <textarea id="removeCommand" class="mono" readonly></textarea>
+        </label>
+        <div class="action-row">
+          <button type="button" id="copyRemoveCommand">Copy Command</button>
+        </div>
+        <div class="status" id="removeHelp">
+          Select a removable library to prepare the cleanup command.
+        </div>
+      </div>
+      <div class="panel batch-panel">
+        <h2>Validate Library</h2>
+        <label>Library To Validate
+          <input id="validateLibraryId" readonly />
+        </label>
+        <label>Command
+          <textarea id="validateCommand" class="mono" readonly></textarea>
+        </label>
+        <div class="action-row">
+          <button type="button" id="copyValidateCommand">Copy Command</button>
+        </div>
+        <div class="status" id="validateHelp">
+          Copy the validation command, run it from the repo root terminal, then reload the studio.
+        </div>
       </div>
       <div class="panel batch-panel">
         <h2>Filtered Assets</h2>
@@ -480,6 +561,10 @@ app.innerHTML = `
         <h2>Consistency</h2>
         <div class="status" id="tagReport"></div>
       </div>
+      <div class="panel">
+        <h2>History</h2>
+        <div class="status" id="libraryHistory"></div>
+      </div>
       <div class="asset-list" id="assetList"></div>
     </aside>
     <main class="editor">
@@ -524,10 +609,12 @@ app.innerHTML = `
 
 const assetSearch = document.querySelector<HTMLInputElement>("#assetSearch");
 const librarySelect = document.querySelector<HTMLSelectElement>("#librarySelect");
+const refreshStudioLibrariesButton = document.querySelector<HTMLButtonElement>("#refreshStudioLibraries");
 const categoryFilter = document.querySelector<HTMLSelectElement>("#categoryFilter");
 const assetList = document.querySelector<HTMLDivElement>("#assetList");
 const libraryStatus = document.querySelector<HTMLDivElement>("#libraryStatus");
 const tagReport = document.querySelector<HTMLDivElement>("#tagReport");
+const libraryHistory = document.querySelector<HTMLDivElement>("#libraryHistory");
 const zipDropzone = document.querySelector<HTMLDivElement>("#zipDropzone");
 const uploadZipButton = document.querySelector<HTMLButtonElement>("#uploadZipButton");
 const draftLibraryIdInput = document.querySelector<HTMLInputElement>("#draftLibraryId");
@@ -536,6 +623,23 @@ const draftLibraryCategoryInput = document.querySelector<HTMLSelectElement>("#dr
 const downloadDraftLibraryButton = document.querySelector<HTMLButtonElement>("#downloadDraftLibraryButton");
 const zipFileInput = document.querySelector<HTMLInputElement>("#zipFileInput");
 const zipReport = document.querySelector<HTMLDivElement>("#zipReport");
+const importAssetZipPathInput = document.querySelector<HTMLInputElement>("#importAssetZipPath");
+const importDraftZipPathInput = document.querySelector<HTMLInputElement>("#importDraftZipPath");
+const importCommandInput = document.querySelector<HTMLTextAreaElement>("#importCommand");
+const copyImportCommandButton = document.querySelector<HTMLButtonElement>("#copyImportCommand");
+const importHelp = document.querySelector<HTMLDivElement>("#importHelp");
+const promoteLibraryIdInput = document.querySelector<HTMLInputElement>("#promoteLibraryId");
+const promoteCommandInput = document.querySelector<HTMLTextAreaElement>("#promoteCommand");
+const copyPromoteCommandButton = document.querySelector<HTMLButtonElement>("#copyPromoteCommand");
+const promoteHelp = document.querySelector<HTMLDivElement>("#promoteHelp");
+const removeLibraryIdInput = document.querySelector<HTMLInputElement>("#removeLibraryId");
+const removeCommandInput = document.querySelector<HTMLTextAreaElement>("#removeCommand");
+const copyRemoveCommandButton = document.querySelector<HTMLButtonElement>("#copyRemoveCommand");
+const removeHelp = document.querySelector<HTMLDivElement>("#removeHelp");
+const validateLibraryIdInput = document.querySelector<HTMLInputElement>("#validateLibraryId");
+const validateCommandInput = document.querySelector<HTMLTextAreaElement>("#validateCommand");
+const copyValidateCommandButton = document.querySelector<HTMLButtonElement>("#copyValidateCommand");
+const validateHelp = document.querySelector<HTMLDivElement>("#validateHelp");
 const manageCategoryInput = document.querySelector<HTMLSelectElement>("#manageCategory");
 const newCategoryNameInput = document.querySelector<HTMLInputElement>("#newCategoryName");
 const addCategoryButton = document.querySelector<HTMLButtonElement>("#addCategory");
@@ -575,11 +679,13 @@ const tagSuggestions = document.querySelector<HTMLDataListElement>("#tagSuggesti
 
 if (
   !librarySelect ||
+  !refreshStudioLibrariesButton ||
   !assetSearch ||
   !categoryFilter ||
   !assetList ||
   !libraryStatus ||
   !tagReport ||
+  !libraryHistory ||
   !zipDropzone ||
   !uploadZipButton ||
   !draftLibraryIdInput ||
@@ -588,6 +694,23 @@ if (
   !downloadDraftLibraryButton ||
   !zipFileInput ||
   !zipReport ||
+  !importAssetZipPathInput ||
+  !importDraftZipPathInput ||
+  !importCommandInput ||
+  !copyImportCommandButton ||
+  !importHelp ||
+  !promoteLibraryIdInput ||
+  !promoteCommandInput ||
+  !copyPromoteCommandButton ||
+  !promoteHelp ||
+  !removeLibraryIdInput ||
+  !removeCommandInput ||
+  !copyRemoveCommandButton ||
+  !removeHelp ||
+  !validateLibraryIdInput ||
+  !validateCommandInput ||
+  !copyValidateCommandButton ||
+  !validateHelp ||
   !manageCategoryInput ||
   !newCategoryNameInput ||
   !addCategoryButton ||
@@ -628,7 +751,7 @@ if (
   throw new Error("Asset library studio UI is incomplete.");
 }
 
-const libraryBundles = getAssetLibraryBundles();
+let libraryBundles = getAssetLibraryBundles();
 const libraryTemplateManifests: Record<string, unknown> = {
   "built-in": builtInTagTemplatesManifest,
   "roof-starter": roofStarterTagTemplatesManifest,
@@ -733,9 +856,70 @@ function createStudioLibraryState(bundle: (typeof libraryBundles)[number]): Stud
   };
 }
 
+async function fetchJson(url: string) {
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: ${response.status}`);
+  }
+  return response.json();
+}
+
+async function fetchOk(url: string) {
+  const response = await fetch(url, { cache: "no-store" });
+  return response.ok;
+}
+
+async function refreshLibraryHistory() {
+  const history = await fetchJson("/generated/library-history.json").catch(() => []);
+  libraryHistoryEntries = Array.isArray(history) ? history as LibraryHistoryEntry[] : [];
+}
+
+function resolveLibraryDocumentUrl(bundle: AssetLibraryBundle, relativeOrAbsolutePath: string) {
+  if (/^[a-z]+:/iu.test(relativeOrAbsolutePath) || relativeOrAbsolutePath.startsWith("/")) {
+    return relativeOrAbsolutePath;
+  }
+  if (!bundle.metaUrl) {
+    throw new Error(`Library ${bundle.library.id} does not expose a metadata URL for ${relativeOrAbsolutePath}.`);
+  }
+  return new URL(relativeOrAbsolutePath, bundle.metaUrl).toString();
+}
+
+async function createStudioLibraryStateAsync(bundle: AssetLibraryBundle) {
+  if (bundle.library.mode === "built-in") {
+    return createStudioLibraryState(bundle);
+  }
+
+  const originalManifest: AssetLibraryManifest = {
+    version: 1,
+    assets: bundle.assets.map(cloneAsset),
+  };
+  const originalCategories = [...bundle.categories];
+  const templateManifestValue = await fetchJson(resolveLibraryDocumentUrl(bundle, bundle.meta.tagTemplates));
+  const originalTagTemplates = parseAssetTagTemplateManifest(templateManifestValue, originalCategories);
+
+  return {
+    id: bundle.library.id,
+    name: bundle.meta.name,
+    originalManifest,
+    workingManifest: structuredClone(originalManifest),
+    originalCategories,
+    workingCategories: [...originalCategories],
+    originalTagTemplates,
+    workingTagTemplates: {
+      version: 1,
+      categories: Object.fromEntries(
+        originalCategories.map((category) => [category, [...(originalTagTemplates.categories[category] ?? [])]]),
+      ) as Partial<Record<AssetCategory, string[]>>,
+    },
+  };
+}
+
 const libraryStates = new Map<string, StudioLibraryState>(
   libraryBundles.map((bundle) => [bundle.library.id, createStudioLibraryState(bundle)]),
 );
+const libraryLifecycleState = new Map<string, LibraryLifecycleState>();
+const libraryLifecyclePending = new Set<string>();
+let libraryHistoryEntries: LibraryHistoryEntry[] = [];
 
 let selectedLibraryId = libraryBundles[0]?.library.id ?? "built-in";
 let lastZipInspection: ZipInspectionResult | null = null;
@@ -767,6 +951,9 @@ function applyLibraryState(libraryId: string) {
   workingCategories = nextState.workingCategories;
   workingTagTemplates = nextState.workingTagTemplates;
   selectedAssetId = workingManifest.assets[0]?.id ?? null;
+  updatePromoteCommandPreview();
+  updateRemoveCommandPreview();
+  updateValidateCommandPreview();
 }
 
 function populateCategorySelect(select: HTMLSelectElement, includeAll = false) {
@@ -774,10 +961,17 @@ function populateCategorySelect(select: HTMLSelectElement, includeAll = false) {
   select.innerHTML = options.map((value) => `<option value="${value}">${value}</option>`).join("");
 }
 
-librarySelect.innerHTML = libraryBundles
-  .map((bundle) => `<option value="${bundle.library.id}">${bundle.meta.name}</option>`)
-  .join("");
-librarySelect.value = selectedLibraryId;
+function renderLibraryOptions() {
+  librarySelect.innerHTML = libraryBundles
+    .map((bundle) => `<option value="${bundle.library.id}">${bundle.meta.name}</option>`)
+    .join("");
+  librarySelect.value = selectedLibraryId;
+  updatePromoteCommandPreview();
+  updateRemoveCommandPreview();
+  updateValidateCommandPreview();
+}
+
+renderLibraryOptions();
 populateCategorySelect(categoryFilter, true);
 populateCategorySelect(assetCategoryInput, false);
 populateCategorySelect(batchCategoryInput, false);
@@ -788,6 +982,71 @@ categoryFilter.value = "All";
 templateCategoryInput.value = workingCategories[0];
 manageCategoryInput.value = workingCategories[0];
 draftLibraryCategoryInput.value = workingCategories[0];
+updateImportCommandPreview();
+updatePromoteCommandPreview();
+updateRemoveCommandPreview();
+updateValidateCommandPreview();
+
+async function refreshImportedLibraryStudioState() {
+  const nextBundles = await loadImportedLibraryBundles();
+  libraryBundles = nextBundles;
+
+  for (const bundle of nextBundles) {
+    if (!libraryStates.has(bundle.library.id)) {
+      libraryStates.set(bundle.library.id, await createStudioLibraryStateAsync(bundle));
+    }
+  }
+
+  renderLibraryOptions();
+  libraryLifecycleState.clear();
+  libraryLifecyclePending.clear();
+  await refreshLibraryHistory();
+  renderList();
+  renderEditor();
+  renderTemplateEditor();
+}
+
+async function resolveLibraryLifecycleState(bundle: AssetLibraryBundle) {
+  const inspectionAvailable = bundle.library.mode === "imported"
+    ? await fetchOk(resolveLibraryDocumentUrl(bundle, "./inspection-report.json")).catch(() => false)
+    : true;
+  const validationReportUrl = `/generated/library-validation/${bundle.library.id}.json`;
+  const validationReport = await fetchJson(validationReportUrl).catch(() => null);
+  const thumbnailCandidates = bundle.assets.slice(0, 3);
+  let thumbnailsReady = false;
+
+  for (const asset of thumbnailCandidates) {
+    const ok = await fetchOk(getAssetThumbnailUrlForLibrary(bundle.library.id, asset.thumbnailFileName)).catch(() => false);
+    if (ok) {
+      thumbnailsReady = true;
+      break;
+    }
+  }
+
+  return {
+    inspectionAvailable,
+    thumbnailsReady,
+    validationErrors: validationReport && Array.isArray(validationReport.errors) ? validationReport.errors.length : null,
+    validationWarnings: validationReport && Array.isArray(validationReport.warnings) ? validationReport.warnings.length : null,
+  } satisfies LibraryLifecycleState;
+}
+
+function ensureLibraryLifecycleState() {
+  const bundle = libraryBundles.find((candidate) => candidate.library.id === selectedLibraryId);
+  if (!bundle || libraryLifecycleState.has(bundle.library.id) || libraryLifecyclePending.has(bundle.library.id)) {
+    return;
+  }
+
+  libraryLifecyclePending.add(bundle.library.id);
+  void resolveLibraryLifecycleState(bundle)
+    .then((state) => {
+      libraryLifecycleState.set(bundle.library.id, state);
+      renderList();
+    })
+    .finally(() => {
+      libraryLifecyclePending.delete(bundle.library.id);
+    });
+}
 
 function getThumbnailUrl(asset: AssetDefinition) {
   return getAssetThumbnailUrlForLibrary(selectedLibraryId, asset.thumbnailFileName);
@@ -930,6 +1189,50 @@ function sanitizeLibraryId(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+function escapePowerShellDoubleQuotes(value: string) {
+  return value.replace(/"/g, '`"');
+}
+
+function updateImportCommandPreview() {
+  const assetZipPath = importAssetZipPathInput.value.trim() || "C:\\path\\to\\asset-pack.zip";
+  const draftZipPath = importDraftZipPathInput.value.trim() || "C:\\path\\to\\draft-library.zip";
+  importCommandInput.value =
+    `npm run assets:import-library-zip -- "${escapePowerShellDoubleQuotes(assetZipPath)}" "${escapePowerShellDoubleQuotes(draftZipPath)}"`;
+}
+
+function updatePromoteCommandPreview() {
+  const bundle = libraryBundles.find((candidate) => candidate.library.id === selectedLibraryId) ?? null;
+  const canPromote = bundle?.library.mode === "imported";
+  promoteLibraryIdInput.value = canPromote ? selectedLibraryId : "";
+  promoteCommandInput.value = canPromote ? `npm run assets:promote-library -- "${selectedLibraryId}"` : "";
+  copyPromoteCommandButton.disabled = !canPromote;
+  promoteHelp.textContent = canPromote
+    ? "Copy the command, run it from the repo root, then reload the app and studio."
+    : "Select an imported library to prepare the built-in promotion command.";
+}
+
+function updateRemoveCommandPreview() {
+  const bundle = libraryBundles.find((candidate) => candidate.library.id === selectedLibraryId) ?? null;
+  const canRemove = !!bundle && bundle.library.id !== "built-in";
+  removeLibraryIdInput.value = canRemove ? selectedLibraryId : "";
+  removeCommandInput.value = canRemove ? `npm run assets:remove-library -- "${selectedLibraryId}" --delete-files` : "";
+  copyRemoveCommandButton.disabled = !canRemove;
+  removeHelp.textContent = canRemove
+    ? "Copy the cleanup command, run it from the repo root terminal, then reload."
+    : 'The core "built-in" library is protected from removal.';
+}
+
+function updateValidateCommandPreview() {
+  const bundle = libraryBundles.find((candidate) => candidate.library.id === selectedLibraryId) ?? null;
+  const canValidate = !!bundle;
+  validateLibraryIdInput.value = canValidate ? selectedLibraryId : "";
+  validateCommandInput.value = canValidate ? `npm run assets:validate-library -- "${selectedLibraryId}"` : "";
+  copyValidateCommandButton.disabled = !canValidate;
+  validateHelp.textContent = canValidate
+    ? "Copy the validation command, run it from the repo root terminal, then reload the studio."
+    : "Select a library to prepare the validation command.";
+}
+
 function toDisplayLibraryName(value: string) {
   const normalized = value.replace(/\.zip$/i, "").replace(/[_-]+/g, " ").trim();
   if (!normalized) {
@@ -985,7 +1288,7 @@ function buildDraftLibraryPackage(inspection: ZipInspectionResult): DraftLibrary
       id: assetId,
       name: toLabel(baseName),
       category: defaultCategory,
-      fileName: `${baseName}.gltf`,
+      fileName: report.gltfPath,
       thumbnailFileName: `${baseName}.png`,
       tags,
       placeholder: placeholderFor(defaultCategory, tags),
@@ -1217,6 +1520,10 @@ async function handleZipFile(file: File) {
     }
     if (!draftLibraryNameInput.value.trim()) {
       draftLibraryNameInput.value = toDisplayLibraryName(file.name);
+    }
+    if (!importAssetZipPathInput.value.trim()) {
+      importAssetZipPathInput.value = file.name;
+      updateImportCommandPreview();
     }
     renderZipInspection(result);
     setSaveStatus("ZIP inspection complete");
@@ -1551,6 +1858,7 @@ function downloadTagTemplates() {
 }
 
 function renderList() {
+  ensureLibraryLifecycleState();
   const filteredAssets = getFilteredAssets();
   if (!selectedAssetId || !filteredAssets.some((asset) => asset.id === selectedAssetId)) {
     selectedAssetId = filteredAssets[0]?.id ?? null;
@@ -1584,9 +1892,46 @@ function renderList() {
   const topTags = Array.from(diagnostics.tagCounts.entries())
     .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
     .slice(0, 8);
+  const selectedBundle = libraryBundles.find((bundle) => bundle.library.id === selectedLibraryId) ?? null;
+  const lifecycle = selectedBundle ? libraryLifecycleState.get(selectedBundle.library.id) ?? null : null;
+  const isLifecyclePending = selectedBundle ? libraryLifecyclePending.has(selectedBundle.library.id) : false;
+  const importedLabel = selectedBundle?.library.mode === "imported" ? "Yes" : "No";
+  const promotedLabel = selectedBundle?.library.mode === "built-in" ? "Yes" : "No";
+  const inspectionLabel = lifecycle ? (lifecycle.inspectionAvailable ? "Yes" : "No") : (isLifecyclePending ? "Checking..." : "Unknown");
+  const thumbnailsLabel = lifecycle ? (lifecycle.thumbnailsReady ? "Yes" : "No") : (isLifecyclePending ? "Checking..." : "Unknown");
+  const validationErrorsLabel = lifecycle
+    ? lifecycle.validationErrors === null ? "Not Run" : String(lifecycle.validationErrors)
+    : (isLifecyclePending ? "Checking..." : "Unknown");
+  const validationWarningsLabel = lifecycle
+    ? lifecycle.validationWarnings === null ? "Not Run" : String(lifecycle.validationWarnings)
+    : (isLifecyclePending ? "Checking..." : "Unknown");
+  const nextAction = selectedBundle
+    ? lifecycle?.validationErrors && lifecycle.validationErrors > 0
+      ? "Run the validation command, review the report, and fix the reported errors first."
+      : lifecycle?.validationWarnings && lifecycle.validationWarnings > 0
+        ? "Review the validation warnings, then continue with thumbnails or promotion."
+        : lifecycle?.validationErrors === null
+          ? "Run the validation command for this library so the studio can report what is broken."
+          : selectedBundle.library.mode === "imported"
+            ? lifecycle?.thumbnailsReady
+              ? "Promote this library to built-in when you are happy with its metadata and thumbnails."
+              : "Render thumbnails for this imported library in asset-screenshot-studio.html."
+            : lifecycle?.thumbnailsReady
+              ? "Library is ready. Continue metadata cleanup or use it in the editor."
+              : "Render thumbnails for this built-in library in asset-screenshot-studio.html."
+    : "Select a library.";
 
   libraryStatus.innerHTML = `
     <div class="status-list">
+      <span><strong>Library</strong> ${selectedBundle?.meta.name ?? selectedLibraryId}</span>
+      <span><strong>Mode</strong> ${selectedBundle?.library.mode ?? "unknown"}</span>
+      <span><strong>Inspected</strong> ${inspectionLabel}</span>
+      <span><strong>Imported</strong> ${importedLabel}</span>
+      <span><strong>Thumbnails Ready</strong> ${thumbnailsLabel}</span>
+      <span><strong>Promoted</strong> ${promotedLabel}</span>
+      <span><strong>Validation Errors</strong> ${validationErrorsLabel}</span>
+      <span><strong>Validation Warnings</strong> ${validationWarningsLabel}</span>
+      <span><strong>Next</strong> ${nextAction}</span>
       <span><strong>Total</strong> ${workingManifest.assets.length}</span>
       <span><strong>Shown</strong> ${filteredAssets.length}</span>
       <span><strong>Selected</strong> ${selectedAssetId ?? "None"}</span>
@@ -1604,6 +1949,19 @@ function renderList() {
       <span><strong>Top Tags</strong> ${topTags.length > 0 ? topTags.map(([tag, count]) => `${tag} (${count})`).join(", ") : "None"}</span>
       <span><strong>Review First</strong> ${singletonTags.length > 0 ? singletonTags.join(", ") : "None"}</span>
       <span class="muted">Singleton tags often reveal wording drift.</span>
+    </div>
+  `;
+  const historyItems = libraryHistoryEntries
+    .filter((entry) => entry.libraryId === selectedLibraryId)
+    .slice(0, 8)
+    .map((entry) => {
+      const parsedDate = new Date(entry.timestamp);
+      const timestamp = Number.isNaN(parsedDate.getTime()) ? entry.timestamp : parsedDate.toLocaleString();
+      return `<span><strong>${timestamp}</strong> ${entry.action}: ${entry.message}</span>`;
+    });
+  libraryHistory.innerHTML = `
+    <div class="status-list">
+      ${historyItems.length > 0 ? historyItems.join("") : "<span>No history yet for this library.</span>"}
     </div>
   `;
   const tagOptions = Array.from(diagnostics.tagCounts.entries())
@@ -1800,6 +2158,16 @@ librarySelect.addEventListener("change", () => {
   setSaveStatus(`Switched to ${libraryStates.get(selectedLibraryId)?.name ?? selectedLibraryId}`);
 });
 
+refreshStudioLibrariesButton.addEventListener("click", () => {
+  void refreshImportedLibraryStudioState()
+    .then(() => {
+      setSaveStatus("Libraries and reports refreshed");
+    })
+    .catch((error) => {
+      setSaveStatus(error instanceof Error ? error.message : String(error));
+    });
+});
+
 zipDropzone.addEventListener("click", () => {
   zipFileInput.click();
 });
@@ -1808,14 +2176,84 @@ uploadZipButton.addEventListener("click", () => {
   zipFileInput.click();
 });
 
+importAssetZipPathInput.addEventListener("input", () => {
+  updateImportCommandPreview();
+});
+
+importDraftZipPathInput.addEventListener("input", () => {
+  updateImportCommandPreview();
+});
+
 downloadDraftLibraryButton.addEventListener("click", () => {
   void downloadDraftLibraryZip()
     .then(() => {
       setSaveStatus("Draft library ZIP downloaded");
+      importDraftZipPathInput.value = `${draftLibraryIdInput.value.trim() || "draft-library"}-draft-library.zip`;
+      updateImportCommandPreview();
     })
     .catch((error) => {
       setSaveStatus("Draft library ZIP failed");
       zipReport.textContent = error instanceof Error ? error.message : String(error);
+    });
+});
+
+copyImportCommandButton.addEventListener("click", () => {
+  void navigator.clipboard.writeText(importCommandInput.value)
+    .then(() => {
+      importHelp.textContent = "Import command copied. Run it from the repo root terminal.";
+      setSaveStatus("Import command copied");
+    })
+    .catch(() => {
+      importHelp.textContent = "Could not copy automatically. Copy the command text manually.";
+      setSaveStatus("Import command copy failed");
+    });
+});
+
+copyPromoteCommandButton.addEventListener("click", () => {
+  if (!promoteCommandInput.value) {
+    return;
+  }
+
+  void navigator.clipboard.writeText(promoteCommandInput.value)
+    .then(() => {
+      promoteHelp.textContent = "Promotion command copied. Run it from the repo root terminal, then reload.";
+      setSaveStatus("Promotion command copied");
+    })
+    .catch(() => {
+      promoteHelp.textContent = "Could not copy automatically. Copy the promotion command manually.";
+      setSaveStatus("Promotion command copy failed");
+    });
+});
+
+copyRemoveCommandButton.addEventListener("click", () => {
+  if (!removeCommandInput.value) {
+    return;
+  }
+
+  void navigator.clipboard.writeText(removeCommandInput.value)
+    .then(() => {
+      removeHelp.textContent = "Cleanup command copied. Run it from the repo root terminal, then reload.";
+      setSaveStatus("Cleanup command copied");
+    })
+    .catch(() => {
+      removeHelp.textContent = "Could not copy automatically. Copy the cleanup command manually.";
+      setSaveStatus("Cleanup command copy failed");
+    });
+});
+
+copyValidateCommandButton.addEventListener("click", () => {
+  if (!validateCommandInput.value) {
+    return;
+  }
+
+  void navigator.clipboard.writeText(validateCommandInput.value)
+    .then(() => {
+      validateHelp.textContent = "Validation command copied. Run it from the repo root terminal, then reload the studio.";
+      setSaveStatus("Validation command copied");
+    })
+    .catch(() => {
+      validateHelp.textContent = "Could not copy automatically. Copy the validation command manually.";
+      setSaveStatus("Validation command copy failed");
     });
 });
 
@@ -2142,3 +2580,11 @@ renderList();
 renderEditor();
 renderTemplateEditor();
 setSaveStatus("Ready");
+
+void refreshImportedLibraryStudioState()
+  .then(() => {
+    setSaveStatus("Ready");
+  })
+  .catch(() => {
+    // Imported libraries are optional in local/dev mode.
+  });

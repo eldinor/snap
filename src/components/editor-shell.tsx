@@ -1210,6 +1210,7 @@ interface AssetSidebarProps {
   viewState: EditorViewState;
   onSearchQueryChange: (value: string) => void;
   onActiveLibraryChange: (value: string) => void;
+  onRefreshLibraries: () => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
   onAssetClick: (libraryId: string, assetId: string) => void;
 }
@@ -1224,20 +1225,31 @@ function AssetSidebar(props: AssetSidebarProps) {
           <label className="panel-label" htmlFor="asset-library">
             Library
           </label>
-          <select
-            id="asset-library"
-            className="filter-select"
-            value={props.activeLibraryId}
-            onChange={(event) => {
-              props.onActiveLibraryChange(event.target.value);
-            }}
-          >
-            {props.availableLibraries.map((bundle) => (
-              <option key={bundle.library.id} value={bundle.library.id}>
-                {bundle.meta.name}
-              </option>
-            ))}
-          </select>
+          <div className="library-select-row">
+            <select
+              id="asset-library"
+              className="filter-select"
+              value={props.activeLibraryId}
+              onChange={(event) => {
+                props.onActiveLibraryChange(event.target.value);
+              }}
+            >
+              {props.availableLibraries.map((bundle) => (
+                <option key={bundle.library.id} value={bundle.library.id}>
+                  {bundle.meta.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className="tool-button tool-button-icon-only"
+              aria-label="Refresh libraries"
+              title="Refresh libraries"
+              onClick={props.onRefreshLibraries}
+            >
+              <RedoIcon className="tool-icon" />
+            </button>
+          </div>
           <FilterBar
             className="filter-bar-compact"
             searchId="asset-search"
@@ -1511,6 +1523,7 @@ interface EditorShellProps {
   viewState: EditorViewState;
   onSearchQueryChange: (value: string) => void;
   onActiveLibraryChange: (value: string) => void;
+  onRefreshLibraries: () => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
   onAssetClick: (libraryId: string, assetId: string) => void;
   onSceneItemSelect: (selectionIds: string[], primaryId: string | null) => void;
@@ -1665,6 +1678,7 @@ export function EditorShell(props: EditorShellProps) {
           viewState={props.viewState}
           onSearchQueryChange={props.onSearchQueryChange}
           onActiveLibraryChange={props.onActiveLibraryChange}
+          onRefreshLibraries={props.onRefreshLibraries}
           onActiveCategoryChange={props.onActiveCategoryChange}
           onAssetClick={props.onAssetClick}
         />

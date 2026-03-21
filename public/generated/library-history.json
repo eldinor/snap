@@ -1,0 +1,53 @@
+[
+  {
+    "timestamp": "2026-03-21T07:47:52.059Z",
+    "action": "promote",
+    "libraryId": "fantasy-props-megakit-standard",
+    "message": "Promoted library into built-in source folders.",
+    "details": {
+      "builtInDataDir": "C:\\Users\\Fiolent23\\newrepos\\snap\\src\\data\\libraries\\fantasy-props-megakit-standard",
+      "builtInLibraryAssetDir": "C:\\Users\\Fiolent23\\newrepos\\snap\\public\\assets\\libraries\\fantasy-props-megakit-standard\\glTF",
+      "builtInLibraryThumbnailDir": "C:\\Users\\Fiolent23\\newrepos\\snap\\public\\generated\\asset-previews\\fantasy-props-megakit-standard"
+    }
+  },
+  {
+    "timestamp": "2026-03-21T07:25:16.691Z",
+    "action": "validate",
+    "libraryId": "fantasy-props-megakit-standard",
+    "message": "Validated library with 0 error(s) and 0 warning(s).",
+    "details": {
+      "errors": 0,
+      "warnings": 0
+    }
+  },
+  {
+    "timestamp": "2026-03-20T22:53:13.965Z",
+    "action": "validate",
+    "libraryId": "fantasy-props-megakit-standard",
+    "message": "Validated library with 0 error(s) and 94 warning(s).",
+    "details": {
+      "errors": 0,
+      "warnings": 94
+    }
+  },
+  {
+    "timestamp": "2026-03-20T22:49:22.883Z",
+    "action": "validate",
+    "libraryId": "fantasy-props-megakit-standard",
+    "message": "Validated library with 0 error(s) and 94 warning(s).",
+    "details": {
+      "errors": 0,
+      "warnings": 94
+    }
+  },
+  {
+    "timestamp": "2026-03-20T22:41:34.055Z",
+    "action": "import",
+    "libraryId": "fantasy-props-megakit-standard",
+    "message": "Imported library with 94 assets.",
+    "details": {
+      "assetsWritten": 94,
+      "filesExtracted": 201
+    }
+  }
+]
