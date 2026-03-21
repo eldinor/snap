@@ -57,7 +57,14 @@ import {
   deleteSelectedObject as deleteSceneObject,
   selectObject as selectSceneObject,
 } from "./editor/scene-actions";
-import { DEFAULT_USER_SETTINGS, loadUserSettings, saveUserSettings, type UserSettings } from "./editor/user-settings";
+import {
+  DEFAULT_USER_SETTINGS,
+  GRID_PLANE_SIZE_OPTIONS,
+  GRID_SIZE_OPTIONS,
+  loadUserSettings,
+  saveUserSettings,
+  type UserSettings,
+} from "./editor/user-settings";
 import {
   createInitialEditorViewState,
   type EditorViewState,
@@ -98,6 +105,12 @@ interface ModularEditorAppOptions {
 }
 
 export class ModularEditorApp {
+  private static readonly CAMERA_BASE_LOWER_RADIUS_LIMIT = 6;
+  private static readonly CAMERA_BASE_UPPER_RADIUS_LIMIT = 48;
+  private static readonly CAMERA_BASE_WHEEL_DELTA_PERCENTAGE = 0.02;
+  private static readonly CAMERA_BASE_PANNING_SENSIBILITY = 4000;
+  private static readonly CAMERA_BASE_GRID_PLANE_SIZE = DEFAULT_USER_SETTINGS.gridPlaneSize;
+
   private readonly engine: Engine;
   private readonly scene: Scene;
   private readonly camera: ArcRotateCamera;
@@ -119,13 +132,26 @@ export class ModularEditorApp {
   private readonly handleWindowResize = () => {
     this.engine.resize();
   };
+  private readonly handleWindowKeyUp = (event: KeyboardEvent) => {
+    const code = event.code;
+    if (!this.isMovementKeyCode(code)) {
+      return;
+    }
+
+    this.heldMovementKeys.delete(code);
+    if (this.heldMovementKeys.size === 0) {
+      this.completeHistoryGesture();
+    }
+  };
   private readonly handleWindowKeyDown = async (event: KeyboardEvent) => {
     const target = event.target as HTMLElement | null;
     if (target && (target.tagName === "INPUT" || target.tagName === "SELECT")) {
       return;
     }
 
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
+    const code = event.code;
+
+    if ((event.ctrlKey || event.metaKey) && code === "KeyZ") {
       event.preventDefault();
       if (event.shiftKey) {
         await this.sessionController.redo();
@@ -135,55 +161,70 @@ export class ModularEditorApp {
       return;
     }
 
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y") {
+    if ((event.ctrlKey || event.metaKey) && code === "KeyY") {
       event.preventDefault();
       await this.sessionController.redo();
       return;
     }
 
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+    if ((event.ctrlKey || event.metaKey) && code === "KeyS") {
       event.preventDefault();
       this.saveSceneToLocalStorage();
       return;
     }
 
-    if (event.shiftKey && event.key.toLowerCase() === "d") {
+    if (event.shiftKey && code === "KeyD") {
       event.preventDefault();
       await this.duplicateSelectedObject();
       return;
     }
 
-    if (event.shiftKey && event.key.toLowerCase() === "f") {
+    if (event.shiftKey && code === "KeyA") {
+      if (this.activeAssetId && this.activeAssetLibraryId) {
+        event.preventDefault();
+        await this.enterPlacementMode();
+      }
+      return;
+    }
+
+    if (event.shiftKey && code === "KeyF") {
       event.preventDefault();
       this.frameSelectedObject();
       return;
     }
 
-    if (event.key.toLowerCase() === "r") {
+    if (code === "KeyR") {
       event.preventDefault();
       this.rotateActiveTarget();
     }
 
     if (this.mode === "select") {
-      const key = event.key.toLowerCase();
-      if (key === "w") {
+      if (code === "KeyW") {
         event.preventDefault();
-        this.moveSelectedByCameraAxes(1, 0);
+        if (!event.repeat) {
+          this.beginHeldMovement(code, 1, 0);
+        }
         return;
       }
-      if (key === "s") {
+      if (code === "KeyS") {
         event.preventDefault();
-        this.moveSelectedByCameraAxes(-1, 0);
+        if (!event.repeat) {
+          this.beginHeldMovement(code, -1, 0);
+        }
         return;
       }
-      if (key === "a") {
+      if (code === "KeyA") {
         event.preventDefault();
-        this.moveSelectedByCameraAxes(0, -1);
+        if (!event.repeat) {
+          this.beginHeldMovement(code, 0, -1);
+        }
         return;
       }
-      if (key === "d") {
+      if (code === "KeyD") {
         event.preventDefault();
-        this.moveSelectedByCameraAxes(0, 1);
+        if (!event.repeat) {
+          this.beginHeldMovement(code, 0, 1);
+        }
         return;
       }
     }
@@ -212,6 +253,7 @@ export class ModularEditorApp {
   private selectionHeightLabel: Nullable<Mesh> = null;
   private selectionVerticalHelperMarker: Nullable<Mesh> = null;
   private selectionHelperVisualsEnabled = true;
+  private lastSelectionHelperRenderKey: string | null = null;
   private activeAssetLibraryId: string | null = null;
   private activeAssetId: string | null = null;
   private selectedSceneItemIds = new Set<string>();
@@ -220,10 +262,12 @@ export class ModularEditorApp {
   private previewAssetLibraryId: string | null = null;
   private previewAssetId: string | null = null;
   private previewTemplateSize = new Vector3(1, 1, 1);
+  private lastPreviewTransformKey: string | null = null;
   private mode: "select" | "place" = "select";
   private snapEnabled = true;
   private ySnapEnabled = false;
-  private gridSize = 1;
+  private gridSize = DEFAULT_USER_SETTINGS.gridSize;
+  private gridPlaneSize = DEFAULT_USER_SETTINGS.gridPlaneSize;
   private rotationStepDegrees = 90;
   private rotationAxis: RotationAxis = "y";
   private previewRotation = Vector3.Zero();
@@ -243,7 +287,13 @@ export class ModularEditorApp {
   private lastRecoveredAutosaveAt: string | null = null;
   private persistenceReady = false;
   private drawCalls = 0;
+  private materialCount = 0;
+  private textureCount = 0;
+  private totalVertices = 0;
   private lastDrawCallSampleAt = 0;
+  private readonly heldMovementKeys = new Set<string>();
+  private lastHeldMovementAt = 0;
+  private lastHeldMovementViewStateAt = 0;
   private beforeAnimationsObserver: Observer<Scene> | null = null;
   private afterRenderObserver: Observer<Scene> | null = null;
 
@@ -259,6 +309,7 @@ export class ModularEditorApp {
     });
     this.defaultEnvironmentTexture = this.scene.environmentTexture;
     this.settings = loadUserSettings();
+    this.gridPlaneSize = this.settings.gridPlaneSize;
     this.sessionController = new SceneSessionController({
       history: this.history,
       getSnapshotText: () => this.getSerializedSceneText(),
@@ -274,23 +325,21 @@ export class ModularEditorApp {
     });
 
     this.camera = new ArcRotateCamera("camera", Math.PI / 3, Math.PI / 2.9, 22, new Vector3(0, 2, 0), this.scene);
-    this.camera.lowerRadiusLimit = 6;
-    this.camera.upperRadiusLimit = 48;
-    this.camera.wheelDeltaPercentage = 0.02;
     this.camera.attachControl(options.canvas, true);
+    this.retuneCameraForGridPlaneSize(false);
 
     this.mainLight = new BabylonHemisphericLight("light", new Vector3(0.4, 1, 0.2), this.scene);
     this.mainLight.intensity = this.settings.lightIntensity;
     this.mainLight.groundColor = new Color3(0.06, 0.07, 0.08);
 
-    this.ground = MeshBuilder.CreateGround("ground", { width: 80, height: 80 }, this.scene);
+    this.ground = MeshBuilder.CreateGround("ground", { width: 1, height: 1 }, this.scene);
     this.groundMaterial = new StandardMaterial("ground-material", this.scene);
     this.groundMaterial.diffuseColor = Color3.FromHexString(this.settings.groundColor);
     this.groundMaterial.specularColor = Color3.Black();
     this.ground.material = this.groundMaterial;
     this.ground.isPickable = true;
-    this.ground.freezeWorldMatrix();
     this.groundMaterial.freeze();
+    this.applyGridPlaneSize();
 
     this.gizmoManager = new GizmoManager(this.scene);
     this.gizmoManager.usePointerToAttachGizmos = false;
@@ -354,9 +403,10 @@ export class ModularEditorApp {
     void this.initializePersistence();
 
     this.engine.runRenderLoop(() => {
+      this.processHeldMovement(performance.now());
       if (this.selectionHelperVisualsEnabled) {
         try {
-          this.renderSelectionVerticalHelper();
+          this.renderSelectionVerticalHelperIfNeeded();
         } catch {
           this.selectionHelperVisualsEnabled = false;
           this.selectionVerticalHelper?.dispose();
@@ -403,10 +453,15 @@ export class ModularEditorApp {
   private bindSceneInteractions() {
     this.scene.onPointerObservable.add(async (pointerInfo) => {
       if (pointerInfo.type === PointerEventTypes.POINTERMOVE) {
+        if (this.mode !== "place" || !this.placementPreview || !this.previewAssetId) {
+          return;
+        }
         const pick = this.scene.pick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh === this.ground);
         if (pick?.pickedPoint) {
-          this.lastPointerPoint.copyFrom(pick.pickedPoint);
-          this.updatePreviewTransform();
+          if (Vector3.DistanceSquared(this.lastPointerPoint, pick.pickedPoint) > 0.000001) {
+            this.lastPointerPoint.copyFrom(pick.pickedPoint);
+            this.updatePreviewTransform();
+          }
         }
       }
 
@@ -483,6 +538,7 @@ export class ModularEditorApp {
 
   private bindShortcuts() {
     window.addEventListener("keydown", this.handleWindowKeyDown);
+    window.addEventListener("keyup", this.handleWindowKeyUp);
   }
 
   private buildSelectionViewState(): SelectionViewState {
@@ -536,7 +592,7 @@ export class ModularEditorApp {
       objectPlacementKind: selected?.placementKind ?? null,
       position: position ? [position.x, position.y, position.z] : null,
       rotationYDegrees: rotationDegrees,
-      positionText: position ? `${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}` : null,
+      positionText: position ? `${position.x.toFixed(3)}, ${position.y.toFixed(3)}, ${position.z.toFixed(3)}` : null,
       rotationText: rotationDegrees !== null ? `${rotationDegrees}deg` : null,
       snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
     };
@@ -677,10 +733,11 @@ export class ModularEditorApp {
       mode: this.mode,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
-      hasSelection: this.selectedSceneItemIds.size > 0,
-      hasObjects: this.objects.size > 0,
-      gridSize: this.gridSize,
-      rotationStepDegrees: this.rotationStepDegrees,
+        hasSelection: this.selectedSceneItemIds.size > 0,
+        hasObjects: this.objects.size > 0,
+        gridSize: this.gridSize,
+        gridPlaneSize: this.gridPlaneSize,
+        rotationStepDegrees: this.rotationStepDegrees,
       rotationAxis: this.rotationAxis,
       environmentEnabled: this.settings.environmentEnabled,
       environmentIntensity: this.settings.environmentIntensity,
@@ -706,6 +763,9 @@ export class ModularEditorApp {
       rotationStepDegrees: this.rotationStepDegrees,
       rotationAxis: this.rotationAxis,
       drawCalls: this.drawCalls,
+      materials: this.materialCount,
+      textures: this.textureCount,
+      totalVertices: this.totalVertices,
       hint:
         this.statusNotice ??
         (this.mode === "place"
@@ -748,16 +808,30 @@ export class ModularEditorApp {
     this.lastDrawCallSampleAt = now;
 
     const nextDrawCalls = this.getCurrentDrawCalls();
-    if (nextDrawCalls === this.drawCalls) {
+    const nextMaterialCount = this.getCurrentMaterialCount();
+    const nextTextureCount = this.getCurrentTextureCount();
+    const nextTotalVertices = this.getCurrentTotalVertices();
+    if (
+      nextDrawCalls === this.drawCalls &&
+      nextMaterialCount === this.materialCount &&
+      nextTextureCount === this.textureCount &&
+      nextTotalVertices === this.totalVertices
+    ) {
       return;
     }
 
     this.drawCalls = nextDrawCalls;
+    this.materialCount = nextMaterialCount;
+    this.textureCount = nextTextureCount;
+    this.totalVertices = nextTotalVertices;
     this.viewState = {
       ...this.viewState,
       status: {
         ...this.viewState.status,
         drawCalls: nextDrawCalls,
+        materials: nextMaterialCount,
+        textures: nextTextureCount,
+        totalVertices: nextTotalVertices,
       },
     };
     this.onViewStateChange?.(this.viewState);
@@ -771,6 +845,18 @@ export class ModularEditorApp {
       };
     };
     return engineWithCounter._drawCalls?.current ?? 0;
+  }
+
+  private getCurrentMaterialCount() {
+    return this.scene.materials.length;
+  }
+
+  private getCurrentTextureCount() {
+    return this.scene.textures.length;
+  }
+
+  private getCurrentTotalVertices() {
+    return this.scene.meshes.reduce((total, mesh) => total + mesh.getTotalVertices(), 0);
   }
 
   private bindDrawCallCounter() {
@@ -918,7 +1004,7 @@ export class ModularEditorApp {
         continue;
       }
 
-      const template = await this.getAssetTemplate(asset, source.libraryId);
+      const template = await this.getAssetTemplate(asset, objectLibraryId);
       const root = await instantiateAsset(
         asset,
         false,
@@ -1306,7 +1392,7 @@ export class ModularEditorApp {
     return false;
   }
 
-  private moveSelectedByCameraAxes(forwardAmount: number, rightAmount: number) {
+  private moveSelectedByCameraAxes(forwardAmount: number, rightAmount: number, emit = true) {
     const selectionIds = this.getOrderedSelectedTopLevelSceneItemIds().filter((itemId) => this.canMoveSceneItem(itemId));
     if (selectionIds.length === 0) {
       return;
@@ -1347,8 +1433,75 @@ export class ModularEditorApp {
       this.recenterGroupRoot(groupId);
     });
 
-    this.pushHistoryCheckpoint();
-    this.emitViewState();
+    if (emit) {
+      this.emitViewState();
+    }
+  }
+
+  private getDefaultPlacementKindForAsset(asset: AssetDefinition) {
+    return asset.defaultPlacementKind ?? this.settings.newObjectPlacementKind;
+  }
+
+  private isMovementKeyCode(code: string) {
+    return code === "KeyW" || code === "KeyA" || code === "KeyS" || code === "KeyD";
+  }
+
+  private beginHeldMovement(code: string, forwardAmount: number, rightAmount: number) {
+    const wasEmpty = this.heldMovementKeys.size === 0;
+    this.heldMovementKeys.add(code);
+    if (wasEmpty) {
+      this.beginHistoryGesture();
+    }
+    if (forwardAmount !== 0 || rightAmount !== 0) {
+      this.moveSelectedByCameraAxes(forwardAmount, rightAmount);
+      this.lastHeldMovementAt = performance.now();
+      this.lastHeldMovementViewStateAt = this.lastHeldMovementAt;
+    }
+  }
+
+  private processHeldMovement(now: number) {
+    if (this.mode !== "select" || this.heldMovementKeys.size === 0) {
+      return;
+    }
+
+    if (now - this.lastHeldMovementAt < 90) {
+      return;
+    }
+
+    let forwardAmount = 0;
+    let rightAmount = 0;
+    if (this.heldMovementKeys.has("KeyW")) {
+      forwardAmount += 1;
+    }
+    if (this.heldMovementKeys.has("KeyS")) {
+      forwardAmount -= 1;
+    }
+    if (this.heldMovementKeys.has("KeyA")) {
+      rightAmount -= 1;
+    }
+    if (this.heldMovementKeys.has("KeyD")) {
+      rightAmount += 1;
+    }
+
+    if (forwardAmount === 0 && rightAmount === 0) {
+      return;
+    }
+
+    const shouldEmitViewState = now - this.lastHeldMovementViewStateAt >= 180;
+    this.moveSelectedByCameraAxes(forwardAmount, rightAmount, shouldEmitViewState);
+    this.lastHeldMovementAt = now;
+    if (shouldEmitViewState) {
+      this.lastHeldMovementViewStateAt = now;
+    }
+  }
+
+  private clearHeldMovement() {
+    const shouldFlushViewState = this.heldMovementKeys.size > 0;
+    this.heldMovementKeys.clear();
+    this.completeHistoryGesture();
+    if (shouldFlushViewState) {
+      this.emitViewState();
+    }
   }
 
   private clearSelectionIfInsideGroup(groupId: string) {
@@ -1622,6 +1775,46 @@ export class ModularEditorApp {
     return this.objects.get(this.selectedObjectId)?.root ?? null;
   }
 
+  private getSelectionHelperRenderKey() {
+    const root = this.getSelectedRoot();
+    if (!root) {
+      return "none";
+    }
+
+    const absolutePosition = root.getAbsolutePosition();
+    const rotation = root.rotationQuaternion
+      ? [
+          root.rotationQuaternion.x,
+          root.rotationQuaternion.y,
+          root.rotationQuaternion.z,
+          root.rotationQuaternion.w,
+        ]
+      : [root.rotation.x, root.rotation.y, root.rotation.z, 0];
+
+    return [
+      root.uniqueId,
+      absolutePosition.x.toFixed(4),
+      absolutePosition.y.toFixed(4),
+      absolutePosition.z.toFixed(4),
+      rotation.map((value) => value.toFixed(4)).join(","),
+      root.scaling.x.toFixed(4),
+      root.scaling.y.toFixed(4),
+      root.scaling.z.toFixed(4),
+      this.ySnapEnabled ? "ysnap:1" : "ysnap:0",
+      `label:${this.settings.heightLabelMode}`,
+    ].join("|");
+  }
+
+  private renderSelectionVerticalHelperIfNeeded() {
+    const nextRenderKey = this.getSelectionHelperRenderKey();
+    if (nextRenderKey === this.lastSelectionHelperRenderKey) {
+      return;
+    }
+
+    this.lastSelectionHelperRenderKey = nextRenderKey;
+    this.renderSelectionVerticalHelper();
+  }
+
   private renderSelectionVerticalHelper() {
     this.selectionVerticalHelper = this.sceneCore.renderVerticalHelper(
       this.selectionVerticalHelper,
@@ -1675,7 +1868,8 @@ export class ModularEditorApp {
     }
 
       const template = await this.getAssetTemplate(asset, this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id);
-    const root = await instantiateAsset(asset, false, template, this.scene, this.settings.newObjectPlacementKind);
+    const placementKind = this.getDefaultPlacementKindForAsset(asset);
+    const root = await instantiateAsset(asset, false, template, this.scene, placementKind);
     if (!root) {
       return;
     }
@@ -1696,7 +1890,7 @@ export class ModularEditorApp {
         id,
         libraryId: this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id,
         assetId: asset.id,
-        placementKind: this.settings.newObjectPlacementKind,
+        placementKind,
         root,
       name: defaultName,
       hidden: false,
@@ -1711,7 +1905,7 @@ export class ModularEditorApp {
 
     if (this.activeAssetId === asset.id) {
       this.mode = "place";
-      await this.ensurePreviewForAsset(asset.id);
+      await this.ensurePreviewForAsset(this.activeAssetLibraryId, asset.id);
       this.emitViewState();
     }
   }
@@ -1732,6 +1926,7 @@ export class ModularEditorApp {
     this.gridMesh = this.sceneCore.renderGrid(
       this.gridMesh,
       this.gridSize,
+      this.gridPlaneSize,
       this.settings.gridVisible,
       this.settings.gridColor,
     );
@@ -1743,17 +1938,36 @@ export class ModularEditorApp {
   }
 
   private updatePreviewTransform() {
+    const previewRotationRadians = new Vector3(
+      this.toRadians(this.previewRotation.x),
+      this.toRadians(this.previewRotation.y),
+      this.toRadians(this.previewRotation.z),
+    );
+    const targetPoint = this.snapEnabled
+      ? snapVectorForSize(this.lastPointerPoint, this.previewTemplateSize, this.snapEnabled, this.gridSize)
+      : this.lastPointerPoint.clone();
+    const nextPreviewTransformKey = [
+      targetPoint.x.toFixed(4),
+      targetPoint.y.toFixed(4),
+      targetPoint.z.toFixed(4),
+      previewRotationRadians.x.toFixed(4),
+      previewRotationRadians.y.toFixed(4),
+      previewRotationRadians.z.toFixed(4),
+      this.snapEnabled ? "snap:1" : "snap:0",
+      this.gridSize.toFixed(4),
+    ].join("|");
+    if (nextPreviewTransformKey === this.lastPreviewTransformKey) {
+      return;
+    }
+
+    this.lastPreviewTransformKey = nextPreviewTransformKey;
     this.sceneCore.updatePreviewTransform(
       this.placementPreview,
       this.lastPointerPoint,
       this.previewTemplateSize,
       this.snapEnabled,
       this.gridSize,
-      new Vector3(
-        this.toRadians(this.previewRotation.x),
-        this.toRadians(this.previewRotation.y),
-        this.toRadians(this.previewRotation.z),
-      ),
+      previewRotationRadians,
     );
   }
 
@@ -1865,7 +2079,8 @@ export class ModularEditorApp {
     }
 
     const template = await this.getAssetTemplate(asset, source.libraryId);
-    const root = await instantiateAsset(asset, false, template, this.scene, this.settings.newObjectPlacementKind);
+    const placementKind = source.placementKind ?? this.getDefaultPlacementKindForAsset(asset);
+    const root = await instantiateAsset(asset, false, template, this.scene, placementKind);
     if (!root) {
       return;
     }
@@ -1897,7 +2112,7 @@ export class ModularEditorApp {
       id,
       libraryId: source.libraryId,
       assetId: asset.id,
-      placementKind: this.settings.newObjectPlacementKind,
+      placementKind,
       root,
       name: nextName,
       hidden: false,
@@ -2010,7 +2225,6 @@ export class ModularEditorApp {
     this.applySceneItemSelection([objectId], objectId, false);
     this.mode = "select";
     this.disposePreview();
-    this.refreshSelectionAttachment();
     this.emitViewState();
   }
 
@@ -2018,6 +2232,7 @@ export class ModularEditorApp {
     this.placementPreview = this.sceneCore.disposePreview(this.placementPreview);
     this.previewAssetLibraryId = null;
     this.previewAssetId = null;
+    this.lastPreviewTransformKey = null;
   }
 
   private applySnapSettings() {
@@ -2185,6 +2400,7 @@ export class ModularEditorApp {
       return;
     }
 
+    this.clearHeldMovement();
     this.mode = "select";
     this.disposePreview();
     this.emitViewState();
@@ -2458,7 +2674,6 @@ export class ModularEditorApp {
     this.applySceneItemSelection(selectionIds, primaryId, false);
     this.mode = "select";
     this.disposePreview();
-    this.refreshSelectionAttachment();
     this.emitViewState();
   }
 
@@ -2471,7 +2686,6 @@ export class ModularEditorApp {
       this.applySceneItemSelection([group.id], group.id, false);
       this.mode = "select";
       this.disposePreview();
-      this.refreshSelectionAttachment();
       this.emitViewState();
       return;
     }
@@ -2484,7 +2698,6 @@ export class ModularEditorApp {
     this.applySceneItemSelection([object.id], object.id, false);
     this.mode = "select";
     this.disposePreview();
-    this.refreshSelectionAttachment();
     this.emitViewState();
   }
 
@@ -3030,7 +3243,7 @@ export class ModularEditorApp {
   }
 
   setGridSize(value: number) {
-    if (this.gridSize === value) {
+    if (!GRID_SIZE_OPTIONS.includes(value as (typeof GRID_SIZE_OPTIONS)[number]) || this.gridSize === value) {
       return;
     }
 
@@ -3039,6 +3252,26 @@ export class ModularEditorApp {
     this.renderGrid();
     this.updatePreviewTransform();
     this.emitViewState();
+  }
+
+  setGridPlaneSize(value: number) {
+    if (
+      !GRID_PLANE_SIZE_OPTIONS.includes(value as (typeof GRID_PLANE_SIZE_OPTIONS)[number]) ||
+      this.gridPlaneSize === value
+    ) {
+      return;
+    }
+
+    this.gridPlaneSize = value;
+    this.settings.gridPlaneSize = value;
+    this.applyGridPlaneSize();
+    this.renderGrid();
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  retuneCamera() {
+    this.retuneCameraForGridPlaneSize();
   }
 
   setRotationStepDegrees(value: number) {
@@ -3103,17 +3336,23 @@ export class ModularEditorApp {
     this.settings.environmentIntensity = DEFAULT_USER_SETTINGS.environmentIntensity;
     this.settings.lightIntensity = DEFAULT_USER_SETTINGS.lightIntensity;
     this.settings.gridVisible = DEFAULT_USER_SETTINGS.gridVisible;
+    this.settings.gridPlaneSize = DEFAULT_USER_SETTINGS.gridPlaneSize;
     this.settings.gridColor = DEFAULT_USER_SETTINGS.gridColor;
     this.settings.groundColor = DEFAULT_USER_SETTINGS.groundColor;
     this.settings.freezeModelMaterials = DEFAULT_USER_SETTINGS.freezeModelMaterials;
     this.settings.newObjectPlacementKind = DEFAULT_USER_SETTINGS.newObjectPlacementKind;
     this.settings.heightLabelMode = DEFAULT_USER_SETTINGS.heightLabelMode;
 
+    this.gridPlaneSize = this.settings.gridPlaneSize;
+    this.applyGridPlaneSize();
     this.renderGrid();
     this.applyEnvironmentSetting();
     this.applyLightIntensity();
     this.applyGroundColor();
     this.applyModelMaterialFreezeSetting();
+    this.applySnapSettings();
+    this.updatePreviewTransform();
+    this.retuneCameraForGridPlaneSize(false);
     if (!this.settings.autosaveEnabled) {
       this.clearPendingTimedAutosave();
     } else {
@@ -3122,6 +3361,40 @@ export class ModularEditorApp {
     this.persistLiveAutosave();
     this.saveUserSettings();
     this.setStatusNotice("User settings restored to defaults.");
+  }
+
+  private retuneCameraForGridPlaneSize(showNotice = true) {
+    const normalizedGridPlaneSize = this.gridPlaneSize / ModularEditorApp.CAMERA_BASE_GRID_PLANE_SIZE;
+    const safeScale = Math.max(0.25, normalizedGridPlaneSize);
+    const lowerRadiusLimit = Math.max(
+      0.75,
+      Number((ModularEditorApp.CAMERA_BASE_LOWER_RADIUS_LIMIT * safeScale).toFixed(3)),
+    );
+    const upperRadiusLimit = Math.max(
+      lowerRadiusLimit + 6,
+      Number((ModularEditorApp.CAMERA_BASE_UPPER_RADIUS_LIMIT * safeScale).toFixed(3)),
+    );
+    const wheelDeltaPercentage = Math.max(
+      0.003,
+      Number((ModularEditorApp.CAMERA_BASE_WHEEL_DELTA_PERCENTAGE * Math.sqrt(safeScale)).toFixed(4)),
+    );
+    const panningSensibility = Math.min(
+      24000,
+      Math.max(
+        1200,
+        Math.round(ModularEditorApp.CAMERA_BASE_PANNING_SENSIBILITY / safeScale),
+      ),
+    );
+
+    this.camera.lowerRadiusLimit = lowerRadiusLimit;
+    this.camera.upperRadiusLimit = upperRadiusLimit;
+    this.camera.wheelDeltaPercentage = wheelDeltaPercentage;
+    this.camera.panningSensibility = panningSensibility;
+    this.camera.radius = Math.min(Math.max(this.camera.radius, lowerRadiusLimit), upperRadiusLimit);
+
+    if (showNotice) {
+      this.setStatusNotice(`Camera retuned for grid plane ${this.gridPlaneSize}.`);
+    }
   }
 
   setEnvironmentEnabled(enabled: boolean) {
@@ -3319,7 +3592,14 @@ export class ModularEditorApp {
     return (valueRadians * 180) / Math.PI;
   }
 
+  private applyGridPlaneSize() {
+    this.ground.unfreezeWorldMatrix();
+    this.ground.scaling.set(this.gridPlaneSize, 1, this.gridPlaneSize);
+    this.ground.freezeWorldMatrix();
+  }
+
   destroy() {
+    this.clearHeldMovement();
     this.flushTimedAutosave();
     this.clearPendingAutosaveTimer();
     this.resizeObserver.disconnect();
@@ -3333,6 +3613,7 @@ export class ModularEditorApp {
     }
     window.removeEventListener("resize", this.handleWindowResize);
     window.removeEventListener("keydown", this.handleWindowKeyDown);
+    window.removeEventListener("keyup", this.handleWindowKeyUp);
     this.originMarker?.dispose();
     this.selectionVerticalHelper?.dispose();
     this.selectionHeightLabel?.dispose(false, false);
@@ -3342,5 +3623,3 @@ export class ModularEditorApp {
     this.engine.dispose();
   }
 }
-
-

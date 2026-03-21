@@ -41,6 +41,7 @@ export type SceneSortMode = "manual" | "name" | "asset";
 const RIGHT_SIDEBAR_WIDTH_STORAGE_KEY = "snap:right-sidebar-width";
 const RIGHT_SIDEBAR_MIN_WIDTH = 240;
 const RIGHT_SIDEBAR_MAX_WIDTH = 520;
+const GRID_PLANE_SIZE_OPTIONS = [16, 32, 64, 128, 256] as const;
 
 interface EditorToolbarProps {
   viewState: EditorViewState;
@@ -80,6 +81,8 @@ interface EditorToolbarProps {
   onSaveOnEveryUiUpdateChange: (value: boolean) => void;
   onAutosaveEnabledChange: (value: boolean) => void;
   onAutosaveIntervalChange: (value: number) => void;
+  onGridPlaneSizeChange: (value: number) => void;
+  onRetuneCamera: () => void;
   onRestoreDefaults: () => void;
 }
 
@@ -411,6 +414,25 @@ function EditorToolbar(props: EditorToolbarProps) {
               </span>
             </label>
             <label className="setting-stack">
+              <span className="setting-copy">Grid Plane Size</span>
+              <select
+                className="editor-input"
+                value={String(toolbar.gridPlaneSize)}
+                onChange={(event) => {
+                  props.onGridPlaneSizeChange(Number(event.target.value));
+                }}
+              >
+                {GRID_PLANE_SIZE_OPTIONS.map((value) => (
+                  <option key={value} value={String(value)}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button type="button" className="toolbar-menu-button setting-action" onClick={props.onRetuneCamera}>
+              <span>Retune Camera</span>
+            </button>
+            <label className="setting-stack">
               <span className="setting-copy">Grid Color</span>
               <input
                 className="setting-color"
@@ -543,9 +565,9 @@ function SelectionPanel(props: SelectionPanelProps) {
   useEffect(() => {
     const [x, y, z] = selection.position ?? [null, null, null];
     setDraftPosition({
-      x: x === null ? "" : x.toFixed(2),
-      y: y === null ? "" : y.toFixed(2),
-      z: z === null ? "" : z.toFixed(2),
+      x: x === null ? "" : x.toFixed(3),
+      y: y === null ? "" : y.toFixed(3),
+      z: z === null ? "" : z.toFixed(3),
     });
     setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
   }, [selection.position, selection.rotationYDegrees, selection.selectedObjectId]);
@@ -581,9 +603,9 @@ function SelectionPanel(props: SelectionPanelProps) {
   const resetDrafts = () => {
     const [x, y, z] = selection.position ?? [null, null, null];
     setDraftPosition({
-      x: x === null ? "" : x.toFixed(2),
-      y: y === null ? "" : y.toFixed(2),
-      z: z === null ? "" : z.toFixed(2),
+      x: x === null ? "" : x.toFixed(3),
+      y: y === null ? "" : y.toFixed(3),
+      z: z === null ? "" : z.toFixed(3),
     });
     setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
   };
@@ -651,11 +673,11 @@ function SelectionPanel(props: SelectionPanelProps) {
         {positionFields.map((field) => (
           <label key={field.axis} className="transform-field">
             <span>{field.label}</span>
-            <input
-              className="transform-input"
-              type="number"
-              step="0.25"
-              value={draftPosition[field.axis]}
+              <input
+                className="transform-input"
+                type="number"
+                step="0.001"
+                value={draftPosition[field.axis]}
               onChange={(event) => {
                 setDraftPosition((current) => ({ ...current, [field.axis]: event.target.value }));
               }}
@@ -1503,6 +1525,15 @@ function StatusBar({ viewState }: { viewState: EditorViewState }) {
       <span>
         <strong>Draw Calls</strong> <span>{status.drawCalls}</span>
       </span>
+      <span>
+        <strong>Materials</strong> <span>{status.materials}</span>
+      </span>
+      <span>
+        <strong>Textures</strong> <span>{status.textures}</span>
+      </span>
+      <span>
+        <strong>Vertices</strong> <span>{status.totalVertices.toLocaleString()}</span>
+      </span>
       <span className="statusbar-hint">{status.hint}</span>
     </footer>
   );
@@ -1573,6 +1604,8 @@ interface EditorShellProps {
   onSaveOnEveryUiUpdateChange: (value: boolean) => void;
   onAutosaveEnabledChange: (value: boolean) => void;
   onAutosaveIntervalChange: (value: number) => void;
+  onGridPlaneSizeChange: (value: number) => void;
+  onRetuneCamera: () => void;
   onRestoreDefaults: () => void;
   onSceneSortModeChange: (mode: SceneSortMode) => void;
   onCreateEmptyGroup: () => void;
@@ -1662,6 +1695,8 @@ export function EditorShell(props: EditorShellProps) {
         onSaveOnEveryUiUpdateChange={props.onSaveOnEveryUiUpdateChange}
         onAutosaveEnabledChange={props.onAutosaveEnabledChange}
         onAutosaveIntervalChange={props.onAutosaveIntervalChange}
+        onGridPlaneSizeChange={props.onGridPlaneSizeChange}
+        onRetuneCamera={props.onRetuneCamera}
         onRestoreDefaults={props.onRestoreDefaults}
       />
       <div

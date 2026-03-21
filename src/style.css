@@ -19,9 +19,7 @@ body,
 
 body {
   min-height: 100vh;
-  background:
-    linear-gradient(180deg, rgba(52, 63, 72, 0.32), rgba(11, 14, 18, 0) 18%),
-    #0c0f12;
+  background: #0c0f12;
 }
 
 button,
@@ -423,10 +421,7 @@ select:focus-visible {
   padding: 10px;
   border: 1px solid #2b333b;
   border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
-    #151b20;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.34);
+  background: #151b20;
 }
 
 .settings-menu-label {
@@ -562,7 +557,6 @@ select:focus-visible {
   height: 16px;
   border-radius: 50%;
   background: #d7dfe6;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   transition: transform 120ms ease, background-color 120ms ease;
 }
 
@@ -651,9 +645,7 @@ select:focus-visible {
   justify-self: end;
   border: 1px solid #2b333b;
   border-radius: 4px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
-    #0f1418;
+  background: #0f1418;
   object-fit: contain;
   object-position: center;
 }

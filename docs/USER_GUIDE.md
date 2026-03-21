@@ -18,6 +18,8 @@ The asset browser now has a library selector. At the moment it shows the built-i
 
 For the full library lifecycle, see [`docs/LIBRARIES.md`](/c:/Users/Fiolent23/newrepos/snap/docs/LIBRARIES.md).
 
+For the current shortcut list, see [`docs/HOTKEYS.md`](/c:/Users/Fiolent23/newrepos/snap/docs/HOTKEYS.md).
+
 ## Asset Library Maintenance
 
 Use [`asset-library-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-library-studio.html) to maintain the built-in asset library.

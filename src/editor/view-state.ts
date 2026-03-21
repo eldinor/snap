@@ -15,6 +15,7 @@ export interface ToolbarViewState {
   hasSelection: boolean;
   hasObjects: boolean;
   gridSize: number;
+  gridPlaneSize: number;
   rotationStepDegrees: number;
   rotationAxis: RotationAxis;
   environmentEnabled: boolean;
@@ -35,6 +36,9 @@ export interface StatusViewState {
   rotationStepDegrees: number;
   rotationAxis: RotationAxis;
   drawCalls: number;
+  materials: number;
+  textures: number;
+  totalVertices: number;
   hint: string;
 }
 
@@ -109,6 +113,7 @@ export function createInitialEditorViewState(): EditorViewState {
       hasSelection: false,
       hasObjects: false,
       gridSize: 1,
+      gridPlaneSize: 64,
       rotationStepDegrees: 90,
       rotationAxis: "y",
       environmentEnabled: true,
@@ -131,6 +136,9 @@ export function createInitialEditorViewState(): EditorViewState {
       rotationStepDegrees: 90,
       rotationAxis: "y",
       drawCalls: 0,
+      materials: 0,
+      textures: 0,
+      totalVertices: 0,
       hint: "Click object select | Delete remove | R rotate",
     },
     selection: {

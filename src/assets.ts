@@ -179,6 +179,7 @@ export interface AssetDefinition {
   category: AssetCategory;
   fileName: string;
   thumbnailFileName: string;
+  defaultPlacementKind?: "clone" | "instance";
   tags: string[];
   placeholder: {
     shape: PlaceholderShape;
@@ -210,6 +211,9 @@ function isAssetDefinition(value: unknown, categorySet: Set<string>): value is A
     categorySet.has(candidate.category) &&
     typeof candidate.fileName === "string" &&
     typeof candidate.thumbnailFileName === "string" &&
+    (candidate.defaultPlacementKind === undefined ||
+      candidate.defaultPlacementKind === "clone" ||
+      candidate.defaultPlacementKind === "instance") &&
     Array.isArray(candidate.tags) &&
     candidate.tags.every((tag) => typeof tag === "string") &&
     !!candidate.placeholder &&

@@ -32,6 +32,7 @@ It is built with:
 - [`src/data/libraries/built-in/asset-categories.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/asset-categories.json): built-in asset categories
 - [`src/data/libraries/built-in/asset-tag-templates.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/asset-tag-templates.json): curated category tag templates for library cleanup
 - [`docs/USER_GUIDE.md`](/c:/Users/Fiolent23/newrepos/snap/docs/USER_GUIDE.md): end-user workflow guide
+- [`docs/HOTKEYS.md`](/c:/Users/Fiolent23/newrepos/snap/docs/HOTKEYS.md): current editor shortcuts
 - [`docs/LIBRARIES.md`](/c:/Users/Fiolent23/newrepos/snap/docs/LIBRARIES.md): multi-library import, validation, thumbnails, promotion, and removal
 - [`docs/PREFAB_AND_SOURCE_OF_TRUTH.md`](/c:/Users/Fiolent23/newrepos/snap/docs/PREFAB_AND_SOURCE_OF_TRUTH.md): architecture notes for assets, groups, prefabs, and clone/instance rules
 

@@ -270,6 +270,12 @@ export function App() {
       onAutosaveIntervalChange={(value) => {
         appRef.current?.setAutosaveIntervalSeconds(value);
       }}
+      onGridPlaneSizeChange={(value) => {
+        appRef.current?.setGridPlaneSize(value);
+      }}
+      onRetuneCamera={() => {
+        appRef.current?.retuneCamera();
+      }}
       onRestoreDefaults={() => {
         appRef.current?.restoreDefaultUserSettings();
       }}

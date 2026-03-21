@@ -43,6 +43,8 @@ interface ZipGltfInspection {
   missingFiles: string[];
   externalUris: string[];
   collidingFiles: string[];
+  hasAnimations?: boolean;
+  hasSkins?: boolean;
   parseError?: string;
 }
 
@@ -1290,6 +1292,7 @@ function buildDraftLibraryPackage(inspection: ZipInspectionResult): DraftLibrary
       category: defaultCategory,
       fileName: report.gltfPath,
       thumbnailFileName: `${baseName}.png`,
+      defaultPlacementKind: report.hasAnimations || report.hasSkins ? "clone" : "instance",
       tags,
       placeholder: placeholderFor(defaultCategory, tags),
     } satisfies AssetDefinition;
@@ -1416,6 +1419,8 @@ async function inspectZipFile(file: File) {
       const gltf = JSON.parse(gltfText) as {
         buffers?: Array<{ uri?: string }>;
         images?: Array<{ uri?: string }>;
+        animations?: unknown[];
+        skins?: unknown[];
       };
       const referencedUris = [
         ...(Array.isArray(gltf.buffers) ? gltf.buffers.map((buffer) => buffer?.uri).filter((uri): uri is string => typeof uri === "string") : []),
@@ -1437,6 +1442,8 @@ async function inspectZipFile(file: File) {
         missingFiles,
         externalUris,
         collidingFiles,
+        hasAnimations: Array.isArray(gltf.animations) && gltf.animations.length > 0,
+        hasSkins: Array.isArray(gltf.skins) && gltf.skins.length > 0,
       });
     } catch (error) {
       reports.push({

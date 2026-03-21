@@ -1,5 +1,8 @@
 export const USER_SETTINGS_STORAGE_KEY = "snap:user-settings";
 
+export const GRID_SIZE_OPTIONS = [2, 1, 0.5, 0.25, 0.125] as const;
+export const GRID_PLANE_SIZE_OPTIONS = [16, 32, 64, 128, 256] as const;
+
 export interface UserSettings {
   saveOnEveryUiUpdate: boolean;
   autosaveEnabled: boolean;
@@ -8,6 +11,7 @@ export interface UserSettings {
   environmentIntensity: number;
   lightIntensity: number;
   gridVisible: boolean;
+  gridPlaneSize: number;
   gridColor: string;
   groundColor: string;
   freezeModelMaterials: boolean;
@@ -23,6 +27,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   environmentIntensity: 0.1,
   lightIntensity: 1.1,
   gridVisible: true,
+  gridPlaneSize: 64,
   gridColor: "#292f38",
   groundColor: "#1f2326",
   freezeModelMaterials: true,
@@ -53,6 +58,9 @@ export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSe
       environmentIntensity: parsed.environmentIntensity ?? DEFAULT_USER_SETTINGS.environmentIntensity,
       lightIntensity: parsed.lightIntensity ?? DEFAULT_USER_SETTINGS.lightIntensity,
       gridVisible: parsed.gridVisible ?? DEFAULT_USER_SETTINGS.gridVisible,
+      gridPlaneSize: GRID_PLANE_SIZE_OPTIONS.includes(parsed.gridPlaneSize as (typeof GRID_PLANE_SIZE_OPTIONS)[number])
+        ? (parsed.gridPlaneSize as number)
+        : DEFAULT_USER_SETTINGS.gridPlaneSize,
       gridColor: typeof parsed.gridColor === "string" ? parsed.gridColor : DEFAULT_USER_SETTINGS.gridColor,
       groundColor: typeof parsed.groundColor === "string" ? parsed.groundColor : DEFAULT_USER_SETTINGS.groundColor,
       freezeModelMaterials: parsed.freezeModelMaterials ?? DEFAULT_USER_SETTINGS.freezeModelMaterials,
