@@ -119,6 +119,8 @@ export class ModularEditorApp {
   private static readonly CAMERA_BASE_WHEEL_DELTA_PERCENTAGE = 0.02;
   private static readonly CAMERA_BASE_PANNING_SENSIBILITY = 1000;
   private static readonly CAMERA_BASE_GRID_PLANE_SIZE = DEFAULT_USER_SETTINGS.gridPlaneSize;
+  private static readonly HELD_MOVEMENT_INITIAL_DELAY_MS = 220;
+  private static readonly HELD_MOVEMENT_REPEAT_INTERVAL_MS = 90;
 
   private readonly engine: Engine;
   private readonly scene: Scene;
@@ -301,6 +303,7 @@ export class ModularEditorApp {
   private totalVertices = 0;
   private lastDrawCallSampleAt = 0;
   private readonly heldMovementKeys = new Set<string>();
+  private heldMovementRepeatReadyAt = 0;
   private lastHeldMovementAt = 0;
   private lastHeldMovementViewStateAt = 0;
   private beforeAnimationsObserver: Observer<Scene> | null = null;
@@ -1473,7 +1476,9 @@ export class ModularEditorApp {
     }
     if (forwardAmount !== 0 || rightAmount !== 0) {
       this.moveSelectedByCameraAxes(forwardAmount, rightAmount);
-      this.lastHeldMovementAt = performance.now();
+      const now = performance.now();
+      this.lastHeldMovementAt = now;
+      this.heldMovementRepeatReadyAt = now + ModularEditorApp.HELD_MOVEMENT_INITIAL_DELAY_MS;
       this.lastHeldMovementViewStateAt = this.lastHeldMovementAt;
     }
   }
@@ -1483,7 +1488,11 @@ export class ModularEditorApp {
       return;
     }
 
-    if (now - this.lastHeldMovementAt < 90) {
+    if (now < this.heldMovementRepeatReadyAt) {
+      return;
+    }
+
+    if (now - this.lastHeldMovementAt < ModularEditorApp.HELD_MOVEMENT_REPEAT_INTERVAL_MS) {
       return;
     }
 
@@ -1517,6 +1526,7 @@ export class ModularEditorApp {
   private clearHeldMovement() {
     const shouldFlushViewState = this.heldMovementKeys.size > 0;
     this.heldMovementKeys.clear();
+    this.heldMovementRepeatReadyAt = 0;
     this.completeHistoryGesture();
     if (shouldFlushViewState) {
       this.emitViewState();
