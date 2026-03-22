@@ -1,4 +1,4 @@
-import "@babylonjs/core/Legacy/legacy";
+import "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import { FramingBehavior } from "@babylonjs/core/Behaviors/Cameras/framingBehavior";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
@@ -62,7 +62,10 @@ export class AssetPreviewRenderer {
   async loadAsset(fileName: string, basePath = getAssetBasePath()) {
     this.root?.dispose(false, false);
     const assetReference = splitAssetFileReference(fileName);
-    const result = await ImportMeshAsync(`${basePath}${assetReference.directory}${assetReference.fileName}`, this.scene);
+    const result = await ImportMeshAsync(
+      `${basePath}${assetReference.directory}${assetReference.fileName}`,
+      this.scene,
+    );
     const root = new TransformNode("preview-root", this.scene);
 
     [...result.transformNodes, ...result.meshes].forEach((node) => {

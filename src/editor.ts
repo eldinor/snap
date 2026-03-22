@@ -1,3 +1,4 @@
+import "@babylonjs/core";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
 import { Engine } from "@babylonjs/core/Engines/engine";
@@ -5,6 +6,7 @@ import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
 import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
 import type { EnvironmentHelper } from "@babylonjs/core/Helpers/environmentHelper";
+import "@babylonjs/core/Helpers/sceneHelpers";
 import type { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { HemisphericLight as BabylonHemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Material } from "@babylonjs/core/Materials/material";
@@ -133,7 +135,6 @@ export class ModularEditorApp {
   private readonly mainLight: HemisphericLight;
   private readonly onViewStateChange;
   private readonly defaultEnvironment: EnvironmentHelper | null;
-  private readonly defaultEnvironmentTexture: Scene["environmentTexture"];
   private readonly assetTemplates = new Map<string, Promise<AssetTemplate>>();
   private readonly objects = new Map<string, EditorObject>();
   private readonly groups = new Map<string, EditorGroup>();
@@ -322,7 +323,6 @@ export class ModularEditorApp {
       createSkybox: false,
       environmentTexture: "/photoStudio.env",
     });
-    this.defaultEnvironmentTexture = this.scene.environmentTexture;
     this.settings = loadUserSettings();
     this.gridPlaneSize = this.settings.gridPlaneSize;
     this.sessionController = new SceneSessionController({
@@ -617,7 +617,9 @@ export class ModularEditorApp {
       position: position ? [position.x, position.y, position.z] : null,
       rotationDegrees,
       positionText: position ? `${position.x.toFixed(3)}, ${position.y.toFixed(3)}, ${position.z.toFixed(3)}` : null,
-      rotationText: rotationDegrees ? `${rotationDegrees[0]}deg, ${rotationDegrees[1]}deg, ${rotationDegrees[2]}deg` : null,
+      rotationText: rotationDegrees
+        ? `${rotationDegrees[0]}deg, ${rotationDegrees[1]}deg, ${rotationDegrees[2]}deg`
+        : null,
       snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
     };
   }
@@ -2294,7 +2296,7 @@ export class ModularEditorApp {
 
   private applyEnvironmentSetting() {
     this.sceneCore.applyEnvironmentSetting(
-      this.defaultEnvironmentTexture ?? null,
+      this.scene.environmentTexture ?? null,
       this.settings.environmentEnabled,
       this.settings.environmentIntensity,
       this.defaultEnvironment?.skybox ?? null,
