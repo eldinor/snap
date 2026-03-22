@@ -1,4 +1,4 @@
-import "./babylon-bootstrap";
+import "@babylonjs/core/Legacy/legacy";
 import "./style.css";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
