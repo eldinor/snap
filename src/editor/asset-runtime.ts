@@ -1,3 +1,4 @@
+import "@babylonjs/loaders/glTF";
 import { Material } from "@babylonjs/core/Materials/material";
 import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
@@ -123,10 +124,7 @@ export async function loadAssetTemplate(
     const importedRootNodes = [...importResult.transformNodes, ...importResult.meshes].filter((node) => !node.parent);
     importedRootNodes.forEach((node) => {
       const technicalRoot = node instanceof TransformNode && isTechnicalImportRootName(node.name);
-      const nextNode =
-        node instanceof TransformNode
-          ? (collapseRedundantImportRoot(node, root) ?? node)
-          : node;
+      const nextNode = node instanceof TransformNode ? (collapseRedundantImportRoot(node, root) ?? node) : node;
       if (technicalRoot && isImportRootCollapseDebugEnabled()) {
         recordImportRootCollapse(asset.id, node, nextNode !== node);
       }
@@ -214,9 +212,7 @@ function recordImportRootCollapse(assetId: string, root: TransformNode, collapse
   }
   importRootCollapseStats.byAsset[assetId] = nextAssetStats;
 
-  console.info(
-    `[snap] import root ${collapsed ? "collapsed" : "kept"} for asset "${assetId}" (${root.name})`,
-  );
+  console.info(`[snap] import root ${collapsed ? "collapsed" : "kept"} for asset "${assetId}" (${root.name})`);
 }
 
 function isImportRootCollapseDebugEnabled() {

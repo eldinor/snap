@@ -1,4 +1,4 @@
-import "./babylon-bootstrap";
+import "@babylonjs/loaders/glTF";
 import { FramingBehavior } from "@babylonjs/core/Behaviors/Cameras/framingBehavior";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
