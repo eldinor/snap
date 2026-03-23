@@ -1566,6 +1566,25 @@ function ViewportPanel({ canvasRef }: { canvasRef: RefObject<HTMLCanvasElement |
   );
 }
 
+function LoadingOverlay({ visible }: { visible: boolean }) {
+  return (
+    <div className={`shell-loader${visible ? " is-visible" : ""}`} aria-hidden={!visible}>
+      <div className="shell-loader-card">
+        <div className="shell-loader-mark">
+          <SnapIcon className="shell-loader-icon" />
+        </div>
+        <div className="shell-loader-copy">
+          <div className="shell-loader-title">[Snap]</div>
+          <div className="shell-loader-subtitle">Loading workspace</div>
+        </div>
+        <div className="shell-loader-meter" role="presentation">
+          <span className="shell-loader-meter-fill"></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function StatusBar({ viewState }: { viewState: EditorViewState }) {
   const { status } = viewState;
   return (
@@ -1605,6 +1624,7 @@ function StatusBar({ viewState }: { viewState: EditorViewState }) {
 }
 
 interface EditorShellProps {
+  isLoading: boolean;
   canvasRef: RefObject<HTMLCanvasElement | null>;
   importInputRef: RefObject<HTMLInputElement | null>;
   searchQuery: string;
@@ -1724,6 +1744,7 @@ export function EditorShell(props: EditorShellProps) {
 
   return (
     <section className="shell">
+      <LoadingOverlay visible={props.isLoading} />
       <EditorToolbar
         viewState={props.viewState}
         exportMenuOpen={props.exportMenuOpen}

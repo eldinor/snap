@@ -8,6 +8,7 @@ export function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const importInputRef = useRef<HTMLInputElement | null>(null);
   const appRef = useRef<ModularEditorApp | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [libraries, setLibraries] = useState<AssetLibraryBundle[]>(() => getAssetLibraryBundles());
   const [searchQuery, setSearchQuery] = useState("");
   const [activeLibraryId, setActiveLibraryId] = useState(libraries[0]?.library.id ?? "built-in");
@@ -32,12 +33,21 @@ export function App() {
       return;
     }
 
+    let cancelled = false;
+    let readyFrameId = 0;
     appRef.current = new ModularEditorApp({
       canvas: canvasRef.current,
       onViewStateChange: setViewState,
     });
+    readyFrameId = window.requestAnimationFrame(() => {
+      if (!cancelled) {
+        setIsLoading(false);
+      }
+    });
 
     return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(readyFrameId);
       appRef.current?.destroy();
       appRef.current = null;
     };
@@ -101,6 +111,7 @@ export function App() {
 
   return (
     <EditorShell
+      isLoading={isLoading}
       canvasRef={canvasRef}
       importInputRef={importInputRef}
       searchQuery={searchQuery}
