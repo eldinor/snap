@@ -72,16 +72,6 @@ select:focus-visible {
   background:
     radial-gradient(circle at 50% 30%, rgba(82, 125, 171, 0.2), transparent 32%),
     linear-gradient(180deg, rgba(8, 11, 15, 0.86), rgba(8, 11, 15, 0.94));
-  backdrop-filter: blur(10px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 260ms ease, visibility 260ms ease;
-}
-
-.shell-loader.is-visible {
-  opacity: 1;
-  visibility: visible;
   pointer-events: auto;
 }
 
@@ -89,7 +79,8 @@ select:focus-visible {
   display: grid;
   justify-items: center;
   gap: 16px;
-  min-width: min(360px, calc(100vw - 48px));
+  width: min(360px, calc(100vw - 48px));
+  max-width: 100%;
   padding: 30px 34px 28px;
   border: 1px solid rgba(117, 158, 203, 0.24);
   border-radius: 26px;

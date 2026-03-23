@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { getAssetLibraryBundle, getAssetLibraryBundles, loadImportedLibraryBundles, type AssetCategory, type AssetLibraryBundle } from "./assets";
 import { EditorShell, filterAssets, type SceneSortMode } from "./components/editor-shell";
 import { ModularEditorApp } from "./editor";
-import { createInitialEditorViewState } from "./editor/view-state";
+import { createInitialEditorViewState, type EditorViewState } from "./editor/view-state";
 
 export function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -17,6 +17,11 @@ export function App() {
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [sceneSortMode, setSceneSortMode] = useState<SceneSortMode>("manual");
   const [viewState, setViewState] = useState(createInitialEditorViewState);
+
+  const handleViewStateChange = (nextViewState: EditorViewState) => {
+    setViewState(nextViewState);
+    setIsLoading(false);
+  };
 
   const refreshLibraries = () => {
     void loadImportedLibraryBundles()
@@ -34,20 +39,20 @@ export function App() {
     }
 
     let cancelled = false;
-    let readyFrameId = 0;
+    let readyTimeoutId = 0;
     appRef.current = new ModularEditorApp({
       canvas: canvasRef.current,
-      onViewStateChange: setViewState,
+      onViewStateChange: handleViewStateChange,
     });
-    readyFrameId = window.requestAnimationFrame(() => {
+    readyTimeoutId = window.setTimeout(() => {
       if (!cancelled) {
         setIsLoading(false);
       }
-    });
+    }, 1200);
 
     return () => {
       cancelled = true;
-      window.cancelAnimationFrame(readyFrameId);
+      window.clearTimeout(readyTimeoutId);
       appRef.current?.destroy();
       appRef.current = null;
     };
