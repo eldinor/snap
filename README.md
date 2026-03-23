@@ -50,6 +50,12 @@ Start the dev server:
 npm run dev
 ```
 
+Exclude the optional second built-in library from a run or build:
+
+```bash
+VITE_INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD=false npm run dev
+```
+
 Run type checking:
 
 ```bash
@@ -153,7 +159,9 @@ The built-in asset browser is now manifest-driven.
 
 For the full multi-library workflow, see [`docs/LIBRARIES.md`](/c:/Users/Fiolent23/newrepos/snap/docs/LIBRARIES.md).
 
-Right now the asset browser library selector is registry-backed, but only the built-in library is registered. This is the groundwork for additional imported libraries.
+The asset browser library selector is registry-backed and includes the core `built-in` library plus the optional `fantasy-props-megakit-standard` built-in library by default.
+
+Set `VITE_INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD=false` to exclude that second built-in library from the app and studio at build time.
 
 ### Asset Library Studio Workflow
 

@@ -2,6 +2,9 @@ import librariesManifest from "./data/libraries.json";
 import builtInLibraryMeta from "./data/libraries/built-in/library.json";
 import assetCategoriesManifest from "./data/libraries/built-in/asset-categories.json";
 import assetsManifest from "./data/libraries/built-in/assets-manifest.json";
+import fantasyPropsLibraryMeta from "./data/libraries/fantasy-props-megakit-standard/library.json";
+import fantasyPropsCategoriesManifest from "./data/libraries/fantasy-props-megakit-standard/asset-categories.json";
+import fantasyPropsAssetsManifest from "./data/libraries/fantasy-props-megakit-standard/assets-manifest.json";
 
 export const GRID_SIZES = [2, 1, 0.5, 0.25, 0.125] as const;
 export const ROTATION_STEPS = [90, 45, 15] as const;
@@ -45,6 +48,9 @@ export interface AssetLibraryBundle {
   categories: string[];
   metaUrl?: string;
 }
+
+export const INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD =
+  import.meta.env.VITE_INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD !== "false";
 
 function parseAssetCategoryManifest(value: unknown): AssetCategoryManifest {
   if (!value || typeof value !== "object") {
@@ -154,6 +160,7 @@ function parseAssetLibraryMeta(value: unknown): AssetLibraryMeta {
 
 export const LIBRARIES = parseLibraryRegistryManifest(librariesManifest).libraries;
 export const BUILT_IN_LIBRARY = parseAssetLibraryMeta(builtInLibraryMeta);
+export const FANTASY_PROPS_MEGAKIT_STANDARD_LIBRARY = parseAssetLibraryMeta(fantasyPropsLibraryMeta);
 export const ACTIVE_LIBRARY = (() => {
   const builtInEntry = LIBRARIES.find((library) => library.id === BUILT_IN_LIBRARY.id);
   if (!builtInEntry) {
@@ -165,6 +172,7 @@ export const ACTIVE_LIBRARY = (() => {
   return BUILT_IN_LIBRARY;
 })();
 export const ASSET_CATEGORIES = parseAssetCategoryManifest(assetCategoriesManifest).categories;
+export const FANTASY_PROPS_MEGAKIT_STANDARD_CATEGORIES = parseAssetCategoryManifest(fantasyPropsCategoriesManifest).categories;
 export type AssetCategory = string;
 export type PlaceholderShape = "box" | "column";
 
@@ -251,6 +259,10 @@ function parseAssetManifest(value: unknown, categories: string[]): AssetLibraryM
 }
 
 export const ASSETS: AssetDefinition[] = parseAssetManifest(assetsManifest, ASSET_CATEGORIES).assets;
+export const FANTASY_PROPS_MEGAKIT_STANDARD_ASSETS: AssetDefinition[] = parseAssetManifest(
+  fantasyPropsAssetsManifest,
+  FANTASY_PROPS_MEGAKIT_STANDARD_CATEGORIES,
+).assets;
 const BUILT_IN_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
   {
     library: LIBRARIES.find((library) => library.id === ACTIVE_LIBRARY.id)!,
@@ -258,6 +270,16 @@ const BUILT_IN_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
     assets: ASSETS,
     categories: ASSET_CATEGORIES,
   },
+  ...(INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD
+    ? [
+        {
+          library: LIBRARIES.find((library) => library.id === FANTASY_PROPS_MEGAKIT_STANDARD_LIBRARY.id)!,
+          meta: FANTASY_PROPS_MEGAKIT_STANDARD_LIBRARY,
+          assets: FANTASY_PROPS_MEGAKIT_STANDARD_ASSETS,
+          categories: FANTASY_PROPS_MEGAKIT_STANDARD_CATEGORIES,
+        } satisfies AssetLibraryBundle,
+      ]
+    : []),
 ];
 
 let importedLibraryBundles: AssetLibraryBundle[] = [];
@@ -392,8 +414,8 @@ export async function loadImportedLibraryBundles() {
     throw error;
   }
 
-  const builtInIds = new Set(BUILT_IN_LIBRARY_BUNDLES.map((bundle) => bundle.library.id));
-  const externalEntries = manifest.libraries.filter((library) => !builtInIds.has(library.id));
+  const builtInRegistryIds = new Set(LIBRARIES.filter((library) => library.mode === "built-in").map((library) => library.id));
+  const externalEntries = manifest.libraries.filter((library) => !builtInRegistryIds.has(library.id));
   importedLibraryBundles = await Promise.all(externalEntries.map((entry) => loadImportedLibraryBundle(entry, registryUrl)));
   return getAssetLibraryBundles();
 }

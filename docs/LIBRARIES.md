@@ -32,6 +32,9 @@ Built-in libraries use:
 - `public/assets/libraries/<library-id>/glTF/`
 - `public/generated/asset-previews/<library-id>/`
 
+The optional `fantasy-props-megakit-standard` built-in library is enabled by default.
+Set `VITE_INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD=false` when starting Vite or building if you want to exclude it.
+
 Imported libraries use:
 
 - `libraries/libraries.json`

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:no-fantasy": "vite --mode no-fantasy",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "assets:validate": "node scripts/asset-library.mjs validate",
@@ -15,6 +16,7 @@
     "assets:remove-library": "node scripts/asset-remove-library.mjs",
     "assets:validate-library": "node scripts/asset-validate-library.mjs",
     "build": "tsc && vite build",
+    "build:no-fantasy": "tsc && vite build --mode no-fantasy",
     "preview": "vite preview"
   },
   "dependencies": {
