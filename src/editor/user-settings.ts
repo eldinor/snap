@@ -8,6 +8,7 @@ export interface UserSettings {
   saveOnEveryUiUpdate: boolean;
   autosaveEnabled: boolean;
   autosaveIntervalSeconds: number;
+  gridSize: number;
   environmentEnabled: boolean;
   environmentIntensity: number;
   lightIntensity: number;
@@ -27,6 +28,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   saveOnEveryUiUpdate: true,
   autosaveEnabled: true,
   autosaveIntervalSeconds: 30,
+  gridSize: 1,
   environmentEnabled: true,
   environmentIntensity: 0.1,
   lightIntensity: 1.1,
@@ -61,6 +63,9 @@ export function loadUserSettings(storageKey = USER_SETTINGS_STORAGE_KEY): UserSe
         parsed.autosaveIntervalSeconds === 300
           ? parsed.autosaveIntervalSeconds
           : DEFAULT_USER_SETTINGS.autosaveIntervalSeconds,
+      gridSize: GRID_SIZE_OPTIONS.includes(parsed.gridSize as (typeof GRID_SIZE_OPTIONS)[number])
+        ? (parsed.gridSize as number)
+        : DEFAULT_USER_SETTINGS.gridSize,
       environmentEnabled: parsed.environmentEnabled ?? DEFAULT_USER_SETTINGS.environmentEnabled,
       environmentIntensity: parsed.environmentIntensity ?? DEFAULT_USER_SETTINGS.environmentIntensity,
       lightIntensity: parsed.lightIntensity ?? DEFAULT_USER_SETTINGS.lightIntensity,

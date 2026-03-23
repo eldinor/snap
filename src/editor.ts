@@ -329,6 +329,7 @@ export class ModularEditorApp {
     });
     this.defaultEnvironmentTexture = this.scene.environmentTexture;
     this.settings = loadUserSettings();
+    this.gridSize = this.settings.gridSize;
     this.gridPlaneSize = this.settings.gridPlaneSize;
     this.sessionController = new SceneSessionController({
       history: this.history,
@@ -563,6 +564,16 @@ export class ModularEditorApp {
   private bindShortcuts() {
     window.addEventListener("keydown", this.handleWindowKeyDown);
     window.addEventListener("keyup", this.handleWindowKeyUp);
+  }
+
+  private getEffectiveGridSize() {
+    if (GRID_SIZE_OPTIONS.includes(this.gridSize as (typeof GRID_SIZE_OPTIONS)[number])) {
+      return this.gridSize;
+    }
+
+    this.gridSize = DEFAULT_USER_SETTINGS.gridSize;
+    this.settings.gridSize = this.gridSize;
+    return this.gridSize;
   }
 
   private buildSelectionViewState(): SelectionViewState {
@@ -1146,8 +1157,9 @@ export class ModularEditorApp {
     if (typeof metadata.ySnapEnabled === "boolean") {
       this.ySnapEnabled = metadata.ySnapEnabled;
     }
-    if (typeof metadata.gridSize === "number") {
-      this.gridSize = metadata.gridSize;
+    if (GRID_SIZE_OPTIONS.includes(metadata.gridSize as (typeof GRID_SIZE_OPTIONS)[number])) {
+      this.gridSize = metadata.gridSize as number;
+      this.settings.gridSize = this.gridSize;
     }
     if (typeof metadata.rotationStepDegrees === "number") {
       this.rotationStepDegrees = metadata.rotationStepDegrees;
@@ -1987,13 +1999,14 @@ export class ModularEditorApp {
   }
 
   private updatePreviewTransform() {
+    const gridSize = this.getEffectiveGridSize();
     const previewRotationRadians = new Vector3(
       this.toRadians(this.previewRotation.x),
       this.toRadians(this.previewRotation.y),
       this.toRadians(this.previewRotation.z),
     );
     const targetPoint = this.snapEnabled
-      ? snapVectorForSize(this.lastPointerPoint, this.previewTemplateSize, this.snapEnabled, this.gridSize)
+      ? snapVectorForSize(this.lastPointerPoint, this.previewTemplateSize, this.snapEnabled, gridSize)
       : this.lastPointerPoint.clone();
     const nextPreviewTransformKey = [
       targetPoint.x.toFixed(4),
@@ -2003,7 +2016,7 @@ export class ModularEditorApp {
       previewRotationRadians.y.toFixed(4),
       previewRotationRadians.z.toFixed(4),
       this.snapEnabled ? "snap:1" : "snap:0",
-      this.gridSize.toFixed(4),
+      gridSize.toFixed(4),
     ].join("|");
     if (nextPreviewTransformKey === this.lastPreviewTransformKey) {
       return;
@@ -2015,7 +2028,7 @@ export class ModularEditorApp {
       this.lastPointerPoint,
       this.previewTemplateSize,
       this.snapEnabled,
-      this.gridSize,
+      gridSize,
       previewRotationRadians,
     );
   }
@@ -3391,14 +3404,16 @@ export class ModularEditorApp {
   }
 
   setGridSize(value: number) {
-    if (!GRID_SIZE_OPTIONS.includes(value as (typeof GRID_SIZE_OPTIONS)[number]) || this.gridSize === value) {
+    if (!GRID_SIZE_OPTIONS.includes(value as (typeof GRID_SIZE_OPTIONS)[number]) || this.getEffectiveGridSize() === value) {
       return;
     }
 
     this.gridSize = value;
+    this.settings.gridSize = value;
     this.applySnapSettings();
     this.renderGrid();
     this.updatePreviewTransform();
+    this.saveUserSettings();
     this.emitViewState();
   }
 
@@ -3516,6 +3531,7 @@ export class ModularEditorApp {
     this.settings.saveOnEveryUiUpdate = DEFAULT_USER_SETTINGS.saveOnEveryUiUpdate;
     this.settings.autosaveEnabled = DEFAULT_USER_SETTINGS.autosaveEnabled;
     this.settings.autosaveIntervalSeconds = DEFAULT_USER_SETTINGS.autosaveIntervalSeconds;
+    this.settings.gridSize = DEFAULT_USER_SETTINGS.gridSize;
     this.settings.environmentEnabled = DEFAULT_USER_SETTINGS.environmentEnabled;
     this.settings.environmentIntensity = DEFAULT_USER_SETTINGS.environmentIntensity;
     this.settings.lightIntensity = DEFAULT_USER_SETTINGS.lightIntensity;
@@ -3530,6 +3546,7 @@ export class ModularEditorApp {
     this.settings.newObjectPlacementKind = DEFAULT_USER_SETTINGS.newObjectPlacementKind;
     this.settings.heightLabelMode = DEFAULT_USER_SETTINGS.heightLabelMode;
 
+    this.gridSize = this.settings.gridSize;
     this.gridPlaneSize = this.settings.gridPlaneSize;
     this.recreateGround();
     this.renderGrid();

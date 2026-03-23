@@ -18,10 +18,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@babylonjs/core": "^8.55.3",
-    "@babylonjs/loaders": "^8.55.3",
+    "@babylonjs/core": "^8.56.1",
+    "@babylonjs/loaders": "^8.56.1",
     "@babylonjs/materials": "^8.56.1",
-    "@babylonjs/serializers": "^8.56.0",
+    "@babylonjs/serializers": "^8.56.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "jszip": "^3.10.1",
