@@ -9,7 +9,6 @@ Libraries stay separate in the asset browser, so you can switch between them wit
 Examples:
 
 - `built-in`
-- `roof-starter`
 - `fantasy-props-megakit-standard`
 
 Promoting a library to built-in does not merge it into the first library. It stays its own selectable library entry.

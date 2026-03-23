@@ -521,6 +521,16 @@ select:focus-visible {
   margin-bottom: 0;
 }
 
+.asset-library-header {
+  margin-bottom: 6px;
+}
+
+.asset-library-header .library-select-row {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 320px;
+}
+
 .scene-sort-select {
   height: 26px;
   min-width: 88px;

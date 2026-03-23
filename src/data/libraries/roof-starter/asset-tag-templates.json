@@ -1,7 +1,0 @@
-{
-  "version": 1,
-  "categories": {
-    "Roofs": ["roof", "roofs", "overhang"],
-    "Windows": ["window", "windows", "roof"]
-  }
-}

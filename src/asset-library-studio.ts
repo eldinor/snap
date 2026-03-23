@@ -8,7 +8,6 @@ import {
   type AssetLibraryMeta,
 } from "./assets";
 import builtInTagTemplatesManifest from "./data/libraries/built-in/asset-tag-templates.json";
-import roofStarterTagTemplatesManifest from "./data/libraries/roof-starter/asset-tag-templates.json";
 import JSZip from "jszip";
 
 type SaveFilePickerWindow = Window &
@@ -756,7 +755,6 @@ if (
 let libraryBundles = getAssetLibraryBundles();
 const libraryTemplateManifests: Record<string, unknown> = {
   "built-in": builtInTagTemplatesManifest,
-  "roof-starter": roofStarterTagTemplatesManifest,
 };
 
 function parseAssetCategoryManifest(value: unknown): AssetCategoryManifest {

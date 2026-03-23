@@ -2,9 +2,6 @@ import librariesManifest from "./data/libraries.json";
 import builtInLibraryMeta from "./data/libraries/built-in/library.json";
 import assetCategoriesManifest from "./data/libraries/built-in/asset-categories.json";
 import assetsManifest from "./data/libraries/built-in/assets-manifest.json";
-import roofStarterLibraryMeta from "./data/libraries/roof-starter/library.json";
-import roofStarterCategoriesManifest from "./data/libraries/roof-starter/asset-categories.json";
-import roofStarterAssetsManifest from "./data/libraries/roof-starter/assets-manifest.json";
 
 export const GRID_SIZES = [2, 1, 0.5, 0.25, 0.125] as const;
 export const ROTATION_STEPS = [90, 45, 15] as const;
@@ -157,7 +154,6 @@ function parseAssetLibraryMeta(value: unknown): AssetLibraryMeta {
 
 export const LIBRARIES = parseLibraryRegistryManifest(librariesManifest).libraries;
 export const BUILT_IN_LIBRARY = parseAssetLibraryMeta(builtInLibraryMeta);
-export const ROOF_STARTER_LIBRARY = parseAssetLibraryMeta(roofStarterLibraryMeta);
 export const ACTIVE_LIBRARY = (() => {
   const builtInEntry = LIBRARIES.find((library) => library.id === BUILT_IN_LIBRARY.id);
   if (!builtInEntry) {
@@ -169,7 +165,6 @@ export const ACTIVE_LIBRARY = (() => {
   return BUILT_IN_LIBRARY;
 })();
 export const ASSET_CATEGORIES = parseAssetCategoryManifest(assetCategoriesManifest).categories;
-export const ROOF_STARTER_CATEGORIES = parseAssetCategoryManifest(roofStarterCategoriesManifest).categories;
 export type AssetCategory = string;
 export type PlaceholderShape = "box" | "column";
 
@@ -256,22 +251,12 @@ function parseAssetManifest(value: unknown, categories: string[]): AssetLibraryM
 }
 
 export const ASSETS: AssetDefinition[] = parseAssetManifest(assetsManifest, ASSET_CATEGORIES).assets;
-export const ROOF_STARTER_ASSETS: AssetDefinition[] = parseAssetManifest(
-  roofStarterAssetsManifest,
-  ROOF_STARTER_CATEGORIES,
-).assets;
 const BUILT_IN_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
   {
     library: LIBRARIES.find((library) => library.id === ACTIVE_LIBRARY.id)!,
     meta: ACTIVE_LIBRARY,
     assets: ASSETS,
     categories: ASSET_CATEGORIES,
-  },
-  {
-    library: LIBRARIES.find((library) => library.id === ROOF_STARTER_LIBRARY.id)!,
-    meta: ROOF_STARTER_LIBRARY,
-    assets: ROOF_STARTER_ASSETS,
-    categories: ROOF_STARTER_CATEGORIES,
   },
 ];
 

@@ -1309,10 +1309,11 @@ function AssetSidebar(props: AssetSidebarProps) {
           <label className="panel-label" htmlFor="asset-search">
             Assets
           </label>
-          <label className="panel-label" htmlFor="asset-library">
-            Library
-          </label>
-          <div className="library-select-row">
+          <div className="sidebar-header-row asset-library-header">
+            <label className="panel-label" htmlFor="asset-library">
+              Library
+            </label>
+            <div className="library-select-row">
             <select
               id="asset-library"
               className="filter-select"
@@ -1336,6 +1337,7 @@ function AssetSidebar(props: AssetSidebarProps) {
             >
               <RedoIcon className="tool-icon" />
             </button>
+            </div>
           </div>
           <FilterBar
             className="filter-bar-compact"
