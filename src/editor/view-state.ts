@@ -21,6 +21,8 @@ export interface ToolbarViewState {
   environmentEnabled: boolean;
   environmentIntensity: number;
   lightIntensity: number;
+  cameraCloseLimit: number;
+  viewportGizmoEnabled: boolean;
   gridVisible: boolean;
   gridRenderMode: "material" | "lines";
   gridColor: string;
@@ -51,7 +53,7 @@ export interface SelectionViewState {
   previewAssetName: string | null;
   objectPlacementKind: "clone" | "instance" | null;
   position: [number, number, number] | null;
-  rotationYDegrees: number | null;
+  rotationDegrees: [number, number, number] | null;
   positionText: string | null;
   rotationText: string | null;
   snapText: string | null;
@@ -120,6 +122,8 @@ export function createInitialEditorViewState(): EditorViewState {
       environmentEnabled: true,
       environmentIntensity: 0.1,
       lightIntensity: 1.1,
+      cameraCloseLimit: 0.05,
+      viewportGizmoEnabled: true,
       gridVisible: true,
       gridRenderMode: "material",
       gridColor: "#292f38",
@@ -151,7 +155,7 @@ export function createInitialEditorViewState(): EditorViewState {
       previewAssetName: null,
       objectPlacementKind: null,
       position: null,
-      rotationYDegrees: null,
+      rotationDegrees: null,
       positionText: null,
       rotationText: null,
       snapText: "Grid 1",

@@ -1,5 +1,11 @@
+// Registers the glTF loader used by ImportMeshAsync(...).
+import "@babylonjs/loaders/glTF";
+// Ensures Babylon PBR material types/shaders exist for imported glTF materials.
+import "@babylonjs/core/Materials/PBR/index";
+// Registers InstancedMesh support for template.instantiateHierarchy(...).
+import "@babylonjs/core/Meshes/instancedMesh";
 import { Material } from "@babylonjs/core/Materials/material";
-import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
+import { ImportMeshAsync } from "@babylonjs/core/Loading/sceneLoader";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -70,6 +76,7 @@ export async function instantiateAsset(
   template: AssetTemplate,
   scene: Scene,
   placementKind: "clone" | "instance" = "clone",
+  freezeMaterials = false,
 ) {
   const root =
     preview || placementKind === "clone"
@@ -101,6 +108,14 @@ export async function instantiateAsset(
     }
   });
 
+  if (!preview && freezeMaterials) {
+    // Freeze only live instances after their first render; freezing cached disabled templates
+    // too early can leave imported materials present but not visibly rendered.
+    scene.onAfterRenderObservable.addOnce(() => {
+      setRootMaterialsFrozen(root, true);
+    });
+  }
+
   return root;
 }
 
@@ -112,21 +127,16 @@ export async function loadAssetTemplate(
 ): Promise<AssetTemplate> {
   try {
     const assetReference = splitAssetFileReference(asset.fileName);
-    const importResult = await SceneLoader.ImportMeshAsync(
-      "",
-      `${basePath}${assetReference.directory}`,
-      assetReference.fileName,
-      scene,
-    );
+    const importResult = await ImportMeshAsync(assetReference.fileName, scene, {
+      meshNames: "",
+      rootUrl: `${basePath}${assetReference.directory}`,
+    });
     const root = new TransformNode(`template-${asset.id}`, scene);
 
     const importedRootNodes = [...importResult.transformNodes, ...importResult.meshes].filter((node) => !node.parent);
     importedRootNodes.forEach((node) => {
       const technicalRoot = node instanceof TransformNode && isTechnicalImportRootName(node.name);
-      const nextNode =
-        node instanceof TransformNode
-          ? (collapseRedundantImportRoot(node, root) ?? node)
-          : node;
+      const nextNode = node instanceof TransformNode ? (collapseRedundantImportRoot(node, root) ?? node) : node;
       if (technicalRoot && isImportRootCollapseDebugEnabled()) {
         recordImportRootCollapse(asset.id, node, nextNode !== node);
       }
@@ -136,13 +146,16 @@ export async function loadAssetTemplate(
     });
 
     const size = normalizeTemplateRoot(root);
-    setRootMaterialsFrozen(root, freezeModelMaterials);
     root.setEnabled(false);
     return { root, size };
   } catch {
     const root = createPlaceholderTemplate(asset, scene);
     const size = normalizeTemplateRoot(root);
-    setRootMaterialsFrozen(root, freezeModelMaterials);
+    if (freezeModelMaterials) {
+      scene.onAfterRenderObservable.addOnce(() => {
+        setRootMaterialsFrozen(root, true);
+      });
+    }
     root.setEnabled(false);
     return { root, size };
   }
@@ -214,9 +227,7 @@ function recordImportRootCollapse(assetId: string, root: TransformNode, collapse
   }
   importRootCollapseStats.byAsset[assetId] = nextAssetStats;
 
-  console.info(
-    `[snap] import root ${collapsed ? "collapsed" : "kept"} for asset "${assetId}" (${root.name})`,
-  );
+  console.info(`[snap] import root ${collapsed ? "collapsed" : "kept"} for asset "${assetId}" (${root.name})`);
 }
 
 function isImportRootCollapseDebugEnabled() {

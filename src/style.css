@@ -825,9 +825,12 @@ select:focus-visible {
 }
 
 .scene-row-kind-placement {
+  padding: 1px 5px;
   border-color: #4f5f45;
   color: #d9f2c7;
   background: rgba(111, 147, 74, 0.16);
+  font-size: 8px;
+  line-height: 1.2;
 }
 
 .scene-row-kind-clone {

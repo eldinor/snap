@@ -1,9 +1,14 @@
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
+// Registers ArcRotateCamera input plugins used by camera.attachControl(...).
 import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
 import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
+// Adds the ray/picking pieces behind scene.pick(...) and scene.multiPick(...).
+import "@babylonjs/core/Culling/ray";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
+// Adds Scene helper extensions like scene.createDefaultEnvironment(...).
+import "@babylonjs/core/Helpers/sceneHelpers";
 import type { EnvironmentHelper } from "@babylonjs/core/Helpers/environmentHelper";
 import type { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { HemisphericLight as BabylonHemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
@@ -67,6 +72,7 @@ import {
   selectObject as selectSceneObject,
 } from "./editor/scene-actions";
 import {
+  CAMERA_CLOSE_LIMIT_OPTIONS,
   DEFAULT_USER_SETTINGS,
   GRID_PLANE_SIZE_OPTIONS,
   GRID_SIZE_OPTIONS,
@@ -83,6 +89,7 @@ import {
   type StatusViewState,
   type ToolbarViewState,
 } from "./editor/view-state";
+import { ViewportGizmoController } from "./editor/viewport-gizmo-controller";
 
 interface EditorObject {
   id: string;
@@ -138,6 +145,7 @@ export class ModularEditorApp {
   private readonly settings: UserSettings;
   private readonly history = new SnapshotHistory();
   private readonly sceneCore: SceneCoreController;
+  private readonly viewportGizmo: ViewportGizmoController;
   private readonly sessionController: SceneSessionController;
   private readonly resizeObserver: ResizeObserver;
   private readonly handleWindowResize = () => {
@@ -277,7 +285,7 @@ export class ModularEditorApp {
   private mode: "select" | "place" = "select";
   private snapEnabled = true;
   private ySnapEnabled = false;
-  private gridSize = DEFAULT_USER_SETTINGS.gridSize;
+  private gridSize = DEFAULT_USER_SETTINGS.gridSize; // check if valid
   private gridPlaneSize = DEFAULT_USER_SETTINGS.gridPlaneSize;
   private rotationStepDegrees = 90;
   private rotationAxis: RotationAxis = "y";
@@ -400,6 +408,15 @@ export class ModularEditorApp {
     this.sceneCore = new SceneCoreController(this.scene, this.gizmoManager);
     this.renderGrid();
     this.applyEnvironmentSetting();
+    this.viewportGizmo = new ViewportGizmoController(this.scene, {
+      enabled: this.settings.viewportGizmoEnabled,
+      anchor: "top-right",
+      size: 108,
+      margin: 14,
+      showAxisLabels: true,
+      showNegativeAxes: true,
+      showCenter: true,
+    });
 
     this.bindSceneInteractions();
     this.bindShortcuts();
@@ -565,7 +582,7 @@ export class ModularEditorApp {
             : null,
         objectPlacementKind: null,
         position: null,
-        rotationYDegrees: null,
+        rotationDegrees: null,
         positionText: null,
         rotationText: null,
         snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
@@ -586,11 +603,14 @@ export class ModularEditorApp {
         ? findAssetByRef({ libraryId: this.previewAssetLibraryId, assetId: this.previewAssetId })
         : null;
     const position = selected ? selected.root.position : (selectedGroup?.root.position ?? null);
-    const rotationDegrees = selected
-      ? Math.round(this.toDegrees(selected.root.rotation.y))
-      : selectedGroup
-        ? Math.round(this.toDegrees(selectedGroup.root.rotation.y))
-        : null;
+    const rotation = selected ? selected.root.rotation : (selectedGroup?.root.rotation ?? null);
+    const rotationDegrees = rotation
+      ? ([
+          this.normalizeDisplayDegrees(Math.round(this.toDegrees(rotation.x))),
+          this.normalizeDisplayDegrees(Math.round(this.toDegrees(rotation.y))),
+          this.normalizeDisplayDegrees(Math.round(this.toDegrees(rotation.z))),
+        ] as [number, number, number])
+      : null;
 
     return {
       selectedObjectId: this.selectedObjectId ?? this.selectedGroupId,
@@ -600,9 +620,11 @@ export class ModularEditorApp {
       previewAssetName: previewAsset?.name ?? null,
       objectPlacementKind: selected?.placementKind ?? null,
       position: position ? [position.x, position.y, position.z] : null,
-      rotationYDegrees: rotationDegrees,
+      rotationDegrees,
       positionText: position ? `${position.x.toFixed(3)}, ${position.y.toFixed(3)}, ${position.z.toFixed(3)}` : null,
-      rotationText: rotationDegrees !== null ? `${rotationDegrees}deg` : null,
+      rotationText: rotationDegrees
+        ? `${rotationDegrees[0]}deg, ${rotationDegrees[1]}deg, ${rotationDegrees[2]}deg`
+        : null,
       snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
     };
   }
@@ -751,6 +773,8 @@ export class ModularEditorApp {
       environmentEnabled: this.settings.environmentEnabled,
       environmentIntensity: this.settings.environmentIntensity,
       lightIntensity: this.settings.lightIntensity,
+      cameraCloseLimit: this.settings.cameraCloseLimit,
+      viewportGizmoEnabled: this.settings.viewportGizmoEnabled,
       gridVisible: this.settings.gridVisible,
       gridRenderMode: this.settings.gridRenderMode,
       gridColor: this.settings.gridColor,
@@ -958,7 +982,6 @@ export class ModularEditorApp {
       ySnapEnabled: this.ySnapEnabled,
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
-      environmentEnabled: this.settings.environmentEnabled,
       environmentIntensity: this.settings.environmentIntensity,
       lightIntensity: this.settings.lightIntensity,
       gridVisible: this.settings.gridVisible,
@@ -1026,6 +1049,7 @@ export class ModularEditorApp {
         template,
         this.scene,
         entry.placementKind === "clone" || entry.placementKind === "instance" ? entry.placementKind : "instance",
+        this.settings.freezeModelMaterials,
       );
       if (!root) {
         continue;
@@ -1127,9 +1151,6 @@ export class ModularEditorApp {
     }
     if (typeof metadata.rotationStepDegrees === "number") {
       this.rotationStepDegrees = metadata.rotationStepDegrees;
-    }
-    if (typeof metadata.environmentEnabled === "boolean") {
-      this.settings.environmentEnabled = metadata.environmentEnabled;
     }
     if (typeof metadata.environmentIntensity === "number") {
       this.settings.environmentIntensity = metadata.environmentIntensity;
@@ -1865,7 +1886,7 @@ export class ModularEditorApp {
     }
 
     const template = await this.getAssetTemplate(asset, libraryId);
-    const preview = await instantiateAsset(asset, true, template, this.scene, "clone");
+    const preview = await instantiateAsset(asset, true, template, this.scene, "clone", false);
     if (!preview) {
       return;
     }
@@ -1891,7 +1912,7 @@ export class ModularEditorApp {
 
     const template = await this.getAssetTemplate(asset, this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id);
     const placementKind = this.getDefaultPlacementKindForAsset(asset);
-    const root = await instantiateAsset(asset, false, template, this.scene, placementKind);
+    const root = await instantiateAsset(asset, false, template, this.scene, placementKind, this.settings.freezeModelMaterials);
     if (!root) {
       return;
     }
@@ -1945,7 +1966,7 @@ export class ModularEditorApp {
       asset,
       this.scene,
       getAssetBasePathForLibrary(libraryId),
-      this.settings.freezeModelMaterials,
+      false,
     );
   }
 
@@ -2046,7 +2067,9 @@ export class ModularEditorApp {
   }
 
   private snapAngle(valueRadians: number) {
-    return snapPlacementAngle(valueRadians, this.snapEnabled, this.toRadians(this.rotationStepDegrees));
+    return this.normalizeRadians(
+      snapPlacementAngle(valueRadians, this.snapEnabled, this.toRadians(this.rotationStepDegrees)),
+    );
   }
 
   private rotateActiveTarget() {
@@ -2108,7 +2131,7 @@ export class ModularEditorApp {
 
     const template = await this.getAssetTemplate(asset, source.libraryId);
     const placementKind = source.placementKind ?? this.getDefaultPlacementKindForAsset(asset);
-    const root = await instantiateAsset(asset, false, template, this.scene, placementKind);
+    const root = await instantiateAsset(asset, false, template, this.scene, placementKind, this.settings.freezeModelMaterials);
     if (!root) {
       return;
     }
@@ -2274,12 +2297,25 @@ export class ModularEditorApp {
   }
 
   private applyEnvironmentSetting() {
+    if (this.settings.freezeModelMaterials) {
+      // Frozen materials ignore scene.environmentTexture / environmentIntensity uniform
+      // changes. Temporarily unfreeze so the new values are picked up on the next render,
+      // then re-freeze afterwards.
+      this.setAllModelMaterialsFrozen(false);
+    }
+
     this.sceneCore.applyEnvironmentSetting(
       this.defaultEnvironmentTexture ?? null,
       this.settings.environmentEnabled,
       this.settings.environmentIntensity,
       this.defaultEnvironment?.skybox ?? null,
     );
+
+    if (this.settings.freezeModelMaterials) {
+      this.scene.onAfterRenderObservable.addOnce(() => {
+        this.setAllModelMaterialsFrozen(true);
+      });
+    }
   }
 
   private applyLightIntensity() {
@@ -2415,19 +2451,19 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
-  setSelectionRotationDegrees(value: number) {
+  setSelectionRotationDegrees(axis: "x" | "y" | "z", value: number) {
     if (!Number.isFinite(value)) {
       return;
     }
 
-    const nextRadians = this.toRadians(value);
+    const nextRadians = this.normalizeRadians(this.toRadians(value));
     if (this.selectedGroupId) {
       const group = this.groups.get(this.selectedGroupId);
-      if (!group || group.root.rotation.y === nextRadians) {
+      if (!group || group.root.rotation[axis] === nextRadians) {
         return;
       }
 
-      group.root.rotation.y = nextRadians;
+      group.root.rotation[axis] = nextRadians;
       this.pushHistoryCheckpoint();
       this.emitViewState();
       return;
@@ -2438,14 +2474,31 @@ export class ModularEditorApp {
     }
 
     const object = this.objects.get(this.selectedObjectId);
-    if (!object || object.root.rotation.y === nextRadians) {
+    if (!object || object.root.rotation[axis] === nextRadians) {
       return;
     }
 
-    object.root.rotation.y = nextRadians;
+    object.root.rotation[axis] = nextRadians;
     this.refreshSelectionAttachment();
     this.pushHistoryCheckpoint();
     this.emitViewState();
+  }
+
+  private normalizeRadians(valueRadians: number) {
+    const fullTurn = Math.PI * 2;
+    let normalized = valueRadians % fullTurn;
+    if (normalized < 0) {
+      normalized += fullTurn;
+    }
+    if (Math.abs(normalized - fullTurn) < 0.000001 || Math.abs(normalized) < 0.000001) {
+      return 0;
+    }
+    return normalized;
+  }
+
+  private normalizeDisplayDegrees(valueDegrees: number) {
+    const normalized = ((valueDegrees % 360) + 360) % 360;
+    return normalized === 360 ? 0 : normalized;
   }
 
   dropSelectionToGround() {
@@ -3401,6 +3454,31 @@ export class ModularEditorApp {
     this.emitViewState();
   }
 
+  setCameraCloseLimit(value: number) {
+    if (
+      !CAMERA_CLOSE_LIMIT_OPTIONS.includes(value as (typeof CAMERA_CLOSE_LIMIT_OPTIONS)[number]) ||
+      this.settings.cameraCloseLimit === value
+    ) {
+      return;
+    }
+
+    this.settings.cameraCloseLimit = value;
+    this.retuneCameraForGridPlaneSize(false);
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setViewportGizmoEnabled(value: boolean) {
+    if (this.settings.viewportGizmoEnabled === value) {
+      return;
+    }
+
+    this.settings.viewportGizmoEnabled = value;
+    this.viewportGizmo.setEnabled(value);
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
   setGridRenderMode(value: "material" | "lines") {
     if (this.settings.gridRenderMode === value) {
       return;
@@ -3441,6 +3519,8 @@ export class ModularEditorApp {
     this.settings.environmentEnabled = DEFAULT_USER_SETTINGS.environmentEnabled;
     this.settings.environmentIntensity = DEFAULT_USER_SETTINGS.environmentIntensity;
     this.settings.lightIntensity = DEFAULT_USER_SETTINGS.lightIntensity;
+    this.settings.cameraCloseLimit = DEFAULT_USER_SETTINGS.cameraCloseLimit;
+    this.settings.viewportGizmoEnabled = DEFAULT_USER_SETTINGS.viewportGizmoEnabled;
     this.settings.gridVisible = DEFAULT_USER_SETTINGS.gridVisible;
     this.settings.gridPlaneSize = DEFAULT_USER_SETTINGS.gridPlaneSize;
     this.settings.gridRenderMode = DEFAULT_USER_SETTINGS.gridRenderMode;
@@ -3456,6 +3536,7 @@ export class ModularEditorApp {
     this.applyEnvironmentSetting();
     this.applyLightIntensity();
     this.applyGroundColor();
+    this.viewportGizmo.setEnabled(this.settings.viewportGizmoEnabled);
     this.applyModelMaterialFreezeSetting();
     this.applySnapSettings();
     this.updatePreviewTransform();
@@ -3474,7 +3555,7 @@ export class ModularEditorApp {
     const normalizedGridPlaneSize = this.gridPlaneSize / ModularEditorApp.CAMERA_BASE_GRID_PLANE_SIZE;
     const safeScale = Math.max(0.25, normalizedGridPlaneSize);
     const lowerRadiusLimit = Math.max(
-      0.75,
+      this.settings.cameraCloseLimit,
       Number((ModularEditorApp.CAMERA_BASE_LOWER_RADIUS_LIMIT * safeScale).toFixed(3)),
     );
     const upperRadiusLimit = Math.max(
@@ -3629,20 +3710,18 @@ export class ModularEditorApp {
     );
   }
 
-  private applyModelMaterialFreezeSetting() {
-    this.assetTemplates.forEach((templatePromise) => {
-      void templatePromise.then((template) => {
-        setRootMaterialsFrozen(template.root, this.settings.freezeModelMaterials);
-      });
-    });
-
+  private setAllModelMaterialsFrozen(frozen: boolean) {
     this.objects.forEach((object) => {
-      setRootMaterialsFrozen(object.root, this.settings.freezeModelMaterials);
+      setRootMaterialsFrozen(object.root, frozen);
     });
 
     if (this.placementPreview) {
-      setRootMaterialsFrozen(this.placementPreview, this.settings.freezeModelMaterials);
+      setRootMaterialsFrozen(this.placementPreview, frozen);
     }
+  }
+
+  private applyModelMaterialFreezeSetting() {
+    this.setAllModelMaterialsFrozen(this.settings.freezeModelMaterials);
   }
 
   private applyCleanExportNodeNames(exportNodes: Set<Node>) {
@@ -3721,6 +3800,7 @@ export class ModularEditorApp {
     this.selectionHeightLabel?.dispose(false, false);
     this.selectionVerticalHelperMarker?.dispose(false, false);
     this.disposePreview();
+    this.viewportGizmo.dispose();
     this.scene.dispose();
     this.engine.dispose();
   }

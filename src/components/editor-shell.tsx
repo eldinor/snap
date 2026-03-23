@@ -42,6 +42,7 @@ const RIGHT_SIDEBAR_WIDTH_STORAGE_KEY = "snap:right-sidebar-width";
 const RIGHT_SIDEBAR_MIN_WIDTH = 240;
 const RIGHT_SIDEBAR_MAX_WIDTH = 520;
 const GRID_PLANE_SIZE_OPTIONS = [16, 32, 64, 128, 256] as const;
+const CAMERA_CLOSE_LIMIT_OPTIONS = [0.01, 0.05, 0.1, 0.25, 0.5, 1] as const;
 
 interface EditorToolbarProps {
   viewState: EditorViewState;
@@ -72,6 +73,8 @@ interface EditorToolbarProps {
   onEnvironmentToggle: (enabled: boolean) => void;
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
+  onCameraCloseLimitChange: (value: number) => void;
+  onViewportGizmoEnabledChange: (value: boolean) => void;
   onGridVisibleChange: (visible: boolean) => void;
   onGridRenderModeChange: (value: "material" | "lines") => void;
   onGridColorChange: (value: string) => void;
@@ -401,6 +404,35 @@ function EditorToolbar(props: EditorToolbarProps) {
                 <span className="setting-value">{toolbar.lightIntensity.toFixed(2)}</span>
               </span>
             </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Camera Close Limit</span>
+              <select
+                className="editor-input"
+                value={String(toolbar.cameraCloseLimit)}
+                onChange={(event) => {
+                  props.onCameraCloseLimitChange(Number(event.target.value));
+                }}
+              >
+                {CAMERA_CLOSE_LIMIT_OPTIONS.map((value) => (
+                  <option key={value} value={String(value)}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="setting-row setting-row-spaced">
+              <span className="setting-copy">Viewport Gizmo</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.viewportGizmoEnabled}
+                  onChange={(event) => {
+                    props.onViewportGizmoEnabledChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
+              </span>
+            </label>
             <label className="setting-row setting-row-spaced">
               <span className="setting-copy">Grid Visible</span>
               <span className="setting-switch">
@@ -567,14 +599,14 @@ interface SelectionPanelProps {
   onToggleSelectedHidden: () => void;
   onToggleSelectedLocked: () => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
-  onSelectionRotationChange: (value: number) => void;
+  onSelectionRotationChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionDropToGround: () => void;
 }
 
 function SelectionPanel(props: SelectionPanelProps) {
   const { selection } = props.viewState;
   const [draftPosition, setDraftPosition] = useState({ x: "", y: "", z: "" });
-  const [draftRotation, setDraftRotation] = useState("");
+  const [draftRotation, setDraftRotation] = useState({ x: "", y: "", z: "" });
 
   useEffect(() => {
     const [x, y, z] = selection.position ?? [null, null, null];
@@ -583,8 +615,13 @@ function SelectionPanel(props: SelectionPanelProps) {
       y: y === null ? "" : y.toFixed(3),
       z: z === null ? "" : z.toFixed(3),
     });
-    setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
-  }, [selection.position, selection.rotationYDegrees, selection.selectedObjectId]);
+    const [rotX, rotY, rotZ] = selection.rotationDegrees ?? [null, null, null];
+    setDraftRotation({
+      x: rotX === null ? "" : rotX.toFixed(0),
+      y: rotY === null ? "" : rotY.toFixed(0),
+      z: rotZ === null ? "" : rotZ.toFixed(0),
+    });
+  }, [selection.position, selection.rotationDegrees, selection.selectedObjectId]);
 
   const commitPosition = (axis: "x" | "y" | "z") => {
     const raw = draftPosition[axis].trim();
@@ -600,8 +637,8 @@ function SelectionPanel(props: SelectionPanelProps) {
     props.onSelectionPositionChange(axis, nextValue);
   };
 
-  const commitRotation = () => {
-    const raw = draftRotation.trim();
+  const commitRotation = (axis: "x" | "y" | "z") => {
+    const raw = draftRotation[axis].trim();
     if (!raw) {
       return;
     }
@@ -611,7 +648,7 @@ function SelectionPanel(props: SelectionPanelProps) {
       return;
     }
 
-    props.onSelectionRotationChange(nextValue);
+    props.onSelectionRotationChange(axis, nextValue);
   };
 
   const resetDrafts = () => {
@@ -621,7 +658,12 @@ function SelectionPanel(props: SelectionPanelProps) {
       y: y === null ? "" : y.toFixed(3),
       z: z === null ? "" : z.toFixed(3),
     });
-    setDraftRotation(selection.rotationYDegrees === null ? "" : selection.rotationYDegrees.toFixed(0));
+    const [rotX, rotY, rotZ] = selection.rotationDegrees ?? [null, null, null];
+    setDraftRotation({
+      x: rotX === null ? "" : rotX.toFixed(0),
+      y: rotY === null ? "" : rotY.toFixed(0),
+      z: rotZ === null ? "" : rotZ.toFixed(0),
+    });
   };
 
   const handleTransformFieldKeyDown = (event: KeyboardEvent<HTMLInputElement>, commit: () => void) => {
@@ -708,23 +750,32 @@ function SelectionPanel(props: SelectionPanelProps) {
         ))}
       </div>
       <span className="properties-label">Rotation</span>
-      <div className="transform-fields transform-fields-single">
-        <label className="transform-field">
-          <span>Y</span>
-          <input
-            className="transform-input"
-            type="number"
-            step="15"
-            value={draftRotation}
-            onChange={(event) => {
-              setDraftRotation(event.target.value);
-            }}
-            onBlur={commitRotation}
-            onKeyDown={(event) => {
-              handleTransformFieldKeyDown(event, commitRotation);
-            }}
-          />
-        </label>
+      <div className="transform-fields">
+        {(["x", "y", "z"] as const).map((axis) => (
+          <label key={axis} className="transform-field">
+            <span>{axis.toUpperCase()}</span>
+            <input
+              className="transform-input"
+              type="number"
+              step="15"
+              value={draftRotation[axis]}
+              onChange={(event) => {
+                setDraftRotation((current) => ({
+                  ...current,
+                  [axis]: event.target.value,
+                }));
+              }}
+              onBlur={() => {
+                commitRotation(axis);
+              }}
+              onKeyDown={(event) => {
+                handleTransformFieldKeyDown(event, () => {
+                  commitRotation(axis);
+                });
+              }}
+            />
+          </label>
+        ))}
       </div>
       <span className="properties-label">Snap</span>
       <span>{selection.snapText ?? "-"}</span>
@@ -1337,7 +1388,7 @@ interface RightSidebarProps {
   onToggleSelectedHidden: () => void;
   onToggleSelectedLocked: () => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
-  onSelectionRotationChange: (value: number) => void;
+  onSelectionRotationChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionDropToGround: () => void;
 }
 
@@ -1609,6 +1660,7 @@ interface EditorShellProps {
   onEnvironmentToggle: (enabled: boolean) => void;
   onEnvironmentIntensityChange: (value: number) => void;
   onLightIntensityChange: (value: number) => void;
+  onCameraCloseLimitChange: (value: number) => void;
   onGridVisibleChange: (visible: boolean) => void;
   onGridRenderModeChange: (value: "material" | "lines") => void;
   onGridColorChange: (value: string) => void;
@@ -1626,7 +1678,7 @@ interface EditorShellProps {
   onCreateEmptyGroup: () => void;
   onCreateGroupFromSelected: () => void;
   onSelectionPositionChange: (axis: "x" | "y" | "z", value: number) => void;
-  onSelectionRotationChange: (value: number) => void;
+  onSelectionRotationChange: (axis: "x" | "y" | "z", value: number) => void;
   onSelectionDropToGround: () => void;
 }
 
@@ -1701,6 +1753,7 @@ export function EditorShell(props: EditorShellProps) {
         onEnvironmentToggle={props.onEnvironmentToggle}
         onEnvironmentIntensityChange={props.onEnvironmentIntensityChange}
         onLightIntensityChange={props.onLightIntensityChange}
+        onCameraCloseLimitChange={props.onCameraCloseLimitChange}
         onGridVisibleChange={props.onGridVisibleChange}
         onGridRenderModeChange={props.onGridRenderModeChange}
         onGridColorChange={props.onGridColorChange}
