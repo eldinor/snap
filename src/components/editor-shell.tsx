@@ -85,6 +85,7 @@ interface EditorToolbarProps {
   onSaveOnEveryUiUpdateChange: (value: boolean) => void;
   onAutosaveEnabledChange: (value: boolean) => void;
   onAutosaveIntervalChange: (value: number) => void;
+  onUseIndexedDbAssetCacheChange: (value: boolean) => void;
   onGridPlaneSizeChange: (value: number) => void;
   onRetuneCamera: () => void;
   onRestoreDefaults: () => void;
@@ -356,6 +357,19 @@ function EditorToolbar(props: EditorToolbarProps) {
                 <option value="120">2 min</option>
                 <option value="300">5 min</option>
               </select>
+            </label>
+            <label className="setting-row">
+              <span className="setting-copy">Use IndexedDB Asset Cache</span>
+              <span className="setting-switch">
+                <input
+                  type="checkbox"
+                  checked={toolbar.useIndexedDbAssetCache}
+                  onChange={(event) => {
+                    props.onUseIndexedDbAssetCacheChange(event.target.checked);
+                  }}
+                />
+                <span className="setting-slider" aria-hidden="true"></span>
+              </span>
             </label>
             <label className="setting-row">
               <span className="setting-copy">Environment Lighting</span>
@@ -1294,10 +1308,16 @@ interface AssetSidebarProps {
   availableCategories: string[];
   activeCategory: AssetCategory | "All";
   filteredAssets: AssetDefinition[];
+  assetCacheSupported: boolean;
+  assetCacheEnabled: boolean;
+  activeLibraryCacheMessage: string;
+  warmLibraryButtonLabel: string;
+  activeLibraryWarmInProgress: boolean;
   viewState: EditorViewState;
   onSearchQueryChange: (value: string) => void;
   onActiveLibraryChange: (value: string) => void;
   onRefreshLibraries: () => void;
+  onWarmLibrary: () => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
   onAssetClick: (libraryId: string, assetId: string) => void;
 }
@@ -1337,6 +1357,22 @@ function AssetSidebar(props: AssetSidebarProps) {
               <RedoIcon className="tool-icon" />
             </button>
           </div>
+          <div className="library-cache-row">
+            <button
+              type="button"
+              className="tool-button library-cache-button"
+              disabled={!props.assetCacheSupported || props.activeLibraryWarmInProgress}
+              onClick={props.onWarmLibrary}
+            >
+              <span className="tool-button-content">
+                <span>{props.warmLibraryButtonLabel}</span>
+              </span>
+            </button>
+            <span className={`library-cache-badge${props.assetCacheEnabled ? "" : " is-muted"}`}>
+              {props.assetCacheEnabled ? "Cache On" : "Cache Off"}
+            </span>
+          </div>
+          <div className="library-cache-meta">{props.activeLibraryCacheMessage}</div>
           <FilterBar
             className="filter-bar-compact"
             searchId="asset-search"
@@ -1613,6 +1649,11 @@ interface EditorShellProps {
   availableCategories: string[];
   activeCategory: AssetCategory | "All";
   filteredAssets: AssetDefinition[];
+  assetCacheSupported: boolean;
+  assetCacheEnabled: boolean;
+  activeLibraryCacheMessage: string;
+  warmLibraryButtonLabel: string;
+  activeLibraryWarmInProgress: boolean;
   exportMenuOpen: boolean;
   settingsMenuOpen: boolean;
   sceneSortMode: SceneSortMode;
@@ -1620,6 +1661,7 @@ interface EditorShellProps {
   onSearchQueryChange: (value: string) => void;
   onActiveLibraryChange: (value: string) => void;
   onRefreshLibraries: () => void;
+  onWarmLibrary: () => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
   onAssetClick: (libraryId: string, assetId: string) => void;
   onSceneItemSelect: (selectionIds: string[], primaryId: string | null) => void;
@@ -1671,6 +1713,7 @@ interface EditorShellProps {
   onSaveOnEveryUiUpdateChange: (value: boolean) => void;
   onAutosaveEnabledChange: (value: boolean) => void;
   onAutosaveIntervalChange: (value: number) => void;
+  onUseIndexedDbAssetCacheChange: (value: boolean) => void;
   onGridPlaneSizeChange: (value: number) => void;
   onRetuneCamera: () => void;
   onRestoreDefaults: () => void;
@@ -1764,6 +1807,7 @@ export function EditorShell(props: EditorShellProps) {
         onSaveOnEveryUiUpdateChange={props.onSaveOnEveryUiUpdateChange}
         onAutosaveEnabledChange={props.onAutosaveEnabledChange}
         onAutosaveIntervalChange={props.onAutosaveIntervalChange}
+        onUseIndexedDbAssetCacheChange={props.onUseIndexedDbAssetCacheChange}
         onGridPlaneSizeChange={props.onGridPlaneSizeChange}
         onRetuneCamera={props.onRetuneCamera}
         onRestoreDefaults={props.onRestoreDefaults}
@@ -1779,10 +1823,16 @@ export function EditorShell(props: EditorShellProps) {
           availableCategories={props.availableCategories}
           activeCategory={props.activeCategory}
           filteredAssets={props.filteredAssets}
+          assetCacheSupported={props.assetCacheSupported}
+          assetCacheEnabled={props.assetCacheEnabled}
+          activeLibraryCacheMessage={props.activeLibraryCacheMessage}
+          warmLibraryButtonLabel={props.warmLibraryButtonLabel}
+          activeLibraryWarmInProgress={props.activeLibraryWarmInProgress}
           viewState={props.viewState}
           onSearchQueryChange={props.onSearchQueryChange}
           onActiveLibraryChange={props.onActiveLibraryChange}
           onRefreshLibraries={props.onRefreshLibraries}
+          onWarmLibrary={props.onWarmLibrary}
           onActiveCategoryChange={props.onActiveCategoryChange}
           onAssetClick={props.onAssetClick}
         />

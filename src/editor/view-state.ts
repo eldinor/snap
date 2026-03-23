@@ -9,6 +9,7 @@ export interface ToolbarViewState {
   saveOnEveryUiUpdate: boolean;
   autosaveEnabled: boolean;
   autosaveIntervalSeconds: number;
+  useIndexedDbAssetCache: boolean;
   mode: EditorMode;
   canUndo: boolean;
   canRedo: boolean;
@@ -110,6 +111,7 @@ export function createInitialEditorViewState(): EditorViewState {
       saveOnEveryUiUpdate: true,
       autosaveEnabled: true,
       autosaveIntervalSeconds: 30,
+      useIndexedDbAssetCache: true,
       mode: "select",
       canUndo: false,
       canRedo: false,

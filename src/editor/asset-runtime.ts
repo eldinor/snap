@@ -13,7 +13,8 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Scene } from "@babylonjs/core/scene";
 import type { Node } from "@babylonjs/core/node";
-import { splitAssetFileReference, type AssetDefinition } from "../assets";
+import { getAssetLibraryBundle, splitAssetFileReference, type AssetDefinition } from "../assets";
+import { importAssetFromLibraryCache } from "../asset-library-cache";
 import { collapseRedundantImportRoot } from "./import-root-collapse";
 import { isTechnicalImportRootName } from "./import-root-collapse";
 import { clonePreviewMaterial } from "./placement";
@@ -121,19 +122,32 @@ export async function instantiateAsset(
 
 export async function loadAssetTemplate(
   asset: AssetDefinition,
+  libraryId: string,
   scene: Scene,
   basePath: string,
+  useIndexedDbAssetCache = false,
   freezeModelMaterials = true,
 ): Promise<AssetTemplate> {
   try {
-    const assetReference = splitAssetFileReference(asset.fileName);
-    const importResult = await ImportMeshAsync(assetReference.fileName, scene, {
-      meshNames: "",
-      rootUrl: `${basePath}${assetReference.directory}`,
-    });
+    let importResult = null;
+    if (useIndexedDbAssetCache) {
+      try {
+        importResult = await importAssetFromLibraryCache(getAssetLibraryBundle(libraryId), asset, scene);
+      } catch {
+        importResult = null;
+      }
+    }
+
+    const directImportResult = importResult ?? (await (async () => {
+      const assetReference = splitAssetFileReference(asset.fileName);
+      return ImportMeshAsync(assetReference.fileName, scene, {
+        meshNames: "",
+        rootUrl: `${basePath}${assetReference.directory}`,
+      });
+    })());
     const root = new TransformNode(`template-${asset.id}`, scene);
 
-    const importedRootNodes = [...importResult.transformNodes, ...importResult.meshes].filter((node) => !node.parent);
+    const importedRootNodes = [...directImportResult.transformNodes, ...directImportResult.meshes].filter((node) => !node.parent);
     importedRootNodes.forEach((node) => {
       const technicalRoot = node instanceof TransformNode && isTechnicalImportRootName(node.name);
       const nextNode = node instanceof TransformNode ? (collapseRedundantImportRoot(node, root) ?? node) : node;

@@ -565,7 +565,17 @@ export class ModularEditorApp {
     window.addEventListener("keyup", this.handleWindowKeyUp);
   }
 
+  private getEffectiveGridSize() {
+    if (GRID_SIZE_OPTIONS.includes(this.gridSize as (typeof GRID_SIZE_OPTIONS)[number])) {
+      return this.gridSize;
+    }
+
+    this.gridSize = DEFAULT_USER_SETTINGS.gridSize;
+    return this.gridSize;
+  }
+
   private buildSelectionViewState(): SelectionViewState {
+    const gridSize = this.getEffectiveGridSize();
     const selectionCount = this.selectedSceneItemIds.size;
     if (selectionCount > 1) {
       return {
@@ -585,7 +595,7 @@ export class ModularEditorApp {
         rotationDegrees: null,
         positionText: null,
         rotationText: null,
-        snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
+        snapText: this.snapEnabled ? `Grid ${gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
       };
     }
 
@@ -625,7 +635,7 @@ export class ModularEditorApp {
       rotationText: rotationDegrees
         ? `${rotationDegrees[0]}deg, ${rotationDegrees[1]}deg, ${rotationDegrees[2]}deg`
         : null,
-      snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
+      snapText: this.snapEnabled ? `Grid ${gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
     };
   }
 
@@ -753,6 +763,7 @@ export class ModularEditorApp {
   }
 
   private buildToolbarViewState(): ToolbarViewState {
+    const gridSize = this.getEffectiveGridSize();
     return {
       snapEnabled: this.snapEnabled,
       ySnapEnabled: this.ySnapEnabled,
@@ -761,12 +772,13 @@ export class ModularEditorApp {
       saveOnEveryUiUpdate: this.settings.saveOnEveryUiUpdate,
       autosaveEnabled: this.settings.autosaveEnabled,
       autosaveIntervalSeconds: this.settings.autosaveIntervalSeconds,
+      useIndexedDbAssetCache: this.settings.useIndexedDbAssetCache,
       mode: this.mode,
       canUndo: this.history.canUndo,
       canRedo: this.history.canRedo,
       hasSelection: this.selectedSceneItemIds.size > 0,
       hasObjects: this.objects.size > 0,
-      gridSize: this.gridSize,
+      gridSize,
       gridPlaneSize: this.gridPlaneSize,
       rotationStepDegrees: this.rotationStepDegrees,
       rotationAxis: this.rotationAxis,
@@ -784,6 +796,7 @@ export class ModularEditorApp {
   }
 
   private buildStatusViewState(): StatusViewState {
+    const gridSize = this.getEffectiveGridSize();
     const activeAsset =
       this.activeAssetId && this.activeAssetLibraryId
         ? findAssetByRef({ libraryId: this.activeAssetLibraryId, assetId: this.activeAssetId })
@@ -793,7 +806,7 @@ export class ModularEditorApp {
       activeAssetName: activeAsset?.name ?? null,
       snapEnabled: this.snapEnabled,
       ySnapEnabled: this.ySnapEnabled,
-      gridSize: this.gridSize,
+      gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
       rotationAxis: this.rotationAxis,
       drawCalls: this.drawCalls,
@@ -980,7 +993,7 @@ export class ModularEditorApp {
     return {
       snapEnabled: this.snapEnabled,
       ySnapEnabled: this.ySnapEnabled,
-      gridSize: this.gridSize,
+      gridSize: this.getEffectiveGridSize(),
       rotationStepDegrees: this.rotationStepDegrees,
       environmentIntensity: this.settings.environmentIntensity,
       lightIntensity: this.settings.lightIntensity,
@@ -1146,8 +1159,8 @@ export class ModularEditorApp {
     if (typeof metadata.ySnapEnabled === "boolean") {
       this.ySnapEnabled = metadata.ySnapEnabled;
     }
-    if (typeof metadata.gridSize === "number") {
-      this.gridSize = metadata.gridSize;
+    if (GRID_SIZE_OPTIONS.includes(metadata.gridSize as (typeof GRID_SIZE_OPTIONS)[number])) {
+      this.gridSize = metadata.gridSize as number;
     }
     if (typeof metadata.rotationStepDegrees === "number") {
       this.rotationStepDegrees = metadata.rotationStepDegrees;
@@ -1447,7 +1460,8 @@ export class ModularEditorApp {
       return;
     }
     cameraForward.normalize();
-    const step = this.snapEnabled ? this.gridSize : 0.25;
+    const gridSize = this.getEffectiveGridSize();
+    const step = this.snapEnabled ? gridSize : 0.25;
     const forwardAxis =
       Math.abs(cameraForward.x) >= Math.abs(cameraForward.z)
         ? new Vector3(Math.sign(cameraForward.x) || 1, 0, 0)
@@ -1964,17 +1978,20 @@ export class ModularEditorApp {
   private async loadAssetTemplate(asset: AssetDefinition, libraryId: string): Promise<AssetTemplate> {
     return loadAssetTemplate(
       asset,
+      libraryId,
       this.scene,
       getAssetBasePathForLibrary(libraryId),
+      this.settings.useIndexedDbAssetCache,
       false,
     );
   }
 
   private renderGrid() {
+    const gridSize = this.getEffectiveGridSize();
     this.applyGroundAppearance();
     this.gridMesh = this.sceneCore.renderProceduralGrid(
       this.gridMesh,
-      this.gridSize,
+      gridSize,
       this.gridPlaneSize,
       this.settings.gridVisible && this.settings.gridRenderMode === "lines",
       this.settings.gridColor,
@@ -1987,13 +2004,14 @@ export class ModularEditorApp {
   }
 
   private updatePreviewTransform() {
+    const gridSize = this.getEffectiveGridSize();
     const previewRotationRadians = new Vector3(
       this.toRadians(this.previewRotation.x),
       this.toRadians(this.previewRotation.y),
       this.toRadians(this.previewRotation.z),
     );
     const targetPoint = this.snapEnabled
-      ? snapVectorForSize(this.lastPointerPoint, this.previewTemplateSize, this.snapEnabled, this.gridSize)
+      ? snapVectorForSize(this.lastPointerPoint, this.previewTemplateSize, this.snapEnabled, gridSize)
       : this.lastPointerPoint.clone();
     const nextPreviewTransformKey = [
       targetPoint.x.toFixed(4),
@@ -2003,7 +2021,7 @@ export class ModularEditorApp {
       previewRotationRadians.y.toFixed(4),
       previewRotationRadians.z.toFixed(4),
       this.snapEnabled ? "snap:1" : "snap:0",
-      this.gridSize.toFixed(4),
+      gridSize.toFixed(4),
     ].join("|");
     if (nextPreviewTransformKey === this.lastPreviewTransformKey) {
       return;
@@ -2015,7 +2033,7 @@ export class ModularEditorApp {
       this.lastPointerPoint,
       this.previewTemplateSize,
       this.snapEnabled,
-      this.gridSize,
+      gridSize,
       previewRotationRadians,
     );
   }
@@ -2028,11 +2046,12 @@ export class ModularEditorApp {
       }
 
       if (this.snapEnabled) {
-        const snapped = snapVectorForSize(group.root.position, new Vector3(1, 1, 1), this.snapEnabled, this.gridSize);
+        const gridSize = this.getEffectiveGridSize();
+        const snapped = snapVectorForSize(group.root.position, new Vector3(1, 1, 1), this.snapEnabled, gridSize);
         group.root.position.x = snapped.x;
         group.root.position.z = snapped.z;
         if (this.ySnapEnabled) {
-          group.root.position.y = snapScalar(group.root.position.y, this.gridSize);
+          group.root.position.y = snapScalar(group.root.position.y, gridSize);
         }
         group.root.rotation[this.rotationAxis] = this.snapAngle(group.root.rotation[this.rotationAxis]);
       }
@@ -2054,11 +2073,12 @@ export class ModularEditorApp {
       const templateSize = Array.isArray(object.root.metadata?.templateSize)
         ? Vector3.FromArray(object.root.metadata.templateSize as number[])
         : new Vector3(1, 1, 1);
-      const snapped = snapVectorForSize(object.root.position, templateSize, this.snapEnabled, this.gridSize);
+      const gridSize = this.getEffectiveGridSize();
+      const snapped = snapVectorForSize(object.root.position, templateSize, this.snapEnabled, gridSize);
       object.root.position.x = snapped.x;
       object.root.position.z = snapped.z;
       if (this.ySnapEnabled) {
-        object.root.position.y = snapScalar(object.root.position.y, this.gridSize);
+        object.root.position.y = snapScalar(object.root.position.y, gridSize);
       }
       object.root.rotation[this.rotationAxis] = this.snapAngle(object.root.rotation[this.rotationAxis]);
     }
@@ -2139,12 +2159,13 @@ export class ModularEditorApp {
     const templateSize = Array.isArray(source.root.metadata?.templateSize)
       ? Vector3.FromArray(source.root.metadata.templateSize as number[])
       : template.size.clone();
+    const gridSize = this.getEffectiveGridSize();
     root.position.copyFrom(source.root.position);
-    root.position.x += Math.max(this.gridSize, templateSize.x || this.gridSize);
+    root.position.x += Math.max(gridSize, templateSize.x || gridSize);
     root.rotation.copyFrom(source.root.rotation);
 
     if (this.snapEnabled) {
-      const snapped = snapVectorForSize(root.position, templateSize, this.snapEnabled, this.gridSize);
+      const snapped = snapVectorForSize(root.position, templateSize, this.snapEnabled, gridSize);
       root.position.x = snapped.x;
       root.position.z = snapped.z;
       root.rotation[this.rotationAxis] = this.snapAngle(root.rotation[this.rotationAxis]);
@@ -2289,7 +2310,7 @@ export class ModularEditorApp {
   }
 
   private applySnapSettings() {
-    this.sceneCore.applySnapSettings(this.snapEnabled, this.gridSize, this.toRadians(this.rotationStepDegrees));
+    this.sceneCore.applySnapSettings(this.snapEnabled, this.getEffectiveGridSize(), this.toRadians(this.rotationStepDegrees));
   }
 
   private applyRotationAxis() {
@@ -2365,18 +2386,19 @@ export class ModularEditorApp {
   }
 
   private createGridGroundMaterial() {
+    const gridSize = this.getEffectiveGridSize();
     const material = new GridMaterial("ground-grid-material", this.scene);
-    const majorUnitFrequency = this.gridSize < 1 ? Math.max(1, Math.round(1 / this.gridSize)) : 1;
-    const minorUnitVisibility = this.gridSize <= 0.125 ? 0.56 : this.gridSize < 1 ? 0.48 : 0.35;
+    const majorUnitFrequency = gridSize < 1 ? Math.max(1, Math.round(1 / gridSize)) : 1;
+    const minorUnitVisibility = gridSize <= 0.125 ? 0.56 : gridSize < 1 ? 0.48 : 0.35;
     const gridLineBaseColor = Color3.FromHexString(this.settings.gridColor);
     const brightenedLineColor = Color3.Lerp(
       gridLineBaseColor,
       Color3.Gray(),
-      this.gridSize <= 0.125 ? 0.42 : this.gridSize < 1 ? 0.24 : 0.12,
+      gridSize <= 0.125 ? 0.42 : gridSize < 1 ? 0.24 : 0.12,
     );
     material.mainColor = Color3.FromHexString(this.settings.groundColor);
     material.lineColor = brightenedLineColor;
-    material.gridRatio = this.gridSize;
+    material.gridRatio = gridSize;
     material.majorUnitFrequency = majorUnitFrequency;
     material.minorUnitVisibility = minorUnitVisibility;
     material.opacity = 1;
@@ -3391,7 +3413,10 @@ export class ModularEditorApp {
   }
 
   setGridSize(value: number) {
-    if (!GRID_SIZE_OPTIONS.includes(value as (typeof GRID_SIZE_OPTIONS)[number]) || this.gridSize === value) {
+    if (
+      !GRID_SIZE_OPTIONS.includes(value as (typeof GRID_SIZE_OPTIONS)[number]) ||
+      this.getEffectiveGridSize() === value
+    ) {
       return;
     }
 
@@ -3516,6 +3541,7 @@ export class ModularEditorApp {
     this.settings.saveOnEveryUiUpdate = DEFAULT_USER_SETTINGS.saveOnEveryUiUpdate;
     this.settings.autosaveEnabled = DEFAULT_USER_SETTINGS.autosaveEnabled;
     this.settings.autosaveIntervalSeconds = DEFAULT_USER_SETTINGS.autosaveIntervalSeconds;
+    this.settings.useIndexedDbAssetCache = DEFAULT_USER_SETTINGS.useIndexedDbAssetCache;
     this.settings.environmentEnabled = DEFAULT_USER_SETTINGS.environmentEnabled;
     this.settings.environmentIntensity = DEFAULT_USER_SETTINGS.environmentIntensity;
     this.settings.lightIntensity = DEFAULT_USER_SETTINGS.lightIntensity;
@@ -3682,6 +3708,16 @@ export class ModularEditorApp {
         this.flushTimedAutosave();
       }, this.settings.autosaveIntervalSeconds * 1000);
     }
+    this.saveUserSettings();
+    this.emitViewState();
+  }
+
+  setUseIndexedDbAssetCache(value: boolean) {
+    if (this.settings.useIndexedDbAssetCache === value) {
+      return;
+    }
+
+    this.settings.useIndexedDbAssetCache = value;
     this.saveUserSettings();
     this.emitViewState();
   }

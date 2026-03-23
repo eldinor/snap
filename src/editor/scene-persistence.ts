@@ -1,7 +1,9 @@
 import { parseSerializedAssetScene, type SerializedAssetScene } from "./scene-serialization";
 
-const AUTOSAVE_STORAGE_KEY = "snap.asset-scene-autosave.v1";
-const AUTOSAVE_HISTORY_STORAGE_KEY = "snap.asset-scene-autosave-history.v1";
+// v2 intentionally ignores legacy autosaves after editor state changes that were
+// causing broken restored sessions in some browser profiles.
+const AUTOSAVE_STORAGE_KEY = "snap.asset-scene-autosave.v2";
+const AUTOSAVE_HISTORY_STORAGE_KEY = "snap.asset-scene-autosave-history.v2";
 const MANUAL_SAVE_STORAGE_KEY = "snap.asset-scene-manual-save.v1";
 const MAX_AUTOSAVE_HISTORY_ENTRIES = 10;
 
