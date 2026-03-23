@@ -2,6 +2,8 @@
 
 Snap Editor is a browser-based modular scene builder for arranging 3D building pieces, props, and grouped structures on a grid.
 
+Current library names in this repo are temporary testing names. Expect those asset-library names and labels to change in the future as the real content lineup settles.
+
 It is built with:
 
 - `React`
@@ -144,6 +146,12 @@ npm run preview
 
 The built-in asset browser is now manifest-driven.
 
+Note:
+
+- the currently registered library names are testing names
+- those names should not be treated as stable product-facing names
+- expect them to change as the asset libraries are refined
+
 - [`src/data/libraries.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries.json) registers the built-in libraries available to the app
 - [`src/data/libraries/built-in/library.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/library.json) describes the built-in library and its file layout
 - [`src/data/libraries/built-in/assets-manifest.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/assets-manifest.json) is the source of truth for built-in library entries
@@ -160,6 +168,8 @@ The built-in asset browser is now manifest-driven.
 For the full multi-library workflow, see [`docs/LIBRARIES.md`](/c:/Users/Fiolent23/newrepos/snap/docs/LIBRARIES.md).
 
 The asset browser library selector is registry-backed and includes the core `built-in` library plus the optional `fantasy-props-megakit-standard` built-in library by default.
+
+Those labels reflect the current testing asset libraries only and may change later.
 
 Set `VITE_INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD=false` to exclude that second built-in library from the app and studio at build time.
 

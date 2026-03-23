@@ -6,6 +6,8 @@ Snap supports multiple asset libraries.
 
 Libraries stay separate in the asset browser, so you can switch between them without mixing everything into one very large asset list.
 
+The library names currently present in this repo are testing names. They may be renamed later, so treat the current ids and display names as temporary workflow labels rather than permanent product names.
+
 Examples:
 
 - `built-in`
