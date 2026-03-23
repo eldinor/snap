@@ -1,6 +1,6 @@
 import "@babylonjs/loaders/glTF";
 import { Material } from "@babylonjs/core/Materials/material";
-import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
+import { ImportMeshAsync } from "@babylonjs/core/Loading/sceneLoader";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -113,12 +113,10 @@ export async function loadAssetTemplate(
 ): Promise<AssetTemplate> {
   try {
     const assetReference = splitAssetFileReference(asset.fileName);
-    const importResult = await SceneLoader.ImportMeshAsync(
-      "",
-      `${basePath}${assetReference.directory}`,
-      assetReference.fileName,
-      scene,
-    );
+    const importResult = await ImportMeshAsync(assetReference.fileName, scene, {
+      meshNames: "",
+      rootUrl: `${basePath}${assetReference.directory}`,
+    });
     const root = new TransformNode(`template-${asset.id}`, scene);
 
     const importedRootNodes = [...importResult.transformNodes, ...importResult.meshes].filter((node) => !node.parent);

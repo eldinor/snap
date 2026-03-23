@@ -5,7 +5,7 @@ import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
-import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
+import { ImportMeshAsync } from "@babylonjs/core/Loading/sceneLoader";
 import { ScreenshotTools } from "@babylonjs/core/Misc/screenshotTools";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
@@ -61,12 +61,10 @@ export class AssetPreviewRenderer {
   async loadAsset(fileName: string, basePath = getAssetBasePath()) {
     this.root?.dispose(false, false);
     const assetReference = splitAssetFileReference(fileName);
-    const result = await SceneLoader.ImportMeshAsync(
-      "",
-      `${basePath}${assetReference.directory}`,
-      assetReference.fileName,
-      this.scene,
-    );
+    const result = await ImportMeshAsync(assetReference.fileName, this.scene, {
+      meshNames: "",
+      rootUrl: `${basePath}${assetReference.directory}`,
+    });
     const root = new TransformNode("preview-root", this.scene);
 
     [...result.transformNodes, ...result.meshes].forEach((node) => {
