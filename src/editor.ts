@@ -280,7 +280,7 @@ export class ModularEditorApp {
   private mode: "select" | "place" = "select";
   private snapEnabled = true;
   private ySnapEnabled = false;
-  private gridSize = DEFAULT_USER_SETTINGS.gridSize;
+  private gridSize = DEFAULT_USER_SETTINGS.gridSize; // check if valid
   private gridPlaneSize = DEFAULT_USER_SETTINGS.gridPlaneSize;
   private rotationStepDegrees = 90;
   private rotationAxis: RotationAxis = "y";
