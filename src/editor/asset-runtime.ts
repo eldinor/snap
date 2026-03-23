@@ -1,5 +1,6 @@
-import "@babylonjs/core/";
 import "@babylonjs/loaders/glTF";
+import "@babylonjs/core/Materials/PBR/index";
+import "@babylonjs/core/Meshes/instancedMesh";
 import { Material } from "@babylonjs/core/Materials/material";
 import { ImportMeshAsync } from "@babylonjs/core/Loading/sceneLoader";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
@@ -72,6 +73,7 @@ export async function instantiateAsset(
   template: AssetTemplate,
   scene: Scene,
   placementKind: "clone" | "instance" = "clone",
+  freezeMaterials = false,
 ) {
   const root =
     preview || placementKind === "clone"
@@ -103,6 +105,12 @@ export async function instantiateAsset(
     }
   });
 
+  if (!preview && freezeMaterials) {
+    scene.onAfterRenderObservable.addOnce(() => {
+      setRootMaterialsFrozen(root, true);
+    });
+  }
+
   return root;
 }
 
@@ -133,13 +141,16 @@ export async function loadAssetTemplate(
     });
 
     const size = normalizeTemplateRoot(root);
-    setRootMaterialsFrozen(root, freezeModelMaterials);
     root.setEnabled(false);
     return { root, size };
   } catch {
     const root = createPlaceholderTemplate(asset, scene);
     const size = normalizeTemplateRoot(root);
-    setRootMaterialsFrozen(root, freezeModelMaterials);
+    if (freezeModelMaterials) {
+      scene.onAfterRenderObservable.addOnce(() => {
+        setRootMaterialsFrozen(root, true);
+      });
+    }
     root.setEnabled(false);
     return { root, size };
   }

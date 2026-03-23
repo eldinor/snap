@@ -3,7 +3,9 @@ import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
 import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
+import "@babylonjs/core/Culling/ray";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
+import "@babylonjs/core/Helpers/sceneHelpers";
 import type { EnvironmentHelper } from "@babylonjs/core/Helpers/environmentHelper";
 import type { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { HemisphericLight as BabylonHemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
@@ -1044,6 +1046,7 @@ export class ModularEditorApp {
         template,
         this.scene,
         entry.placementKind === "clone" || entry.placementKind === "instance" ? entry.placementKind : "instance",
+        this.settings.freezeModelMaterials,
       );
       if (!root) {
         continue;
@@ -1880,7 +1883,7 @@ export class ModularEditorApp {
     }
 
     const template = await this.getAssetTemplate(asset, libraryId);
-    const preview = await instantiateAsset(asset, true, template, this.scene, "clone");
+    const preview = await instantiateAsset(asset, true, template, this.scene, "clone", false);
     if (!preview) {
       return;
     }
@@ -1906,7 +1909,7 @@ export class ModularEditorApp {
 
     const template = await this.getAssetTemplate(asset, this.previewAssetLibraryId ?? ACTIVE_LIBRARY.id);
     const placementKind = this.getDefaultPlacementKindForAsset(asset);
-    const root = await instantiateAsset(asset, false, template, this.scene, placementKind);
+    const root = await instantiateAsset(asset, false, template, this.scene, placementKind, this.settings.freezeModelMaterials);
     if (!root) {
       return;
     }
@@ -1960,7 +1963,7 @@ export class ModularEditorApp {
       asset,
       this.scene,
       getAssetBasePathForLibrary(libraryId),
-      this.settings.freezeModelMaterials,
+      false,
     );
   }
 
@@ -2125,7 +2128,7 @@ export class ModularEditorApp {
 
     const template = await this.getAssetTemplate(asset, source.libraryId);
     const placementKind = source.placementKind ?? this.getDefaultPlacementKindForAsset(asset);
-    const root = await instantiateAsset(asset, false, template, this.scene, placementKind);
+    const root = await instantiateAsset(asset, false, template, this.scene, placementKind, this.settings.freezeModelMaterials);
     if (!root) {
       return;
     }
@@ -3705,12 +3708,6 @@ export class ModularEditorApp {
   }
 
   private setAllModelMaterialsFrozen(frozen: boolean) {
-    this.assetTemplates.forEach((templatePromise) => {
-      void templatePromise.then((template) => {
-        setRootMaterialsFrozen(template.root, frozen);
-      });
-    });
-
     this.objects.forEach((object) => {
       setRootMaterialsFrozen(object.root, frozen);
     });
