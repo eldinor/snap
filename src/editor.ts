@@ -617,7 +617,9 @@ export class ModularEditorApp {
       position: position ? [position.x, position.y, position.z] : null,
       rotationDegrees,
       positionText: position ? `${position.x.toFixed(3)}, ${position.y.toFixed(3)}, ${position.z.toFixed(3)}` : null,
-      rotationText: rotationDegrees ? `${rotationDegrees[0]}deg, ${rotationDegrees[1]}deg, ${rotationDegrees[2]}deg` : null,
+      rotationText: rotationDegrees
+        ? `${rotationDegrees[0]}deg, ${rotationDegrees[1]}deg, ${rotationDegrees[2]}deg`
+        : null,
       snapText: this.snapEnabled ? `Grid ${this.gridSize}${this.ySnapEnabled ? " + Y" : ""}` : "Off",
     };
   }
@@ -975,7 +977,6 @@ export class ModularEditorApp {
       ySnapEnabled: this.ySnapEnabled,
       gridSize: this.gridSize,
       rotationStepDegrees: this.rotationStepDegrees,
-      environmentEnabled: this.settings.environmentEnabled,
       environmentIntensity: this.settings.environmentIntensity,
       lightIntensity: this.settings.lightIntensity,
       gridVisible: this.settings.gridVisible,
@@ -1144,9 +1145,6 @@ export class ModularEditorApp {
     }
     if (typeof metadata.rotationStepDegrees === "number") {
       this.rotationStepDegrees = metadata.rotationStepDegrees;
-    }
-    if (typeof metadata.environmentEnabled === "boolean") {
-      this.settings.environmentEnabled = metadata.environmentEnabled;
     }
     if (typeof metadata.environmentIntensity === "number") {
       this.settings.environmentIntensity = metadata.environmentIntensity;
@@ -2293,12 +2291,25 @@ export class ModularEditorApp {
   }
 
   private applyEnvironmentSetting() {
+    if (this.settings.freezeModelMaterials) {
+      // Frozen materials ignore scene.environmentTexture / environmentIntensity uniform
+      // changes. Temporarily unfreeze so the new values are picked up on the next render,
+      // then re-freeze afterwards.
+      this.setAllModelMaterialsFrozen(false);
+    }
+
     this.sceneCore.applyEnvironmentSetting(
       this.defaultEnvironmentTexture ?? null,
       this.settings.environmentEnabled,
       this.settings.environmentIntensity,
       this.defaultEnvironment?.skybox ?? null,
     );
+
+    if (this.settings.freezeModelMaterials) {
+      this.scene.onAfterRenderObservable.addOnce(() => {
+        this.setAllModelMaterialsFrozen(true);
+      });
+    }
   }
 
   private applyLightIntensity() {
@@ -3693,20 +3704,24 @@ export class ModularEditorApp {
     );
   }
 
-  private applyModelMaterialFreezeSetting() {
+  private setAllModelMaterialsFrozen(frozen: boolean) {
     this.assetTemplates.forEach((templatePromise) => {
       void templatePromise.then((template) => {
-        setRootMaterialsFrozen(template.root, this.settings.freezeModelMaterials);
+        setRootMaterialsFrozen(template.root, frozen);
       });
     });
 
     this.objects.forEach((object) => {
-      setRootMaterialsFrozen(object.root, this.settings.freezeModelMaterials);
+      setRootMaterialsFrozen(object.root, frozen);
     });
 
     if (this.placementPreview) {
-      setRootMaterialsFrozen(this.placementPreview, this.settings.freezeModelMaterials);
+      setRootMaterialsFrozen(this.placementPreview, frozen);
     }
+  }
+
+  private applyModelMaterialFreezeSetting() {
+    this.setAllModelMaterialsFrozen(this.settings.freezeModelMaterials);
   }
 
   private applyCleanExportNodeNames(exportNodes: Set<Node>) {

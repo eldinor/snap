@@ -18,7 +18,6 @@ export interface SerializedAssetSceneMetadata {
   ySnapEnabled?: boolean;
   gridSize?: number;
   rotationStepDegrees?: number;
-  environmentEnabled?: boolean;
   environmentIntensity?: number;
   lightIntensity?: number;
   gridVisible?: boolean;
@@ -60,7 +59,7 @@ export function serializeAssetScene(
       assetId: object.assetId,
       placementKind: object.placementKind,
       position: [...object.position] as [number, number, number],
-      rotationDegrees: object.rotationDegrees ? [...object.rotationDegrees] as [number, number, number] : undefined,
+      rotationDegrees: object.rotationDegrees ? ([...object.rotationDegrees] as [number, number, number]) : undefined,
       rotationYDegrees: object.rotationYDegrees,
       name: object.name,
       hidden: object.hidden,
@@ -93,7 +92,6 @@ export function parseSerializedAssetScene(value: unknown): SerializedAssetScene 
       (metadata.ySnapEnabled !== undefined && typeof metadata.ySnapEnabled !== "boolean") ||
       (metadata.gridSize !== undefined && typeof metadata.gridSize !== "number") ||
       (metadata.rotationStepDegrees !== undefined && typeof metadata.rotationStepDegrees !== "number") ||
-      (metadata.environmentEnabled !== undefined && typeof metadata.environmentEnabled !== "boolean") ||
       (metadata.environmentIntensity !== undefined && typeof metadata.environmentIntensity !== "number") ||
       (metadata.lightIntensity !== undefined && typeof metadata.lightIntensity !== "number") ||
       (metadata.gridVisible !== undefined && typeof metadata.gridVisible !== "boolean") ||
