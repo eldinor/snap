@@ -1,3 +1,4 @@
+import "@babylonjs/core/";
 import "@babylonjs/loaders/glTF";
 import { Material } from "@babylonjs/core/Materials/material";
 import { ImportMeshAsync } from "@babylonjs/core/Loading/sceneLoader";
