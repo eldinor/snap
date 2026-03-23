@@ -1,6 +1,8 @@
+// Registers the glTF loader used by ImportMeshAsync(...).
 import "@babylonjs/loaders/glTF";
 import { FramingBehavior } from "@babylonjs/core/Behaviors/Cameras/framingBehavior";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
+// Registers ArcRotateCamera input plugins used by camera.attachControl(...).
 import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";

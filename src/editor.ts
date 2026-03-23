@@ -1,10 +1,13 @@
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
+// Registers ArcRotateCamera input plugins used by camera.attachControl(...).
 import "@babylonjs/core/Cameras/arcRotateCameraInputsManager";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { PointerEventTypes } from "@babylonjs/core/Events/pointerEvents";
 import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
+// Adds the ray/picking pieces behind scene.pick(...) and scene.multiPick(...).
 import "@babylonjs/core/Culling/ray";
 import { GizmoManager } from "@babylonjs/core/Gizmos/gizmoManager";
+// Adds Scene helper extensions like scene.createDefaultEnvironment(...).
 import "@babylonjs/core/Helpers/sceneHelpers";
 import type { EnvironmentHelper } from "@babylonjs/core/Helpers/environmentHelper";
 import type { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";

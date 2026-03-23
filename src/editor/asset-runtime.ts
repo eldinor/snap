@@ -1,5 +1,8 @@
+// Registers the glTF loader used by ImportMeshAsync(...).
 import "@babylonjs/loaders/glTF";
+// Ensures Babylon PBR material types/shaders exist for imported glTF materials.
 import "@babylonjs/core/Materials/PBR/index";
+// Registers InstancedMesh support for template.instantiateHierarchy(...).
 import "@babylonjs/core/Meshes/instancedMesh";
 import { Material } from "@babylonjs/core/Materials/material";
 import { ImportMeshAsync } from "@babylonjs/core/Loading/sceneLoader";
@@ -106,6 +109,8 @@ export async function instantiateAsset(
   });
 
   if (!preview && freezeMaterials) {
+    // Freeze only live instances after their first render; freezing cached disabled templates
+    // too early can leave imported materials present but not visibly rendered.
     scene.onAfterRenderObservable.addOnce(() => {
       setRootMaterialsFrozen(root, true);
     });

@@ -1,3 +1,4 @@
+// Injects the global application styles for the React entrypoint.
 import "./style.css";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
