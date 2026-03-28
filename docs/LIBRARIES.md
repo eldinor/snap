@@ -6,10 +6,11 @@ Snap supports multiple asset libraries.
 
 Libraries stay separate in the asset browser, so you can switch between them without mixing everything into one very large asset list.
 
+The library names currently present in this repo are testing names. They may be renamed later, so treat the current ids and display names as temporary workflow labels rather than permanent product names.
+
 Examples:
 
 - `built-in`
-- `roof-starter`
 - `fantasy-props-megakit-standard`
 
 Promoting a library to built-in does not merge it into the first library. It stays its own selectable library entry.
@@ -32,6 +33,9 @@ Built-in libraries use:
 - `src/data/libraries/<library-id>/asset-tag-templates.json`
 - `public/assets/libraries/<library-id>/glTF/`
 - `public/generated/asset-previews/<library-id>/`
+
+The optional `fantasy-props-megakit-standard` built-in library is enabled by default.
+Set `VITE_INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD=false` when starting Vite or building if you want to exclude it.
 
 Imported libraries use:
 

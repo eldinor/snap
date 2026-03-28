@@ -1,4 +1,5 @@
 import {
+  INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD,
   getAssetLibraryBundles,
   getAssetThumbnailUrlForLibrary,
   loadImportedLibraryBundles,
@@ -8,7 +9,7 @@ import {
   type AssetLibraryMeta,
 } from "./assets";
 import builtInTagTemplatesManifest from "./data/libraries/built-in/asset-tag-templates.json";
-import roofStarterTagTemplatesManifest from "./data/libraries/roof-starter/asset-tag-templates.json";
+import fantasyPropsTagTemplatesManifest from "./data/libraries/fantasy-props-megakit-standard/asset-tag-templates.json";
 import JSZip from "jszip";
 
 type SaveFilePickerWindow = Window &
@@ -756,7 +757,9 @@ if (
 let libraryBundles = getAssetLibraryBundles();
 const libraryTemplateManifests: Record<string, unknown> = {
   "built-in": builtInTagTemplatesManifest,
-  "roof-starter": roofStarterTagTemplatesManifest,
+  ...(INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD
+    ? { "fantasy-props-megakit-standard": fantasyPropsTagTemplatesManifest }
+    : {}),
 };
 
 function parseAssetCategoryManifest(value: unknown): AssetCategoryManifest {

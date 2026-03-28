@@ -132,6 +132,7 @@ export class ModularEditorApp {
   private readonly engine: Engine;
   private readonly scene: Scene;
   private readonly camera: ArcRotateCamera;
+  private readonly canvas: HTMLCanvasElement;
   private readonly gizmoManager: GizmoManager;
   private ground!: Mesh;
   private groundMaterial: Material;
@@ -319,6 +320,7 @@ export class ModularEditorApp {
 
   constructor(options: ModularEditorAppOptions) {
     this.onViewStateChange = options.onViewStateChange;
+    this.canvas = options.canvas;
     this.engine = new Engine(options.canvas, true);
     this.scene = new Scene(this.engine);
     this.scene.clearColor = new Color4(0.09, 0.1, 0.12, 1);
@@ -495,6 +497,11 @@ export class ModularEditorApp {
         const isPrimaryButton = (pointerEvent?.button ?? 0) === 0;
 
         if (this.mode === "place" && this.previewAssetId && this.placementPreview && isPrimaryButton) {
+          const groundPick = this.scene.pick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh === this.ground);
+          if (!groundPick?.pickedPoint) {
+            this.enterSelectionMode();
+            return;
+          }
           await this.placeActiveAsset();
           return;
         }
@@ -511,6 +518,22 @@ export class ModularEditorApp {
       }
     });
   }
+
+  private readonly handleWindowPointerDown = (event: PointerEvent) => {
+    if (event.button !== 0) {
+      return;
+    }
+
+    if (this.mode !== "place" || !this.previewAssetId || !this.placementPreview) {
+      return;
+    }
+
+    if (event.composedPath().includes(this.canvas)) {
+      return;
+    }
+
+    this.enterSelectionMode();
+  };
 
   private findNearestPickedSceneItemId(hits: PickingInfo[]) {
     const closestHitByItemId = new Map<string, number>();
@@ -562,6 +585,7 @@ export class ModularEditorApp {
   }
 
   private bindShortcuts() {
+    window.addEventListener("pointerdown", this.handleWindowPointerDown);
     window.addEventListener("keydown", this.handleWindowKeyDown);
     window.addEventListener("keyup", this.handleWindowKeyUp);
   }
@@ -3810,6 +3834,7 @@ export class ModularEditorApp {
       this.afterRenderObserver = null;
     }
     window.removeEventListener("resize", this.handleWindowResize);
+    window.removeEventListener("pointerdown", this.handleWindowPointerDown);
     window.removeEventListener("keydown", this.handleWindowKeyDown);
     window.removeEventListener("keyup", this.handleWindowKeyUp);
     this.originMarker?.dispose();

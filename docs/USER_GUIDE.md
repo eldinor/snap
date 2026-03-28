@@ -4,6 +4,8 @@
 
 Snap Editor is a modular building editor for placing 3D assets into a scene, organizing them in groups, and adjusting them with snapping, transforms, and scene hierarchy tools.
 
+Current library names in the app and tools are temporary testing names. They are useful for the current workflow, but they should not be treated as final naming.
+
 ## Layout
 
 The editor is divided into three main areas:
@@ -14,7 +16,7 @@ The editor is divided into three main areas:
 
 The built-in asset library is defined by [`src/data/libraries/built-in/assets-manifest.json`](/c:/Users/Fiolent23/newrepos/snap/src/data/libraries/built-in/assets-manifest.json), while the actual model files remain under `public/assets/glTF/`.
 
-The asset browser now has a library selector. At the moment it shows the built-in library, but it is ready for additional registered libraries later.
+The asset browser now has a library selector. It can show the current registered testing libraries, and those library names may change in future revisions.
 
 For the full library lifecycle, see [`docs/LIBRARIES.md`](/c:/Users/Fiolent23/newrepos/snap/docs/LIBRARIES.md).
 
@@ -23,6 +25,8 @@ For the current shortcut list, see [`docs/HOTKEYS.md`](/c:/Users/Fiolent23/newre
 ## Asset Library Maintenance
 
 Use [`asset-library-studio.html`](/c:/Users/Fiolent23/newrepos/snap/asset-library-studio.html) to maintain the built-in asset library.
+
+When the guide mentions a specific library name, treat it as the current testing library name rather than a permanent label.
 
 Important:
 
