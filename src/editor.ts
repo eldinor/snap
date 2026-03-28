@@ -32,6 +32,7 @@ import {
   ACTIVE_LIBRARY,
   findAssetByRef,
   getAssetBasePathForLibrary,
+  getAssetLibraryBundle,
   getAssetRefKey,
   type AssetDefinition,
 } from "./assets";
@@ -2587,6 +2588,24 @@ export class ModularEditorApp {
     this.mode = "place";
     await this.ensurePreviewForAsset(this.activeAssetLibraryId, this.activeAssetId);
     this.emitViewState();
+  }
+
+  async warmLibraryAssets(
+    libraryId: string,
+    onProgress?: (progress: { completed: number; total: number; assetName: string }) => void,
+  ) {
+    const library = getAssetLibraryBundle(libraryId);
+    const total = library.assets.length;
+
+    for (let index = 0; index < library.assets.length; index += 1) {
+      const asset = library.assets[index];
+      await this.getAssetTemplate(asset, libraryId);
+      onProgress?.({
+        completed: index + 1,
+        total,
+        assetName: asset.name,
+      });
+    }
   }
 
   async undo() {

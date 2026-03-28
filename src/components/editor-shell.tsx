@@ -37,9 +37,15 @@ function getAssetThumbnailStyleUrl(libraryId: string, asset: AssetDefinition) {
 }
 
 export type SceneSortMode = "manual" | "name" | "asset";
+export interface LoadingOverlayState {
+  phase: "booting" | "ready" | "warming";
+  progress: number | null;
+  progressLabel: string | null;
+  detail: string | null;
+}
 
 const RIGHT_SIDEBAR_WIDTH_STORAGE_KEY = "snap:right-sidebar-width";
-const RIGHT_SIDEBAR_MIN_WIDTH = 240;
+const RIGHT_SIDEBAR_MIN_WIDTH = 280;
 const RIGHT_SIDEBAR_MAX_WIDTH = 520;
 const GRID_PLANE_SIZE_OPTIONS = [16, 32, 64, 128, 256] as const;
 const CAMERA_CLOSE_LIMIT_OPTIONS = [0.01, 0.05, 0.1, 0.25, 0.5, 1] as const;
@@ -49,6 +55,12 @@ interface EditorToolbarProps {
   exportMenuOpen: boolean;
   settingsMenuOpen: boolean;
   importInputRef: RefObject<HTMLInputElement | null>;
+  warmLibraries: AssetLibraryBundle[];
+  selectedWarmLibraryId: string;
+  warmProgressLabel: string | null;
+  warmDetail: string | null;
+  isWarmingAssets: boolean;
+  skipWarm: boolean;
   onToggleSnap: () => void;
   onToggleYSnap: () => void;
   onSelectMode: () => void;
@@ -88,6 +100,9 @@ interface EditorToolbarProps {
   onGridPlaneSizeChange: (value: number) => void;
   onRetuneCamera: () => void;
   onRestoreDefaults: () => void;
+  onWarmAssets: () => void;
+  onWarmLibraryChange: (value: string) => void;
+  onSkipWarmChange: (value: boolean) => void;
 }
 
 function formatSavedAt(value: string | null) {
@@ -478,28 +493,30 @@ function EditorToolbar(props: EditorToolbarProps) {
             <button type="button" className="toolbar-menu-button setting-action" onClick={props.onRetuneCamera}>
               <span>Retune Camera</span>
             </button>
-            <label className="setting-stack">
-              <span className="setting-copy">Grid Color</span>
-              <input
-                className="setting-color"
-                type="color"
-                value={toolbar.gridColor}
-                onChange={(event) => {
-                  props.onGridColorChange(event.target.value);
-                }}
-              />
-            </label>
-            <label className="setting-stack">
-              <span className="setting-copy">Ground Color</span>
-              <input
-                className="setting-color"
-                type="color"
-                value={toolbar.groundColor}
-                onChange={(event) => {
-                  props.onGroundColorChange(event.target.value);
-                }}
-              />
-            </label>
+            <div className="setting-inline-group">
+              <label className="setting-stack setting-inline-field">
+                <span className="setting-copy">Grid Color</span>
+                <input
+                  className="setting-color"
+                  type="color"
+                  value={toolbar.gridColor}
+                  onChange={(event) => {
+                    props.onGridColorChange(event.target.value);
+                  }}
+                />
+              </label>
+              <label className="setting-stack setting-inline-field">
+                <span className="setting-copy">Ground Color</span>
+                <input
+                  className="setting-color"
+                  type="color"
+                  value={toolbar.groundColor}
+                  onChange={(event) => {
+                    props.onGroundColorChange(event.target.value);
+                  }}
+                />
+              </label>
+            </div>
             <label className="setting-row">
               <span className="setting-copy">Freeze Model Materials</span>
               <span className="setting-switch">
@@ -539,6 +556,47 @@ function EditorToolbar(props: EditorToolbarProps) {
                 <option value="geometry">Geometry Bottom</option>
               </select>
             </label>
+            <label className="setting-stack">
+              <span className="setting-copy">Warm Library</span>
+              <select
+                className="editor-input"
+                value={props.selectedWarmLibraryId}
+                onChange={(event) => {
+                  props.onWarmLibraryChange(event.target.value);
+                }}
+              >
+                {props.warmLibraries.map((library) => (
+                  <option key={library.library.id} value={library.library.id}>
+                    {library.library.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="setting-inline-actions">
+              <label className="setting-row setting-inline-checkbox">
+                <span className="setting-copy">Skip Warm</span>
+                <span className="setting-switch">
+                  <input
+                    type="checkbox"
+                    checked={props.skipWarm}
+                    onChange={(event) => {
+                      props.onSkipWarmChange(event.target.checked);
+                    }}
+                  />
+                  <span className="setting-slider" aria-hidden="true"></span>
+                </span>
+              </label>
+              <button
+                type="button"
+                className="toolbar-menu-button setting-inline-button"
+                onClick={props.onWarmAssets}
+                disabled={props.isWarmingAssets}
+              >
+                <span>{props.isWarmingAssets ? "Warming..." : "Warm"}</span>
+              </button>
+            </div>
+            {props.warmProgressLabel ? <div className="settings-warm-progress">{props.warmProgressLabel}</div> : null}
+            {props.warmDetail ? <div className="settings-warm-detail">{props.warmDetail}</div> : null}
             <button type="button" className="toolbar-menu-button setting-action" onClick={props.onRestoreDefaults}>
               <span>Restore Defaults</span>
             </button>
@@ -1568,7 +1626,37 @@ function ViewportPanel({ canvasRef }: { canvasRef: RefObject<HTMLCanvasElement |
   );
 }
 
-function LoadingOverlay({ visible }: { visible: boolean }) {
+function LoadingOverlay({
+  visible,
+  state,
+  libraries,
+  selectedLibraryId,
+  onLibraryChange,
+  onWarmAssets,
+  onSkip,
+}: {
+  visible: boolean;
+  state: LoadingOverlayState;
+  libraries: AssetLibraryBundle[];
+  selectedLibraryId: string;
+  onLibraryChange: (value: string) => void;
+  onWarmAssets: () => void;
+  onSkip: () => void;
+}) {
+  const progressPercent = state.progress === null ? 42 : Math.max(0, Math.min(100, state.progress));
+  const subtitle =
+    state.phase === "booting"
+      ? "Loading workspace"
+      : state.phase === "warming"
+        ? "Warming selected library"
+        : "Warm asset library";
+  const description =
+    state.phase === "booting"
+      ? "Preparing the editor."
+      : state.phase === "warming"
+        ? "Loading the selected library into the current session cache for faster first placement."
+        : "First-time placements can be slow. Pick a library to warm now or jump straight into the editor.";
+
   return (
     <div className={`shell-loader${visible ? " is-visible" : ""}`} aria-hidden={!visible}>
       <div className="shell-loader-card">
@@ -1577,11 +1665,52 @@ function LoadingOverlay({ visible }: { visible: boolean }) {
         </div>
         <div className="shell-loader-copy">
           <div className="shell-loader-title">[Snap]</div>
-          <div className="shell-loader-subtitle">Loading workspace</div>
+          <div className="shell-loader-subtitle">{subtitle}</div>
+          <div className="shell-loader-description">{description}</div>
         </div>
         <div className="shell-loader-meter" role="presentation">
-          <span className="shell-loader-meter-fill"></span>
+          <span
+            className={`shell-loader-meter-fill${state.progress === null ? "" : " is-determinate"}`}
+            style={state.progress === null ? undefined : { width: `${progressPercent}%` }}
+          ></span>
         </div>
+        {state.progressLabel ? <div className="shell-loader-progress">{state.progressLabel}</div> : null}
+        {state.detail ? <div className="shell-loader-detail">{state.detail}</div> : null}
+        {state.phase === "ready" ? (
+          <>
+            <label className="shell-loader-select">
+              <span className="shell-loader-select-label">Library to warm</span>
+              <select
+                className="editor-input"
+                value={selectedLibraryId}
+                onChange={(event) => {
+                  onLibraryChange(event.target.value);
+                }}
+              >
+                {libraries.map((library) => (
+                  <option key={library.library.id} value={library.library.id}>
+                    {library.library.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="shell-loader-actions">
+              <button type="button" className="shell-loader-button shell-loader-button-primary" onClick={onWarmAssets}>
+                Warm assets
+              </button>
+              <button type="button" className="shell-loader-button" onClick={onSkip}>
+                Skip for now
+              </button>
+            </div>
+          </>
+        ) : null}
+        {state.phase === "warming" ? (
+          <div className="shell-loader-actions">
+            <button type="button" className="shell-loader-button" onClick={onSkip}>
+              Enter editor
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -1627,6 +1756,13 @@ function StatusBar({ viewState }: { viewState: EditorViewState }) {
 
 interface EditorShellProps {
   isLoading: boolean;
+  loadingOverlayState: LoadingOverlayState;
+  warmLibraries: AssetLibraryBundle[];
+  selectedWarmLibraryId: string;
+  warmProgressLabel: string | null;
+  warmDetail: string | null;
+  isWarmingAssets: boolean;
+  skipWarm: boolean;
   canvasRef: RefObject<HTMLCanvasElement | null>;
   importInputRef: RefObject<HTMLInputElement | null>;
   searchQuery: string;
@@ -1640,6 +1776,10 @@ interface EditorShellProps {
   sceneSortMode: SceneSortMode;
   viewState: EditorViewState;
   onSearchQueryChange: (value: string) => void;
+  onWarmAssets: () => void;
+  onWarmLibraryChange: (value: string) => void;
+  onSkipWarmChange: (value: boolean) => void;
+  onDismissLoadingOverlay: () => void;
   onActiveLibraryChange: (value: string) => void;
   onRefreshLibraries: () => void;
   onActiveCategoryChange: (value: AssetCategory | "All") => void;
@@ -1745,13 +1885,34 @@ export function EditorShell(props: EditorShellProps) {
   };
 
   return (
-    <section className="shell">
-      <LoadingOverlay visible={props.isLoading} />
+    <section
+      className="shell"
+      style={
+        {
+          "--scene-sidebar-width": `${rightSidebarWidth}px`,
+        } as React.CSSProperties
+      }
+    >
+      <LoadingOverlay
+        visible={props.isLoading}
+        state={props.loadingOverlayState}
+        libraries={props.warmLibraries}
+        selectedLibraryId={props.selectedWarmLibraryId}
+        onLibraryChange={props.onWarmLibraryChange}
+        onWarmAssets={props.onWarmAssets}
+        onSkip={props.onDismissLoadingOverlay}
+      />
       <EditorToolbar
         viewState={props.viewState}
         exportMenuOpen={props.exportMenuOpen}
         settingsMenuOpen={props.settingsMenuOpen}
         importInputRef={props.importInputRef}
+        warmLibraries={props.warmLibraries}
+        selectedWarmLibraryId={props.selectedWarmLibraryId}
+        warmProgressLabel={props.warmProgressLabel}
+        warmDetail={props.warmDetail}
+        isWarmingAssets={props.isWarmingAssets}
+        skipWarm={props.skipWarm}
         onToggleSnap={props.onToggleSnap}
         onToggleYSnap={props.onToggleYSnap}
         onSelectMode={props.onSelectMode}
@@ -1790,6 +1951,9 @@ export function EditorShell(props: EditorShellProps) {
         onGridPlaneSizeChange={props.onGridPlaneSizeChange}
         onRetuneCamera={props.onRetuneCamera}
         onRestoreDefaults={props.onRestoreDefaults}
+        onWarmAssets={props.onWarmAssets}
+        onWarmLibraryChange={props.onWarmLibraryChange}
+        onSkipWarmChange={props.onSkipWarmChange}
       />
       <div
         className="workspace"
