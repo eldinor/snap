@@ -1,0 +1,14 @@
+{
+    "version":  1,
+    "id":  "modular-scifi-megakit-standard",
+    "name":  "Modular SciFi MegaKit [Standard]",
+    "mode":  "imported",
+    "description":  "Imported library from sci-fi.zip.",
+    "author":  "",
+    "createdAt":  "2026-03-28T14:12:25.7487938Z",
+    "assetManifest":  "./assets-manifest.json",
+    "categories":  "./asset-categories.json",
+    "tagTemplates":  "./asset-tag-templates.json",
+    "assetBasePath":  "./glTF/",
+    "thumbnailBasePath":  "./thumbnails/"
+}

@@ -34,6 +34,7 @@ import {
   getAssetBasePathForLibrary,
   getAssetLibraryBundle,
   getAssetRefKey,
+  loadImportedLibraryBundles,
   type AssetDefinition,
 } from "./assets";
 import {
@@ -461,6 +462,12 @@ export class ModularEditorApp {
   }
 
   private async initializePersistence() {
+    try {
+      await loadImportedLibraryBundles();
+    } catch {
+      // Imported libraries are optional, so persistence restore should still proceed for built-in-only setups.
+    }
+
     const manualSaved = loadManualSavedScene();
     this.lastManualSaveAt = manualSaved?.savedAt ?? null;
 
@@ -2419,6 +2426,7 @@ export class ModularEditorApp {
     material.minorUnitVisibility = minorUnitVisibility;
     material.opacity = 1;
     material.backFaceCulling = false;
+    material.zOffset = 1;
     material.freeze();
     return material;
   }

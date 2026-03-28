@@ -1,0 +1,766 @@
+{
+  "generatedAt": "2026-03-28T14:37:08.689Z",
+  "basePath": "http://localhost:5173/libraries/modular-scifi-megakit-standard/glTF/",
+  "files": [
+    {
+      "gltf": "sci-fi\\Alien_Cyclop.gltf",
+      "png": "Alien_Cyclop.png"
+    },
+    {
+      "gltf": "sci-fi\\Alien_Oculichrysalis.gltf",
+      "png": "Alien_Oculichrysalis.png"
+    },
+    {
+      "gltf": "sci-fi\\Alien_Scolitex.gltf",
+      "png": "Alien_Scolitex.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomMetal_Corner_Round_Inner.gltf",
+      "png": "BottomMetal_Corner_Round_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomMetal_Corner_Round_Outer.gltf",
+      "png": "BottomMetal_Corner_Round_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomMetal_Corner_Square_Inner.gltf",
+      "png": "BottomMetal_Corner_Square_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomMetal_Corner_Square_Outer_1.gltf",
+      "png": "BottomMetal_Corner_Square_Outer_1.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomMetal_Corner_Square_Outer_2.gltf",
+      "png": "BottomMetal_Corner_Square_Outer_2.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomMetal_Straight.gltf",
+      "png": "BottomMetal_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomSimple_Corner_Round_Inner.gltf",
+      "png": "BottomSimple_Corner_Round_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomSimple_Corner_Round_Outer.gltf",
+      "png": "BottomSimple_Corner_Round_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomSimple_Corner_Square_Inner.gltf",
+      "png": "BottomSimple_Corner_Square_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomSimple_Corner_Square_Outer_1.gltf",
+      "png": "BottomSimple_Corner_Square_Outer_1.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomSimple_Corner_Square_Outer_2.gltf",
+      "png": "BottomSimple_Corner_Square_Outer_2.png"
+    },
+    {
+      "gltf": "sci-fi\\BottomSimple_Straight.gltf",
+      "png": "BottomSimple_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\Column_Astra.gltf",
+      "png": "Column_Astra.png"
+    },
+    {
+      "gltf": "sci-fi\\Column_Hollow.gltf",
+      "png": "Column_Hollow.png"
+    },
+    {
+      "gltf": "sci-fi\\Column_Large_Straight.gltf",
+      "png": "Column_Large_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\Column_MetalSupport.gltf",
+      "png": "Column_MetalSupport.png"
+    },
+    {
+      "gltf": "sci-fi\\Column_MetalSupport_Curve.gltf",
+      "png": "Column_MetalSupport_Curve.png"
+    },
+    {
+      "gltf": "sci-fi\\Column_Pipes.gltf",
+      "png": "Column_Pipes.png"
+    },
+    {
+      "gltf": "sci-fi\\Column_Round.gltf",
+      "png": "Column_Round.png"
+    },
+    {
+      "gltf": "sci-fi\\Column_Simple.gltf",
+      "png": "Column_Simple.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_0.gltf",
+      "png": "Decal_0.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_1.gltf",
+      "png": "Decal_1.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_2.gltf",
+      "png": "Decal_2.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_3.gltf",
+      "png": "Decal_3.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_4.gltf",
+      "png": "Decal_4.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_5.gltf",
+      "png": "Decal_5.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_6.gltf",
+      "png": "Decal_6.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_7.gltf",
+      "png": "Decal_7.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_8.gltf",
+      "png": "Decal_8.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_9.gltf",
+      "png": "Decal_9.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_A.gltf",
+      "png": "Decal_A.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Dashes.gltf",
+      "png": "Decal_Dashes.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_K.gltf",
+      "png": "Decal_K.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Line_90.gltf",
+      "png": "Decal_Line_90.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Line_90_Round.gltf",
+      "png": "Decal_Line_90_Round.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Line_90_Round_Large.gltf",
+      "png": "Decal_Line_90_Round_Large.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Line_Bend1_L.gltf",
+      "png": "Decal_Line_Bend1_L.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Line_Bend1_R.gltf",
+      "png": "Decal_Line_Bend1_R.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Line_Bend2_L.gltf",
+      "png": "Decal_Line_Bend2_L.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Line_Bend2_R.gltf",
+      "png": "Decal_Line_Bend2_R.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Line_Straight.gltf",
+      "png": "Decal_Line_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Logo.gltf",
+      "png": "Decal_Logo.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Logo_Letters.gltf",
+      "png": "Decal_Logo_Letters.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Logo_Small.gltf",
+      "png": "Decal_Logo_Small.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Sign.gltf",
+      "png": "Decal_Sign.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_V.gltf",
+      "png": "Decal_V.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_X.gltf",
+      "png": "Decal_X.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_XSign.gltf",
+      "png": "Decal_XSign.png"
+    },
+    {
+      "gltf": "sci-fi\\Decal_Z.gltf",
+      "png": "Decal_Z.png"
+    },
+    {
+      "gltf": "sci-fi\\Door_DarkMetal.gltf",
+      "png": "Door_DarkMetal.png"
+    },
+    {
+      "gltf": "sci-fi\\Door_Frame_A.gltf",
+      "png": "Door_Frame_A.png"
+    },
+    {
+      "gltf": "sci-fi\\Door_Frame_Square.gltf",
+      "png": "Door_Frame_Square.png"
+    },
+    {
+      "gltf": "sci-fi\\Door_Frame_Square_Blocked.gltf",
+      "png": "Door_Frame_Square_Blocked.png"
+    },
+    {
+      "gltf": "sci-fi\\Door_Frame_SquareTall.gltf",
+      "png": "Door_Frame_SquareTall.png"
+    },
+    {
+      "gltf": "sci-fi\\Door_Metal.gltf",
+      "png": "Door_Metal.png"
+    },
+    {
+      "gltf": "sci-fi\\Door_Simple.gltf",
+      "png": "Door_Simple.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_3Plates.gltf",
+      "png": "Platform_3Plates.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_CenterPlate.gltf",
+      "png": "Platform_CenterPlate.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_CenterPlate_Curve.gltf",
+      "png": "Platform_CenterPlate_Curve.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_DarkPlates.gltf",
+      "png": "Platform_DarkPlates.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_DarkPlates_Curves.gltf",
+      "png": "Platform_DarkPlates_Curves.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Metal.gltf",
+      "png": "Platform_Metal.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Metal_Curve.gltf",
+      "png": "Platform_Metal_Curve.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Metal2.gltf",
+      "png": "Platform_Metal2.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Metal2_Curve.gltf",
+      "png": "Platform_Metal2_Curve.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Rails_2.gltf",
+      "png": "Platform_Rails_2.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Rails_4.gltf",
+      "png": "Platform_Rails_4.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Rails_4Wide.gltf",
+      "png": "Platform_Rails_4Wide.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Rails_4WideTall.gltf",
+      "png": "Platform_Rails_4WideTall.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Ramp_2.gltf",
+      "png": "Platform_Ramp_2.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Ramp_2Short.gltf",
+      "png": "Platform_Ramp_2Short.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Ramp_4.gltf",
+      "png": "Platform_Ramp_4.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Ramp_4Wide.gltf",
+      "png": "Platform_Ramp_4Wide.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Round1.gltf",
+      "png": "Platform_Round1.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Simple.gltf",
+      "png": "Platform_Simple.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Simple_Curve.gltf",
+      "png": "Platform_Simple_Curve.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Simple2.gltf",
+      "png": "Platform_Simple2.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Simple2_Curve.gltf",
+      "png": "Platform_Simple2_Curve.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Squares.gltf",
+      "png": "Platform_Squares.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Squares_Curve.gltf",
+      "png": "Platform_Squares_Curve.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Stairs_2.gltf",
+      "png": "Platform_Stairs_2.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Stairs_4.gltf",
+      "png": "Platform_Stairs_4.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Stairs_4Wide.gltf",
+      "png": "Platform_Stairs_4Wide.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Stairs_4WideTall.gltf",
+      "png": "Platform_Stairs_4WideTall.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Window_Thin.gltf",
+      "png": "Platform_Window_Thin.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_Window_Wide.gltf",
+      "png": "Platform_Window_Wide.png"
+    },
+    {
+      "gltf": "sci-fi\\Platform_X.gltf",
+      "png": "Platform_X.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_AccessPoint.gltf",
+      "png": "Prop_AccessPoint.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Barrel_Large.gltf",
+      "png": "Prop_Barrel_Large.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Cable_1.gltf",
+      "png": "Prop_Cable_1.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Cable_3.gltf",
+      "png": "Prop_Cable_3.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Chest.gltf",
+      "png": "Prop_Chest.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Clamp.gltf",
+      "png": "Prop_Clamp.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Computer.gltf",
+      "png": "Prop_Computer.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Crate3.gltf",
+      "png": "Prop_Crate3.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Crate4.gltf",
+      "png": "Prop_Crate4.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Fan_Small.gltf",
+      "png": "Prop_Fan_Small.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_ItemHolder.gltf",
+      "png": "Prop_ItemHolder.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Light_Corner.gltf",
+      "png": "Prop_Light_Corner.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Light_Floor.gltf",
+      "png": "Prop_Light_Floor.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Light_Small.gltf",
+      "png": "Prop_Light_Small.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Light_Wide.gltf",
+      "png": "Prop_Light_Wide.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_PipeHolder.gltf",
+      "png": "Prop_PipeHolder.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Rail_2.gltf",
+      "png": "Prop_Rail_2.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Rail_3.gltf",
+      "png": "Prop_Rail_3.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Rail_4.gltf",
+      "png": "Prop_Rail_4.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Rail_Incline_Long_L.gltf",
+      "png": "Prop_Rail_Incline_Long_L.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Rail_Incline_Long_R.gltf",
+      "png": "Prop_Rail_Incline_Long_R.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Rail_Incline_Short_L.gltf",
+      "png": "Prop_Rail_Incline_Short_L.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Rail_Incline_Short_R.gltf",
+      "png": "Prop_Rail_Incline_Short_R.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Rail_Round_Big.gltf",
+      "png": "Prop_Rail_Round_Big.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Rail_Round_Small.gltf",
+      "png": "Prop_Rail_Round_Small.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Vent_Big.gltf",
+      "png": "Prop_Vent_Big.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Vent_Small.gltf",
+      "png": "Prop_Vent_Small.png"
+    },
+    {
+      "gltf": "sci-fi\\Prop_Vent_Wide.gltf",
+      "png": "Prop_Vent_Wide.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_AccentStrip_Corner_Inner.gltf",
+      "png": "ShortWall_AccentStrip_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_AccentStrip_Corner_Outer.gltf",
+      "png": "ShortWall_AccentStrip_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_AccentStrip_Straight.gltf",
+      "png": "ShortWall_AccentStrip_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Band2_Corner_Inner.gltf",
+      "png": "ShortWall_Band2_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Band2_Corner_Outer.gltf",
+      "png": "ShortWall_Band2_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Band2_Straight.gltf",
+      "png": "ShortWall_Band2_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_DarkMetal2_Corner_Inner.gltf",
+      "png": "ShortWall_DarkMetal2_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_DarkMetal2_Corner_Outer.gltf",
+      "png": "ShortWall_DarkMetal2_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_DarkMetal2_Straight.gltf",
+      "png": "ShortWall_DarkMetal2_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_DarkPlastic_Corner_Inner.gltf",
+      "png": "ShortWall_DarkPlastic_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_DarkPlastic_Corner_Outer.gltf",
+      "png": "ShortWall_DarkPlastic_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_DarkPlastic_Straight.gltf",
+      "png": "ShortWall_DarkPlastic_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Metal2_Corner_Inner.gltf",
+      "png": "ShortWall_Metal2_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Metal2_Corner_Outer.gltf",
+      "png": "ShortWall_Metal2_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Metal2_Straight.gltf",
+      "png": "ShortWall_Metal2_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_MetalPlates_Corner_Inner.gltf",
+      "png": "ShortWall_MetalPlates_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_MetalPlates_Corner_Outer.gltf",
+      "png": "ShortWall_MetalPlates_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_MetalPlates_Straight.gltf",
+      "png": "ShortWall_MetalPlates_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Simple1_Corner_Inner.gltf",
+      "png": "ShortWall_Simple1_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Simple1_Corner_Outer.gltf",
+      "png": "ShortWall_Simple1_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Simple1_Straight.gltf",
+      "png": "ShortWall_Simple1_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Simple2_Corner_Inner.gltf",
+      "png": "ShortWall_Simple2_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Simple2_Corner_Outer.gltf",
+      "png": "ShortWall_Simple2_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Simple2_Straight.gltf",
+      "png": "ShortWall_Simple2_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Triangles_Corner_Inner.gltf",
+      "png": "ShortWall_Triangles_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Triangles_Corner_Outer.gltf",
+      "png": "ShortWall_Triangles_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_Triangles_Straight.gltf",
+      "png": "ShortWall_Triangles_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_WhitePlate2_Corner_Inner.gltf",
+      "png": "ShortWall_WhitePlate2_Corner_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_WhitePlate2_Corner_Outer.gltf",
+      "png": "ShortWall_WhitePlate2_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\ShortWall_WhitePlate2_Straight.gltf",
+      "png": "ShortWall_WhitePlate2_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\TopAstra_Corner_Round_Inner.gltf",
+      "png": "TopAstra_Corner_Round_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\TopAstra_Curve_Round_Outer.gltf",
+      "png": "TopAstra_Curve_Round_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\TopAstra_Straight.gltf",
+      "png": "TopAstra_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\TopCables_Corner_Round_Inner.gltf",
+      "png": "TopCables_Corner_Round_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\TopCables_Corner_Round_Outer.gltf",
+      "png": "TopCables_Corner_Round_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\TopCables_Corner_Square_Inner.gltf",
+      "png": "TopCables_Corner_Square_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\TopCables_Corner_Square_Outer.gltf",
+      "png": "TopCables_Corner_Square_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\TopCables_Straight.gltf",
+      "png": "TopCables_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\TopCables_Straight_Hanging.gltf",
+      "png": "TopCables_Straight_Hanging.png"
+    },
+    {
+      "gltf": "sci-fi\\TopPlastic_Corner_Outer.gltf",
+      "png": "TopPlastic_Corner_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\TopPlastic_Corner_Round_Inner.gltf",
+      "png": "TopPlastic_Corner_Round_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\TopPlastic_Corner_Round_Outer.gltf",
+      "png": "TopPlastic_Corner_Round_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\TopPlastic_Straight.gltf",
+      "png": "TopPlastic_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\TopSimple_Corner_Round_Inner.gltf",
+      "png": "TopSimple_Corner_Round_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\TopSimple_Corner_Round_Outer.gltf",
+      "png": "TopSimple_Corner_Round_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\TopSimple_Straight.gltf",
+      "png": "TopSimple_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\TopWindow_Corner_Curve_Inner.gltf",
+      "png": "TopWindow_Corner_Curve_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\TopWindow_Corner_Curve_Outer.gltf",
+      "png": "TopWindow_Corner_Curve_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\TopWindow_Straight.gltf",
+      "png": "TopWindow_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Corner_Round_Inner.gltf",
+      "png": "WallAstra_Corner_Round_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Corner_Round_Outer.gltf",
+      "png": "WallAstra_Corner_Round_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Corner_Square_Inner.gltf",
+      "png": "WallAstra_Corner_Square_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Corner_Square_Outer.gltf",
+      "png": "WallAstra_Corner_Square_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Straight.gltf",
+      "png": "WallAstra_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Straight_Broken.gltf",
+      "png": "WallAstra_Straight_Broken.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Straight_Divided.gltf",
+      "png": "WallAstra_Straight_Divided.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Straight_Flat.gltf",
+      "png": "WallAstra_Straight_Flat.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Straight_Flat_Window.gltf",
+      "png": "WallAstra_Straight_Flat_Window.png"
+    },
+    {
+      "gltf": "sci-fi\\WallAstra_Straight_Window.gltf",
+      "png": "WallAstra_Straight_Window.png"
+    },
+    {
+      "gltf": "sci-fi\\WallBand_Corner_Round_Inner.gltf",
+      "png": "WallBand_Corner_Round_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\WallBand_Corner_Round_Outer.gltf",
+      "png": "WallBand_Corner_Round_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\WallBand_Corner_Square_Inner.gltf",
+      "png": "WallBand_Corner_Square_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\WallBand_Corner_Square_Outer.gltf",
+      "png": "WallBand_Corner_Square_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\WallBand_Straight.gltf",
+      "png": "WallBand_Straight.png"
+    },
+    {
+      "gltf": "sci-fi\\WallBand_Straight_Broken.gltf",
+      "png": "WallBand_Straight_Broken.png"
+    },
+    {
+      "gltf": "sci-fi\\WallWindow_Cap_A.gltf",
+      "png": "WallWindow_Cap_A.png"
+    },
+    {
+      "gltf": "sci-fi\\WallWindow_Cap_B.gltf",
+      "png": "WallWindow_Cap_B.png"
+    },
+    {
+      "gltf": "sci-fi\\WallWindow_Corner_Round_Inner.gltf",
+      "png": "WallWindow_Corner_Round_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\WallWindow_Corner_Round_Outer.gltf",
+      "png": "WallWindow_Corner_Round_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\WallWindow_Corner_Square_Inner.gltf",
+      "png": "WallWindow_Corner_Square_Inner.png"
+    },
+    {
+      "gltf": "sci-fi\\WallWindow_Corner_Square_Outer.gltf",
+      "png": "WallWindow_Corner_Square_Outer.png"
+    },
+    {
+      "gltf": "sci-fi\\WallWindow_Straight.gltf",
+      "png": "WallWindow_Straight.png"
+    }
+  ]
+}

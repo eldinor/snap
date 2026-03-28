@@ -1,0 +1,35 @@
+{
+    "version":  1,
+    "categories":  {
+                       "Walls":  [
+
+                                 ],
+                       "Short Walls":  [
+
+                                       ],
+                       "Doors":  [
+
+                                 ],
+                       "Platforms":  [
+
+                                     ],
+                       "Columns":  [
+
+                                   ],
+                       "Ceilings":  [
+
+                                    ],
+                       "Trims":  [
+
+                                 ],
+                       "Props":  [
+
+                                 ],
+                       "Decals":  [
+
+                                  ],
+                       "Creatures":  [
+
+                                     ]
+                   }
+}
