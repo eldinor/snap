@@ -51,6 +51,8 @@ export interface AssetLibraryBundle {
 
 export const INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD =
   import.meta.env.VITE_INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD !== "false";
+export const INCLUDE_MODULAR_SCIFI_MEGAKIT_STANDARD =
+  import.meta.env.VITE_INCLUDE_MODULAR_SCIFI_MEGAKIT_STANDARD !== "false";
 
 function parseAssetCategoryManifest(value: unknown): AssetCategoryManifest {
   if (!value || typeof value !== "object") {
@@ -173,6 +175,9 @@ export const ACTIVE_LIBRARY = (() => {
 })();
 export const ASSET_CATEGORIES = parseAssetCategoryManifest(assetCategoriesManifest).categories;
 export const FANTASY_PROPS_MEGAKIT_STANDARD_CATEGORIES = parseAssetCategoryManifest(fantasyPropsCategoriesManifest).categories;
+export const FANTASY_PROPS_MEGAKIT_STANDARD_DISPLAY_CATEGORIES = FANTASY_PROPS_MEGAKIT_STANDARD_CATEGORIES.filter(
+  (category) => category !== "Floors",
+);
 export type AssetCategory = string;
 export type PlaceholderShape = "box" | "column";
 
@@ -259,10 +264,42 @@ function parseAssetManifest(value: unknown, categories: string[]): AssetLibraryM
 }
 
 export const ASSETS: AssetDefinition[] = parseAssetManifest(assetsManifest, ASSET_CATEGORIES).assets;
+function getFantasyPropsCategory(fileName: string) {
+  const baseName = fileName.split("/").pop()?.replace(/\.gltf$/i, "") ?? fileName;
+
+  if (/^(Bed|Bench|Bookcase|Cabinet|Chair|Nightstand|Peg_Rack|Shelf|Stool|Table|Workbench)/i.test(baseName)) {
+    return "Furniture";
+  }
+  if (/^(Book|BookGroup|BookStand|Scroll)/i.test(baseName)) {
+    return "Books & Scrolls";
+  }
+  if (/^(Bag|Barrel|Bottle|Bucket|Cage|Chest|Crate|FarmCrate|Mug|Pot|Potion|Pouch|SmallBottle|Vase)/i.test(baseName)) {
+    return "Containers";
+  }
+  if (/^(Anvil|Axe|Key|Pickaxe|Shield|Sword|WeaponStand|Whetstone)/i.test(baseName)) {
+    return "Tools & Weapons";
+  }
+  if (/^(Carrot|Coin|Stall)/i.test(baseName)) {
+    return "Market & Food";
+  }
+  return "Decorations";
+}
+
+function getFantasyPropsCategoryTags(category: string) {
+  return category.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+}
+
 export const FANTASY_PROPS_MEGAKIT_STANDARD_ASSETS: AssetDefinition[] = parseAssetManifest(
   fantasyPropsAssetsManifest,
   FANTASY_PROPS_MEGAKIT_STANDARD_CATEGORIES,
-).assets;
+).assets.map((asset) => {
+  const category = getFantasyPropsCategory(asset.fileName);
+  return {
+    ...asset,
+    category,
+    tags: [...new Set([...getFantasyPropsCategoryTags(category), ...asset.tags.filter((tag) => tag !== "floors")])],
+  };
+});
 const BUILT_IN_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
   {
     library: LIBRARIES.find((library) => library.id === ACTIVE_LIBRARY.id)!,
@@ -276,7 +313,7 @@ const BUILT_IN_LIBRARY_BUNDLES: AssetLibraryBundle[] = [
           library: LIBRARIES.find((library) => library.id === FANTASY_PROPS_MEGAKIT_STANDARD_LIBRARY.id)!,
           meta: FANTASY_PROPS_MEGAKIT_STANDARD_LIBRARY,
           assets: FANTASY_PROPS_MEGAKIT_STANDARD_ASSETS,
-          categories: FANTASY_PROPS_MEGAKIT_STANDARD_CATEGORIES,
+          categories: FANTASY_PROPS_MEGAKIT_STANDARD_DISPLAY_CATEGORIES,
         } satisfies AssetLibraryBundle,
       ]
     : []),
@@ -415,7 +452,11 @@ export async function loadImportedLibraryBundles() {
   }
 
   const builtInRegistryIds = new Set(LIBRARIES.filter((library) => library.mode === "built-in").map((library) => library.id));
-  const externalEntries = manifest.libraries.filter((library) => !builtInRegistryIds.has(library.id));
+  const externalEntries = manifest.libraries.filter(
+    (library) =>
+      !builtInRegistryIds.has(library.id) &&
+      (INCLUDE_MODULAR_SCIFI_MEGAKIT_STANDARD || library.id !== "modular-scifi-megakit-standard"),
+  );
   importedLibraryBundles = await Promise.all(externalEntries.map((entry) => loadImportedLibraryBundle(entry, registryUrl)));
   return getAssetLibraryBundles();
 }

@@ -6,6 +6,7 @@ import { createInitialEditorViewState } from "./editor/view-state";
 
 const WARM_LIBRARY_STORAGE_KEY = "snap:warm-library-id";
 const WARM_OVERLAY_SKIPPED_STORAGE_KEY = "snap:warm-overlay-skipped";
+export const WARM_ALL_LIBRARY_ID = "__all__";
 
 export function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -146,7 +147,7 @@ export function App() {
   }, [activeLibraryId, libraries]);
 
   useEffect(() => {
-    if (libraries.some((library) => library.library.id === selectedWarmLibraryId)) {
+    if (selectedWarmLibraryId === WARM_ALL_LIBRARY_ID || libraries.some((library) => library.library.id === selectedWarmLibraryId)) {
       return;
     }
     setSelectedWarmLibraryId(libraries[0]?.library.id ?? "built-in");
@@ -179,31 +180,45 @@ export function App() {
   };
 
   const warmAssets = () => {
-    const libraryId = selectedWarmLibraryId;
-    const library = getAssetLibraryBundle(libraryId);
-    const totalAssets = library.assets.length;
     const app = appRef.current;
     if (!app) {
       setIsLoading(false);
       return;
     }
 
+    const librariesToWarm =
+      selectedWarmLibraryId === WARM_ALL_LIBRARY_ID ? libraries : [getAssetLibraryBundle(selectedWarmLibraryId)];
+    const totalAssets = librariesToWarm.reduce((total, library) => total + library.assets.length, 0);
+
     setLoadingOverlayState({
       phase: "warming",
       progress: 0,
       progressLabel: `Warming assets 0 / ${totalAssets}`,
-      detail: `Starting ${library.library.name} warmup.`,
+      detail:
+        selectedWarmLibraryId === WARM_ALL_LIBRARY_ID
+          ? `Starting warmup for ${librariesToWarm.length} libraries.`
+          : `Starting ${librariesToWarm[0]?.library.name ?? "asset library"} warmup.`,
     });
 
-    void app
-      .warmLibraryAssets(libraryId, ({ completed, total, assetName }) => {
-        setLoadingOverlayState({
-          phase: "warming",
-          progress: total > 0 ? (completed / total) * 100 : 100,
-          progressLabel: `Warming assets ${completed} / ${total}`,
-          detail: assetName,
-        });
-      })
+    let completedAssets = 0;
+    void librariesToWarm
+      .reduce(
+        (warmup, library) =>
+          warmup.then(() =>
+            app.warmLibraryAssets(library.library.id, ({ completed, assetName }) => {
+              const overallCompleted = completedAssets + completed;
+              setLoadingOverlayState({
+                phase: "warming",
+                progress: totalAssets > 0 ? (overallCompleted / totalAssets) * 100 : 100,
+                progressLabel: `Warming assets ${overallCompleted} / ${totalAssets}`,
+                detail: `${library.library.name}: ${assetName}`,
+              });
+            }),
+          ).then(() => {
+            completedAssets += library.assets.length;
+          }),
+        Promise.resolve(),
+      )
       .then(() => {
         handleSkipWarmChange(true);
         setIsLoading(false);

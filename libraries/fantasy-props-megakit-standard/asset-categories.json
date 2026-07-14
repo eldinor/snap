@@ -1,6 +1,12 @@
 {
   "version": 1,
   "categories": [
-    "Floors"
+    "Floors",
+    "Furniture",
+    "Books & Scrolls",
+    "Containers",
+    "Tools & Weapons",
+    "Market & Food",
+    "Decorations"
   ]
 }

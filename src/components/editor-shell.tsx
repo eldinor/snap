@@ -37,6 +37,7 @@ function getAssetThumbnailStyleUrl(libraryId: string, asset: AssetDefinition) {
 }
 
 export type SceneSortMode = "manual" | "name" | "asset";
+const WARM_ALL_LIBRARY_ID = "__all__";
 export interface LoadingOverlayState {
   phase: "booting" | "ready" | "warming";
   progress: number | null;
@@ -565,6 +566,7 @@ function EditorToolbar(props: EditorToolbarProps) {
                   props.onWarmLibraryChange(event.target.value);
                 }}
               >
+                <option value={WARM_ALL_LIBRARY_ID}>Warm all libraries</option>
                 {props.warmLibraries.map((library) => (
                   <option key={library.library.id} value={library.library.id}>
                     {library.library.name}
@@ -635,6 +637,7 @@ function AssetList(props: AssetListProps) {
           <span className="asset-copy">
             <span className="asset-name">{asset.name}</span>
             <span className="asset-meta">{`${asset.category} | ${asset.fileName}`}</span>
+            <span className="asset-tags">{asset.tags.join(" · ")}</span>
           </span>
           <img
             className="asset-thumb"
@@ -1687,6 +1690,7 @@ function LoadingOverlay({
                   onLibraryChange(event.target.value);
                 }}
               >
+                <option value={WARM_ALL_LIBRARY_ID}>Warm all libraries</option>
                 {libraries.map((library) => (
                   <option key={library.library.id} value={library.library.id}>
                     {library.library.name}
