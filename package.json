@@ -1,7 +1,7 @@
 {
-  "name": "minimal",
+  "name": "snap",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,6 +16,7 @@
     "assets:remove-library": "node scripts/asset-remove-library.mjs",
     "assets:validate-library": "node scripts/asset-validate-library.mjs",
     "build": "tsc && vite build",
+    "build:no-sci-fi": "tsc && vite build --mode no-sci-fi",
     "build:no-fantasy": "tsc && vite build --mode no-fantasy",
     "preview": "vite preview"
   },

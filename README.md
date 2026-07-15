@@ -11,6 +11,14 @@ It is built with:
 - `Vite`
 - `Babylon.js`
 
+## Documentation
+
+- [Snap for Designers](docs/SNAP_FOR_DESIGNERS.md)
+- [User Guide](docs/USER_GUIDE.md)
+- [Hotkeys](docs/HOTKEYS.md)
+- [Asset Libraries](docs/LIBRARIES.md)
+- [Prefabs and Source of Truth](docs/PREFAB_AND_SOURCE_OF_TRUTH.md)
+
 ## What It Does
 
 - Browse and place modular assets by category
@@ -18,7 +26,7 @@ It is built with:
 - Use grid snap and optional Y snap
 - Build scenes with clones or instances
 - Reorder items in a Scene Tree with drag and drop
-- Save to local storage and import/export JSON scene files
+- Save to local storage, import/export JSON scene files, and export visible scene objects as GLB or GLTF
 - Use transform helpers such as height guides and drop-to-ground
 
 ## Project Structure
@@ -56,6 +64,12 @@ Exclude the optional second built-in library from a run or build:
 
 ```bash
 VITE_INCLUDE_FANTASY_PROPS_MEGAKIT_STANDARD=false npm run dev
+```
+
+Build without the imported Modular SciFi MegaKit library:
+
+```bash
+npm run build:no-sci-fi
 ```
 
 Run type checking:
@@ -379,6 +393,8 @@ Recommended maintenance order:
 - `Save` stores the current scene in local storage
 - `Export JSON` writes a scene file
 - `Import JSON` loads a scene file
+- `Export GLB` downloads the visible scene objects as a single `asset-scene.glb` file
+- `Export GLTF` downloads the visible scene objects and their companion files as `asset-scene.gltf.zip`
 - `Load Last Saved` restores the last local saved snapshot
 - Autosave recovery is shown in the scene file menu
 

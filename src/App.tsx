@@ -1,14 +1,44 @@
 import { useEffect, useRef, useState } from "react";
 import { getAssetLibraryBundle, getAssetLibraryBundles, loadImportedLibraryBundles, type AssetCategory, type AssetLibraryBundle } from "./assets";
-import { EditorShell, filterAssets, type SceneSortMode } from "./components/editor-shell";
+import { EditorShell, filterAssets, type LoadingOverlayState, type SceneSortMode } from "./components/editor-shell";
 import { ModularEditorApp } from "./editor";
 import { createInitialEditorViewState } from "./editor/view-state";
+
+const WARM_LIBRARY_STORAGE_KEY = "snap:warm-library-id";
+const WARM_OVERLAY_SKIPPED_STORAGE_KEY = "snap:warm-overlay-skipped";
+export const WARM_ALL_LIBRARY_ID = "__all__";
 
 export function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const importInputRef = useRef<HTMLInputElement | null>(null);
   const appRef = useRef<ModularEditorApp | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedWarmLibraryId, setSelectedWarmLibraryId] = useState(() => {
+    try {
+      return window.localStorage.getItem(WARM_LIBRARY_STORAGE_KEY) ?? getAssetLibraryBundles()[0]?.library.id ?? "built-in";
+    } catch {
+      return getAssetLibraryBundles()[0]?.library.id ?? "built-in";
+    }
+  });
+  const [loadingOverlayState, setLoadingOverlayState] = useState<LoadingOverlayState>({
+    phase: "booting",
+    progress: null,
+    progressLabel: null,
+    detail: null,
+  });
+  const [isLoading, setIsLoading] = useState(() => {
+    try {
+      return window.localStorage.getItem(WARM_OVERLAY_SKIPPED_STORAGE_KEY) !== "true";
+    } catch {
+      return true;
+    }
+  });
+  const [skipWarm, setSkipWarm] = useState(() => {
+    try {
+      return window.localStorage.getItem(WARM_OVERLAY_SKIPPED_STORAGE_KEY) === "true";
+    } catch {
+      return false;
+    }
+  });
   const [libraries, setLibraries] = useState<AssetLibraryBundle[]>(() => getAssetLibraryBundles());
   const [searchQuery, setSearchQuery] = useState("");
   const [activeLibraryId, setActiveLibraryId] = useState(libraries[0]?.library.id ?? "built-in");
@@ -41,7 +71,14 @@ export function App() {
     });
     readyFrameId = window.requestAnimationFrame(() => {
       if (!cancelled) {
-        setIsLoading(false);
+        if (isLoading) {
+          setLoadingOverlayState({
+            phase: "ready",
+            progress: null,
+            progressLabel: null,
+            detail: null,
+          });
+        }
       }
     });
 
@@ -51,7 +88,7 @@ export function App() {
       appRef.current?.destroy();
       appRef.current = null;
     };
-  }, []);
+  }, [isLoading]);
 
   useEffect(() => {
     let cancelled = false;
@@ -109,9 +146,98 @@ export function App() {
     setActiveLibraryId(libraries[0]?.library.id ?? "built-in");
   }, [activeLibraryId, libraries]);
 
+  useEffect(() => {
+    if (selectedWarmLibraryId === WARM_ALL_LIBRARY_ID || libraries.some((library) => library.library.id === selectedWarmLibraryId)) {
+      return;
+    }
+    setSelectedWarmLibraryId(libraries[0]?.library.id ?? "built-in");
+  }, [libraries, selectedWarmLibraryId]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(WARM_LIBRARY_STORAGE_KEY, selectedWarmLibraryId);
+    } catch {
+      // Ignore persistence failures so the selector still works for this session.
+    }
+  }, [selectedWarmLibraryId]);
+
+  const setWarmOverlaySkipped = (value: boolean) => {
+    try {
+      window.localStorage.setItem(WARM_OVERLAY_SKIPPED_STORAGE_KEY, value ? "true" : "false");
+    } catch {
+      // Ignore persistence failures; the choice just won't survive reloads.
+    }
+  };
+
+  const handleSkipWarmChange = (value: boolean) => {
+    setSkipWarm(value);
+    setWarmOverlaySkipped(value);
+  };
+
+  const dismissLoadingOverlay = () => {
+    handleSkipWarmChange(true);
+    setIsLoading(false);
+  };
+
+  const warmAssets = () => {
+    const app = appRef.current;
+    if (!app) {
+      setIsLoading(false);
+      return;
+    }
+
+    const librariesToWarm =
+      selectedWarmLibraryId === WARM_ALL_LIBRARY_ID ? libraries : [getAssetLibraryBundle(selectedWarmLibraryId)];
+    const totalAssets = librariesToWarm.reduce((total, library) => total + library.assets.length, 0);
+
+    setLoadingOverlayState({
+      phase: "warming",
+      progress: 0,
+      progressLabel: `Warming assets 0 / ${totalAssets}`,
+      detail:
+        selectedWarmLibraryId === WARM_ALL_LIBRARY_ID
+          ? `Starting warmup for ${librariesToWarm.length} libraries.`
+          : `Starting ${librariesToWarm[0]?.library.name ?? "asset library"} warmup.`,
+    });
+
+    let completedAssets = 0;
+    void librariesToWarm
+      .reduce(
+        (warmup, library) =>
+          warmup.then(() =>
+            app.warmLibraryAssets(library.library.id, ({ completed, assetName }) => {
+              const overallCompleted = completedAssets + completed;
+              setLoadingOverlayState({
+                phase: "warming",
+                progress: totalAssets > 0 ? (overallCompleted / totalAssets) * 100 : 100,
+                progressLabel: `Warming assets ${overallCompleted} / ${totalAssets}`,
+                detail: `${library.library.name}: ${assetName}`,
+              });
+            }),
+          ).then(() => {
+            completedAssets += library.assets.length;
+          }),
+        Promise.resolve(),
+      )
+      .then(() => {
+        handleSkipWarmChange(true);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <EditorShell
       isLoading={isLoading}
+      loadingOverlayState={loadingOverlayState}
+      warmLibraries={libraries}
+      selectedWarmLibraryId={selectedWarmLibraryId}
+      warmProgressLabel={loadingOverlayState.progressLabel}
+      warmDetail={loadingOverlayState.detail}
+      isWarmingAssets={loadingOverlayState.phase === "warming"}
+      skipWarm={skipWarm}
       canvasRef={canvasRef}
       importInputRef={importInputRef}
       searchQuery={searchQuery}
@@ -125,6 +251,10 @@ export function App() {
       sceneSortMode={sceneSortMode}
       viewState={viewState}
       onSearchQueryChange={setSearchQuery}
+      onWarmAssets={warmAssets}
+      onWarmLibraryChange={setSelectedWarmLibraryId}
+      onSkipWarmChange={handleSkipWarmChange}
+      onDismissLoadingOverlay={dismissLoadingOverlay}
       onActiveLibraryChange={setActiveLibraryId}
       onRefreshLibraries={refreshLibraries}
       onActiveCategoryChange={setActiveCategory}

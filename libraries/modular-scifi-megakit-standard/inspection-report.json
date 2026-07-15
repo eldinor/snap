@@ -1,0 +1,4073 @@
+{
+    "zipFileName":  "",
+    "totalFiles":  401,
+    "gltfFiles":  190,
+    "reports":  [
+                    {
+                        "gltfPath":  "sci-fi\\Alien_Cyclop.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Alien_Cyclop.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Alien_Oculichrysalis.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Alien_Oculichrysalis.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Alien_Scolitex.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Alien_Scolitex.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomMetal_Corner_Round_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomMetal_Corner_Round_Inner.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomMetal_Corner_Round_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomMetal_Corner_Round_Outer.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomMetal_Corner_Square_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomMetal_Corner_Square_Inner.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomMetal_Corner_Square_Outer_1.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomMetal_Corner_Square_Outer_1.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomMetal_Corner_Square_Outer_2.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomMetal_Corner_Square_Outer_2.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomMetal_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomMetal_Straight.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomSimple_Corner_Round_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomSimple_Corner_Round_Inner.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomSimple_Corner_Round_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomSimple_Corner_Round_Outer.bin",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomSimple_Corner_Square_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomSimple_Corner_Square_Inner.bin",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomSimple_Corner_Square_Outer_1.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomSimple_Corner_Square_Outer_1.bin",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomSimple_Corner_Square_Outer_2.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomSimple_Corner_Square_Outer_2.bin",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\BottomSimple_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/BottomSimple_Straight.bin",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Column_Astra.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Column_Astra.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Column_Hollow.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Column_Hollow.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Column_Large_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Column_Large_Straight.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Column_MetalSupport.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Column_MetalSupport.bin",
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Column_MetalSupport_Curve.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Column_MetalSupport_Curve.bin",
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Column_Pipes.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Column_Pipes.bin",
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Column_Round.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Column_Round.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Column_Simple.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Column_Simple.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_0.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_0.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_1.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_1.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_2.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_2.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_3.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_3.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_4.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_4.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_5.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_5.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_6.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_6.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_7.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_7.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_8.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_8.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_9.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_9.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_A.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_A.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Dashes.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Dashes.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_K.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_K.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Line_90.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Line_90_001.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Line_90_Round.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Line_90_Round.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Line_90_Round_Large.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Line_90_Round_Large.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Line_Bend1_L.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Line_Bend1_L.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Line_Bend1_R.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Line_Bend1_R.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Line_Bend2_L.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Line_Bend2_L.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Line_Bend2_R.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Line_Bend2_R.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Line_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Line_Straight.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Logo.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Logo.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Logo_Letters.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Logo_Letters.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Logo_Small.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Logo_Small.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Sign.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Sign.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_V.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_V.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_X.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_X.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_XSign.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_XSign.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Decal_Z.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Decal_Z.bin",
+                                                "sci-fi/T_Decals.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Door_DarkMetal.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Door_DarkMetal.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Door_Frame_A.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Door_Frame_A.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Door_Frame_Square.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Door_Frame_Square.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Door_Frame_Square_Blocked.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Door_Frame_Square_Blocked.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Door_Frame_SquareTall.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Door_Frame_SquareTall.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Door_Metal.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Door_Metal.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Door_Simple.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Door_Simple.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_3Plates.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_3Plates.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_CenterPlate.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_CenterPlate.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_CenterPlate_Curve.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_CenterPlate_Curve.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_DarkPlates.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_DarkPlates.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_DarkPlates_Curves.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_DarkPlates_Curves.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Metal.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Metal.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Metal_Curve.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Metal_Curve.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Metal2.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Metal2.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Metal2_Curve.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Metal2_Curve.bin",
+                                                "sci-fi/T_Trim_02_BaseColor.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Rails_2.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Rails_2.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Rails_4.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Rails_4.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Rails_4Wide.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Rails_4Wide.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Rails_4WideTall.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Rails_4WideTall.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Ramp_2.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Ramp_2.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Ramp_2Short.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Ramp_2Short.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Ramp_4.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Ramp_4.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Ramp_4Wide.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Ramp_4Wide.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Round1.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Round1.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Simple.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Simple.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Simple_Curve.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Simple_Curve.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Simple2.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Simple2.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Simple2_Curve.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Simple2_Curve.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Squares.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Squares.bin",
+                                                "sci-fi/T_Trim_02_BaseColor.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Squares_Curve.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Squares_Curve.bin",
+                                                "sci-fi/T_Trim_02_BaseColor.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Stairs_2.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Stairs_2.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Stairs_4.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Stairs_4.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Stairs_4Wide.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Stairs_4Wide.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Stairs_4WideTall.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Stairs_4WideTall.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Window_Thin.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Window_Thin.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_Window_Wide.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_Window_Wide.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Platform_X.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Platform_X.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_AccessPoint.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_AccessPoint.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Barrel_Large.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Barrel_Large.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Cable_1.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Cable_1.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Cable_3.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Cable_3.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Chest.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Chest.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Clamp.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Clamp.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Computer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Computer.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Crate3.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Crate3.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Crate4.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Crate4.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Fan_Small.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Fan_Small.bin",
+                                                "sci-fi/T_Trim_01_BaseColor.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_ItemHolder.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_ItemHolder.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Light_Corner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Light_Corner.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Light_Floor.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Light_Floor.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Light_Small.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Light_Small.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Light_Wide.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Light_Wide.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_PipeHolder.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_PipeHolder.bin",
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Rail_2.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Rail_2.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Rail_3.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Rail_3.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Rail_4.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Rail_4.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Rail_Incline_Long_L.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Rail_Incline_Long_L.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Rail_Incline_Long_R.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Rail_Incline_Long_R.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Rail_Incline_Short_L.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Rail_Incline_Short_L.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Rail_Incline_Short_R.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Rail_Incline_Short_R.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Rail_Round_Big.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Rail_Round_Big.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Rail_Round_Small.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Rail_Round_Small.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Vent_Big.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Vent_Big.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Vent_Small.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Vent_Small.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\Prop_Vent_Wide.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/Prop_Vent_Wide.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_AccentStrip_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_AccentStrip_Corner_Inner.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_AccentStrip_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_AccentStrip_Corner_Outer.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_AccentStrip_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_AccentStrip_Straight.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Band2_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Band2_Corner_Inner.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Band2_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Band2_Corner_Outer.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Band2_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Band2_Straight.bin",
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_DarkMetal2_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_DarkMetal2_Corner_Inner.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_DarkMetal2_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_DarkMetal2_Corner_Outer.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_DarkMetal2_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_DarkMetal2_Straight.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_DarkPlastic_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_DarkPlastic_Corner_Inner.bin",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_DarkPlastic_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_DarkPlastic_Corner_Outer.bin",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_DarkPlastic_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_DarkPlastic_Straight.bin",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Metal2_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Metal2_Corner_Inner.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Metal2_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Metal2_Corner_Outer.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Metal2_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Metal2_Straight.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_MetalPlates_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_MetalPlates_Corner_Inner.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_MetalPlates_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_MetalPlates_Corner_Outer.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_MetalPlates_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_MetalPlates_Straight.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Simple1_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Simple1_Corner_Inner.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Simple1_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Simple1_Corner_Outer.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Simple1_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Simple1_Straight.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Simple2_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Simple2_Corner_Inner.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Simple2_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Simple2_Corner_Outer.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Simple2_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Simple2_Straight.bin",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Triangles_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Triangles_Corner_Inner.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Triangles_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Triangles_Corner_Outer.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_Triangles_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_Triangles_Straight.bin",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_WhitePlate2_Corner_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_WhitePlate2_Corner_Inner.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_WhitePlate2_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_WhitePlate2_Corner_Outer.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\ShortWall_WhitePlate2_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/ShortWall_WhitePlate2_Straight.bin",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopAstra_Corner_Round_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/TopAstra_Corner_Round_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopAstra_Curve_Round_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/TopAstra_Curve_Round_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopAstra_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/TopAstra_Straight.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopCables_Corner_Round_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/TopCables_Corner_Round_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopCables_Corner_Round_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/TopCables_Corner_Round_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopCables_Corner_Square_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/TopCables_Corner_Square_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopCables_Corner_Square_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/TopCables_Corner_Square_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopCables_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/TopCables_Straight.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopCables_Straight_Hanging.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/TopCables_Straight_Hanging.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopPlastic_Corner_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopPlastic_Corner_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopPlastic_Corner_Round_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopPlastic_Corner_Round_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopPlastic_Corner_Round_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopPlastic_Corner_Round_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopPlastic_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopPlastic_Straight.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopSimple_Corner_Round_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopSimple_Corner_Round_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopSimple_Corner_Round_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopSimple_Corner_Round_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopSimple_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopSimple_Straight.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopWindow_Corner_Curve_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopWindow_Corner_Curve_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopWindow_Corner_Curve_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopWindow_Corner_Curve_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\TopWindow_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/TopWindow_Straight.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Corner_Round_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Corner_Round_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Corner_Round_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Corner_Round_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Corner_Square_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Corner_Square_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Corner_Square_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Corner_Square_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Straight.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Straight_Broken.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Straight_Broken.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Straight_Divided.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Straight_Divided.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Straight_Flat.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Straight_Flat.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Straight_Flat_Window.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Straight_Flat_Window.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallAstra_Straight_Window.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/T_Trim_03_BaseColor.png",
+                                                "sci-fi/T_Trim_03_Cables.png",
+                                                "sci-fi/T_Trim_03_Normal.png",
+                                                "sci-fi/T_Trim_03_ORM.png",
+                                                "sci-fi/WallAstra_Straight_Window.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallBand_Corner_Round_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallBand_Corner_Round_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallBand_Corner_Round_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallBand_Corner_Round_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallBand_Corner_Square_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallBand_Corner_Square_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallBand_Corner_Square_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallBand_Corner_Square_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallBand_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallBand_Straight.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallBand_Straight_Broken.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Decals.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallBand_Straight_Broken.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallWindow_Cap_A.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallWindow_Cap_A.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallWindow_Cap_B.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallWindow_Cap_B.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallWindow_Corner_Round_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallWindow_Corner_Round_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallWindow_Corner_Round_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallWindow_Corner_Round_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallWindow_Corner_Square_Inner.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallWindow_Corner_Square_Inner.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallWindow_Corner_Square_Outer.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallWindow_Corner_Square_Outer.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    },
+                    {
+                        "gltfPath":  "sci-fi\\WallWindow_Straight.gltf",
+                        "referencedFiles":  [
+                                                "sci-fi/T_PaddedWall_BaseColor.png",
+                                                "sci-fi/T_PaddedWall_Normal.png",
+                                                "sci-fi/T_PaddedWall_ORM.png",
+                                                "sci-fi/T_Trim_01_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_01_Normal.png",
+                                                "sci-fi/T_Trim_01_ORM.png",
+                                                "sci-fi/T_Trim_02_BaseColor_Red.png",
+                                                "sci-fi/T_Trim_02_Normal.png",
+                                                "sci-fi/T_Trim_02_ORM.png",
+                                                "sci-fi/WallWindow_Straight.bin"
+                                            ],
+                        "missingFiles":  [
+
+                                         ],
+                        "externalUris":  [
+
+                                         ],
+                        "collidingFiles":  [
+
+                                           ],
+                        "hasAnimations":  true,
+                        "hasSkins":  true
+                    }
+                ]
+}
