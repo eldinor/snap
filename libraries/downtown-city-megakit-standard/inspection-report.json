@@ -1,0 +1,2340 @@
+{
+  "zipFileName": "Downtown City MegaKit[Standard].zip",
+  "totalFiles": 371,
+  "gltfFiles": 153,
+  "reports": [
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_90Angle_L.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_90Angle_L.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_90Angle_R.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_90Angle_R.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_BottomTrim.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_BottomTrim.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Column_RedBricks.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Column_RedBricks.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Column_Small.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Column_Small.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Column_TrimBricks.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Column_TrimBricks.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Corner_Plain.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Corner_Plain.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_CornerColumn_Bottom.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_CornerColumn_Bottom.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_CornerColumn_Cap.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_CornerColumn_Cap.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_CornerColumn_CapShort.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_CornerColumn_CapShort.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_CornerColumn_Center_Half.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_CornerColumn_Center_Half.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_CornerColumn_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_CornerColumn_Center.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_CornerColumn_Top.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_CornerColumn_Top.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_HalfColumn_Bottom.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_HalfColumn_Bottom.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_HalfColumn_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_HalfColumn_Center.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_HalfColumn_Top.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_HalfColumn_Top.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_HalfTrim.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_HalfTrim.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Inset_Window_Curved_Small.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Inset_Window_Curved_Small.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Inset_Window_Curved.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Inset_Window_Curved.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Inset_Window.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Inset_Window.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Inset.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Inset.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_InteriorWall_1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_InteriorWall_1.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_InteriorWall_3.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_InteriorWall_3.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_InteriorWall_4.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_InteriorWall_4.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Ornament_Horizontal.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Ornament_Horizontal.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Plain_1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Plain_1.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Plain_3_noWear.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Plain_3_noWear.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Plain_3.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Plain_3.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Plain_4.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Plain_4.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_RedWhite_DoubleWindow.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_RedWhite_DoubleWindow.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_TopTrim_90Angle_L.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_TopTrim_90Angle_L.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_TopTrim_90Angle_R.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_TopTrim_90Angle_R.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_TopTrim_Corner.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_TopTrim_Corner.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_TopTrim.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_TopTrim.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Window_CurvedDouble.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Window_CurvedDouble.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Window_Square_Single.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Window_Square_Single.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Window_Trim_Single.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Window_Trim_Single.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Brick_Window_Trim.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Brick_Window_Trim.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Building_Large_2.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Building_Large_2.bin",
+        "Exports/glTF (Godot)/T_MarbleFloor_Normal.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_BaseColor.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_lit_interior_2.png",
+        "Exports/glTF (Godot)/T_lit_interior_1.png",
+        "Exports/glTF (Godot)/T_dark_interior.png",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Building_Medium_2_001.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Building_Medium_2_001.bin",
+        "Exports/glTF (Godot)/T_MarbleFloor_Normal.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_BaseColor.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_lit_interior_1.png",
+        "Exports/glTF (Godot)/T_lit_interior_2.png",
+        "Exports/glTF (Godot)/T_dark_interior.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Building_Small_1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Building_Small_1.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_lit_interior_2.png",
+        "Exports/glTF (Godot)/T_lit_interior_1.png",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png",
+        "Exports/glTF (Godot)/T_dark_interior.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_Normal.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_BaseColor.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Brick_90Angle_L.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Brick_90Angle_L.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Brick_90Angle_R.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Brick_90Angle_R.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Brick_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Brick_Center.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Brick_L.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Brick_L.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Brick_R.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Brick_R.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Metal_90Angle_L.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Metal_90Angle_L.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Metal_90Angle_R.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Metal_90Angle_R.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Metal_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Metal_Center.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Metal_L.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Metal_L.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Metal_R.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Metal_R.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Trim_90Angle_L.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Trim_90Angle_L.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Trim_90Angle_R.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Trim_90Angle_R.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Trim_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Trim_Center.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Trim_L.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Trim_L.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Cornice_Trim_R.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Cornice_Trim_R.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_ArrowForwardLeft.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_ArrowForwardLeft.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_ArrowForwardRight.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_ArrowForwardRight.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_ArrowStraight.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_ArrowStraight.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_ArrowTurnLeft.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_ArrowTurnLeft.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_ArrowTurnRight.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_ArrowTurnRight.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Bikelane.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Bikelane.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_BrokenLine_Straight.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_BrokenLine_Straight.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Crosswalk_Wide.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Crosswalk_Wide.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Crosswalk.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Crosswalk.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Curve_2Lane_Stripe.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Curve_2Lane_Stripe.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Curve_4LaneShort_DoubleYellow.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Curve_4LaneShort_DoubleYellow.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Curve_4LaneShort_Stripe.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Curve_4LaneShort_Stripe.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Curve_4LaneShort.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Curve_4LaneShort.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_DoubleYellow_Straight.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_DoubleYellow_Straight.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Only.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Only.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Slow.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Slow.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Decal_Stop.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Decal_Stop.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Door_1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Door_1.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Door_2.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Door_2.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Door_3.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Door_3.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/DoorFrame_Metal_Single.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/DoorFrame_Metal_Single.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/DoorFrame_Trim.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/DoorFrame_Trim.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/DoorFrame_Wooden.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/DoorFrame_Wooden.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Entrance_Concrete_2x1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Entrance_Concrete_2x1.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Entrance_Concrete_2x2.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Entrance_Concrete_2x2.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Floor_2x2.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Floor_2x2.bin",
+        "Exports/glTF (Godot)/T_MarbleFloor_Normal.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_BaseColor.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_ORM.png",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Floor_4x4.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Floor_4x4.bin",
+        "Exports/glTF (Godot)/T_MarbleFloor_Normal.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_BaseColor.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_ORM.png",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Floor_Inset.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Floor_Inset.bin",
+        "Exports/glTF (Godot)/T_MarbleFloor_Normal.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_BaseColor.png",
+        "Exports/glTF (Godot)/T_MarbleFloor_ORM.png",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Column_Bottom.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Column_Bottom.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Column_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Column_Center.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Column_Small_Bottom.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Column_Small_Bottom.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Column_Small_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Column_Small_Center.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Column_Small_Top.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Column_Small_Top.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Column_Top.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Column_Top.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_FirstFloor_Wall_1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_FirstFloor_Wall_1.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_FirstFloor_Wall.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_FirstFloor_Wall.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_FirstFloor_Window.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_FirstFloor_Window.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_FullWindow.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_FullWindow.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Plain_1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Plain_1.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Plain_3.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Plain_3.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Window_Half.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Window_Half.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Metal_Window.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Metal_Window.bin",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Prop_ACUnit.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Prop_ACUnit.bin",
+        "Exports/glTF (Godot)/T_Ornaments_Normal.png",
+        "Exports/glTF (Godot)/T_Ornaments_BaseColor.png",
+        "Exports/glTF (Godot)/T_Ornaments_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Prop_Bollard.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Prop_Bollard.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Prop_Drain.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Prop_Drain.bin",
+        "Exports/glTF (Godot)/T_Ornaments_Normal.png",
+        "Exports/glTF (Godot)/T_Ornaments_BaseColor.png",
+        "Exports/glTF (Godot)/T_Ornaments_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Prop_ManholeCover.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Prop_ManholeCover.bin",
+        "Exports/glTF (Godot)/T_Ornaments_Normal.png",
+        "Exports/glTF (Godot)/T_Ornaments_BaseColor.png",
+        "Exports/glTF (Godot)/T_Ornaments_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Prop_Planter_Single.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Prop_Planter_Single.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_Dirt_Normal.png",
+        "Exports/glTF (Godot)/T_Dirt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Dirt_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_2x2_90Angle_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_2x2_90Angle_Center.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_2x2_90Angle_L.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_2x2_90Angle_L.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_2x2_90Angle_R.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_2x2_90Angle_R.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_2x2.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_2x2.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_4x4.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_4x4.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_Slate_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_Slate_Center.bin",
+        "Exports/glTF (Godot)/T_RoofSlate_Normal.png",
+        "Exports/glTF (Godot)/T_RoofSlate_BaseColor.png",
+        "Exports/glTF (Godot)/T_RoofSlate_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_Slate_Corner.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_Slate_Corner.bin",
+        "Exports/glTF (Godot)/T_RoofSlate_Normal.png",
+        "Exports/glTF (Godot)/T_RoofSlate_BaseColor.png",
+        "Exports/glTF (Godot)/T_RoofSlate_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_Slate_InnerCorner.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_Slate_InnerCorner.bin",
+        "Exports/glTF (Godot)/T_RoofSlate_Normal.png",
+        "Exports/glTF (Godot)/T_RoofSlate_BaseColor.png",
+        "Exports/glTF (Godot)/T_RoofSlate_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_Slate_Window_1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_Slate_Window_1.bin",
+        "Exports/glTF (Godot)/T_RoofSlate_Normal.png",
+        "Exports/glTF (Godot)/T_RoofSlate_BaseColor.png",
+        "Exports/glTF (Godot)/T_RoofSlate_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_SlateCornice_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_SlateCornice_Center.bin",
+        "Exports/glTF (Godot)/T_RoofSlate_Normal.png",
+        "Exports/glTF (Godot)/T_RoofSlate_BaseColor.png",
+        "Exports/glTF (Godot)/T_RoofSlate_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_SlateCornice_Corner.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_SlateCornice_Corner.bin",
+        "Exports/glTF (Godot)/T_RoofSlate_Normal.png",
+        "Exports/glTF (Godot)/T_RoofSlate_BaseColor.png",
+        "Exports/glTF (Godot)/T_RoofSlate_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_SlateCornice_InnerCorner.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_SlateCornice_InnerCorner.bin",
+        "Exports/glTF (Godot)/T_RoofSlate_Normal.png",
+        "Exports/glTF (Godot)/T_RoofSlate_BaseColor.png",
+        "Exports/glTF (Godot)/T_RoofSlate_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Roof_SlateCornice_Window_1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Roof_SlateCornice_Window_1.bin",
+        "Exports/glTF (Godot)/T_RoofSlate_Normal.png",
+        "Exports/glTF (Godot)/T_RoofSlate_BaseColor.png",
+        "Exports/glTF (Godot)/T_RoofSlate_ORM.png",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Sidewalk_Corner_Flat_3m_Stripe.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Sidewalk_Corner_Flat_3m_Stripe.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Sidewalk_Corner_Flat_3m.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Sidewalk_Corner_Flat_3m.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Sidewalk_Corner_Round_3m_Stripe.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Sidewalk_Corner_Round_3m_Stripe.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Sidewalk_Corner_Round_3m.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Sidewalk_Corner_Round_3m.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Sidewalk_NoCurb_3m.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Sidewalk_NoCurb_3m.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Sidewalk_Planter.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Sidewalk_Planter.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_Dirt_Normal.png",
+        "Exports/glTF (Godot)/T_Dirt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Dirt_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Sidewalk_Straight_3m_Stripe.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Sidewalk_Straight_3m_Stripe.bin",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Sidewalk_Straight_3m.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Sidewalk_Straight_3m.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Stairs_Entrance_Concrete.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Stairs_Entrance_Concrete.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Stairs_Rails_Metal_Straight_1.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Stairs_Rails_Metal_Straight_1.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Stairs_Rails_Metal_Straight_2.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Stairs_Rails_Metal_Straight_2.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Stairs_Rails_Metal.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Stairs_Rails_Metal.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_2Lane_noSidewalk.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_2Lane_noSidewalk.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_2Lane.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_2Lane.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png",
+        "Exports/glTF (Godot)/T_Street_Decals.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_4Lane_noSidewalk.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_4Lane_noSidewalk.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png",
+        "Exports/glTF (Godot)/T_Street_Decals.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_4Lane.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_4Lane.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png",
+        "Exports/glTF (Godot)/T_Street_Decals.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_4WayIntersection.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_4WayIntersection.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png",
+        "Exports/glTF (Godot)/T_Street_Decals.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_Asphalt_6x6.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_Asphalt_6x6.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_Asphalt_9x9.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_Asphalt_9x9.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_Asphalt_Curve_2Lane.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_Asphalt_Curve_2Lane.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_Asphalt_Curve_4Lane_Short.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_Asphalt_Curve_4Lane_Short.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_Curve_2Lane_Curb.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_Curve_2Lane_Curb.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_Curve_2Lane.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_Curve_2Lane.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png",
+        "Exports/glTF (Godot)/T_Street_Decals.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_Curve_4Lane_Short_Curb.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_Curve_4Lane_Short_Curb.bin",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_Curve_4LaneShort.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_Curve_4LaneShort.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png",
+        "Exports/glTF (Godot)/T_Street_Decals.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Street_TIntersection.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Street_TIntersection.bin",
+        "Exports/glTF (Godot)/T_Concrete_Normal.png",
+        "Exports/glTF (Godot)/T_Concrete_Asphalt_BaseColor.png",
+        "Exports/glTF (Godot)/T_Concrete_ORM.png",
+        "Exports/glTF (Godot)/T_Street_Decals.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_Normal.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_BaseColor.png",
+        "Exports/glTF (Godot)/T_MetalConcrete_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_90Angle_TopCover.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_90Angle_TopCover.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_Column_Bottom.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_Column_Bottom.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_Column_Center.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_Column_Center.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_Column_Top.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_Column_Top.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_Corner.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_Corner.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_FirstFloor_Wall.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_FirstFloor_Wall.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_FirstFloor_Window_001.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_FirstFloor_Window_001.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_FirstFloor_Window_Columns.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_FirstFloor_Window_Columns.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_Plain_3.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_Plain_3.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_Wall_Guard.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_Wall_Guard.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    },
+    {
+      "gltfPath": "Exports/glTF (Godot)/Trim_Window.gltf",
+      "referencedFiles": [
+        "Exports/glTF (Godot)/Trim_Window.bin",
+        "Exports/glTF (Godot)/T_Trim_Normal.png",
+        "Exports/glTF (Godot)/T_Trim_BaseColor.png",
+        "Exports/glTF (Godot)/T_Trim_ORM.png",
+        "Exports/glTF (Godot)/T_RedBrick_Normal.png",
+        "Exports/glTF (Godot)/T_RedBrick_BaseColor.png",
+        "Exports/glTF (Godot)/T_RedBrick_ORM.png"
+      ],
+      "missingFiles": [],
+      "externalUris": [],
+      "collidingFiles": [],
+      "hasAnimations": false,
+      "hasSkins": false
+    }
+  ]
+}

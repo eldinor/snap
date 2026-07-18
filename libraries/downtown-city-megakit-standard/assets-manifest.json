@@ -1,0 +1,3875 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "brick-90-angle-l",
+      "name": "Brick 90 Angle L",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_90Angle_L.gltf",
+      "thumbnailFileName": "Brick_90Angle_L.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "90",
+        "angle",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-90-angle-r",
+      "name": "Brick 90 Angle R",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_90Angle_R.gltf",
+      "thumbnailFileName": "Brick_90Angle_R.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "90",
+        "angle",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-bottom-trim",
+      "name": "Brick Bottom Trim",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_BottomTrim.gltf",
+      "thumbnailFileName": "Brick_BottomTrim.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "bottom",
+        "trim"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-column-red-bricks",
+      "name": "Brick Column Red Bricks",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_Column_RedBricks.gltf",
+      "thumbnailFileName": "Brick_Column_RedBricks.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "red",
+        "bricks"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-column-small",
+      "name": "Brick Column Small",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_Column_Small.gltf",
+      "thumbnailFileName": "Brick_Column_Small.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "small"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-column-trim-bricks",
+      "name": "Brick Column Trim Bricks",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_Column_TrimBricks.gltf",
+      "thumbnailFileName": "Brick_Column_TrimBricks.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "trim",
+        "bricks"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-corner-plain",
+      "name": "Brick Corner Plain",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_Corner_Plain.gltf",
+      "thumbnailFileName": "Brick_Corner_Plain.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "corner",
+        "plain"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-corner-column-bottom",
+      "name": "Brick Corner Column Bottom",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_CornerColumn_Bottom.gltf",
+      "thumbnailFileName": "Brick_CornerColumn_Bottom.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "corner",
+        "bottom"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-corner-column-cap",
+      "name": "Brick Corner Column Cap",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_CornerColumn_Cap.gltf",
+      "thumbnailFileName": "Brick_CornerColumn_Cap.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "corner",
+        "cap"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-corner-column-cap-short",
+      "name": "Brick Corner Column Cap Short",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_CornerColumn_CapShort.gltf",
+      "thumbnailFileName": "Brick_CornerColumn_CapShort.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "corner",
+        "cap",
+        "short"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-corner-column-center-half",
+      "name": "Brick Corner Column Center Half",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_CornerColumn_Center_Half.gltf",
+      "thumbnailFileName": "Brick_CornerColumn_Center_Half.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "corner",
+        "center",
+        "half"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-corner-column-center",
+      "name": "Brick Corner Column Center",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_CornerColumn_Center.gltf",
+      "thumbnailFileName": "Brick_CornerColumn_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "corner",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-corner-column-top",
+      "name": "Brick Corner Column Top",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_CornerColumn_Top.gltf",
+      "thumbnailFileName": "Brick_CornerColumn_Top.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "corner",
+        "top"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-half-column-bottom",
+      "name": "Brick Half Column Bottom",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_HalfColumn_Bottom.gltf",
+      "thumbnailFileName": "Brick_HalfColumn_Bottom.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "half",
+        "bottom"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-half-column-center",
+      "name": "Brick Half Column Center",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_HalfColumn_Center.gltf",
+      "thumbnailFileName": "Brick_HalfColumn_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "half",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-half-column-top",
+      "name": "Brick Half Column Top",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Brick_HalfColumn_Top.gltf",
+      "thumbnailFileName": "Brick_HalfColumn_Top.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "brick",
+        "half",
+        "top"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-half-trim",
+      "name": "Brick Half Trim",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_HalfTrim.gltf",
+      "thumbnailFileName": "Brick_HalfTrim.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "half",
+        "trim"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-inset-window-curved-small",
+      "name": "Brick Inset Window Curved Small",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Brick_Inset_Window_Curved_Small.gltf",
+      "thumbnailFileName": "Brick_Inset_Window_Curved_Small.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "brick",
+        "inset",
+        "curved",
+        "small"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-inset-window-curved",
+      "name": "Brick Inset Window Curved",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Brick_Inset_Window_Curved.gltf",
+      "thumbnailFileName": "Brick_Inset_Window_Curved.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "brick",
+        "inset",
+        "curved"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-inset-window",
+      "name": "Brick Inset Window",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Brick_Inset_Window.gltf",
+      "thumbnailFileName": "Brick_Inset_Window.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "brick",
+        "inset"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-inset",
+      "name": "Brick Inset",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_Inset.gltf",
+      "thumbnailFileName": "Brick_Inset.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "inset"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-interior-wall-1",
+      "name": "Brick Interior Wall 1",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_InteriorWall_1.gltf",
+      "thumbnailFileName": "Brick_InteriorWall_1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "interior",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-interior-wall-3",
+      "name": "Brick Interior Wall 3",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_InteriorWall_3.gltf",
+      "thumbnailFileName": "Brick_InteriorWall_3.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "interior",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-interior-wall-4",
+      "name": "Brick Interior Wall 4",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_InteriorWall_4.gltf",
+      "thumbnailFileName": "Brick_InteriorWall_4.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "interior",
+        "4"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-ornament-horizontal",
+      "name": "Brick Ornament Horizontal",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_Ornament_Horizontal.gltf",
+      "thumbnailFileName": "Brick_Ornament_Horizontal.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "ornament",
+        "horizontal"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-plain-1",
+      "name": "Brick Plain 1",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_Plain_1.gltf",
+      "thumbnailFileName": "Brick_Plain_1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "plain",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-plain-3-no-wear",
+      "name": "Brick Plain 3 No Wear",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_Plain_3_noWear.gltf",
+      "thumbnailFileName": "Brick_Plain_3_noWear.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "plain",
+        "3",
+        "no",
+        "wear"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-plain-3",
+      "name": "Brick Plain 3",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_Plain_3.gltf",
+      "thumbnailFileName": "Brick_Plain_3.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "plain",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-plain-4",
+      "name": "Brick Plain 4",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_Plain_4.gltf",
+      "thumbnailFileName": "Brick_Plain_4.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "plain",
+        "4"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-red-white-double-window",
+      "name": "Brick Red White Double Window",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Brick_RedWhite_DoubleWindow.gltf",
+      "thumbnailFileName": "Brick_RedWhite_DoubleWindow.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "brick",
+        "red",
+        "white",
+        "double"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-top-trim-90-angle-l",
+      "name": "Brick Top Trim 90 Angle L",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_TopTrim_90Angle_L.gltf",
+      "thumbnailFileName": "Brick_TopTrim_90Angle_L.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "top",
+        "trim",
+        "90",
+        "angle",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-top-trim-90-angle-r",
+      "name": "Brick Top Trim 90 Angle R",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_TopTrim_90Angle_R.gltf",
+      "thumbnailFileName": "Brick_TopTrim_90Angle_R.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "top",
+        "trim",
+        "90",
+        "angle",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-top-trim-corner",
+      "name": "Brick Top Trim Corner",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_TopTrim_Corner.gltf",
+      "thumbnailFileName": "Brick_TopTrim_Corner.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "top",
+        "trim",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-top-trim",
+      "name": "Brick Top Trim",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Brick_TopTrim.gltf",
+      "thumbnailFileName": "Brick_TopTrim.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "brick",
+        "top",
+        "trim"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-window-curved-double",
+      "name": "Brick Window Curved Double",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Brick_Window_CurvedDouble.gltf",
+      "thumbnailFileName": "Brick_Window_CurvedDouble.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "brick",
+        "curved",
+        "double"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-window-square-single",
+      "name": "Brick Window Square Single",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Brick_Window_Square_Single.gltf",
+      "thumbnailFileName": "Brick_Window_Square_Single.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "brick",
+        "square",
+        "single"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-window-trim-single",
+      "name": "Brick Window Trim Single",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Brick_Window_Trim_Single.gltf",
+      "thumbnailFileName": "Brick_Window_Trim_Single.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "brick",
+        "trim",
+        "single"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "brick-window-trim",
+      "name": "Brick Window Trim",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Brick_Window_Trim.gltf",
+      "thumbnailFileName": "Brick_Window_Trim.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "brick",
+        "trim"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "building-large-2",
+      "name": "Building Large 2",
+      "category": "Buildings",
+      "fileName": "Exports/glTF (Godot)/Building_Large_2.gltf",
+      "thumbnailFileName": "Building_Large_2.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "building",
+        "architecture",
+        "large",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "building-medium-2-001",
+      "name": "Building Medium 2 001",
+      "category": "Buildings",
+      "fileName": "Exports/glTF (Godot)/Building_Medium_2_001.gltf",
+      "thumbnailFileName": "Building_Medium_2_001.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "building",
+        "architecture",
+        "medium",
+        "2",
+        "001"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "building-small-1",
+      "name": "Building Small 1",
+      "category": "Buildings",
+      "fileName": "Exports/glTF (Godot)/Building_Small_1.gltf",
+      "thumbnailFileName": "Building_Small_1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "building",
+        "architecture",
+        "small",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-brick-90-angle-l",
+      "name": "Cornice Brick 90 Angle L",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Brick_90Angle_L.gltf",
+      "thumbnailFileName": "Cornice_Brick_90Angle_L.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "brick",
+        "90",
+        "angle",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-brick-90-angle-r",
+      "name": "Cornice Brick 90 Angle R",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Brick_90Angle_R.gltf",
+      "thumbnailFileName": "Cornice_Brick_90Angle_R.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "brick",
+        "90",
+        "angle",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-brick-center",
+      "name": "Cornice Brick Center",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Brick_Center.gltf",
+      "thumbnailFileName": "Cornice_Brick_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "brick",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-brick-l",
+      "name": "Cornice Brick L",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Brick_L.gltf",
+      "thumbnailFileName": "Cornice_Brick_L.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "brick",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-brick-r",
+      "name": "Cornice Brick R",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Brick_R.gltf",
+      "thumbnailFileName": "Cornice_Brick_R.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "brick",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-metal-90-angle-l",
+      "name": "Cornice Metal 90 Angle L",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Metal_90Angle_L.gltf",
+      "thumbnailFileName": "Cornice_Metal_90Angle_L.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "metal",
+        "90",
+        "angle",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-metal-90-angle-r",
+      "name": "Cornice Metal 90 Angle R",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Metal_90Angle_R.gltf",
+      "thumbnailFileName": "Cornice_Metal_90Angle_R.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "metal",
+        "90",
+        "angle",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-metal-center",
+      "name": "Cornice Metal Center",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Metal_Center.gltf",
+      "thumbnailFileName": "Cornice_Metal_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "metal",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-metal-l",
+      "name": "Cornice Metal L",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Metal_L.gltf",
+      "thumbnailFileName": "Cornice_Metal_L.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "metal",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-metal-r",
+      "name": "Cornice Metal R",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Metal_R.gltf",
+      "thumbnailFileName": "Cornice_Metal_R.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "metal",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-trim-90-angle-l",
+      "name": "Cornice Trim 90 Angle L",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Trim_90Angle_L.gltf",
+      "thumbnailFileName": "Cornice_Trim_90Angle_L.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "90",
+        "angle",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-trim-90-angle-r",
+      "name": "Cornice Trim 90 Angle R",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Trim_90Angle_R.gltf",
+      "thumbnailFileName": "Cornice_Trim_90Angle_R.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "90",
+        "angle",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-trim-center",
+      "name": "Cornice Trim Center",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Trim_Center.gltf",
+      "thumbnailFileName": "Cornice_Trim_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-trim-l",
+      "name": "Cornice Trim L",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Trim_L.gltf",
+      "thumbnailFileName": "Cornice_Trim_L.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "cornice-trim-r",
+      "name": "Cornice Trim R",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Cornice_Trim_R.gltf",
+      "thumbnailFileName": "Cornice_Trim_R.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "cornice",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-arrow-forward-left",
+      "name": "Decal Arrow Forward Left",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_ArrowForwardLeft.gltf",
+      "thumbnailFileName": "Decal_ArrowForwardLeft.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "arrow",
+        "forward",
+        "left"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-arrow-forward-right",
+      "name": "Decal Arrow Forward Right",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_ArrowForwardRight.gltf",
+      "thumbnailFileName": "Decal_ArrowForwardRight.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "arrow",
+        "forward",
+        "right"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-arrow-straight",
+      "name": "Decal Arrow Straight",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_ArrowStraight.gltf",
+      "thumbnailFileName": "Decal_ArrowStraight.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "arrow",
+        "straight"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-arrow-turn-left",
+      "name": "Decal Arrow Turn Left",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_ArrowTurnLeft.gltf",
+      "thumbnailFileName": "Decal_ArrowTurnLeft.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "arrow",
+        "turn",
+        "left"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-arrow-turn-right",
+      "name": "Decal Arrow Turn Right",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_ArrowTurnRight.gltf",
+      "thumbnailFileName": "Decal_ArrowTurnRight.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "arrow",
+        "turn",
+        "right"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-bikelane",
+      "name": "Decal Bikelane",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Bikelane.gltf",
+      "thumbnailFileName": "Decal_Bikelane.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "bikelane"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-broken-line-straight",
+      "name": "Decal Broken Line Straight",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_BrokenLine_Straight.gltf",
+      "thumbnailFileName": "Decal_BrokenLine_Straight.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "broken",
+        "line",
+        "straight"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-crosswalk-wide",
+      "name": "Decal Crosswalk Wide",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Crosswalk_Wide.gltf",
+      "thumbnailFileName": "Decal_Crosswalk_Wide.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "crosswalk",
+        "wide"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-crosswalk",
+      "name": "Decal Crosswalk",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Crosswalk.gltf",
+      "thumbnailFileName": "Decal_Crosswalk.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "crosswalk"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-curve-2-lane-stripe",
+      "name": "Decal Curve 2 Lane Stripe",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Curve_2Lane_Stripe.gltf",
+      "thumbnailFileName": "Decal_Curve_2Lane_Stripe.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "curve",
+        "2",
+        "lane",
+        "stripe"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-curve-4-lane-short-double-yellow",
+      "name": "Decal Curve 4 Lane Short Double Yellow",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Curve_4LaneShort_DoubleYellow.gltf",
+      "thumbnailFileName": "Decal_Curve_4LaneShort_DoubleYellow.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "curve",
+        "4",
+        "lane",
+        "short",
+        "double",
+        "yellow"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-curve-4-lane-short-stripe",
+      "name": "Decal Curve 4 Lane Short Stripe",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Curve_4LaneShort_Stripe.gltf",
+      "thumbnailFileName": "Decal_Curve_4LaneShort_Stripe.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "curve",
+        "4",
+        "lane",
+        "short",
+        "stripe"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-curve-4-lane-short",
+      "name": "Decal Curve 4 Lane Short",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Curve_4LaneShort.gltf",
+      "thumbnailFileName": "Decal_Curve_4LaneShort.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "curve",
+        "4",
+        "lane",
+        "short"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-double-yellow-straight",
+      "name": "Decal Double Yellow Straight",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_DoubleYellow_Straight.gltf",
+      "thumbnailFileName": "Decal_DoubleYellow_Straight.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "double",
+        "yellow",
+        "straight"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-only",
+      "name": "Decal Only",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Only.gltf",
+      "thumbnailFileName": "Decal_Only.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "only"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-slow",
+      "name": "Decal Slow",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Slow.gltf",
+      "thumbnailFileName": "Decal_Slow.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "slow"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "decal-stop",
+      "name": "Decal Stop",
+      "category": "Road Decals",
+      "fileName": "Exports/glTF (Godot)/Decal_Stop.gltf",
+      "thumbnailFileName": "Decal_Stop.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "marking",
+        "decal",
+        "stop"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "door-1",
+      "name": "Door 1",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Door_1.gltf",
+      "thumbnailFileName": "Door_1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "door",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "door-2",
+      "name": "Door 2",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Door_2.gltf",
+      "thumbnailFileName": "Door_2.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "door",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "door-3",
+      "name": "Door 3",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Door_3.gltf",
+      "thumbnailFileName": "Door_3.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "door",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "door-frame-metal-single",
+      "name": "Door Frame Metal Single",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/DoorFrame_Metal_Single.gltf",
+      "thumbnailFileName": "DoorFrame_Metal_Single.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "door",
+        "frame",
+        "metal",
+        "single"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "door-frame-trim",
+      "name": "Door Frame Trim",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/DoorFrame_Trim.gltf",
+      "thumbnailFileName": "DoorFrame_Trim.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "door",
+        "frame",
+        "trim"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "door-frame-wooden",
+      "name": "Door Frame Wooden",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/DoorFrame_Wooden.gltf",
+      "thumbnailFileName": "DoorFrame_Wooden.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "door",
+        "frame",
+        "wooden"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "entrance-concrete-2-x-1",
+      "name": "Entrance Concrete 2 X 1",
+      "category": "Floors & Entrances",
+      "fileName": "Exports/glTF (Godot)/Entrance_Concrete_2x1.gltf",
+      "thumbnailFileName": "Entrance_Concrete_2x1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "ground",
+        "entrance",
+        "concrete",
+        "2",
+        "x",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "entrance-concrete-2-x-2",
+      "name": "Entrance Concrete 2 X 2",
+      "category": "Floors & Entrances",
+      "fileName": "Exports/glTF (Godot)/Entrance_Concrete_2x2.gltf",
+      "thumbnailFileName": "Entrance_Concrete_2x2.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "ground",
+        "entrance",
+        "concrete",
+        "2",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "floor-2-x-2",
+      "name": "Floor 2 X 2",
+      "category": "Floors & Entrances",
+      "fileName": "Exports/glTF (Godot)/Floor_2x2.gltf",
+      "thumbnailFileName": "Floor_2x2.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "ground",
+        "floor",
+        "2",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "floor-4-x-4",
+      "name": "Floor 4 X 4",
+      "category": "Floors & Entrances",
+      "fileName": "Exports/glTF (Godot)/Floor_4x4.gltf",
+      "thumbnailFileName": "Floor_4x4.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "ground",
+        "floor",
+        "4",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "floor-inset",
+      "name": "Floor Inset",
+      "category": "Floors & Entrances",
+      "fileName": "Exports/glTF (Godot)/Floor_Inset.gltf",
+      "thumbnailFileName": "Floor_Inset.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "ground",
+        "floor",
+        "inset"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-column-bottom",
+      "name": "Metal Column Bottom",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Metal_Column_Bottom.gltf",
+      "thumbnailFileName": "Metal_Column_Bottom.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "metal",
+        "bottom"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-column-center",
+      "name": "Metal Column Center",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Metal_Column_Center.gltf",
+      "thumbnailFileName": "Metal_Column_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "metal",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-column-small-bottom",
+      "name": "Metal Column Small Bottom",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Metal_Column_Small_Bottom.gltf",
+      "thumbnailFileName": "Metal_Column_Small_Bottom.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "metal",
+        "small",
+        "bottom"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-column-small-center",
+      "name": "Metal Column Small Center",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Metal_Column_Small_Center.gltf",
+      "thumbnailFileName": "Metal_Column_Small_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "metal",
+        "small",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-column-small-top",
+      "name": "Metal Column Small Top",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Metal_Column_Small_Top.gltf",
+      "thumbnailFileName": "Metal_Column_Small_Top.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "metal",
+        "small",
+        "top"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-column-top",
+      "name": "Metal Column Top",
+      "category": "Columns",
+      "fileName": "Exports/glTF (Godot)/Metal_Column_Top.gltf",
+      "thumbnailFileName": "Metal_Column_Top.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "column",
+        "metal",
+        "top"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-first-floor-wall-1",
+      "name": "Metal First Floor Wall 1",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Metal_FirstFloor_Wall_1.gltf",
+      "thumbnailFileName": "Metal_FirstFloor_Wall_1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "metal",
+        "first",
+        "floor",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-first-floor-wall",
+      "name": "Metal First Floor Wall",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Metal_FirstFloor_Wall.gltf",
+      "thumbnailFileName": "Metal_FirstFloor_Wall.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "metal",
+        "first",
+        "floor"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-first-floor-window",
+      "name": "Metal First Floor Window",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Metal_FirstFloor_Window.gltf",
+      "thumbnailFileName": "Metal_FirstFloor_Window.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "metal",
+        "first",
+        "floor"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-full-window",
+      "name": "Metal Full Window",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Metal_FullWindow.gltf",
+      "thumbnailFileName": "Metal_FullWindow.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "metal",
+        "full"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-plain-1",
+      "name": "Metal Plain 1",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Metal_Plain_1.gltf",
+      "thumbnailFileName": "Metal_Plain_1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "metal",
+        "plain",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-plain-3",
+      "name": "Metal Plain 3",
+      "category": "Walls",
+      "fileName": "Exports/glTF (Godot)/Metal_Plain_3.gltf",
+      "thumbnailFileName": "Metal_Plain_3.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "wall",
+        "metal",
+        "plain",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-window-half",
+      "name": "Metal Window Half",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Metal_Window_Half.gltf",
+      "thumbnailFileName": "Metal_Window_Half.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "metal",
+        "half"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "metal-window",
+      "name": "Metal Window",
+      "category": "Doors & Windows",
+      "fileName": "Exports/glTF (Godot)/Metal_Window.gltf",
+      "thumbnailFileName": "Metal_Window.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "opening",
+        "window",
+        "metal"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "prop-ac-unit",
+      "name": "Prop Ac Unit",
+      "category": "Props",
+      "fileName": "Exports/glTF (Godot)/Prop_ACUnit.gltf",
+      "thumbnailFileName": "Prop_ACUnit.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "prop",
+        "street-furniture",
+        "ac",
+        "unit"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "prop-bollard",
+      "name": "Prop Bollard",
+      "category": "Props",
+      "fileName": "Exports/glTF (Godot)/Prop_Bollard.gltf",
+      "thumbnailFileName": "Prop_Bollard.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "prop",
+        "street-furniture",
+        "bollard"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "prop-drain",
+      "name": "Prop Drain",
+      "category": "Props",
+      "fileName": "Exports/glTF (Godot)/Prop_Drain.gltf",
+      "thumbnailFileName": "Prop_Drain.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "prop",
+        "street-furniture",
+        "drain"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "prop-manhole-cover",
+      "name": "Prop Manhole Cover",
+      "category": "Props",
+      "fileName": "Exports/glTF (Godot)/Prop_ManholeCover.gltf",
+      "thumbnailFileName": "Prop_ManholeCover.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "prop",
+        "street-furniture",
+        "manhole",
+        "cover"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "prop-planter-single",
+      "name": "Prop Planter Single",
+      "category": "Props",
+      "fileName": "Exports/glTF (Godot)/Prop_Planter_Single.gltf",
+      "thumbnailFileName": "Prop_Planter_Single.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "prop",
+        "street-furniture",
+        "planter",
+        "single"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-2-x-2-90-angle-center",
+      "name": "Roof 2 X 2 90 Angle Center",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_2x2_90Angle_Center.gltf",
+      "thumbnailFileName": "Roof_2x2_90Angle_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "2",
+        "x",
+        "90",
+        "angle",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-2-x-2-90-angle-l",
+      "name": "Roof 2 X 2 90 Angle L",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_2x2_90Angle_L.gltf",
+      "thumbnailFileName": "Roof_2x2_90Angle_L.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "2",
+        "x",
+        "90",
+        "angle",
+        "l"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-2-x-2-90-angle-r",
+      "name": "Roof 2 X 2 90 Angle R",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_2x2_90Angle_R.gltf",
+      "thumbnailFileName": "Roof_2x2_90Angle_R.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "2",
+        "x",
+        "90",
+        "angle",
+        "r"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-2-x-2",
+      "name": "Roof 2 X 2",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_2x2.gltf",
+      "thumbnailFileName": "Roof_2x2.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "2",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-4-x-4",
+      "name": "Roof 4 X 4",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_4x4.gltf",
+      "thumbnailFileName": "Roof_4x4.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "4",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-slate-center",
+      "name": "Roof Slate Center",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_Slate_Center.gltf",
+      "thumbnailFileName": "Roof_Slate_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "slate",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-slate-corner",
+      "name": "Roof Slate Corner",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_Slate_Corner.gltf",
+      "thumbnailFileName": "Roof_Slate_Corner.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "slate",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-slate-inner-corner",
+      "name": "Roof Slate Inner Corner",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_Slate_InnerCorner.gltf",
+      "thumbnailFileName": "Roof_Slate_InnerCorner.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "slate",
+        "inner",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-slate-window-1",
+      "name": "Roof Slate Window 1",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_Slate_Window_1.gltf",
+      "thumbnailFileName": "Roof_Slate_Window_1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "slate",
+        "window",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-slate-cornice-center",
+      "name": "Roof Slate Cornice Center",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_SlateCornice_Center.gltf",
+      "thumbnailFileName": "Roof_SlateCornice_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "slate",
+        "cornice",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-slate-cornice-corner",
+      "name": "Roof Slate Cornice Corner",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_SlateCornice_Corner.gltf",
+      "thumbnailFileName": "Roof_SlateCornice_Corner.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "slate",
+        "cornice",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-slate-cornice-inner-corner",
+      "name": "Roof Slate Cornice Inner Corner",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_SlateCornice_InnerCorner.gltf",
+      "thumbnailFileName": "Roof_SlateCornice_InnerCorner.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "slate",
+        "cornice",
+        "inner",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "roof-slate-cornice-window-1",
+      "name": "Roof Slate Cornice Window 1",
+      "category": "Roofs",
+      "fileName": "Exports/glTF (Godot)/Roof_SlateCornice_Window_1.gltf",
+      "thumbnailFileName": "Roof_SlateCornice_Window_1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "roof",
+        "slate",
+        "cornice",
+        "window",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "sidewalk-corner-flat-3-m-stripe",
+      "name": "Sidewalk Corner Flat 3 M Stripe",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Sidewalk_Corner_Flat_3m_Stripe.gltf",
+      "thumbnailFileName": "Sidewalk_Corner_Flat_3m_Stripe.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "sidewalk",
+        "corner",
+        "flat",
+        "3",
+        "m",
+        "stripe"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "sidewalk-corner-flat-3-m",
+      "name": "Sidewalk Corner Flat 3 M",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Sidewalk_Corner_Flat_3m.gltf",
+      "thumbnailFileName": "Sidewalk_Corner_Flat_3m.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "sidewalk",
+        "corner",
+        "flat",
+        "3",
+        "m"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "sidewalk-corner-round-3-m-stripe",
+      "name": "Sidewalk Corner Round 3 M Stripe",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Sidewalk_Corner_Round_3m_Stripe.gltf",
+      "thumbnailFileName": "Sidewalk_Corner_Round_3m_Stripe.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "sidewalk",
+        "corner",
+        "round",
+        "3",
+        "m",
+        "stripe"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "sidewalk-corner-round-3-m",
+      "name": "Sidewalk Corner Round 3 M",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Sidewalk_Corner_Round_3m.gltf",
+      "thumbnailFileName": "Sidewalk_Corner_Round_3m.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "sidewalk",
+        "corner",
+        "round",
+        "3",
+        "m"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "sidewalk-no-curb-3-m",
+      "name": "Sidewalk No Curb 3 M",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Sidewalk_NoCurb_3m.gltf",
+      "thumbnailFileName": "Sidewalk_NoCurb_3m.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "sidewalk",
+        "no",
+        "curb",
+        "3",
+        "m"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "sidewalk-planter",
+      "name": "Sidewalk Planter",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Sidewalk_Planter.gltf",
+      "thumbnailFileName": "Sidewalk_Planter.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "sidewalk",
+        "planter"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "sidewalk-straight-3-m-stripe",
+      "name": "Sidewalk Straight 3 M Stripe",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Sidewalk_Straight_3m_Stripe.gltf",
+      "thumbnailFileName": "Sidewalk_Straight_3m_Stripe.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "sidewalk",
+        "straight",
+        "3",
+        "m",
+        "stripe"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "sidewalk-straight-3-m",
+      "name": "Sidewalk Straight 3 M",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Sidewalk_Straight_3m.gltf",
+      "thumbnailFileName": "Sidewalk_Straight_3m.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "sidewalk",
+        "straight",
+        "3",
+        "m"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "stairs-entrance-concrete",
+      "name": "Stairs Entrance Concrete",
+      "category": "Stairs & Railings",
+      "fileName": "Exports/glTF (Godot)/Stairs_Entrance_Concrete.gltf",
+      "thumbnailFileName": "Stairs_Entrance_Concrete.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "stairs",
+        "entrance",
+        "concrete"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "stairs-rails-metal-straight-1",
+      "name": "Stairs Rails Metal Straight 1",
+      "category": "Stairs & Railings",
+      "fileName": "Exports/glTF (Godot)/Stairs_Rails_Metal_Straight_1.gltf",
+      "thumbnailFileName": "Stairs_Rails_Metal_Straight_1.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "stairs",
+        "rails",
+        "metal",
+        "straight",
+        "1"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "stairs-rails-metal-straight-2",
+      "name": "Stairs Rails Metal Straight 2",
+      "category": "Stairs & Railings",
+      "fileName": "Exports/glTF (Godot)/Stairs_Rails_Metal_Straight_2.gltf",
+      "thumbnailFileName": "Stairs_Rails_Metal_Straight_2.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "stairs",
+        "rails",
+        "metal",
+        "straight",
+        "2"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "stairs-rails-metal",
+      "name": "Stairs Rails Metal",
+      "category": "Stairs & Railings",
+      "fileName": "Exports/glTF (Godot)/Stairs_Rails_Metal.gltf",
+      "thumbnailFileName": "Stairs_Rails_Metal.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "stairs",
+        "rails",
+        "metal"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-2-lane-no-sidewalk",
+      "name": "Street 2 Lane No Sidewalk",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_2Lane_noSidewalk.gltf",
+      "thumbnailFileName": "Street_2Lane_noSidewalk.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "2",
+        "lane",
+        "no",
+        "sidewalk"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-2-lane",
+      "name": "Street 2 Lane",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_2Lane.gltf",
+      "thumbnailFileName": "Street_2Lane.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "2",
+        "lane"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-4-lane-no-sidewalk",
+      "name": "Street 4 Lane No Sidewalk",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_4Lane_noSidewalk.gltf",
+      "thumbnailFileName": "Street_4Lane_noSidewalk.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "4",
+        "lane",
+        "no",
+        "sidewalk"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-4-lane",
+      "name": "Street 4 Lane",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_4Lane.gltf",
+      "thumbnailFileName": "Street_4Lane.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "4",
+        "lane"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-4-way-intersection",
+      "name": "Street 4 Way Intersection",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_4WayIntersection.gltf",
+      "thumbnailFileName": "Street_4WayIntersection.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "4",
+        "way",
+        "intersection"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-asphalt-6-x-6",
+      "name": "Street Asphalt 6 X 6",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_Asphalt_6x6.gltf",
+      "thumbnailFileName": "Street_Asphalt_6x6.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "asphalt",
+        "6",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-asphalt-9-x-9",
+      "name": "Street Asphalt 9 X 9",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_Asphalt_9x9.gltf",
+      "thumbnailFileName": "Street_Asphalt_9x9.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "asphalt",
+        "9",
+        "x"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-asphalt-curve-2-lane",
+      "name": "Street Asphalt Curve 2 Lane",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_Asphalt_Curve_2Lane.gltf",
+      "thumbnailFileName": "Street_Asphalt_Curve_2Lane.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "asphalt",
+        "curve",
+        "2",
+        "lane"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-asphalt-curve-4-lane-short",
+      "name": "Street Asphalt Curve 4 Lane Short",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_Asphalt_Curve_4Lane_Short.gltf",
+      "thumbnailFileName": "Street_Asphalt_Curve_4Lane_Short.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "asphalt",
+        "curve",
+        "4",
+        "lane",
+        "short"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-curve-2-lane-curb",
+      "name": "Street Curve 2 Lane Curb",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_Curve_2Lane_Curb.gltf",
+      "thumbnailFileName": "Street_Curve_2Lane_Curb.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "curve",
+        "2",
+        "lane",
+        "curb"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-curve-2-lane",
+      "name": "Street Curve 2 Lane",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_Curve_2Lane.gltf",
+      "thumbnailFileName": "Street_Curve_2Lane.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "curve",
+        "2",
+        "lane"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-curve-4-lane-short-curb",
+      "name": "Street Curve 4 Lane Short Curb",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_Curve_4Lane_Short_Curb.gltf",
+      "thumbnailFileName": "Street_Curve_4Lane_Short_Curb.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "curve",
+        "4",
+        "lane",
+        "short",
+        "curb"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-curve-4-lane-short",
+      "name": "Street Curve 4 Lane Short",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_Curve_4LaneShort.gltf",
+      "thumbnailFileName": "Street_Curve_4LaneShort.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "curve",
+        "4",
+        "lane",
+        "short"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "street-t-intersection",
+      "name": "Street T Intersection",
+      "category": "Streets & Sidewalks",
+      "fileName": "Exports/glTF (Godot)/Street_TIntersection.gltf",
+      "thumbnailFileName": "Street_TIntersection.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "road",
+        "street",
+        "t",
+        "intersection"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-90-angle-top-cover",
+      "name": "Trim 90 Angle Top Cover",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_90Angle_TopCover.gltf",
+      "thumbnailFileName": "Trim_90Angle_TopCover.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "90",
+        "angle",
+        "top",
+        "cover"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-column-bottom",
+      "name": "Trim Column Bottom",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_Column_Bottom.gltf",
+      "thumbnailFileName": "Trim_Column_Bottom.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "column",
+        "bottom"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-column-center",
+      "name": "Trim Column Center",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_Column_Center.gltf",
+      "thumbnailFileName": "Trim_Column_Center.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "column",
+        "center"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-column-top",
+      "name": "Trim Column Top",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_Column_Top.gltf",
+      "thumbnailFileName": "Trim_Column_Top.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "column",
+        "top"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-corner",
+      "name": "Trim Corner",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_Corner.gltf",
+      "thumbnailFileName": "Trim_Corner.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "corner"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-first-floor-wall",
+      "name": "Trim First Floor Wall",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_FirstFloor_Wall.gltf",
+      "thumbnailFileName": "Trim_FirstFloor_Wall.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "first",
+        "floor",
+        "wall"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-first-floor-window-001",
+      "name": "Trim First Floor Window 001",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_FirstFloor_Window_001.gltf",
+      "thumbnailFileName": "Trim_FirstFloor_Window_001.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "first",
+        "floor",
+        "window",
+        "001"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-first-floor-window-columns",
+      "name": "Trim First Floor Window Columns",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_FirstFloor_Window_Columns.gltf",
+      "thumbnailFileName": "Trim_FirstFloor_Window_Columns.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "first",
+        "floor",
+        "window",
+        "columns"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-plain-3",
+      "name": "Trim Plain 3",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_Plain_3.gltf",
+      "thumbnailFileName": "Trim_Plain_3.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "plain",
+        "3"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-wall-guard",
+      "name": "Trim Wall Guard",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_Wall_Guard.gltf",
+      "thumbnailFileName": "Trim_Wall_Guard.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "wall",
+        "guard"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    },
+    {
+      "id": "trim-window",
+      "name": "Trim Window",
+      "category": "Trims & Cornices",
+      "fileName": "Exports/glTF (Godot)/Trim_Window.gltf",
+      "thumbnailFileName": "Trim_Window.png",
+      "defaultPlacementKind": "instance",
+      "tags": [
+        "city",
+        "architecture",
+        "trim",
+        "window"
+      ],
+      "placeholder": {
+        "shape": "box",
+        "size": [
+          2,
+          0.2,
+          2
+        ],
+        "color": "#546e7a"
+      }
+    }
+  ]
+}

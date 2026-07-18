@@ -162,6 +162,19 @@ This writes:
 
 Then refresh the studio and confirm validation results in `Info`.
 
+### Vertex Colors In Imported GLTFs
+
+Some packs contain `COLOR_0` vertex-color data left over from an authoring workflow. In standard glTF rendering, vertex colors multiply the base-color texture. A pack that used vertex colors as a custom shader mask can therefore appear incorrectly tinted in Snap; for example, the Downtown City street meshes rendered red because their vertex colors were predominantly red.
+
+Before changing an asset, inspect its base-color texture and material definition to distinguish a vertex-color tint from a damaged or incorrectly packed texture.
+
+Two valid fixes are available:
+
+- **Clean the asset:** remove the `COLOR_0` attribute from the affected mesh primitives. This is portable and makes the GLTF render consistently in standard viewers. It is the fix applied to the imported Downtown City street meshes.
+- **Ignore colors at runtime:** keep the source data and configure the loader/material to disable vertex colors for that library or asset. This is non-destructive and could later be exposed as a per-library or per-asset toggle.
+
+Keep the source pack ZIP unchanged so an imported library can be recreated if a different choice is needed later.
+
 ### 6. Promote to Built-In
 
 Use this only when the imported library is ready to become part of app content.

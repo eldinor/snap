@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "categories": {
+    "Buildings": [
+      "city",
+      "building",
+      "architecture"
+    ],
+    "Walls": [
+      "city",
+      "architecture",
+      "wall",
+      "brick",
+      "metal",
+      "interior",
+      "exterior"
+    ],
+    "Doors & Windows": [
+      "city",
+      "architecture",
+      "opening",
+      "door",
+      "window",
+      "frame"
+    ],
+    "Columns": [
+      "city",
+      "architecture",
+      "column",
+      "brick",
+      "metal"
+    ],
+    "Roofs": [
+      "city",
+      "architecture",
+      "roof",
+      "slate",
+      "corner",
+      "cornice"
+    ],
+    "Trims & Cornices": [
+      "city",
+      "architecture",
+      "trim",
+      "cornice",
+      "brick",
+      "metal"
+    ],
+    "Floors & Entrances": [
+      "city",
+      "architecture",
+      "ground",
+      "floor",
+      "entrance",
+      "concrete"
+    ],
+    "Streets & Sidewalks": [
+      "city",
+      "road",
+      "street",
+      "sidewalk",
+      "asphalt",
+      "lane",
+      "curb"
+    ],
+    "Road Decals": [
+      "city",
+      "road",
+      "marking",
+      "decal",
+      "crosswalk",
+      "arrow",
+      "yellow"
+    ],
+    "Stairs & Railings": [
+      "city",
+      "architecture",
+      "stairs",
+      "railing",
+      "metal",
+      "concrete"
+    ],
+    "Props": [
+      "city",
+      "prop",
+      "street-furniture",
+      "bollard",
+      "planter",
+      "drain",
+      "ac"
+    ]
+  }
+}

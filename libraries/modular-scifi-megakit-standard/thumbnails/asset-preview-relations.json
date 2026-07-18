@@ -1,766 +1,618 @@
 {
-  "generatedAt": "2026-03-28T14:37:08.689Z",
-  "basePath": "http://localhost:5173/libraries/modular-scifi-megakit-standard/glTF/",
+  "generatedAt": "2026-07-18T17:22:06.377Z",
+  "basePath": "http://localhost:5173/libraries/downtown-city-megakit-standard/glTF/",
   "files": [
     {
-      "gltf": "sci-fi\\Alien_Cyclop.gltf",
-      "png": "Alien_Cyclop.png"
+      "gltf": "Exports/glTF (Godot)/Brick_90Angle_L.gltf",
+      "png": "Brick_90Angle_L.png"
     },
     {
-      "gltf": "sci-fi\\Alien_Oculichrysalis.gltf",
-      "png": "Alien_Oculichrysalis.png"
+      "gltf": "Exports/glTF (Godot)/Brick_90Angle_R.gltf",
+      "png": "Brick_90Angle_R.png"
     },
     {
-      "gltf": "sci-fi\\Alien_Scolitex.gltf",
-      "png": "Alien_Scolitex.png"
+      "gltf": "Exports/glTF (Godot)/Brick_BottomTrim.gltf",
+      "png": "Brick_BottomTrim.png"
     },
     {
-      "gltf": "sci-fi\\BottomMetal_Corner_Round_Inner.gltf",
-      "png": "BottomMetal_Corner_Round_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Column_RedBricks.gltf",
+      "png": "Brick_Column_RedBricks.png"
     },
     {
-      "gltf": "sci-fi\\BottomMetal_Corner_Round_Outer.gltf",
-      "png": "BottomMetal_Corner_Round_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Column_Small.gltf",
+      "png": "Brick_Column_Small.png"
     },
     {
-      "gltf": "sci-fi\\BottomMetal_Corner_Square_Inner.gltf",
-      "png": "BottomMetal_Corner_Square_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Column_TrimBricks.gltf",
+      "png": "Brick_Column_TrimBricks.png"
     },
     {
-      "gltf": "sci-fi\\BottomMetal_Corner_Square_Outer_1.gltf",
-      "png": "BottomMetal_Corner_Square_Outer_1.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Corner_Plain.gltf",
+      "png": "Brick_Corner_Plain.png"
     },
     {
-      "gltf": "sci-fi\\BottomMetal_Corner_Square_Outer_2.gltf",
-      "png": "BottomMetal_Corner_Square_Outer_2.png"
+      "gltf": "Exports/glTF (Godot)/Brick_CornerColumn_Bottom.gltf",
+      "png": "Brick_CornerColumn_Bottom.png"
     },
     {
-      "gltf": "sci-fi\\BottomMetal_Straight.gltf",
-      "png": "BottomMetal_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Brick_CornerColumn_Cap.gltf",
+      "png": "Brick_CornerColumn_Cap.png"
     },
     {
-      "gltf": "sci-fi\\BottomSimple_Corner_Round_Inner.gltf",
-      "png": "BottomSimple_Corner_Round_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Brick_CornerColumn_CapShort.gltf",
+      "png": "Brick_CornerColumn_CapShort.png"
     },
     {
-      "gltf": "sci-fi\\BottomSimple_Corner_Round_Outer.gltf",
-      "png": "BottomSimple_Corner_Round_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Brick_CornerColumn_Center_Half.gltf",
+      "png": "Brick_CornerColumn_Center_Half.png"
     },
     {
-      "gltf": "sci-fi\\BottomSimple_Corner_Square_Inner.gltf",
-      "png": "BottomSimple_Corner_Square_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Brick_CornerColumn_Center.gltf",
+      "png": "Brick_CornerColumn_Center.png"
     },
     {
-      "gltf": "sci-fi\\BottomSimple_Corner_Square_Outer_1.gltf",
-      "png": "BottomSimple_Corner_Square_Outer_1.png"
+      "gltf": "Exports/glTF (Godot)/Brick_CornerColumn_Top.gltf",
+      "png": "Brick_CornerColumn_Top.png"
     },
     {
-      "gltf": "sci-fi\\BottomSimple_Corner_Square_Outer_2.gltf",
-      "png": "BottomSimple_Corner_Square_Outer_2.png"
+      "gltf": "Exports/glTF (Godot)/Brick_HalfColumn_Bottom.gltf",
+      "png": "Brick_HalfColumn_Bottom.png"
     },
     {
-      "gltf": "sci-fi\\BottomSimple_Straight.gltf",
-      "png": "BottomSimple_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Brick_HalfColumn_Center.gltf",
+      "png": "Brick_HalfColumn_Center.png"
     },
     {
-      "gltf": "sci-fi\\Column_Astra.gltf",
-      "png": "Column_Astra.png"
+      "gltf": "Exports/glTF (Godot)/Brick_HalfColumn_Top.gltf",
+      "png": "Brick_HalfColumn_Top.png"
     },
     {
-      "gltf": "sci-fi\\Column_Hollow.gltf",
-      "png": "Column_Hollow.png"
+      "gltf": "Exports/glTF (Godot)/Brick_HalfTrim.gltf",
+      "png": "Brick_HalfTrim.png"
     },
     {
-      "gltf": "sci-fi\\Column_Large_Straight.gltf",
-      "png": "Column_Large_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Inset_Window_Curved_Small.gltf",
+      "png": "Brick_Inset_Window_Curved_Small.png"
     },
     {
-      "gltf": "sci-fi\\Column_MetalSupport.gltf",
-      "png": "Column_MetalSupport.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Inset_Window_Curved.gltf",
+      "png": "Brick_Inset_Window_Curved.png"
     },
     {
-      "gltf": "sci-fi\\Column_MetalSupport_Curve.gltf",
-      "png": "Column_MetalSupport_Curve.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Inset_Window.gltf",
+      "png": "Brick_Inset_Window.png"
     },
     {
-      "gltf": "sci-fi\\Column_Pipes.gltf",
-      "png": "Column_Pipes.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Inset.gltf",
+      "png": "Brick_Inset.png"
     },
     {
-      "gltf": "sci-fi\\Column_Round.gltf",
-      "png": "Column_Round.png"
+      "gltf": "Exports/glTF (Godot)/Brick_InteriorWall_1.gltf",
+      "png": "Brick_InteriorWall_1.png"
     },
     {
-      "gltf": "sci-fi\\Column_Simple.gltf",
-      "png": "Column_Simple.png"
+      "gltf": "Exports/glTF (Godot)/Brick_InteriorWall_3.gltf",
+      "png": "Brick_InteriorWall_3.png"
     },
     {
-      "gltf": "sci-fi\\Decal_0.gltf",
-      "png": "Decal_0.png"
+      "gltf": "Exports/glTF (Godot)/Brick_InteriorWall_4.gltf",
+      "png": "Brick_InteriorWall_4.png"
     },
     {
-      "gltf": "sci-fi\\Decal_1.gltf",
-      "png": "Decal_1.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Ornament_Horizontal.gltf",
+      "png": "Brick_Ornament_Horizontal.png"
     },
     {
-      "gltf": "sci-fi\\Decal_2.gltf",
-      "png": "Decal_2.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Plain_1.gltf",
+      "png": "Brick_Plain_1.png"
     },
     {
-      "gltf": "sci-fi\\Decal_3.gltf",
-      "png": "Decal_3.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Plain_3_noWear.gltf",
+      "png": "Brick_Plain_3_noWear.png"
     },
     {
-      "gltf": "sci-fi\\Decal_4.gltf",
-      "png": "Decal_4.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Plain_3.gltf",
+      "png": "Brick_Plain_3.png"
     },
     {
-      "gltf": "sci-fi\\Decal_5.gltf",
-      "png": "Decal_5.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Plain_4.gltf",
+      "png": "Brick_Plain_4.png"
     },
     {
-      "gltf": "sci-fi\\Decal_6.gltf",
-      "png": "Decal_6.png"
+      "gltf": "Exports/glTF (Godot)/Brick_RedWhite_DoubleWindow.gltf",
+      "png": "Brick_RedWhite_DoubleWindow.png"
     },
     {
-      "gltf": "sci-fi\\Decal_7.gltf",
-      "png": "Decal_7.png"
+      "gltf": "Exports/glTF (Godot)/Brick_TopTrim_90Angle_L.gltf",
+      "png": "Brick_TopTrim_90Angle_L.png"
     },
     {
-      "gltf": "sci-fi\\Decal_8.gltf",
-      "png": "Decal_8.png"
+      "gltf": "Exports/glTF (Godot)/Brick_TopTrim_90Angle_R.gltf",
+      "png": "Brick_TopTrim_90Angle_R.png"
     },
     {
-      "gltf": "sci-fi\\Decal_9.gltf",
-      "png": "Decal_9.png"
+      "gltf": "Exports/glTF (Godot)/Brick_TopTrim_Corner.gltf",
+      "png": "Brick_TopTrim_Corner.png"
     },
     {
-      "gltf": "sci-fi\\Decal_A.gltf",
-      "png": "Decal_A.png"
+      "gltf": "Exports/glTF (Godot)/Brick_TopTrim.gltf",
+      "png": "Brick_TopTrim.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Dashes.gltf",
-      "png": "Decal_Dashes.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Window_CurvedDouble.gltf",
+      "png": "Brick_Window_CurvedDouble.png"
     },
     {
-      "gltf": "sci-fi\\Decal_K.gltf",
-      "png": "Decal_K.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Window_Square_Single.gltf",
+      "png": "Brick_Window_Square_Single.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Line_90.gltf",
-      "png": "Decal_Line_90.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Window_Trim_Single.gltf",
+      "png": "Brick_Window_Trim_Single.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Line_90_Round.gltf",
-      "png": "Decal_Line_90_Round.png"
+      "gltf": "Exports/glTF (Godot)/Brick_Window_Trim.gltf",
+      "png": "Brick_Window_Trim.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Line_90_Round_Large.gltf",
-      "png": "Decal_Line_90_Round_Large.png"
+      "gltf": "Exports/glTF (Godot)/Building_Large_2.gltf",
+      "png": "Building_Large_2.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Line_Bend1_L.gltf",
-      "png": "Decal_Line_Bend1_L.png"
+      "gltf": "Exports/glTF (Godot)/Building_Medium_2_001.gltf",
+      "png": "Building_Medium_2_001.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Line_Bend1_R.gltf",
-      "png": "Decal_Line_Bend1_R.png"
+      "gltf": "Exports/glTF (Godot)/Building_Small_1.gltf",
+      "png": "Building_Small_1.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Line_Bend2_L.gltf",
-      "png": "Decal_Line_Bend2_L.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Brick_90Angle_L.gltf",
+      "png": "Cornice_Brick_90Angle_L.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Line_Bend2_R.gltf",
-      "png": "Decal_Line_Bend2_R.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Brick_90Angle_R.gltf",
+      "png": "Cornice_Brick_90Angle_R.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Line_Straight.gltf",
-      "png": "Decal_Line_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Brick_Center.gltf",
+      "png": "Cornice_Brick_Center.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Logo.gltf",
-      "png": "Decal_Logo.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Brick_L.gltf",
+      "png": "Cornice_Brick_L.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Logo_Letters.gltf",
-      "png": "Decal_Logo_Letters.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Brick_R.gltf",
+      "png": "Cornice_Brick_R.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Logo_Small.gltf",
-      "png": "Decal_Logo_Small.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Metal_90Angle_L.gltf",
+      "png": "Cornice_Metal_90Angle_L.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Sign.gltf",
-      "png": "Decal_Sign.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Metal_90Angle_R.gltf",
+      "png": "Cornice_Metal_90Angle_R.png"
     },
     {
-      "gltf": "sci-fi\\Decal_V.gltf",
-      "png": "Decal_V.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Metal_Center.gltf",
+      "png": "Cornice_Metal_Center.png"
     },
     {
-      "gltf": "sci-fi\\Decal_X.gltf",
-      "png": "Decal_X.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Metal_L.gltf",
+      "png": "Cornice_Metal_L.png"
     },
     {
-      "gltf": "sci-fi\\Decal_XSign.gltf",
-      "png": "Decal_XSign.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Metal_R.gltf",
+      "png": "Cornice_Metal_R.png"
     },
     {
-      "gltf": "sci-fi\\Decal_Z.gltf",
-      "png": "Decal_Z.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Trim_90Angle_L.gltf",
+      "png": "Cornice_Trim_90Angle_L.png"
     },
     {
-      "gltf": "sci-fi\\Door_DarkMetal.gltf",
-      "png": "Door_DarkMetal.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Trim_90Angle_R.gltf",
+      "png": "Cornice_Trim_90Angle_R.png"
     },
     {
-      "gltf": "sci-fi\\Door_Frame_A.gltf",
-      "png": "Door_Frame_A.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Trim_Center.gltf",
+      "png": "Cornice_Trim_Center.png"
     },
     {
-      "gltf": "sci-fi\\Door_Frame_Square.gltf",
-      "png": "Door_Frame_Square.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Trim_L.gltf",
+      "png": "Cornice_Trim_L.png"
     },
     {
-      "gltf": "sci-fi\\Door_Frame_Square_Blocked.gltf",
-      "png": "Door_Frame_Square_Blocked.png"
+      "gltf": "Exports/glTF (Godot)/Cornice_Trim_R.gltf",
+      "png": "Cornice_Trim_R.png"
     },
     {
-      "gltf": "sci-fi\\Door_Frame_SquareTall.gltf",
-      "png": "Door_Frame_SquareTall.png"
+      "gltf": "Exports/glTF (Godot)/Decal_ArrowForwardLeft.gltf",
+      "png": "Decal_ArrowForwardLeft.png"
     },
     {
-      "gltf": "sci-fi\\Door_Metal.gltf",
-      "png": "Door_Metal.png"
+      "gltf": "Exports/glTF (Godot)/Decal_ArrowForwardRight.gltf",
+      "png": "Decal_ArrowForwardRight.png"
     },
     {
-      "gltf": "sci-fi\\Door_Simple.gltf",
-      "png": "Door_Simple.png"
+      "gltf": "Exports/glTF (Godot)/Decal_ArrowStraight.gltf",
+      "png": "Decal_ArrowStraight.png"
     },
     {
-      "gltf": "sci-fi\\Platform_3Plates.gltf",
-      "png": "Platform_3Plates.png"
+      "gltf": "Exports/glTF (Godot)/Decal_ArrowTurnLeft.gltf",
+      "png": "Decal_ArrowTurnLeft.png"
     },
     {
-      "gltf": "sci-fi\\Platform_CenterPlate.gltf",
-      "png": "Platform_CenterPlate.png"
+      "gltf": "Exports/glTF (Godot)/Decal_ArrowTurnRight.gltf",
+      "png": "Decal_ArrowTurnRight.png"
     },
     {
-      "gltf": "sci-fi\\Platform_CenterPlate_Curve.gltf",
-      "png": "Platform_CenterPlate_Curve.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Bikelane.gltf",
+      "png": "Decal_Bikelane.png"
     },
     {
-      "gltf": "sci-fi\\Platform_DarkPlates.gltf",
-      "png": "Platform_DarkPlates.png"
+      "gltf": "Exports/glTF (Godot)/Decal_BrokenLine_Straight.gltf",
+      "png": "Decal_BrokenLine_Straight.png"
     },
     {
-      "gltf": "sci-fi\\Platform_DarkPlates_Curves.gltf",
-      "png": "Platform_DarkPlates_Curves.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Crosswalk_Wide.gltf",
+      "png": "Decal_Crosswalk_Wide.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Metal.gltf",
-      "png": "Platform_Metal.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Crosswalk.gltf",
+      "png": "Decal_Crosswalk.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Metal_Curve.gltf",
-      "png": "Platform_Metal_Curve.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Curve_2Lane_Stripe.gltf",
+      "png": "Decal_Curve_2Lane_Stripe.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Metal2.gltf",
-      "png": "Platform_Metal2.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Curve_4LaneShort_DoubleYellow.gltf",
+      "png": "Decal_Curve_4LaneShort_DoubleYellow.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Metal2_Curve.gltf",
-      "png": "Platform_Metal2_Curve.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Curve_4LaneShort_Stripe.gltf",
+      "png": "Decal_Curve_4LaneShort_Stripe.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Rails_2.gltf",
-      "png": "Platform_Rails_2.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Curve_4LaneShort.gltf",
+      "png": "Decal_Curve_4LaneShort.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Rails_4.gltf",
-      "png": "Platform_Rails_4.png"
+      "gltf": "Exports/glTF (Godot)/Decal_DoubleYellow_Straight.gltf",
+      "png": "Decal_DoubleYellow_Straight.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Rails_4Wide.gltf",
-      "png": "Platform_Rails_4Wide.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Only.gltf",
+      "png": "Decal_Only.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Rails_4WideTall.gltf",
-      "png": "Platform_Rails_4WideTall.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Slow.gltf",
+      "png": "Decal_Slow.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Ramp_2.gltf",
-      "png": "Platform_Ramp_2.png"
+      "gltf": "Exports/glTF (Godot)/Decal_Stop.gltf",
+      "png": "Decal_Stop.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Ramp_2Short.gltf",
-      "png": "Platform_Ramp_2Short.png"
+      "gltf": "Exports/glTF (Godot)/Door_1.gltf",
+      "png": "Door_1.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Ramp_4.gltf",
-      "png": "Platform_Ramp_4.png"
+      "gltf": "Exports/glTF (Godot)/Door_2.gltf",
+      "png": "Door_2.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Ramp_4Wide.gltf",
-      "png": "Platform_Ramp_4Wide.png"
+      "gltf": "Exports/glTF (Godot)/Door_3.gltf",
+      "png": "Door_3.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Round1.gltf",
-      "png": "Platform_Round1.png"
+      "gltf": "Exports/glTF (Godot)/DoorFrame_Metal_Single.gltf",
+      "png": "DoorFrame_Metal_Single.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Simple.gltf",
-      "png": "Platform_Simple.png"
+      "gltf": "Exports/glTF (Godot)/DoorFrame_Trim.gltf",
+      "png": "DoorFrame_Trim.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Simple_Curve.gltf",
-      "png": "Platform_Simple_Curve.png"
+      "gltf": "Exports/glTF (Godot)/DoorFrame_Wooden.gltf",
+      "png": "DoorFrame_Wooden.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Simple2.gltf",
-      "png": "Platform_Simple2.png"
+      "gltf": "Exports/glTF (Godot)/Entrance_Concrete_2x1.gltf",
+      "png": "Entrance_Concrete_2x1.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Simple2_Curve.gltf",
-      "png": "Platform_Simple2_Curve.png"
+      "gltf": "Exports/glTF (Godot)/Entrance_Concrete_2x2.gltf",
+      "png": "Entrance_Concrete_2x2.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Squares.gltf",
-      "png": "Platform_Squares.png"
+      "gltf": "Exports/glTF (Godot)/Floor_2x2.gltf",
+      "png": "Floor_2x2.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Squares_Curve.gltf",
-      "png": "Platform_Squares_Curve.png"
+      "gltf": "Exports/glTF (Godot)/Floor_4x4.gltf",
+      "png": "Floor_4x4.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Stairs_2.gltf",
-      "png": "Platform_Stairs_2.png"
+      "gltf": "Exports/glTF (Godot)/Floor_Inset.gltf",
+      "png": "Floor_Inset.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Stairs_4.gltf",
-      "png": "Platform_Stairs_4.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Column_Bottom.gltf",
+      "png": "Metal_Column_Bottom.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Stairs_4Wide.gltf",
-      "png": "Platform_Stairs_4Wide.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Column_Center.gltf",
+      "png": "Metal_Column_Center.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Stairs_4WideTall.gltf",
-      "png": "Platform_Stairs_4WideTall.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Column_Small_Bottom.gltf",
+      "png": "Metal_Column_Small_Bottom.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Window_Thin.gltf",
-      "png": "Platform_Window_Thin.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Column_Small_Center.gltf",
+      "png": "Metal_Column_Small_Center.png"
     },
     {
-      "gltf": "sci-fi\\Platform_Window_Wide.gltf",
-      "png": "Platform_Window_Wide.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Column_Small_Top.gltf",
+      "png": "Metal_Column_Small_Top.png"
     },
     {
-      "gltf": "sci-fi\\Platform_X.gltf",
-      "png": "Platform_X.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Column_Top.gltf",
+      "png": "Metal_Column_Top.png"
     },
     {
-      "gltf": "sci-fi\\Prop_AccessPoint.gltf",
-      "png": "Prop_AccessPoint.png"
+      "gltf": "Exports/glTF (Godot)/Metal_FirstFloor_Wall_1.gltf",
+      "png": "Metal_FirstFloor_Wall_1.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Barrel_Large.gltf",
-      "png": "Prop_Barrel_Large.png"
+      "gltf": "Exports/glTF (Godot)/Metal_FirstFloor_Wall.gltf",
+      "png": "Metal_FirstFloor_Wall.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Cable_1.gltf",
-      "png": "Prop_Cable_1.png"
+      "gltf": "Exports/glTF (Godot)/Metal_FirstFloor_Window.gltf",
+      "png": "Metal_FirstFloor_Window.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Cable_3.gltf",
-      "png": "Prop_Cable_3.png"
+      "gltf": "Exports/glTF (Godot)/Metal_FullWindow.gltf",
+      "png": "Metal_FullWindow.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Chest.gltf",
-      "png": "Prop_Chest.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Plain_1.gltf",
+      "png": "Metal_Plain_1.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Clamp.gltf",
-      "png": "Prop_Clamp.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Plain_3.gltf",
+      "png": "Metal_Plain_3.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Computer.gltf",
-      "png": "Prop_Computer.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Window_Half.gltf",
+      "png": "Metal_Window_Half.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Crate3.gltf",
-      "png": "Prop_Crate3.png"
+      "gltf": "Exports/glTF (Godot)/Metal_Window.gltf",
+      "png": "Metal_Window.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Crate4.gltf",
-      "png": "Prop_Crate4.png"
+      "gltf": "Exports/glTF (Godot)/Prop_ACUnit.gltf",
+      "png": "Prop_ACUnit.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Fan_Small.gltf",
-      "png": "Prop_Fan_Small.png"
+      "gltf": "Exports/glTF (Godot)/Prop_Bollard.gltf",
+      "png": "Prop_Bollard.png"
     },
     {
-      "gltf": "sci-fi\\Prop_ItemHolder.gltf",
-      "png": "Prop_ItemHolder.png"
+      "gltf": "Exports/glTF (Godot)/Prop_Drain.gltf",
+      "png": "Prop_Drain.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Light_Corner.gltf",
-      "png": "Prop_Light_Corner.png"
+      "gltf": "Exports/glTF (Godot)/Prop_ManholeCover.gltf",
+      "png": "Prop_ManholeCover.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Light_Floor.gltf",
-      "png": "Prop_Light_Floor.png"
+      "gltf": "Exports/glTF (Godot)/Prop_Planter_Single.gltf",
+      "png": "Prop_Planter_Single.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Light_Small.gltf",
-      "png": "Prop_Light_Small.png"
+      "gltf": "Exports/glTF (Godot)/Roof_2x2_90Angle_Center.gltf",
+      "png": "Roof_2x2_90Angle_Center.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Light_Wide.gltf",
-      "png": "Prop_Light_Wide.png"
+      "gltf": "Exports/glTF (Godot)/Roof_2x2_90Angle_L.gltf",
+      "png": "Roof_2x2_90Angle_L.png"
     },
     {
-      "gltf": "sci-fi\\Prop_PipeHolder.gltf",
-      "png": "Prop_PipeHolder.png"
+      "gltf": "Exports/glTF (Godot)/Roof_2x2_90Angle_R.gltf",
+      "png": "Roof_2x2_90Angle_R.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Rail_2.gltf",
-      "png": "Prop_Rail_2.png"
+      "gltf": "Exports/glTF (Godot)/Roof_2x2.gltf",
+      "png": "Roof_2x2.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Rail_3.gltf",
-      "png": "Prop_Rail_3.png"
+      "gltf": "Exports/glTF (Godot)/Roof_4x4.gltf",
+      "png": "Roof_4x4.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Rail_4.gltf",
-      "png": "Prop_Rail_4.png"
+      "gltf": "Exports/glTF (Godot)/Roof_Slate_Center.gltf",
+      "png": "Roof_Slate_Center.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Rail_Incline_Long_L.gltf",
-      "png": "Prop_Rail_Incline_Long_L.png"
+      "gltf": "Exports/glTF (Godot)/Roof_Slate_Corner.gltf",
+      "png": "Roof_Slate_Corner.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Rail_Incline_Long_R.gltf",
-      "png": "Prop_Rail_Incline_Long_R.png"
+      "gltf": "Exports/glTF (Godot)/Roof_Slate_InnerCorner.gltf",
+      "png": "Roof_Slate_InnerCorner.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Rail_Incline_Short_L.gltf",
-      "png": "Prop_Rail_Incline_Short_L.png"
+      "gltf": "Exports/glTF (Godot)/Roof_Slate_Window_1.gltf",
+      "png": "Roof_Slate_Window_1.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Rail_Incline_Short_R.gltf",
-      "png": "Prop_Rail_Incline_Short_R.png"
+      "gltf": "Exports/glTF (Godot)/Roof_SlateCornice_Center.gltf",
+      "png": "Roof_SlateCornice_Center.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Rail_Round_Big.gltf",
-      "png": "Prop_Rail_Round_Big.png"
+      "gltf": "Exports/glTF (Godot)/Roof_SlateCornice_Corner.gltf",
+      "png": "Roof_SlateCornice_Corner.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Rail_Round_Small.gltf",
-      "png": "Prop_Rail_Round_Small.png"
+      "gltf": "Exports/glTF (Godot)/Roof_SlateCornice_InnerCorner.gltf",
+      "png": "Roof_SlateCornice_InnerCorner.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Vent_Big.gltf",
-      "png": "Prop_Vent_Big.png"
+      "gltf": "Exports/glTF (Godot)/Roof_SlateCornice_Window_1.gltf",
+      "png": "Roof_SlateCornice_Window_1.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Vent_Small.gltf",
-      "png": "Prop_Vent_Small.png"
+      "gltf": "Exports/glTF (Godot)/Sidewalk_Corner_Flat_3m_Stripe.gltf",
+      "png": "Sidewalk_Corner_Flat_3m_Stripe.png"
     },
     {
-      "gltf": "sci-fi\\Prop_Vent_Wide.gltf",
-      "png": "Prop_Vent_Wide.png"
+      "gltf": "Exports/glTF (Godot)/Sidewalk_Corner_Flat_3m.gltf",
+      "png": "Sidewalk_Corner_Flat_3m.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_AccentStrip_Corner_Inner.gltf",
-      "png": "ShortWall_AccentStrip_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Sidewalk_Corner_Round_3m_Stripe.gltf",
+      "png": "Sidewalk_Corner_Round_3m_Stripe.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_AccentStrip_Corner_Outer.gltf",
-      "png": "ShortWall_AccentStrip_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Sidewalk_Corner_Round_3m.gltf",
+      "png": "Sidewalk_Corner_Round_3m.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_AccentStrip_Straight.gltf",
-      "png": "ShortWall_AccentStrip_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Sidewalk_NoCurb_3m.gltf",
+      "png": "Sidewalk_NoCurb_3m.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Band2_Corner_Inner.gltf",
-      "png": "ShortWall_Band2_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Sidewalk_Planter.gltf",
+      "png": "Sidewalk_Planter.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Band2_Corner_Outer.gltf",
-      "png": "ShortWall_Band2_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Sidewalk_Straight_3m_Stripe.gltf",
+      "png": "Sidewalk_Straight_3m_Stripe.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Band2_Straight.gltf",
-      "png": "ShortWall_Band2_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Sidewalk_Straight_3m.gltf",
+      "png": "Sidewalk_Straight_3m.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_DarkMetal2_Corner_Inner.gltf",
-      "png": "ShortWall_DarkMetal2_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Stairs_Entrance_Concrete.gltf",
+      "png": "Stairs_Entrance_Concrete.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_DarkMetal2_Corner_Outer.gltf",
-      "png": "ShortWall_DarkMetal2_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Stairs_Rails_Metal_Straight_1.gltf",
+      "png": "Stairs_Rails_Metal_Straight_1.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_DarkMetal2_Straight.gltf",
-      "png": "ShortWall_DarkMetal2_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Stairs_Rails_Metal_Straight_2.gltf",
+      "png": "Stairs_Rails_Metal_Straight_2.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_DarkPlastic_Corner_Inner.gltf",
-      "png": "ShortWall_DarkPlastic_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Stairs_Rails_Metal.gltf",
+      "png": "Stairs_Rails_Metal.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_DarkPlastic_Corner_Outer.gltf",
-      "png": "ShortWall_DarkPlastic_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Street_2Lane_noSidewalk.gltf",
+      "png": "Street_2Lane_noSidewalk.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_DarkPlastic_Straight.gltf",
-      "png": "ShortWall_DarkPlastic_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Street_2Lane.gltf",
+      "png": "Street_2Lane.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Metal2_Corner_Inner.gltf",
-      "png": "ShortWall_Metal2_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Street_4Lane_noSidewalk.gltf",
+      "png": "Street_4Lane_noSidewalk.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Metal2_Corner_Outer.gltf",
-      "png": "ShortWall_Metal2_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Street_4Lane.gltf",
+      "png": "Street_4Lane.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Metal2_Straight.gltf",
-      "png": "ShortWall_Metal2_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Street_4WayIntersection.gltf",
+      "png": "Street_4WayIntersection.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_MetalPlates_Corner_Inner.gltf",
-      "png": "ShortWall_MetalPlates_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Street_Asphalt_6x6.gltf",
+      "png": "Street_Asphalt_6x6.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_MetalPlates_Corner_Outer.gltf",
-      "png": "ShortWall_MetalPlates_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Street_Asphalt_9x9.gltf",
+      "png": "Street_Asphalt_9x9.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_MetalPlates_Straight.gltf",
-      "png": "ShortWall_MetalPlates_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Street_Asphalt_Curve_2Lane.gltf",
+      "png": "Street_Asphalt_Curve_2Lane.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Simple1_Corner_Inner.gltf",
-      "png": "ShortWall_Simple1_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Street_Asphalt_Curve_4Lane_Short.gltf",
+      "png": "Street_Asphalt_Curve_4Lane_Short.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Simple1_Corner_Outer.gltf",
-      "png": "ShortWall_Simple1_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Street_Curve_2Lane_Curb.gltf",
+      "png": "Street_Curve_2Lane_Curb.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Simple1_Straight.gltf",
-      "png": "ShortWall_Simple1_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Street_Curve_2Lane.gltf",
+      "png": "Street_Curve_2Lane.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Simple2_Corner_Inner.gltf",
-      "png": "ShortWall_Simple2_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Street_Curve_4Lane_Short_Curb.gltf",
+      "png": "Street_Curve_4Lane_Short_Curb.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Simple2_Corner_Outer.gltf",
-      "png": "ShortWall_Simple2_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Street_Curve_4LaneShort.gltf",
+      "png": "Street_Curve_4LaneShort.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Simple2_Straight.gltf",
-      "png": "ShortWall_Simple2_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Street_TIntersection.gltf",
+      "png": "Street_TIntersection.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Triangles_Corner_Inner.gltf",
-      "png": "ShortWall_Triangles_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Trim_90Angle_TopCover.gltf",
+      "png": "Trim_90Angle_TopCover.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Triangles_Corner_Outer.gltf",
-      "png": "ShortWall_Triangles_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Trim_Column_Bottom.gltf",
+      "png": "Trim_Column_Bottom.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_Triangles_Straight.gltf",
-      "png": "ShortWall_Triangles_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Trim_Column_Center.gltf",
+      "png": "Trim_Column_Center.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_WhitePlate2_Corner_Inner.gltf",
-      "png": "ShortWall_WhitePlate2_Corner_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Trim_Column_Top.gltf",
+      "png": "Trim_Column_Top.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_WhitePlate2_Corner_Outer.gltf",
-      "png": "ShortWall_WhitePlate2_Corner_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Trim_Corner.gltf",
+      "png": "Trim_Corner.png"
     },
     {
-      "gltf": "sci-fi\\ShortWall_WhitePlate2_Straight.gltf",
-      "png": "ShortWall_WhitePlate2_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Trim_FirstFloor_Wall.gltf",
+      "png": "Trim_FirstFloor_Wall.png"
     },
     {
-      "gltf": "sci-fi\\TopAstra_Corner_Round_Inner.gltf",
-      "png": "TopAstra_Corner_Round_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Trim_FirstFloor_Window_001.gltf",
+      "png": "Trim_FirstFloor_Window_001.png"
     },
     {
-      "gltf": "sci-fi\\TopAstra_Curve_Round_Outer.gltf",
-      "png": "TopAstra_Curve_Round_Outer.png"
+      "gltf": "Exports/glTF (Godot)/Trim_FirstFloor_Window_Columns.gltf",
+      "png": "Trim_FirstFloor_Window_Columns.png"
     },
     {
-      "gltf": "sci-fi\\TopAstra_Straight.gltf",
-      "png": "TopAstra_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Trim_Plain_3.gltf",
+      "png": "Trim_Plain_3.png"
     },
     {
-      "gltf": "sci-fi\\TopCables_Corner_Round_Inner.gltf",
-      "png": "TopCables_Corner_Round_Inner.png"
+      "gltf": "Exports/glTF (Godot)/Trim_Wall_Guard.gltf",
+      "png": "Trim_Wall_Guard.png"
     },
     {
-      "gltf": "sci-fi\\TopCables_Corner_Round_Outer.gltf",
-      "png": "TopCables_Corner_Round_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\TopCables_Corner_Square_Inner.gltf",
-      "png": "TopCables_Corner_Square_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\TopCables_Corner_Square_Outer.gltf",
-      "png": "TopCables_Corner_Square_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\TopCables_Straight.gltf",
-      "png": "TopCables_Straight.png"
-    },
-    {
-      "gltf": "sci-fi\\TopCables_Straight_Hanging.gltf",
-      "png": "TopCables_Straight_Hanging.png"
-    },
-    {
-      "gltf": "sci-fi\\TopPlastic_Corner_Outer.gltf",
-      "png": "TopPlastic_Corner_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\TopPlastic_Corner_Round_Inner.gltf",
-      "png": "TopPlastic_Corner_Round_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\TopPlastic_Corner_Round_Outer.gltf",
-      "png": "TopPlastic_Corner_Round_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\TopPlastic_Straight.gltf",
-      "png": "TopPlastic_Straight.png"
-    },
-    {
-      "gltf": "sci-fi\\TopSimple_Corner_Round_Inner.gltf",
-      "png": "TopSimple_Corner_Round_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\TopSimple_Corner_Round_Outer.gltf",
-      "png": "TopSimple_Corner_Round_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\TopSimple_Straight.gltf",
-      "png": "TopSimple_Straight.png"
-    },
-    {
-      "gltf": "sci-fi\\TopWindow_Corner_Curve_Inner.gltf",
-      "png": "TopWindow_Corner_Curve_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\TopWindow_Corner_Curve_Outer.gltf",
-      "png": "TopWindow_Corner_Curve_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\TopWindow_Straight.gltf",
-      "png": "TopWindow_Straight.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Corner_Round_Inner.gltf",
-      "png": "WallAstra_Corner_Round_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Corner_Round_Outer.gltf",
-      "png": "WallAstra_Corner_Round_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Corner_Square_Inner.gltf",
-      "png": "WallAstra_Corner_Square_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Corner_Square_Outer.gltf",
-      "png": "WallAstra_Corner_Square_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Straight.gltf",
-      "png": "WallAstra_Straight.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Straight_Broken.gltf",
-      "png": "WallAstra_Straight_Broken.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Straight_Divided.gltf",
-      "png": "WallAstra_Straight_Divided.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Straight_Flat.gltf",
-      "png": "WallAstra_Straight_Flat.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Straight_Flat_Window.gltf",
-      "png": "WallAstra_Straight_Flat_Window.png"
-    },
-    {
-      "gltf": "sci-fi\\WallAstra_Straight_Window.gltf",
-      "png": "WallAstra_Straight_Window.png"
-    },
-    {
-      "gltf": "sci-fi\\WallBand_Corner_Round_Inner.gltf",
-      "png": "WallBand_Corner_Round_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\WallBand_Corner_Round_Outer.gltf",
-      "png": "WallBand_Corner_Round_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\WallBand_Corner_Square_Inner.gltf",
-      "png": "WallBand_Corner_Square_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\WallBand_Corner_Square_Outer.gltf",
-      "png": "WallBand_Corner_Square_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\WallBand_Straight.gltf",
-      "png": "WallBand_Straight.png"
-    },
-    {
-      "gltf": "sci-fi\\WallBand_Straight_Broken.gltf",
-      "png": "WallBand_Straight_Broken.png"
-    },
-    {
-      "gltf": "sci-fi\\WallWindow_Cap_A.gltf",
-      "png": "WallWindow_Cap_A.png"
-    },
-    {
-      "gltf": "sci-fi\\WallWindow_Cap_B.gltf",
-      "png": "WallWindow_Cap_B.png"
-    },
-    {
-      "gltf": "sci-fi\\WallWindow_Corner_Round_Inner.gltf",
-      "png": "WallWindow_Corner_Round_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\WallWindow_Corner_Round_Outer.gltf",
-      "png": "WallWindow_Corner_Round_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\WallWindow_Corner_Square_Inner.gltf",
-      "png": "WallWindow_Corner_Square_Inner.png"
-    },
-    {
-      "gltf": "sci-fi\\WallWindow_Corner_Square_Outer.gltf",
-      "png": "WallWindow_Corner_Square_Outer.png"
-    },
-    {
-      "gltf": "sci-fi\\WallWindow_Straight.gltf",
-      "png": "WallWindow_Straight.png"
+      "gltf": "Exports/glTF (Godot)/Trim_Window.gltf",
+      "png": "Trim_Window.png"
     }
   ]
 }
